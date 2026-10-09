@@ -1,0 +1,260 @@
+# TAXONOMY
+
+Controlled vocabulary for lessons and knowledge items (addendum, Appendix C). Staged on the working branch; copied to the knowledge store at S-KNOW.
+
+## applies:
+
+- `applies:all`: lesson that applies to every task
+
+## domain:
+
+- `domain:audio`: audio synthesis and music software (alias: music-audio)
+- `domain:automotive`: vehicle diagnostics and software that talks to a vehicle bus
+- `domain:computational-fluid-dynamics`: numerical solution of flow, heat-transfer and phase-change equations, including the axisymmetric vacuum-arc-remelting (VAR) melt-pool model
+- `domain:engine-ignition`: ignition systems for combustion engines (magneto, coil, electronic) and the firmware that times the spark
+- `domain:microtonal-tuning`: tuning systems beyond 12-TET (EDOs, just intonation) and instruments built on them
+- `domain:music-perception`: consonance, roughness, harmonicity and other perception models (aliases: psychoacoustics, consonance)
+- `domain:music-transcription`: converting recorded audio into notes, chords, MIDI and tab
+- `domain:quantum-gravity`: topological quantum gravity and Turaev-Viro / Levin-Wen lattice models, including the 2+1D Hamiltonian constraint
+- `domain:singing-voice-synthesis`: singing voice synthesis and conversion: generating sung audio from notes and lyrics, voice cloning (aliases: svs, svc, voice conversion)
+- `domain:source-separation`: separating a mixed recording into instrument stems (vocals, drums, bass, guitar, piano, strings)
+
+## tech:
+
+- `tech:ableton-live`: the Ableton Live DAW as a plugin host
+- `tech:apt`: apt and apt-get package installation in the sandbox, including repository errors
+- `tech:arxiv`: arXiv submission and moderation policies
+- `tech:audacity`: the Audacity audio editor and its mod-script-pipe scripting
+- `tech:avr`: AVR microcontrollers (ATmega328P), avr-gcc and avr-libc, their timers, interrupts, fuses and clock (aliases: atmega328p, avr-gcc)
+- `tech:bash`: shells: bash, and the sandbox's /bin/sh (dash)
+- `tech:basic-pitch`: Spotify's basic-pitch note transcription model and its TypeScript package
+- `tech:cmake`: CMake and its generators
+- `tech:codeberg`: Codeberg (Forgejo) hosting and access from the sandbox
+- `tech:cpp`: C++
+- `tech:ddt4all`: DDT4all, the open Renault diagnostic tool, and its ECU database
+- `tech:demucs`: the Demucs source-separation models (htdemucs, htdemucs_ft, htdemucs_6s) and their ONNX exports in demucs-onnx
+- `tech:diffsinger`: the openvpi DiffSinger singing synthesiser, its configs and ONNX exports
+- `tech:elm327-emulator`: the ELM327-emulator Python package used as a test double
+- `tech:elm327`: ELM327 and STN adapters: AT commands and responses
+- `tech:git`: git
+- `tech:github-actions`: GitHub Actions workflows, runners and logs
+- `tech:github`: GitHub hosting, API and access
+- `tech:google-colab`: Google Colaboratory notebooks and their free-tier runtime limits (alias: colab)
+- `tech:javascript`: JavaScript (browser)
+- `tech:juce`: the JUCE C++ framework for audio plugins
+- `tech:kaggle`: Kaggle Notebooks and their GPU quota and background sessions
+- `tech:latex`: LaTeX, pdflatex/latexmk/chktex and TeX Live (alias: texlive)
+- `tech:markdown`: Markdown rendering and fenced code blocks
+- `tech:msvc`: the Microsoft Visual C++ toolchain and Visual Studio on Windows
+- `tech:musicxml`: the MusicXML format
+- `tech:nodejs`: Node.js runtime and npm
+- `tech:numpy`: NumPy
+- `tech:onnx`: the ONNX model format, operator sets and onnx Python package (graph building, checker)
+- `tech:onnxruntime-web`: ONNX Runtime Web (onnxruntime-web): wasm and WebGPU execution providers, session options and runtime assets
+- `tech:onnxruntime`: native ONNX Runtime (C/C++ API and Python package), as opposed to onnxruntime-web
+- `tech:pip-tools`: pip-tools and hash-locked requirement files
+- `tech:pitchy`: the pitchy pitch-detection library (McLeod pitch method)
+- `tech:playwright`: Playwright browser test runner
+- `tech:pluginval`: Tracktion pluginval plug-in validator
+- `tech:pytest`: pytest
+- `tech:python-can`: the python-can package and its interfaces (slcan)
+- `tech:python-obd`: the python-OBD library (package obd)
+- `tech:python`: Python
+- `tech:pytorch`: PyTorch, including torch.onnx export
+- `tech:r-incon`: R packages incon and hrep (Harrison)
+- `tech:rdata`: reading R data files from Python (package rdata)
+- `tech:rvc`: RVC-Project Retrieval-based-Voice-Conversion-WebUI: training scripts, models and inference pipeline
+- `tech:scipy`: SciPy (scipy.special, scipy.signal)
+- `tech:simavr`: the simavr AVR simulator and firmware-in-the-loop tests built on it
+- `tech:so-vits-svc`: svc-develop-team so-vits-svc singing voice conversion
+- `tech:tfjs`: TensorFlow.js and its backends
+- `tech:typescript`: TypeScript
+- `tech:uds`: UDS (ISO 14229) diagnostic services
+- `tech:vcv-rack`: VCV Rack 2: the plugin SDK, plugin.mk build, manifest, panel and module API
+- `tech:vite`: the Vite bundler and dev server
+- `tech:vitest`: the Vitest test runner
+- `tech:vst3`: the VST3 plugin format, its parameter IDs and install locations
+- `tech:web-audio`: the Web Audio API, in browsers and in node-web-audio-api
+- `tech:zenodo`: Zenodo records, versioning and DOIs
+
+## subject:
+
+- `subject:ableton-computer-midi-keyboard`: Live's Computer MIDI Keyboard: key layout, octave and velocity keys
+- `subject:ariel-350-ignition-timing`: factory ignition timing and engine geometry of the Ariel NH 350 Red Hunter
+- `subject:arxiv-ai-policy`: arXiv rules on generative AI tools and authorship
+- `subject:atmega328p-hardware`: ATmega328P speed grades, fuse bits and clock behaviour
+- `subject:atmega328p-timer1-clock-extension`: building a 32-bit microsecond clock from the 16-bit Timer1 without losing wraps
+- `subject:audacity-export`: exporting audio from Audacity (formats, multiple files, labels)
+- `subject:audacity-scripting`: Audacity mod-script-pipe protocol and scripting command semantics
+- `subject:audacity-silence-trimming`: trimming silence at the ends of audio in Audacity (built-in effects and plug-ins)
+- `subject:basic-pitch-model-range`: basic-pitch pitch range and sample-rate limits, and what lies outside them
+- `subject:basic-pitch-package`: the @spotify/basic-pitch npm package: licence, dependencies, API and module format
+- `subject:basic-pitch-performance`: measured basic-pitch analysis speed on CI runners, emulated phones and real devices
+- `subject:basic-pitch-thresholds`: basic-pitch onset/frame/min-length thresholds and measured accuracy by preset
+- `subject:bass-guitar-tuning`: open-string notes of 4- to 8-string bass guitars
+- `subject:battery-less-electronic-ignition`: running an electronic ignition without a battery: capacitor supply, alternator peaks, BTH-style magnetos
+- `subject:bike-electrical-polarity`: earth polarity and dynamo regulators on classic British motorcycles
+- `subject:billboard-chord-corpus`: McGill Billboard chord-type counts used for familiarity
+- `subject:browser-timer-throttling`: timer throttling in background tabs and its exemptions for audio
+- `subject:bs-roformer-sw`: the BS-RoFormer SW six-stem separation model: geometry, browser fit and weights licence
+- `subject:codeberg-access-from-sandbox`: reaching Codeberg from the sandbox and the egress allowlist versus the live proxy
+- `subject:coi-serviceworker`: the coi-serviceworker package that makes a static host cross-origin isolated
+- `subject:composite-consonance-model`: Harrison & Pearce composite consonance regression and its relatives
+- `subject:conservative-convection-scheme`: flux-form convection in axisymmetric stream-function/vorticity solvers and deferred-correction limiter order
+- `subject:consonance-perception`: empirical consonance research
+- `subject:crc16-ccitt-false`: CRC-16/CCITT-FALSE parameters and check values
+- `subject:curvilinear-grid-generation`: elliptic (Poisson, monitor-function) grid generation for body-fitted adaptive meshes
+- `subject:ddt4all-safety-and-adapter-behaviour`: DDT4all's database licensing, safe service list and response-size workaround
+- `subject:drum-synthesis`: synthesising drum and cymbal voices
+- `subject:dsp-port-parity`: numerical agreement between a DSP engine and a port of it to another language
+- `subject:elm327-at-commands-and-errors`: ELM327 AT commands for addressing ECUs and its error responses
+- `subject:elm327-emulator-in-process-use`: driving ELM327-emulator in-process from tests
+- `subject:elm327-emulator-license`: ELM327-emulator licence terms
+- `subject:elm327-emulator-multiframe`: ELM327-emulator and ISO-TP multi-frame responses
+- `subject:elm327-emulator-output-format`: ELM327-emulator response formatting and banner
+- `subject:enthalpy-porosity-mushy-zone`: liquid-fraction regularisation, mushy-band width and profile, and D'Arcy damping in phase-change models
+- `subject:euro5-motorcycle-obd-monitoring`: EU Euro 5 motorcycle OBD monitoring requirements and their timing
+- `subject:firefox-headless-web-audio`: headless Firefox Web Audio clock and AudioContext.resume behaviour in Playwright CI
+- `subject:fretboard-fret-geometry`: fret positions from pitch ratios, for any tuning, including a scrolled virtual nut
+- `subject:general-midi-drum-map`: the General MIDI percussion key map (channel 10) and its note names
+- `subject:github-access-from-sandbox`: what reaches GitHub from the sandbox and how
+- `subject:github-actions-dispatch`: workflow_dispatch availability by branch and workflow input pitfalls
+- `subject:github-license-detection`: GitHub's license API and repository license detection
+- `subject:github-pages`: GitHub Pages publishing, entry files and the Pages API
+- `subject:github-pages-headers`: response headers GitHub Pages can and cannot set (COOP/COEP)
+- `subject:github-pr-draft-state`: changing a pull request's draft state through the GitHub APIs
+- `subject:github-token-scopes`: fine-grained personal access token permissions needed for common GitHub tasks
+- `subject:github-web-upload`: files uploaded through the GitHub web UI: commit semantics and how to verify them
+- `subject:guitar-amp-simulation`: distortion, pitch-invariant excitation and cabinet modelling for guitar voices
+- `subject:hall-latch-sensor-a1220`: Allegro A1120 and A1220 Hall switch and latch sensors for a crank trigger
+- `subject:harmonic-entropy`: Erlich harmonic entropy
+- `subject:harmonic-level-measurement`: measuring per-harmonic levels robustly (windows, beating)
+- `subject:htdemucs-onnx-models`: the demucs-onnx htdemucs exports: catalogue, sizes, input/output contract and overlap-add
+- `subject:htdemucs-onnx-performance`: measured htdemucs speed on WASM, WebGPU and native CPU
+- `subject:htdemucs-weights-licence`: licence status of the released HTDemucs weights
+- `subject:huggingface-model-hosting`: serving model files from Hugging Face to a browser: redirects, CORS and CSP
+- `subject:ignition-igbt-parts`: onsemi ignition IGBTs (ISL9V3040, FGD3040G2, FGB3040G2, FGBS3040E1) and their availability
+- `subject:impact-contact-mechanics`: Hertzian contact and impact force pulses for struck objects
+- `subject:iso19689-j1962-pinout`: J1962 pin assignments on ISO 19689 to J1962 adapter leads
+- `subject:juce-combobox-editable`: editable juce::ComboBox behaviour and API across JUCE versions
+- `subject:juce-linux-dependencies`: system packages JUCE needs to build on Linux
+- `subject:juce-mpe-voice-allocation`: how JUCE's MPESynthesiser picks a voice for a note, and its default zone layout
+- `subject:juce-parameter-attachments`: JUCE parameter attachments and what each can represent
+- `subject:juce-sandbox-build-time`: how long JUCE builds take on the sandbox and how to run them
+- `subject:juce-standalone-compiles-vst3-client`: JUCE's Standalone target also compiling the VST3 client source
+- `subject:juce-versioning`: JUCE release lines and breaking changes across versions
+- `subject:juce-vst3-parameter-id-conflict`: JUCE_VST3_CAN_REPLACE_VST2 and the VST2/VST3 parameter-automation #error
+- `subject:lead-rhythm-guitar-separation`: separating lead from rhythm guitar: available models and baselines
+- `subject:legacy-code-audit`: findings from auditing the legacy hamil-3-qg-pos-cosmo code and its published tables
+- `subject:levin-wen-hamiltonian`: Levin-Wen string-net Hamiltonians as commuting projectors
+- `subject:lm2936-regulator`: TI LM2936 low-dropout regulator limits
+- `subject:magneto-ignition-operation`: how a magneto ignition behaves: drive speed, spark strength versus advance, cut-out wiring, kickback, stopping the engine
+- `subject:modal-plate-physics`: vibration modes of plates and shells: eigenvalues, ratios, benchmarks and measured lids
+- `subject:modal-resonator-implementation`: digital resonator structures for modal synthesis
+- `subject:msvc-ninja-environment`: using MSVC with the Ninja generator: vcvars, include errors, single-config builds
+- `subject:musicxml-tablature`: encoding guitar tablature in MusicXML 4.0 and validating it against the XSD
+- `subject:mvsep-mega-53`: MVSep Mega 53, ZFTurbo's 53-stem BS-RoFormer: release, size and resource needs
+- `subject:newton-krylov-anderson-acceleration`: Newton-Krylov and Anderson acceleration of Picard iterations, and their measured behaviour
+- `subject:node-web-audio-api`: the node-web-audio-api package for running Web Audio graphs in Node
+- `subject:numpy-ufunc-precision`: floating-point rounding differences between numpy's array and scalar ufunc code paths
+- `subject:obd-adapter-choice-for-renault`: choosing an OBD adapter for Renault CAN modules
+- `subject:obdlink-mx-plus-ex-support`: OBDLink MX+ and EX protocol, OS and pairing support
+- `subject:oildrumkit-engine-api`: the oildrumkit DrumEngine.h API, instruments, reset and choke behaviour
+- `subject:oildrumkit-engine-segmentation`: how oildrumkit's output depends on process() block segmentation, its cost, and its limiter
+- `subject:open-licence-texts-in-sandbox`: which open-source and open-hardware licence texts are available offline in the sandbox
+- `subject:orchestral-strings-separation`: separating orchestral strings: section versus individual instruments, training data
+- `subject:ort-web-session-options`: ONNX Runtime Web session options and the 4 GB wasm heap
+- `subject:ort-web-wasm-assets`: which wasm and mjs files ONNX Runtime Web loads and how to serve them from a Vite build
+- `subject:ort-web-webgpu-support`: which ONNX Runtime Web versions run on the WebGPU execution provider
+- `subject:pcg64-bit-generator`: numpy's PCG64 bit generator and SeedSequence
+- `subject:pdflatex-reproducibility`: byte-level reproducibility of pdflatex output (trailer ID, timestamps)
+- `subject:pip-tools-hash-locking-build-backend`: hash-locked installs and the build backend in the lock
+- `subject:pitch-class-harmonicity`: Milne spectral pitch-class harmonicity
+- `subject:pitch-tracking`: estimating f0 in recordings, including octave-error handling
+- `subject:playwright-emulation`: Playwright mobile emulation, CPU throttling and the WebKit build's limits
+- `subject:projector-spectral-gap`: spectra of H = I - P and local sums of projectors: integer levels and gaps
+- `subject:python-can-slcan-listen-only`: python-can slcan listen-only mode
+- `subject:python-obd-dtc-decoding`: python-OBD decoding of 2-byte DTCs
+- `subject:python-obd-release-and-license`: python-OBD release, Python support and licence
+- `subject:python-obd-vin-truncation`: python-OBD returning a truncated VIN
+- `subject:quantum-6j-symbols`: quantum integers, q-6j symbols and total quantum dimension for SU(2)_k
+- `subject:r-data-in-python`: reading .rda files in Python
+- `subject:renault-abs-read-warning-lamp`: ABS warning lamp flashing while reading ABS codes
+- `subject:renault-diagnostic-session-10-c0`: the Renault diagnostic session request 10 C0
+- `subject:renault-ecu-protocol-families`: which Renault ECUs use KWP-style or UDS diagnostics
+- `subject:renault-x95-can-ids`: CAN bitrate and request/response IDs on Renault X95 (Mégane III platform) ECUs
+- `subject:roughness-models`: Sethares, Hutchinson-Knopoff, Vassilakis roughness
+- `subject:safari-audio-decoding`: Safari decodeAudioData behaviour and format support
+- `subject:sandbox-egress-allowlist`: which external hosts the sandbox proxy blocks or allows, beyond GitHub and Codeberg (Zenodo, Crossref, DataCite, PyPI, npm)
+- `subject:sandbox-environment`: sandbox filesystem and persistence
+- `subject:scanned-pdf-maths-extraction`: reading equations from scanned PDFs whose text layer is unreliable
+- `subject:scenic-iii-obd-socket-location`: where the OBD socket is on a Renault Scenic III
+- `subject:simavr-atmega328p-modelling`: what simavr 1.6 models for the ATmega328P and where it differs from the datasheet
+- `subject:sparse-direct-solve-cost`: time and memory of sparse direct (SuperLU) solves on a small sandbox
+- `subject:sparse-projector-memory`: memory and time of building and diagonalising large sparse projector products on a small sandbox
+- `subject:standard-guitar-tuning`: open-string MIDI notes and frequencies of standard guitar tuning
+- `subject:steel-damping`: loss factors and decay of struck steel
+- `subject:string-instrument-tunings`: open-string tunings of violin-family, mandolin-family and extended guitars
+- `subject:tent-vertex-operator`: Turaev-Viro vertex ('tent') operators on the torus lattice: projector property and TV normalisation
+- `subject:tex-toolchain`: TeX Live toolchain available in the sandbox and what is missing
+- `subject:tfjs-wasm-backend`: TensorFlow.js WebAssembly backend bugs, patches and speed
+- `subject:tfjs-webgl-mobile`: TensorFlow.js WebGL backend precision on mobile GPUs
+- `subject:tonal-note-and-chord-naming`: the tonal library's note and chord naming conventions
+- `subject:tonejs-midi-writing`: writing MIDI files with @tonejs/midi
+- `subject:transcription-synthetic-fixture-bias`: how synthetic test audio biases transcription accuracy figures
+- `subject:tremolo-picking-synthesis`: synthesising tremolo-picked guitar: riff clock versus pick clock, pick envelope
+- `subject:turaev-viro-torus-state-space`: state space of the Turaev-Viro model on the torus for SU(2)_k: dimension and labelling counts
+- `subject:tv-gravity-correspondence`: semiclassical relation of TV state sums to 3D gravity with positive cosmological constant
+- `subject:tv-spectral-gap-novelty`: prior art and novelty of spectral-gap claims for TV / Levin-Wen Hamiltonians
+- `subject:tv-vertex-projectors`: TV-normalised vertex and cylinder projectors: construction and idempotence
+- `subject:typescript-erasable-syntax`: the TypeScript erasableSyntaxOnly flag and the syntax it rejects
+- `subject:uds-read-dtc-information-19-02`: UDS service 19 02 response layout
+- `subject:unity-test-framework`: ThrowTheSwitch Unity C test framework as vendored in a project
+- `subject:ups-and-downs-notation`: Kite's ups and downs note naming for equal divisions of the octave
+- `subject:ups-and-downs-spelling-rule`: the project's rule that spells an EDO step in ups and downs notation, and its validation
+- `subject:var-melt-pool-model`: the axisymmetric VAR melt-pool model of Polton (1998): equations, scaling and parameters
+- `subject:var-refinement-results`: measured mesh-refinement results and converged flow limits of the VAR melt-pool solver
+- `subject:vcv-module-lifecycle`: VCV Rack module callbacks (onSampleRateChange, onReset), FPU flags and the Module/Port API
+- `subject:vcv-panel-svg`: VCV Rack panel SVG rules and widget sizes
+- `subject:vcv-plugin-build`: building VCV Rack plugins: plugin.mk, compile flags, stub libRack and Windows MSYS2
+- `subject:vcv-plugin-licensing`: VCV Rack plugin licence rules and the Component Library licence
+- `subject:vcv-plugin-manifest`: the VCV Rack plugin.json manifest rules
+- `subject:vcv-rack-release-and-sdk`: VCV Rack release tags and the SDK download pattern
+- `subject:vcv-sample-rate-menu`: the engine sample rates VCV Rack offers
+- `subject:vcv-voltage-standards`: VCV Rack voltage standards and the Schmitt trigger
+- `subject:vinyl-side-detection`: finding sides, lead-ins and lead-outs in vinyl transfers
+- `subject:vite-vitest-node-compat`: compatible versions of Vite, Vitest and Node
+- `subject:void-choir-reference-recording`: the measured reference recording behind the Void Choir guitar voice
+- `subject:vst3-install-locations-windows`: where VST3 plugins are installed on Windows and who may write there
+- `subject:web-audio-dynamics-compressor`: DynamicsCompressorNode behaviour: latency and overshoot
+- `subject:web-audio-param-automation`: AudioParam automation curves (exponential ramps, envelope time constants)
+- `subject:web-audio-waveshaper`: WaveShaperNode behaviour and its curve rules
+- `subject:yamaha-dealer-tool-and-write-access`: Yamaha YDT dealer tool and write access through the Euro 5 port
+- `subject:yamaha-euro5-dedicated-tools`: dedicated motorcycle diagnostic tools for Yamaha Euro 5
+- `subject:yamaha-euro5-diagnostic-connector`: the red 6-pin Euro 5 diagnostic connector on 2021+ Yamaha bikes
+- `subject:yamaha-euro5-generic-obd-reach`: which ECUs a generic OBD reader reaches on 2021+ Yamaha bikes
+- `subject:zenodo-versioning`: Zenodo new-version mechanics, concept versus version DOIs, and the web-UI upload flow
+
+## phase:
+
+- `phase:implementation`: implementation
+- `phase:intake`: intake: scoping the request and checking what already exists
+- `phase:planning`: planning
+- `phase:release`: release
+- `phase:research`: research
+- `phase:retrospective`: retrospective
+- `phase:specification`: specification and tests
+- `phase:verification`: verification
+
+## kind:
+
+- `kind:environment`: environment behaviour
+- `kind:integrity`: data integrity
+- `kind:permissions`: access or permission problem
+- `kind:process`: working process
+- `kind:scope`: scope or delivery gap
+- `kind:security`: security or secret-handling mistake
+- `kind:tooling`: tool or script behaved differently from what was assumed
+- `kind:verification-gap`: a check was missing
+- `kind:wrong-assumption`: assumption proved wrong
+

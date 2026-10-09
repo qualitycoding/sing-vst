@@ -1,0 +1,108 @@
+{
+  "run_id": "gen-20261004T095012Z-singing-voice-vst-pitch-lyrics",
+  "branch": "gen-20261004T095012Z-singing-voice-vst-pitch-lyrics",
+  "profiles": [
+    "software",
+    "computational"
+  ],
+  "mode_flags": {
+    "software.deploys": false
+  },
+  "phase": "0",
+  "subphase": "0.3.7",
+  "research_round": 0,
+  "exploration_round": 0,
+  "proof_review_round": 0,
+  "premortem_round": 0,
+  "completed": [],
+  "pending": [
+    "0.1",
+    "0.3.7",
+    "1.1",
+    "1.3",
+    "1.4",
+    "2B",
+    "2C",
+    "2E",
+    "3",
+    "3.6",
+    "4",
+    "5"
+  ],
+  "not_applicable": [
+    "2A",
+    "2D",
+    "R2b",
+    "math/*",
+    "manuscript/*",
+    "research/NOVELTY.md",
+    "plan/OPERATIONS.md"
+  ],
+  "artifacts": {
+    ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "README.md": "224e525c0be42832449e0060dc16efd08b87a76a1d3c706cf10be8e593ca847c",
+    "TAXONOMY.md": "e3bbb181cfef0ea4e7e16ac23514b2689f92f8735dcccbd793ca0e296277d3d6",
+    "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
+    "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
+    "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
+    "lessons/L-20261010T000103Z-brace-expansion-in-dash-again.md": "9ebce0dc042f9498547027da55c9ce31c9967c93268de721a2b4d69be81588f3",
+    "lessons/L-20261010T000104Z-background-cmake-build-with-ampersand-died.md": "a7ac4587c8ccc1960ee99e257c1ca731f7b07dd55a7e48ac372106132738828a",
+    "lessons/L-20261010T000105Z-juce-cmake-needs-c-language-enabled.md": "02b28c9bfc4f23e676ce608bed1360e31599248565b3211ddab3230f77f7dbf3",
+    "lessons/L-20261010T000106Z-onnx-reducemean-axes-is-an-attribute-in-opset-17.md": "1e62a53fb5005b55cf94db8c8715a0a0885ade13d39072610a7e76e75af417c2",
+    "lessons/L-20261010T000107Z-most-vexing-parse-in-a-spike.md": "6ab4cb30e6797e3aca031850a557d096bdd5f06f05dd349455cc208216feaeae",
+    "lessons/L-20261010T000108Z-scripted-replace-inserted-comment-into-an-expression.md": "2bf78a49da276fecede7c03d3005c1733c1889f219869c96835620ae7f28eacb",
+    "lessons/L-20261010T000109Z-tests-cited-claim-ids-before-the-register-was-numbered.md": "233d0d3410e4394b956f3049c820b8948569ce792ef853b3dbe3b9aa3facc8bc",
+    "lessons/L-20261010T000110Z-fixture-entry-count-typed-instead-of-computed.md": "0e6debdf0f54d17dd9a84aeff69b1e637f789a4f9a71e0cac42a114b9f4ee9a2",
+    "lessons/L-20261010T000111Z-env-dependent-tests-failed-red-with-keyerror.md": "2651f62f82a799a14a4802ee729a4f0e01c4886e64f9ce44a0e741a9830d240b",
+    "lessons/L-20261010T000112Z-json-backslash-test-needed-two-attempts.md": "de2ebca75a9d72c9f83f9c94b5bf43ef1251e1147d17f33d500b33e03f36e1cc",
+    "lessons/L-20261010T000113Z-intake-assumed-a-local-gpu-for-training.md": "05719d5c04e6c18eb4b8f1a21a1d715e9fdbce7292a69868c88f8e7833d4d054",
+    "lessons/L-20261010T000114Z-quality-thresholds-frozen-before-measurement.md": "048535ddb5966284b59578ea7c8573c03193c64347beb276a3be30345560e4c1",
+    "lessons/L-20261010T000115Z-corroborated-label-from-one-publisher.md": "98423522bcc65f0dc8958daf1ec2bb1fc93fd1240232984efffd0e10bc08dcff",
+    "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
+    "tools/checkpoint.py": "ada58b6097a6a5317c57ef43605306d7de7ae5c235f5b4199cc345db41776c7f",
+    "tools/gen/lessons.py": "4d230758d0b737d23efb3dcfaee353178f5a0eab4dd76131bcfd22e5966bb383",
+    "tools/gen/taxonomy.py": "8e39b670fb359708da3ebc26fc607c9dd558c6db8651745058f5f026fb8bda81"
+  },
+  "tier_substitutions": [],
+  "open_items": [],
+  "knowledge_store": {
+    "location": "lessons: github.com/qualitycoding/Lessons (cloned as qualitycoding/lessons); knowledge: github.com/qualitycoding/knowledge",
+    "commit_read": {
+      "lessons": "ac028c7d4c50969a279d152b77bebeb0a03f5386",
+      "knowledge": "09f34582dfb50f876834a42b85ba19efac5a3129"
+    },
+    "readable": true,
+    "probes": {
+      "qualitycoding/agent-knowledge": "not found (2026-10-04)",
+      "qualitycoding/Lessons": "readable, push via add_repo (2026-10-10)",
+      "qualitycoding/knowledge": "readable, push via add_repo (2026-10-10)"
+    }
+  },
+  "lessons_loaded": [],
+  "lessons_recorded": [
+    "L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset",
+    "L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo",
+    "L-20261010T000102Z-store-probe-used-only-the-default-name",
+    "L-20261010T000103Z-brace-expansion-in-dash-again",
+    "L-20261010T000104Z-background-cmake-build-with-ampersand-died",
+    "L-20261010T000105Z-juce-cmake-needs-c-language-enabled",
+    "L-20261010T000106Z-onnx-reducemean-axes-is-an-attribute-in-opset-17",
+    "L-20261010T000107Z-most-vexing-parse-in-a-spike",
+    "L-20261010T000108Z-scripted-replace-inserted-comment-into-an-expression",
+    "L-20261010T000109Z-tests-cited-claim-ids-before-the-register-was-numbered",
+    "L-20261010T000110Z-fixture-entry-count-typed-instead-of-computed",
+    "L-20261010T000111Z-env-dependent-tests-failed-red-with-keyerror",
+    "L-20261010T000112Z-json-backslash-test-needed-two-attempts",
+    "L-20261010T000113Z-intake-assumed-a-local-gpu-for-training",
+    "L-20261010T000114Z-quality-thresholds-frozen-before-measurement",
+    "L-20261010T000115Z-corroborated-label-from-one-publisher"
+  ],
+  "knowledge_added": [],
+  "environment": {},
+  "notes": [
+    "2026-10-04: run started; branch built locally but never pushed (lesson L-20261010T000100Z).",
+    "2026-10-10: sandbox found reset; branch recreated under the original run id; every source re-opened and every spike re-run in this session; earlier outputs are not cited."
+  ],
+  "updated_at": "2026-10-09T23:49:52Z"
+}
