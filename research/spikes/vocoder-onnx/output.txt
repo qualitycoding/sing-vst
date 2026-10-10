@@ -1,0 +1,7 @@
+sha256 oudep ba7d43142d41f6900c8264b5662ca7125a50feb8760bb8b9615c61a8f5e6902e
+files: ['NOTICE.txt', 'NOTICE.zh-CN.txt', 'STATEMENTS.txt', 'oudep.yaml', 'pc_nsf_hifigan_44.1k_hop512_128bin_2025.02.onnx', 'vocoder.yaml']
+licence line: ['[Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.', '   the license.', '2. Include a copy of the CC BY-NC-SA 4.0 license, or a link referring to it.', '   provided by the OpenVPI Team, that this vocoder is licensed under CC BY-NC-SA 4.0, and']
+vocoder.yaml: name: "pc_nsf_hifigan_44.1k_hop512_128bin_2025.02"; model: "pc_nsf_hifigan_44.1k_hop512_128bin_2025.02.onnx"; sample_rate: 44100; hop_size: 512; win_size: 2048; fft_size: 2048; num_mel_bins: 128; mel_fmin: 40; mel_fmax: 16000; mel_base: e; mel_scale: slaney; pitch_controllable: true; force_on_cpu: false; 
+inputs: [('mel', 'tensor(float)', [1, 'n_frames', 128]), ('f0', 'tensor(float)', [1, 'n_frames'])]
+outputs: [('waveform', 'tensor(float)', [1, 'n_samples'])]
+output shape (1, 44032); samples/frame 512; median 0.619 s for 0.998 s audio, 1 thread, onnxruntime 1.20.1

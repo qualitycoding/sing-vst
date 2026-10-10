@@ -1,0 +1,11 @@
+sha256 onnxruntime-linux-x64-1.31.0.tgz cc5c72baf5ae5c8238a6841f0897227be2d02826b9cf98eaf02fdefaeeb03a57 size 11408003
+sha256 onnxruntime-win-x64-1.31.0.zip 3958d8a44984160692c1b4ffd0de3cb48f8c39f9d34bb31e433db06e30b82195 size 82887349
+licence: MIT License
+cmake
+libonnxruntime.so
+libonnxruntime.so.1
+libonnxruntime.so.1.31.0
+libonnxruntime_providers_shared.so
+pkgconfig
+ORT 1.31.0 out[0]=9
+missing model -> Ort::Exception code 3

@@ -1,0 +1,68 @@
+== pinned heads
+rvc 81eed5e8f68b6bed1789f682fe78cdd324495afc
+ds ba031f6f2f969373b49a926cf8b007e9ae48834f
+ou a06ab28b0ae011bd0b85926f3044572be46a7a63
+juce be29c81492b6151c8ea8d14c840e1311963b3a83
+cmu 74790861f652b15e4ac49015a90074ad62a27690
+svc 730930d337d171479eadf305f96cbed4bb393e77
+voc ee525d42d08d122167310e00c46fe49b22c59d93
+pv ed19c2c16b57a6d94db391bea3ef4a80b769d5bf
+== upstream tips (drift check)
+81eed5e8f68b6bed1789f682fe78cdd324495afc	HEAD
+refs/tags/9.0.2
+refs/tags/9.0.3
+refs/tags/v1.29.0
+refs/tags/v1.29.1
+refs/tags/v1.30.0
+refs/tags/v1.31.0
+refs/tags/v3.16.1
+actions/checkout refs/tags/v7
+actions/setup-python refs/tags/v7
+actions/upload-artifact refs/tags/v7
+actions/download-artifact refs/tags/v8
+== facts
+PASS C-001 RVC licence is MIT
+PASS C-002a so-vits-svc licence is AGPL-3.0
+PASS C-003a RVC v2 synthesiser class exists
+PASS C-003b RVC infer() signature phone, phone_lengths, pitch, nsff0, sid
+PASS C-003c RVC infer draws noise internally (randn_like * 0.66666)
+PASS C-004 RVC tree has no ONNX export module (only infer/rmvpe.py mentions onnx)
+PASS C-005 RVC v2 configs are 32k and 48k only
+PASS C-020a RVC hubert input is 16 kHz
+PASS C-020b RVC v2 uses final encoder layer
+PASS C-020c RVC pipeline frame window 160 at 16 kHz
+PASS C-021a RVC f0 range 50..1100 Hz
+PASS C-021b RVC coarse pitch formula
+PASS C-022a RVC training scripts exist
+PASS C-022b RVC train.py flags -e -sr -f0 -bs [-g] -te -se -pg -pd -l -c -sw -v
+PASS C-022c RVC preprocess argv: inp_root sr n_p exp_dir noparallel per [manifest]
+PASS C-022d RVC weights come from huggingface lj1995/VoiceConversionWebUI into assets/
+PASS C-023a RVC cpu py312 pins torch 2.4.1+cpu and transformers <4.50
+PASS C-023b RVC cu128 file pins torch 2.7.1+cu128 and onnxruntime-gpu <1.20
+PASS C-023c RVC requirement files default to Chinese mirror indexes
+PASS C-024 RVCRealtimeVST is Windows x64 iPlug2 with a Python worker
+PASS C-006a DiffSinger licence is Apache-2.0
+PASS C-006b DiffSinger deploys via scripts/export.py acoustic|variance|nsf-hifigan
+PASS C-009a DiffSinger acoustic ONNX inputs tokens, durations, f0 (+variance embeds)
+PASS C-009b DiffSinger acoustic export opset 17 and output mel
+PASS C-009c NSF-HiFiGAN ONNX inputs mel, f0
+PASS C-009d OpenUtau feeds tokens/durations/f0 to acoustic and mel/f0 to vocoder
+PASS C-009e OpenUtau DsConfig defaults 44100 Hz, hop 512, 128 mel bins
+PASS C-007a openvpi/vocoders code licence is AGPL-3.0
+PASS C-011a VST3 interfaces define kTextTypeID and kPhonemeTypeID note expressions
+PASS C-011b JUCE 9.0.3 VST3 wrapper drops kNoteExpressionTextEvent (returns {})
+PASS C-012a JUCE 9.0.3 modules are AGPLv3 / commercial dual-licensed
+PASS C-012b JUCE 9.0.3 needs cmake >= 3.22 and the C language
+PASS C-016a CMUdict licence is BSD-style (redistribution permitted with notice)
+PASS C-016b CMUdict entry and word counts
+PASS C-015a pluginval licence is GPL-3.0
+PASS C-015b pluginval 1.0.4 CLI options --strictness-level, --skip-gui-tests, --output-dir, --validate exist
+PASS C-015c pluginval 1.0.4 has no --validate-in-process option (CLI validates in-process by default)
+PASS C-029 RVC filelist f0 line: gt_wav|feature768|2a_f0|2b-f0nsf|speaker, plus 2 mute lines per speaker
+PASS C-030 RVC v2 48k config is copied to logs/<exp>/config.json (v1 or 40k use v1/<sr>.json)
+PASS C-031 RVC pretrained base models are trained on VCTK (README)
+PASS C-032 RVC model download uses 'hf download lj1995/VoiceConversionWebUI' for hubert_base, rmvpe.pt, pretrained_v2, mute.zip
+PASS C-033 DiffSinger phoneme list: exporter writes <name>.phonemes.json; OpenUtau loads .json as phone->id map, else .txt line index
+PASS C-034 Continuous-acceleration acoustic models take depth float[1] (variable depth) and steps int64[1]; exporter sets use_continuous_acceleration True
+PASS C-035 Language ids: phoneme 'lang/ph' prefix selects languages.json id; unprefixed phonemes get 0
+== sha256 cmudict.dict 81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22
