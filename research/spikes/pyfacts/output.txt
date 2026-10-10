@@ -1,0 +1,6 @@
+resemblyzer wheel listing: [('resemblyzer/pretrained.pt', 17090379)]
+resemblyzer requires: ['Requires-Dist: librosa >=0.9.1', 'Requires-Dist: numpy >=1.20.0', 'Requires-Dist: webrtcvad >=2.0.10', 'Requires-Dist: torch >=1.0.1', 'Requires-Dist: scipy >=1.2.1', 'Requires-Dist: typing']
+audio-separator wheel inspection: ['License: MIT', 'Requires-Python: >=3.10,!=3.14.1']
+roformer entry: {'dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt': 'dereverb_mel_band_roformer_anvuew.yaml'}
+score entry stems: ['noreverb', 'reverb'] target: noreverb
+download hosts: ['https://github.com/Anjok0109/ai_magic/releases/download/v5', 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest', 'https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models', 'https://github.com/nomadkaraoke/python-audio-separator/releases/download/model-configs']

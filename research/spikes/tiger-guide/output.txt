@@ -1,0 +1,10 @@
+phoneme count 68 | CMUdict ARPAbet missing: []
+load 0.88 s
+rank0 scalars accepted
+rank1 scalars accepted
+frames 188 (incl. 8+8 pad), mel (1, 188, 128), waveform 96256 samples = 188.0 frames
+acoustic 1.51 s, vocoder 0.67 s for 2.00 s audio -> guide RTF 1.10 (2 threads, ORT 1.31.0)
+unclipped peak 0.540; trimmed length 88064 = 172.0 frames; sha256 of inputs reproducible: seedless diffusion? second-run max|diff| mel n/a
+acoustic determinism: max|mel1-mel2| = 1.859e+00
+sha256 TIGER_DS_v102_PACK.zip 925ca2ad44287757d26628608b2744381e75748042d0e6fae356ee8cdae19f4e
+ORT C/C++ API 1.31.0 seed functions: none (grep -i seed include/onnxruntime_c_api.h onnxruntime_cxx_api.h -> 0 lines); Python exposes onnxruntime.set_seed only. TIGER acoustic graph: 2 RandomNormalLike nodes, none with a seed attribute.

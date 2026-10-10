@@ -10,17 +10,19 @@
 namespace singvst {
 
 struct GuideSpec {
-    int sampleRate = 44100;            // must be 44100 (C-009, vocoder)
+    int sampleRate = 44100;            // must be 44100 (C-009, C-036)
     int hopSize = 512;                 // must be 512
-    std::string language = "en";       // prefix tried for 'lang/phone' model phonemes (C-035)
-    int steps = 20;                    // acoustic sampling steps, 1..1000 (C-034)
-    double depth = 1.0;                // shallow-diffusion depth, (0, 1] (C-034)
-    std::map<std::string, std::string> files; // role -> relative path. Required: acoustic, vocoder, phonemes, config. Optional: languages, phoneme_map
+    std::string language = "en";       // prefix tried as '<language>/<phone>' when a phone is not in the model vocabulary (C-035)
+    int steps = 20;                    // diffusion sampling steps, 1..1000 (C-034)
+    double depth = 1.0;                // shallow-diffusion depth in (0, 1], already clamped to the model's max_depth by the packer (C-034)
+    int speedupLegacy = 0;             // unused in format v1 (must be 0); reserved
+    // role -> relative path. Required: acoustic, vocoder, phonemes. Optional: speaker (raw float32 .emb), languages (JSON map).
+    std::map<std::string, std::string> files;
 };
 
 struct ConverterSpec {
     int sampleRate = 48000;            // 48000 or 32000 (RVC v2 configs, C-005)
-    int speakerId = 0;
+    int speakerId = 0;                 // value fed to the 'ds' input, >= 0
     std::map<std::string, std::string> files; // role -> relative path. Required: synth, content
 };
 
@@ -28,6 +30,7 @@ struct VoiceManifest {
     int formatVersion = 1;
     std::string name;
     std::string consent;               // non-empty attestation (A-011)
+    std::string guideLicence;          // non-empty: licence name and URL of the guide voicebank (D-026)
     GuideSpec guide;
     std::optional<ConverterSpec> converter;
     std::map<std::string, std::string> sha256; // relative path -> lower-case hex SHA-256; must cover every referenced file

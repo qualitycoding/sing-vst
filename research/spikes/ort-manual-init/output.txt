@@ -1,0 +1,6 @@
+== ldd (must not list onnxruntime)
+0
+version string 1.31.0; GetApi(31) ok
+loaded from directory /home/claude/work/ort131/lib
+out[0]=9
+bad path -> null (expected)

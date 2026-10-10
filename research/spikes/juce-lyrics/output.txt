@@ -1,0 +1,6 @@
+lyric t=0.000 'Hel-'
+note  t=0.000 60
+lyric t=0.500 'lo'
+note  t=0.500 62
+lyric t=1.000 'world'
+note  t=1.000 64

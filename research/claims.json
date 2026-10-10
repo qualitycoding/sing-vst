@@ -1,0 +1,1247 @@
+[
+ {
+  "id": "C-001",
+  "claim": "RVC-Project/Retrieval-based-Voice-Conversion-WebUI is MIT-licensed; pinned commit 81eed5e8f68b6bed1789f682fe78cdd324495afc (latest release 2.3.260718, 2026-07-21).",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-001",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/blob/81eed5e8f68b6bed1789f682fe78cdd324495afc/LICENSE",
+    "doi": "",
+    "title": "LICENSE",
+    "version": "",
+    "locator": "file",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "D-020",
+   "D-026"
+  ]
+ },
+ {
+  "id": "C-002",
+  "claim": "svc-develop-team/so-vits-svc is AGPL-3.0 and archived (last push 2023-11-11), so it is not the converter.",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-002a",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "https://api.github.com/repos/svc-develop-team/so-vits-svc",
+    "doi": "",
+    "title": "GitHub API repository metadata",
+    "version": "",
+    "locator": "archived, pushed_at",
+    "accessed": "2026-10-04",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "D-020"
+  ]
+ },
+ {
+  "id": "C-003",
+  "claim": "RVC v2 SynthesizerTrnMs768NSFsid.infer(phone, phone_lengths, pitch, nsff0, sid, ...) samples its prior noise internally (torch.randn_like(m_p) * 0.66666), so a deterministic ONNX export must take that noise as an input.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-003a/b/c",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/blob/81eed5e8f68b6bed1789f682fe78cdd324495afc/infer/module/models.py",
+    "doi": "",
+    "title": "infer/module/models.py",
+    "version": "",
+    "locator": "lines 646-676",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "T-039",
+   "T-P19"
+  ]
+ },
+ {
+  "id": "C-004",
+  "claim": "The pinned RVC tree has no ONNX export module (only infer/rmvpe.py mentions onnx); sing-vst provides its own exporter.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-004",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "S-013"
+  ]
+ },
+ {
+  "id": "C-005",
+  "claim": "RVC v2 ships training configs for 32 kHz and 48 kHz only (configs/v2/32k.json, 48k.json).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-005",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-008",
+   "D-016"
+  ]
+ },
+ {
+  "id": "C-006",
+  "claim": "openvpi/DiffSinger (Apache-2.0, pinned ba031f6f2f969373b49a926cf8b007e9ae48834f) deploys models as ONNX via scripts/export.py acoustic|variance|nsf-hifigan.",
+  "kind": "software",
+  "load_bearing": false,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-006a/b",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012"
+  ]
+ },
+ {
+  "id": "C-007",
+  "claim": "openvpi community NSF-HiFiGAN / PC-NSF-HiFiGAN vocoder weights are CC BY-NC-SA 4.0 (code AGPL-3.0); the pc_nsf_hifigan_44.1k_hop512_128bin_2025.02 ONNX takes mel[1,T,128] and f0[1,T] and returns waveform[1,T*512].",
+  "kind": "policy",
+  "load_bearing": false,
+  "sources": [
+   {
+    "url": "research/spikes/vocoder-onnx/output.txt",
+    "doi": "",
+    "title": "spike vocoder-onnx",
+    "version": "",
+    "locator": "licence line, inputs, outputs",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-007a",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-026"
+  ]
+ },
+ {
+  "id": "C-009",
+  "claim": "DiffSinger acoustic ONNX inputs are tokens[1,n] int64, durations[1,n] int64, f0[1,T] float plus optional embeds (gender, velocity, spk_embed, languages, energy, breathiness, voicing, tension) and sampling controls; output mel[1,T,bins]. The vocoder takes mel and f0. OpenUtau defaults: 44100 Hz, hop 512, 128 mel bins.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-009a..e",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "acoustic inputs",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "T-037",
+   "T-038"
+  ]
+ },
+ {
+  "id": "C-010",
+  "claim": "No OSI- or CC-BY-licensed English DiffSinger voicebank was found; the English voicebank found (TIGER v102, C-036) is free for personal non-commercial use only.",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://github.com/spicytigermeat/tiger_diffsinger",
+    "doi": "",
+    "title": "TIGER repository README and LICENSE.md",
+    "version": "",
+    "locator": "License section",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "https://www.openutau.com/Voicebank-development/",
+    "doi": "",
+    "title": "OpenUtau voicebank development",
+    "version": "",
+    "locator": "Machine Learning voicebank development",
+    "accessed": "2026-10-10",
+    "tier": 3
+   }
+  ],
+  "confidence": "single-source",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "G-005",
+   "D-026",
+   "A-013"
+  ]
+ },
+ {
+  "id": "C-011",
+  "claim": "VST3 defines NoteExpressionTextEvent (kTextTypeID, kPhonemeTypeID) but JUCE 9.0.3's VST3 wrapper turns kNoteExpressionTextEvent into an empty MidiMessage, so host lyric text never reaches a JUCE plugin.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-011a/b",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-010",
+   "A-005"
+  ]
+ },
+ {
+  "id": "C-012",
+  "claim": "JUCE 9.0.3 modules are dual-licensed AGPLv3 / commercial JUCE 9 licence; its CMake needs cmake >= 3.22 and the C language enabled.",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-012a/b",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-001",
+   "D-026"
+  ]
+ },
+ {
+  "id": "C-013",
+  "claim": "juce::MidiFile (JUCE 9.0.3) reads lyric meta events (type 0x05) with timestamps convertible to seconds.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/juce-lyrics/output.txt",
+    "doi": "",
+    "title": "spike juce-lyrics",
+    "version": "",
+    "locator": "output.txt",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-010",
+   "T-P18"
+  ]
+ },
+ {
+  "id": "C-014",
+  "claim": "ONNX Runtime 1.31.0 (MIT) publishes onnxruntime-linux-x64-1.31.0.tgz (sha256 cc5c72ba...) and onnxruntime-win-x64-1.31.0.zip (sha256 3958d8a4...) on GitHub Releases; its C++ API works with g++ 13 / C++20.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/ort/output.txt",
+    "doi": "",
+    "title": "spike ort",
+    "version": "",
+    "locator": "sha256 lines, ORT 1.31.0 out[0]=9",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-002",
+   "plan/ENVIRONMENT.md"
+  ]
+ },
+ {
+  "id": "C-015",
+  "claim": "pluginval 1.0.4 (GPL-3.0) has CLI options --strictness-level, --skip-gui-tests, --output-dir, --validate and no --validate-in-process; level 5+ runs Steinberg's VST3 validator.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-015a/b/c",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "https://github.com/Tracktion/pluginval/releases/tag/v1.0.4",
+    "doi": "",
+    "title": "release notes",
+    "version": "",
+    "locator": "1.0.0 changes",
+    "accessed": "2026-10-04",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "T-053",
+   "D-018"
+  ]
+ },
+ {
+  "id": "C-016",
+  "claim": "CMUdict at 74790861f652b15e4ac49015a90074ad62a27690 (BSD-style licence) has 135,166 entries / 126,052 words in ARPAbet with stress digits; cmudict.dict sha256 81917843...; out-of-vocabulary words exist.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-016a/b; sha256 line",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-005",
+   "T-007"
+  ]
+ },
+ {
+  "id": "C-017",
+  "claim": "Google Colab free tier: notebooks run at most 12 hours depending on availability, idle runtimes time out, limits are unpublished and fluctuate, GPU types vary; notebooks load from GitHub; Drive I/O should use archives, not many small files.",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://research.google.com/colaboratory/faq.html",
+    "doi": "",
+    "title": "Colab FAQ",
+    "version": "",
+    "locator": "Resource Limits; drive.mount",
+    "accessed": "2026-10-04",
+    "tier": 1
+   },
+   {
+    "url": "https://www.hivenet.com/post/google-colaboratory-gpu-complete-guide-to-free-cloud-gpu-access-and-limitations",
+    "doi": "",
+    "title": "Hivenet guide",
+    "version": "",
+    "locator": "Free tier",
+    "accessed": "2026-10-04",
+    "tier": 3
+   }
+  ],
+  "confidence": "corroborated",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "A-009",
+   "D-016"
+  ]
+ },
+ {
+  "id": "C-018",
+  "claim": "Colab disallows 'creating deepfakes' on all managed runtimes (added May 2022) and, on the free tier, bypassing the notebook UI to drive a web UI; runtimes may be terminated.",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://research.google.com/colaboratory/faq.html",
+    "doi": "",
+    "title": "Colab FAQ",
+    "version": "",
+    "locator": "Which activities are restricted in Colab?",
+    "accessed": "2026-10-04",
+    "tier": 1
+   },
+   {
+    "url": "https://www.bleepingcomputer.com/news/google/google-quietly-bans-deepfake-training-projects-on-colab",
+    "doi": "",
+    "title": "BleepingComputer",
+    "version": "",
+    "locator": "article 2022-05-30",
+    "accessed": "2026-10-10",
+    "tier": 3
+   }
+  ],
+  "confidence": "corroborated",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "D-016",
+   "G-004",
+   "T-P17"
+  ]
+ },
+ {
+  "id": "C-019",
+  "claim": "Kaggle Notebooks: 12-hour CPU/GPU sessions, a floating weekly GPU quota shown in account settings (commonly about 30 h), background ('Save Version') sessions not subject to the interactive idle limit, GPU P100 or T4 x2.",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://www3.nd.edu/~dchiang/teaching/nlp/2023/kaggle.html",
+    "doi": "",
+    "title": "Notre Dame course notes",
+    "version": "",
+    "locator": "batch sessions",
+    "accessed": "2026-10-04",
+    "tier": 3
+   },
+   {
+    "url": "https://gpuperhour.com/blog/free-cloud-gpus-and-credits",
+    "doi": "",
+    "title": "Free Cloud GPUs in 2026",
+    "version": "",
+    "locator": "Kaggle",
+    "accessed": "2026-10-04",
+    "tier": 3
+   }
+  ],
+  "confidence": "single-source",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "A-009",
+   "D-016",
+   "R-008"
+  ]
+ },
+ {
+  "id": "C-020",
+  "claim": "RVC v2 content features: hubert_base final (12th) encoder layer on 16 kHz input, 320-sample hop (50 fps), repeated x2 to the 100 fps f0 frame rate (window 160 at 16 kHz).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-020a/b/c",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "T-039"
+  ]
+ },
+ {
+  "id": "C-021",
+  "claim": "RVC coarse pitch = rint(clip((1127 ln(1+f/700) - mel_min) * 254 / (mel_max - mel_min) + 1, 1, 255)) with f0_min 50 Hz, f0_max 1100 Hz (numpy rint: half to even).",
+  "kind": "numerical",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-021a/b",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/oracle/oracle.py",
+    "doi": "",
+    "title": "oracle rvc_coarse",
+    "version": "",
+    "locator": "function rvc_coarse",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "T-021",
+   "D-012"
+  ]
+ },
+ {
+  "id": "C-022",
+  "claim": "RVC training runs train/preprocess.py (inp_root sr n_p exp_dir noparallel per [manifest]), train/dataset/extract_f0.py, train/dataset/extract_hubert_feature.py, train/train.py (-e -sr -f0 -bs [-g] -te -se -pg -pd -l -c -sw -v) and train/train_index.py.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-022a/b/c",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-016",
+   "S-014"
+  ]
+ },
+ {
+  "id": "C-023",
+  "claim": "RVC's py3.12 requirement files pin torch 2.4.1+cpu / 2.7.1+cu128, numpy <2, transformers <4.50 and onnxruntime-gpu <1.20, and default to Chinese mirror indexes whose official equivalents are pypi.org and download.pytorch.org.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-023a/b/c",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-019"
+  ]
+ },
+ {
+  "id": "C-024",
+  "claim": "The RVC repository contains RVCRealtimeVST, a Windows-only iPlug2 VST2/VST3 that runs RVC in a separate Python worker (prior art, not reused).",
+  "kind": "software",
+  "load_bearing": false,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-024",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-020"
+  ]
+ },
+ {
+  "id": "C-026",
+  "claim": "Some Windows installations carry C:\\Windows\\System32\\onnxruntime.dll (placed by Windows), and programs that load onnxruntime.dll by name can bind to it instead of their own copy; ONNX Runtime collaborators advise loading by explicit path and resolving OrtGetApiBase.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://github.com/microsoft/onnxruntime/issues/11799",
+    "doi": "",
+    "title": "onnxruntime issue 11799",
+    "version": "",
+    "locator": "maintainer: 'By Windows team'",
+    "accessed": "2026-10-10",
+    "tier": 2
+   },
+   {
+    "url": "https://github.com/microsoft/onnxruntime/discussions/23239",
+    "doi": "",
+    "title": "onnxruntime discussion 23239",
+    "version": "",
+    "locator": "fdwr 2025-02-27",
+    "accessed": "2026-10-10",
+    "tier": 2
+   },
+   {
+    "url": "https://github.com/k2-fsa/sherpa-onnx/issues/3059",
+    "doi": "",
+    "title": "sherpa-onnx issue 3059",
+    "version": "",
+    "locator": "API version [23] not available, 1.17.1 loaded",
+    "accessed": "2026-10-10",
+    "tier": 2
+   },
+   {
+    "url": "https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order",
+    "doi": "",
+    "title": "Dynamic-link library search order",
+    "version": "",
+    "locator": "standard search order",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "corroborated",
+  "evidence_class": "n/a",
+  "independent_publishers": 3,
+  "contradicted_by": [],
+  "informs": [
+   "D-024",
+   "T-041"
+  ]
+ },
+ {
+  "id": "C-027",
+  "claim": "pyworld 0.3.5 builds on Python 3.12 with numpy 1.26.4 and its harvest+stonemask track a clean 220 Hz sine on interior frames.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/pyworld/output.txt",
+    "doi": "",
+    "title": "spike pyworld",
+    "version": "",
+    "locator": "output.txt",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "T-P10",
+   "D-017"
+  ]
+ },
+ {
+  "id": "C-028",
+  "claim": "Resemblyzer 0.1.4 bundles its speaker-encoder weights (resemblyzer/pretrained.pt, 17,090,379 bytes) in the wheel and depends on torch, librosa and webrtcvad.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/pyfacts/output.txt",
+    "doi": "",
+    "title": "spike pyfacts",
+    "version": "",
+    "locator": "resemblyzer wheel listing",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-017"
+  ]
+ },
+ {
+  "id": "C-029",
+  "claim": "RVC filelist f0 line format is gt_wav|feature768|2a_f0|2b-f0nsf|speaker, plus 2 mute lines per speaker.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-029",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-016"
+  ]
+ },
+ {
+  "id": "C-030",
+  "claim": "For RVC v2 at 48k the config copied to logs/<exp>/config.json is configs/v2/48k.json.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-030",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-016"
+  ]
+ },
+ {
+  "id": "C-031",
+  "claim": "RVC's pretrained base models are trained on VCTK (README).",
+  "kind": "policy",
+  "load_bearing": false,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-031",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-026"
+  ]
+ },
+ {
+  "id": "C-032",
+  "claim": "RVC model assets come from Hugging Face lj1995/VoiceConversionWebUI (hubert_base, rmvpe.pt, pretrained_v2, mute.zip).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-032",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-016",
+   "R-002"
+  ]
+ },
+ {
+  "id": "C-033",
+  "claim": "DiffSinger phoneme vocabularies: the exporter writes <name>.phonemes.json (phone -> id); OpenUtau loads .json as a map, otherwise .txt where the token id is the line index.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-033",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "D-008"
+  ]
+ },
+ {
+  "id": "C-034",
+  "claim": "Continuous-acceleration acoustic models take steps int64[1] and, with variable depth, depth float[1]; legacy models take speedup int64 and, with shallow diffusion, depth int64 (OpenUtau: depth64 = round(min(depth, max_depth/1000) * 1000), speedup = max(1, depth64 / steps), depth64 = depth64 / speedup * speedup; without shallow diffusion speedup = largest divisor of 1000 <= 1000/steps).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-034",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "https://github.com/openutau/OpenUtau/blob/a06ab28b0ae011bd0b85926f3044572be46a7a63/OpenUtau.Core/DiffSinger/DiffSingerRenderer.cs",
+    "doi": "",
+    "title": "DiffSingerRenderer.cs",
+    "version": "",
+    "locator": "lines 288-313",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "rank0/rank1 scalars accepted; render",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "T-037"
+  ]
+ },
+ {
+  "id": "C-035",
+  "claim": "Language ids: a phoneme 'lang/ph' prefix selects the languages.json id; unprefixed phonemes get id 0.",
+  "kind": "software",
+  "load_bearing": false,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "PASS C-035",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012"
+  ]
+ },
+ {
+  "id": "C-036",
+  "claim": "TIGER DiffSinger v102 (GitHub release v102, TIGER_DS_v102_PACK.zip, sha256 925ca2ad...) is an English DiffSinger voicebank whose acoustic model takes tokens, durations, f0, gender, velocity, spk_embed[1,T,256], depth int64 and speedup int64; it bundles its own vocoder (tgm_hifigan.onnx, 44100 Hz, hop 512, 128 mel bins), 7 speaker embeddings (raw float32, 256 values), and a 68-entry phonemes.txt that contains all 39 CMUdict ARPAbet phones.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "phoneme count; inputs; vocoder.yaml",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "G-005",
+   "D-012",
+   "D-008"
+  ]
+ },
+ {
+  "id": "C-037",
+  "claim": "TIGER licence: the repository LICENSE.md is CC BY-NC-ND 4.0 plus a Commons Clause (no commercial use, no redistribution, no derivatives); the pack's extra/LICENSE.md is an MIT-style text that allows modification but forbids commercial use and harmful uses; the character TOS allows using the voice to represent another character with credit. Personal non-commercial use is free under both.",
+  "kind": "policy",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://github.com/spicytigermeat/tiger_diffsinger/blob/988ec2c2dd23b7b28c448e1a6db710bfa20c5583/LICENSE.md",
+    "doi": "",
+    "title": "TIGER LICENSE.md",
+    "version": "",
+    "locator": "file",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "https://github.com/spicytigermeat/tiger_diffsinger/blob/988ec2c2dd23b7b28c448e1a6db710bfa20c5583/character_usage_tos.md",
+    "doi": "",
+    "title": "character_usage_tos.md",
+    "version": "",
+    "locator": "allowed list",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "pack extra/LICENSE.md (read 2026-10-10)",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [
+   "The two licence texts disagree on modification; the stricter (ND) one governs this plan."
+  ],
+  "informs": [
+   "D-026",
+   "A-013",
+   "G-005"
+  ]
+ },
+ {
+  "id": "C-038",
+  "claim": "OpenUtau pads every DiffSinger phrase with 8 'SP' frames at the head and tail, feeds gender = 0 and velocity = 1 when no curve is set, and builds spk_embed per frame from the selected speaker's embedding.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://github.com/openutau/OpenUtau/blob/a06ab28b0ae011bd0b85926f3044572be46a7a63/OpenUtau.Core/DiffSinger/DiffSingerUtils.cs",
+    "doi": "",
+    "title": "DiffSingerUtils.cs",
+    "version": "",
+    "locator": "lines 15-83",
+    "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "frames 188 (incl. 8+8 pad), waveform 188.0 frames",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 2,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "T-037"
+  ]
+ },
+ {
+  "id": "C-039",
+  "claim": "Measured: TIGER acoustic (depth 400, speedup 20) + tgm_hifigan render 2.00 s of audio in 2.18 s on the 2-core planning sandbox with ORT 1.31.0 (guide RTF 1.10); load time 0.88 s; unclipped peak 0.540.",
+  "kind": "numerical",
+  "load_bearing": false,
+  "sources": [
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "acoustic/vocoder timing line",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-017",
+   "A-012"
+  ]
+ },
+ {
+  "id": "C-040",
+  "claim": "TIGER's acoustic graph contains 2 RandomNormalLike nodes without a seed attribute; two identical runs differ (max |mel1-mel2| = 1.86); the ONNX Runtime 1.31.0 C/C++ API exposes no seed function (only Python has onnxruntime.set_seed).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "acoustic determinism line; ORT seed grep line",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "D-017",
+   "R-005"
+  ]
+ },
+ {
+  "id": "C-041",
+  "claim": "TIGER's acoustic model accepts the depth and speedup scalars at rank 0 and at rank 1.",
+  "kind": "software",
+  "load_bearing": false,
+  "sources": [
+   {
+    "url": "research/spikes/tiger-guide/output.txt",
+    "doi": "",
+    "title": "spike tiger-guide",
+    "version": "",
+    "locator": "rank0/rank1 lines",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012"
+  ]
+ },
+ {
+  "id": "C-042",
+  "claim": "With ORT_API_MANUAL_INIT, a program that does not link onnxruntime can load libonnxruntime.so.1.31.0 by explicit path, resolve OrtGetApiBase, get API version 31, call Ort::InitApi and run a model; the Windows equivalent (LoadLibraryExW + GetProcAddress) is not yet run.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/ort-manual-init/output.txt",
+    "doi": "",
+    "title": "spike ort-manual-init",
+    "version": "",
+    "locator": "output.txt",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-024",
+   "T-041"
+  ]
+ },
+ {
+  "id": "C-043",
+  "claim": "audio-separator 0.47.0 (MIT, Python >= 3.10) lists the de-reverb model dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt ('MelBand Roformer | De-Reverb by anvuew', stems noreverb/reverb, target noreverb) and downloads model files from GitHub releases; the model's own licence is not stated.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/pyfacts/output.txt",
+    "doi": "",
+    "title": "spike pyfacts",
+    "version": "",
+    "locator": "audio-separator wheel inspection",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-025",
+   "R-009"
+  ]
+ },
+ {
+  "id": "C-044",
+  "claim": "From the planning sandbox on 2026-10-10: pypi.org and GitHub git/releases are reachable; huggingface.co, download.pytorch.org, kaggle.com and colab.research.google.com are not; the GitHub API works through gh only for attached repositories; Actions log hosts are not reachable.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "plan/ENVIRONMENT.md",
+    "doi": "",
+    "title": "host probe table",
+    "version": "",
+    "locator": "Hosts",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-018",
+   "PK-13"
+  ]
+ },
+ {
+  "id": "C-045",
+  "claim": "Current major tags: actions/checkout v7, actions/setup-python v7, actions/upload-artifact v7, actions/download-artifact v8; Catch2 latest v3.16.1.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/upstream-facts/output.txt",
+    "doi": "",
+    "title": "spike upstream-facts",
+    "version": "",
+    "locator": "upstream tips (drift check)",
+    "accessed": "2026-10-10",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-018",
+   "plan/ENVIRONMENT.md"
+  ]
+ }
+]
