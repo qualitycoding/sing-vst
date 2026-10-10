@@ -161,6 +161,27 @@ lesson("20261010T000115Z", "corroborated-label-from-one-publisher",
        "research/claims.json of 2026-10-04.",
        recurrence="L-20261009T123005Z-corroborated-label-without-independent-sources")
 
+lesson("20261010T001500Z", "ci-tool-flags-and-versions-from-memory",
+       "A recalled pluginval flag (--validate-in-process) and recalled action versions were written into the CI draft without reading the pinned tool source", "Medium",
+       ["tech:github-actions", "tech:pluginval", "kind:wrong-assumption"],
+       "A CI workflow or script names a third-party CLI flag, release asset name or action major version.",
+       "The 2026-10-04 CI draft used `pluginval --validate-in-process` (no such option in 1.0.4) and actions/checkout@v4 etc. while v7/v8 were current.",
+       "Read the pluginval 1.0.4 CLI source and the actions' tags in the upstream-facts spike (C-015b/c) and pinned what the source shows.",
+       "Take every CLI flag, release asset name and action version for CI from the pinned tool's source or tag listing in a committed spike, never from memory.",
+       "`research/spikes/upstream-facts/output.txt` has a PASS line for each CLI option and action version used in .github/workflows/*.yml.",
+       "upstream-facts spike, checks C-015b and C-015c (first run failed, 2026-10-10).",
+       recurrence="L-20261004T161503Z-audacity-commands-coded-from-memory")
+lesson("20261010T094000Z", "continuation-left-work-uncommitted-and-checkpoint-stale",
+       "A continuation attempt committed research round 2 but left the revised interfaces and the oracle untracked, never wrote a lesson it cited, and left state.json at 0.3.7", "Medium",
+       ["applies:all", "tech:git", "kind:process"],
+       "A long planning turn produces artefacts across several sub-phases and may end (or be cut off) before its last commit.",
+       "On 2026-10-10 the next turn found core/ and research/spikes/oracle/ untracked, a README citing lesson L-20261010T001500Z that did not exist, and state.json still at subphase 0.3.7 although research round 2 had been committed.",
+       "Verified the checkpoint hashes, wrote the missing lesson, reviewed and committed the untracked files with the next sub-phase, and moved state.json forward in that commit.",
+       "Commit and push every artefact the moment a sub-phase produces it, write a lesson file before any text cites its ID, and advance state.json in the same commit as the work it records.",
+       "`git status --short` is empty and `grep -rhoE 'L-2026[0-9T]+Z-[a-z0-9-]+' research plan | sort -u` names only files that exist, at the end of every turn.",
+       "git status of 2026-10-10 09:30 (`?? core/`, `?? research/spikes/oracle/`); .checkpoints/state.json subphase 0.3.7.",
+       recurrence="L-20261009T234122Z-checkpoint-state-stale-after-implementation-and-main-not-default")
+
 def render(x):
     rec = x["recurrence"] or "null"
     return f"""---
