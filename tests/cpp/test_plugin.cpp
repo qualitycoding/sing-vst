@@ -3,6 +3,7 @@
 // They load the ONNX Runtime library and cmudict.dict from beside this test executable, as the plugin does beside its module.
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
+#include <algorithm>
 #include <cmath>
 #include <functional>
 #include "PluginProcessor.h"
