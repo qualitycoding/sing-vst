@@ -351,3 +351,23 @@ def import_midi(b: bytes):
         later = [x for x in tempos if x[0] > first[0] and x[2] != first[2]]
         if later: warns.append("tempo changes after beat %g are ignored" % (min(x[0] for x in later) / div))
     return out, txt, bpm, warns
+
+# ---------------- D-011 resampler (reference; numpy) ----------------
+def resample(x, fr, to):
+    import numpy as np
+    x = np.asarray(x, dtype=np.float64); n = len(x)
+    if fr == to: return x.copy()
+    m = int(math.floor(n * to / fr + 0.5))
+    fc = 0.95 * min(fr, to) / 2.0                 # cutoff in Hz
+    width = 32 * fr / (2 * fc)                    # half-width in input samples (32 zero crossings of the fc sinc)
+    beta = 8.6
+    out = np.zeros(m)
+    i0 = np.arange(n)
+    for k in range(m):
+        t = k * fr / to
+        lo = max(0, int(math.ceil(t - width))); hi = min(n - 1, int(math.floor(t + width)))
+        if hi < lo: continue
+        d = t - i0[lo:hi + 1]
+        h = (2 * fc / fr) * np.sinc(2 * fc / fr * d) * np.i0(beta * np.sqrt(np.clip(1 - (d / width) ** 2, 0, None))) / np.i0(beta)
+        out[k] = np.dot(x[lo:hi + 1], h)
+    return out
