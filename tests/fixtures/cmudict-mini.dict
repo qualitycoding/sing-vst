@@ -1,0 +1,53 @@
+;;; mini CMUdict fixture (lines copied from third_party/cmudict/cmudict.dict @ 74790861)
+a AH0
+above AH0 B AH1 V
+and AH0 N D
+birthday B ER1 TH D EY2
+can K AE1 N
+don't D OW1 N T
+every EH1 V ER0 IY0
+extra EH1 K S T R AH0
+find F AY1 N D
+fire F AY1 ER0
+happy HH AE1 P IY0
+hello HH AH0 L OW1
+hello(2) HH EH0 L OW1
+hill HH IH1 L
+hmm HH M
+hold HH OW1 L D
+i AY1
+is IH1 Z
+it IH1 T
+la L AA1
+let L EH1 T
+light L AY1 T
+love L AH1 V
+meet M IY1 T
+morning M AO1 R N IH0 NG
+music M Y UW1 Z IH0 K
+na N AA1
+note N OW1 T
+on AA1 N
+quiet K W AY1 AH0 T
+rhythm R IH1 DH AH0 M
+ring R IH1 NG
+river R IH1 V ER0
+rivers R IH1 V ER0 Z
+run R AH1 N
+sea S IY1
+sing S IH1 NG
+singing S IH1 NG IH0 NG
+song S AO1 NG
+stars S T AA1 R Z
+strength S T R EH1 NG K TH
+the DH AH0
+to T UW1
+tomato T AH0 M EY1 T OW2
+tomato(2) T AH0 M AA1 T OW2
+town T AW1 N
+voice V OY1 S
+world W ER1 L D
+you Y UW1
+
+world W AO1 R L D # duplicate word line: the first entry (W ER1 L D) wins
+zzz Z IY1 # comment after an entry

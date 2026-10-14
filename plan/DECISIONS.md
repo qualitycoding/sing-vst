@@ -72,10 +72,10 @@ next to the ONNX Runtime library (D-024); the CLI's `--dict` overrides. Vowels: 
 `ceil(c/2)`); everything after the cut for `j = n-1` (including further vowels) is the last syllable. Tests: T-007…T-012.
 
 ### D-006 Monophony and alignment
-`toMonophonic`: (1) discard notes with `endBeat - startBeat <= 1e-9`; (2) stable-sort by `startBeat` ascending, then
-`midiNote` descending; (3) walk in order: a note whose start is within `1e-9` beats of the previous kept note's start is
-dropped (the highest pitch, sorted first, is kept); if the previous kept note ends after this note's start, its end becomes
-this note's start; keep the note; (4) discard notes of length `<= 1e-9`.
+`toMonophonic`: (1) discard notes with `endBeat - startBeat <= 1e-9`; (2) stable-sort by `startBeat`; (3) group
+consecutive notes whose start is within `1e-9` beats of the group's first start — they are simultaneous — and keep the
+highest pitch of each group (ties: the first in input order), unchanged; (4) walk the kept notes in order: if the previous
+note ends after this note's start, its end becomes this note's start; (5) discard notes of length `<= 1e-9`.
 
 `align(notes, tokens, dict)` builds **units** from tokens, in order:
 - A `Text` group = a `Text` token plus the following `Text` tokens while the previous one has `continuesWord`. Its word is

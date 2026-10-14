@@ -37,11 +37,13 @@ def rand_lyrics():
 for case in range(N):
     raw = rand_notes(); mono = o.to_monophonic(raw)
     pos = [x for x in raw if x.end - x.start > o.EPS_BEAT]
-    starts = sorted({round(x.start, 9) for x in pos})
+    starts = []
+    for x in sorted(pos, key=lambda y: y.start):
+        if not starts or x.start - starts[-1] > o.EPS_BEAT: starts.append(x.start)
     check("mono: sorted, non-overlapping, positive", all(b.start >= a.end - 1e-12 for a, b in zip(mono, mono[1:])) and all(x.end > x.start for x in mono), raw)
     check("mono: one note per distinct start", len(mono) == len(starts), raw)
     for x in mono:
-        same = [y for y in pos if abs(y.start - x.start) <= o.EPS_BEAT]
+        same = [y for y in pos if abs(y.start - x.start) <= o.EPS_BEAT and y.end > y.start]
         check("mono: highest pitch kept on equal start", x.midi == max(y.midi for y in same), raw)
     toks = o.parse_lyrics(rand_lyrics())
     out, warn = o.align(mono, toks, DICT)

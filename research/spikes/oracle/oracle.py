@@ -94,10 +94,14 @@ class Note:
     start: float; end: float; midi: int
 EPS_BEAT = 1e-9
 def to_monophonic(notes):
-    ns = sorted([x for x in notes if x.end - x.start > EPS_BEAT], key=lambda x: (x.start, -x.midi))   # D-006 step 1-2
-    out = []
+    ns = sorted([x for x in notes if x.end - x.start > EPS_BEAT], key=lambda x: x.start)   # D-006 steps 1-2 (stable)
+    groups = []                                   # step 3: starts within EPS_BEAT of a group's first start are simultaneous
     for x in ns:
-        if out and abs(out[-1].start - x.start) <= EPS_BEAT: continue    # equal start: highest pitch (sorted first) kept
+        if groups and x.start - groups[-1][0].start <= EPS_BEAT: groups[-1].append(x)
+        else: groups.append([x])
+    out = []
+    for g in groups:
+        x = max(g, key=lambda y: y.midi)          # highest pitch; ties: first in input order (max keeps the first maximum)
         if out and out[-1].end > x.start: out[-1] = Note(out[-1].start, x.start, out[-1].midi)
         out.append(Note(x.start, x.end, x.midi))
     return [x for x in out if x.end - x.start > EPS_BEAT]
@@ -239,3 +243,23 @@ def phrase_hash(notes, toks, p):
     h = 14695981039346656037
     for byte in s.encode("utf-8"): h ^= byte; h = (h * 1099511628211) % 2**64
     return h, s
+
+# ---------------- D-012 converter prior noise ----------------
+M64 = (1 << 64) - 1
+def splitmix64(state):
+    state = (state + 0x9E3779B97F4A7C15) & M64
+    z = state
+    z = ((z ^ (z >> 30)) * 0xBF58476D1CE4E5B9) & M64
+    z = ((z ^ (z >> 27)) * 0x94D049BB133111EB) & M64
+    return state, z ^ (z >> 31)
+def standard_normal(seed, n):
+    """D-012: SplitMix64 stream from `seed`; per pair u1 = ((x1 >> 11) + 1) * 2^-53 in (0, 1], u2 = (x2 >> 11) * 2^-53 in [0, 1);
+    z0 = sqrt(-2 ln u1) cos(2 pi u2), z1 = sqrt(-2 ln u1) sin(2 pi u2); values in order z0, z1, ...; computed in double."""
+    s, out = seed & M64, []
+    while len(out) < n:
+        s, x1 = splitmix64(s); s, x2 = splitmix64(s)
+        u1 = ((x1 >> 11) + 1) * 2.0 ** -53; u2 = (x2 >> 11) * 2.0 ** -53
+        r = math.sqrt(-2.0 * math.log(u1))
+        out.append(r * math.cos(2 * math.pi * u2))
+        if len(out) < n: out.append(r * math.sin(2 * math.pi * u2))
+    return out

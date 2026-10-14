@@ -15,8 +15,9 @@ struct Note {
     bool operator== (const Note&) const = default;
 };
 
-/** D-006: drops notes of length <= 1e-9 beats, sorts by (start, pitch descending), keeps only the highest pitch among notes
-    whose starts are within 1e-9 beats, truncates an earlier note at the next kept start, and drops notes of length <= 1e-9. */
+/** D-006: drops notes of length <= 1e-9 beats, stable-sorts by start, keeps the highest pitch of each group of notes whose
+    starts lie within 1e-9 beats of the group's first start (ties: first in input order), truncates a note at the next kept
+    note's start, and drops notes of length <= 1e-9. */
 std::vector<Note> toMonophonic (std::vector<Note> notes);
 
 struct NoteAssignment {
