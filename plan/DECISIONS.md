@@ -12,8 +12,11 @@ Numbers that describe quality or speed are **unmeasured defaults** until a measu
 JUCE 9.0.3 (C-012), CMake ≥ 3.22, `project(... LANGUAGES C CXX)`, C++20, brace initialisation (PK-37). Formats: VST3 and
 Standalone. Platforms: Windows x64 (MSVC, `windows-2022` runner) and Linux x64 (GCC 13, `ubuntu-24.04`) (A-008). macOS/AU are
 out of scope. `COPY_PLUGIN_AFTER_BUILD FALSE`, `JUCE_VST3_CAN_REPLACE_VST2=0`, `JUCE_WEB_BROWSER=0`, `JUCE_USE_CURL=0` (PK-47).
-`plugin/PluginProcessor.h` carries `static_assert (JUCE_MAJOR_VERSION == 9)`. The core library (`singvst_core`) uses only
-`juce_core` (JSON, SHA-256 via `juce_cryptography`, files, MIDI via `juce_audio_basics`); the plugin adds the GUI modules.
+`plugin/PluginProcessor.h` carries `static_assert (JUCE_MAJOR_VERSION == 9)`. The core library (`singvst_core`), the CLI and
+the core tests do **not** use JUCE (JUCE modules compile into every target that links them, so sharing them between the core
+and the plugin would duplicate symbols): JSON uses nlohmann/json 3.12.0 (MIT, C-049), SHA-256 and the MIDI-file reader (D-031)
+are implemented in the core. Only the plugin and its tests link JUCE. Linux build packages are JUCE's documented list
+(`docs/Linux Dependencies.md` at 9.0.3; C-050), including `libxi-dev`.
 
 ### D-002 Inference runtime
 ONNX Runtime 1.31.0 CPU prebuilt packages from GitHub Releases (C-014), SHA-256 checked at configure time:
@@ -61,7 +64,8 @@ The first field is the word; a word ending in `(<digits>)` is a variant and is s
 first entry of a word wins. Phones are normalised: trailing digits removed, lower-cased. `size()` counts distinct words;
 `hasPhone(p)` normalises `p` the same way. The plugin and CLI embed CMUdict at commit 74790861 (C-016,
 `third_party/cmudict/cmudict.dict`, SHA-256 `81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22`, BSD-style
-licence kept beside it). Vowels: `aa ae ah ao aw ay eh er ey ih iy ow oy uh uw` (normalised).
+licence kept beside it). The plugin and the CLI load `cmudict.dict` from the folder of their own binary, where the build copies it
+next to the ONNX Runtime library (D-024); the CLI's `--dict` overrides. Vowels: `aa ae ah ao aw ay eh er ey ih iy ow oy uh uw` (normalised).
 `syllabify(phones, n)`: let `V` be the vowel indices. No vowel: `n == 1` → `[phones]`, else `ValidationError`. `n == 0` or
 `n > |V|` → `ValidationError`. Otherwise cut between consecutive vowels `V[j-1]`, `V[j]` for `j = 1..n-1` after
 `V[j-1] + 1 + floor(c/2)` phones, where `c` is the number of consonants between them (coda gets `floor(c/2)`, onset
@@ -193,8 +197,8 @@ int64[1] (= T), `pitch` int64[1,T], `pitchf` float[1,T], `ds` int64[1] (= `speak
 `audio` float[1,1,T·hop] with `hop = sample_rate/100` (C-048: 480 at 48 kHz). Conversion of a take: resample the guide to
 16 kHz; `T = min(len(f0), floor(N16/160))`; `pitch[t] = rvcCoarsePitch(f0[t])`, `pitchf[t] = f0[t]`; prior noise
 `rnd[c][t] = standardNormal(seed, 192·T)[c·T + t]` for the **whole take** (C-003; the exporter scales it by 0.66666 inside
-the graph). The take is processed in **chunks** of ≤ 1500 frames with up to 100 frames of context on each side (clipped to
-the take): the chunk's 16 kHz slice goes through `content`, each unit is repeated twice (50 → 100 fps), the result is cut or
+the graph). The take is processed in **chunks**: core frame ranges `[1500k, min(1500(k+1), T))`, each with up to 100 frames of context
+on each side (clipped to `[0, T)`): the chunk's 16 kHz slice goes through `content`, each unit is repeated twice (50 → 100 fps), the result is cut or
 extended (repeating the last unit) to the chunk's frame count, `synth` runs on the chunk's frames with the matching slices of
 `pitch`, `pitchf` and `rnd`, and only the core frames' samples are kept. Output length is `T·hop`. Deterministic for a seed on
 one platform. `standardNormal(seed, n)`: SplitMix64 from `seed`; per pair `u1 = ((x1>>11)+1)·2^-53`, `u2 = (x2>>11)·2^-53`,
@@ -246,11 +250,10 @@ Incoming MIDI is ignored except while capturing (D-010). Tests: T-033, T-037, T-
 ### D-010 Plugin behaviour and parameters
 Parameters are exactly `kParams` (`params.hpp`), in that order, JUCE `ParameterID{id, 1}` (PK-40); `docs/PARAMETERS.md` is
 generated from the same table (S-018). Lyrics come from the editor's text box or from **MIDI-file import**, because hosts
-cannot pass lyric text to a JUCE VST3 (C-011): import reads all tracks, notes from note-on/off pairs (velocity 0 = off),
-lyrics from meta events type 0x05 in time order, each trimmed and joined with one space (so `Hel-`, `lo` → `Hel- lo`,
-D-004), tempo from the first tempo event (else 120 bpm; later tempo changes → warning), PPQ from the header; SMPTE time
-division → `false` + `lastError`. Capture: `Idle → Armed` (arm button) → `Capturing` (first block with transport playing
-while armed; positions from the host play head) → on the first stopped block: `CaptureRecorder::finish` at the stop position,
+cannot pass lyric text to a JUCE VST3 (C-011): import uses `importMidi` (D-031) and replaces the stored notes,
+lyrics and bpm; a malformed or SMPTE file → `false` + `lastError`, nothing replaced. Capture: `Idle → Armed` (arm button) → `Capturing` (first block with transport playing
+while armed; event positions = block PPQ + sample offset · bpm / (60 · sample rate)) → on the first stopped block:
+`CaptureRecorder::finish` at the end of the last playing block (its PPQ + block length in beats),
 stored notes replaced, bpm taken from the host, render submitted, back to `Idle`; disarm returns to `Idle` and keeps stored
 notes. Renders are submitted (message thread, 4 Hz timer) after: capture end, import, voice load, lyric edits (500 ms after
 the last keystroke), changes of `convert`/`portamento`/`vibrato`/`seed`, a host tempo differing from the take's by > 0.1
@@ -264,6 +267,21 @@ One resizable window: lyrics text editor (multi-line), buttons *Load voice…*, 
 a status line (render status, last error) and a warnings list, and the five parameters as sliders/toggle (generated from
 `kParams`). Behaviour that cannot be exercised headless (layout, focus, file dialogs, keystroke debounce feel) is
 **implemented, unverified** and listed in the G-001 checklist (PK-39).
+
+### D-031 Standard MIDI File import (`importMidi`)
+The bytes are untrusted (PK-42): every read is bounds-checked and any violation → `ValidationError` naming it.
+Header `MThd`, length ≥ 6, format 0 or 1 (2 → error), track count, division: bit 15 set (SMPTE) → error; PPQ must be > 0.
+Chunks follow; `MTrk` chunks are parsed, other chunk types are skipped by their length; a length past the end → error.
+Events: delta time as a variable-length quantity of at most 4 bytes; running status for channel messages (a data byte with
+no running status → error); `8x` note-off, `9x` note-on (velocity 0 = note-off), `Ax`/`Bx`/`Ex` two data bytes, `Cx`/`Dx`
+one; `F0`/`F7` sysex skipped by length; `FF` meta: type, length, data — `05` lyric, `51` tempo (3 bytes, µs per quarter;
+other lengths → error), `2F` end of track; other metas ignored. Notes: keyed by (channel, key); a note-on while the key is
+held closes the held note at that tick and starts a new one; a note-off with nothing held is ignored; notes still held at
+the end of their track close at the track's last tick; zero-length notes are dropped; beats = ticks / PPQ; sorted by
+(start, pitch). Lyrics: all lyric events of all tracks ordered by (tick, track, order in track), each trimmed of ASCII
+whitespace, empty ones skipped, joined with one space (so `hel-`, `lo` → `hel- lo`, D-004). Tempo: the event with the lowest
+tick (then lowest track) sets `bpm = 60e6 / µs`; none → 120; any tempo event at a later tick with a different value adds the
+warning `tempo changes after beat <b> are ignored` (b = its beat, `%g`). Tests: T-064…T-066.
 
 ### D-014 CLI `singvst-render`
 `singvst-render --voice DIR --midi FILE --out FILE.wav [--lyrics TEXT | --lyrics-file FILE] [--dict FILE] [--seed N]

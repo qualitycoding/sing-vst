@@ -1,0 +1,28 @@
+{
+ "format": "singvoice",
+ "format_version": 1,
+ "name": "voice-ca",
+ "consent": "test fixture, no human voice",
+ "guide_licence": "test fixture (Apache-2.0, this repository)",
+ "guide": {
+  "type": "diffsinger",
+  "sample_rate": 44100,
+  "hop_size": 512,
+  "language": "en",
+  "steps": 20,
+  "depth": 0.4,
+  "files": {
+   "acoustic": "guide/acoustic_ca.onnx",
+   "vocoder": "guide/vocoder.onnx",
+   "phonemes": "guide/phonemes.json",
+   "languages": "guide/languages.json"
+  }
+ },
+ "converter": null,
+ "sha256": {
+  "guide/acoustic_ca.onnx": "9c944fde32e354446426cddb42a4d6814574c2003f9350e9de3f497b57a52f33",
+  "guide/languages.json": "09da1f1d125b5f6b42d2281a0e0806b33042c14af650ff5f1bbdab8abb7d2cf5",
+  "guide/phonemes.json": "0577c22f3a5084808c7f139e890f8bbf5f2e8c8054fc6516144b7b73770c4ecc",
+  "guide/vocoder.onnx": "85360b9d7d6ac03e70c3d8a1bbe1514637e48bc84a68ef64e4a9500370e3dc0c"
+ }
+}

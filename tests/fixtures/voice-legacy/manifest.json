@@ -1,0 +1,28 @@
+{
+ "format": "singvoice",
+ "format_version": 1,
+ "name": "voice-legacy",
+ "consent": "test fixture, no human voice",
+ "guide_licence": "test fixture (Apache-2.0, this repository)",
+ "guide": {
+  "type": "diffsinger",
+  "sample_rate": 44100,
+  "hop_size": 512,
+  "language": "en",
+  "steps": 20,
+  "depth": 0.4,
+  "files": {
+   "acoustic": "guide/acoustic_legacy.onnx",
+   "vocoder": "guide/vocoder.onnx",
+   "phonemes": "guide/phonemes.txt",
+   "speaker": "guide/speaker.emb"
+  }
+ },
+ "converter": null,
+ "sha256": {
+  "guide/acoustic_legacy.onnx": "9d8300c09b0f7e0a149cf517d5fa0273df83b2451e0083af999163c084fa308e",
+  "guide/phonemes.txt": "019e67e1b897c4a3c3074146348c4399847dcd0f034080b7832ac7889da18524",
+  "guide/speaker.emb": "bb5f01878113000f16ce91be1275eda29f7ca5e04fb3e13f652a94ed5b480b5d",
+  "guide/vocoder.onnx": "85360b9d7d6ac03e70c3d8a1bbe1514637e48bc84a68ef64e4a9500370e3dc0c"
+ }
+}
