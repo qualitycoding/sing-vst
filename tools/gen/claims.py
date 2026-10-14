@@ -139,6 +139,15 @@ claim("C-047", "RVC 81eed5e train/train.py resumes automatically: it loads the n
 claim("C-048", "RVC 81eed5e writes inference weights with savee() to assets/weights/<name>.pth (relative to the RVC working directory): weights stored as float16, keys config (synthesiser constructor list; 48k upsample rates 10,6,2,2,2 = 480 samples per 100 fps frame), sr, f0, version; one file per save when -sw 1 and a final file when training completes.",
       "software", True, [S("research/spikes/rvc-resume/output.txt", "spike rvc-resume", "inference weights lines", 1, "2026-10-14")],
       "verified", ["D-012", "D-016", "S-013"], ["subject:rvc", "tech:rvc", "tech:onnx"], "RVC 81eed5e", kstamp="20261014T201001Z")
+claim("C-049", "nlohmann/json v3.12.0 (MIT) is published as json.tar.xz (sha256 42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa); tag commit 55f93686c01528224f448c19128836e7df245f72. pluginval 1.0.4 zips: Linux c01c49d8063965c4c2dea8324468336768f5c9139e0b1caebde14c2400b55352, Windows c08e61ce3b96db41636f8ec7e76f4c7e2c13ebdac7fa1b5a1f52b4f32ec715ab.",
+      "software", True, [S("research/spikes/deps-pins/output.txt", "spike deps-pins", "downloads, tag commits", 1, "2026-10-14")],
+      "verified", ["D-001", "D-018", "plan/ENVIRONMENT.md"], ["subject:nlohmann-json", "tech:cpp", "tech:cmake"], "json 3.12.0 / pluginval 1.0.4", kstamp="20261014T213000Z")
+claim("C-050", "Building the JUCE 9.0.3 plugin on Ubuntu 24.04 needs JUCE's documented Linux packages; without libxi-dev the build fails ('X11/extensions/XInput2.h: No such file or directory'). With JUCE_USE_CURL=0 and JUCE_WEB_BROWSER=0 the list is libasound2-dev libjack-jackd2-dev libfreetype-dev libfontconfig1-dev libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev libxi-dev libglu1-mesa-dev mesa-common-dev libegl-dev.",
+      "software", True, [S("research/spikes/plugin-stub/output.txt", "spike plugin-stub", "packages, build exit", 1, "2026-10-14")],
+      "verified", ["D-001", "D-018", "plan/ENVIRONMENT.md"], ["subject:juce", "tech:juce", "tech:cmake"], "JUCE 9.0.3", kstamp="20261014T213001Z")
+claim("C-051", "The JUCE 9.0.3 VST3 target's TARGET_FILE_DIR is <bundle>/Contents/x86_64-linux, so a POST_BUILD copy places libonnxruntime.so.1.31.0 and cmudict.dict beside 'Sing VST.so'; pluginval 1.0.4 --strictness-level 5 --skip-gui-tests passes on the silent stub plugin under xvfb (includes its 'vst3 validator' test).",
+      "software", True, [S("research/spikes/plugin-stub/output.txt", "spike plugin-stub", "bundle, pluginval lines", 1, "2026-10-14")],
+      "verified", ["D-024", "D-023", "T-059"], ["subject:pluginval", "tech:pluginval", "tech:vst3", "tech:juce"], "JUCE 9.0.3 / pluginval 1.0.4", kstamp="20261014T213002Z")
 
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")

@@ -1342,5 +1342,83 @@
    "D-016",
    "S-013"
   ]
+ },
+ {
+  "id": "C-049",
+  "claim": "nlohmann/json v3.12.0 (MIT) is published as json.tar.xz (sha256 42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa); tag commit 55f93686c01528224f448c19128836e7df245f72. pluginval 1.0.4 zips: Linux c01c49d8063965c4c2dea8324468336768f5c9139e0b1caebde14c2400b55352, Windows c08e61ce3b96db41636f8ec7e76f4c7e2c13ebdac7fa1b5a1f52b4f32ec715ab.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/deps-pins/output.txt",
+    "doi": "",
+    "title": "spike deps-pins",
+    "version": "",
+    "locator": "downloads, tag commits",
+    "accessed": "2026-10-14",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-001",
+   "D-018",
+   "plan/ENVIRONMENT.md"
+  ]
+ },
+ {
+  "id": "C-050",
+  "claim": "Building the JUCE 9.0.3 plugin on Ubuntu 24.04 needs JUCE's documented Linux packages; without libxi-dev the build fails ('X11/extensions/XInput2.h: No such file or directory'). With JUCE_USE_CURL=0 and JUCE_WEB_BROWSER=0 the list is libasound2-dev libjack-jackd2-dev libfreetype-dev libfontconfig1-dev libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev libxi-dev libglu1-mesa-dev mesa-common-dev libegl-dev.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/plugin-stub/output.txt",
+    "doi": "",
+    "title": "spike plugin-stub",
+    "version": "",
+    "locator": "packages, build exit",
+    "accessed": "2026-10-14",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-001",
+   "D-018",
+   "plan/ENVIRONMENT.md"
+  ]
+ },
+ {
+  "id": "C-051",
+  "claim": "The JUCE 9.0.3 VST3 target's TARGET_FILE_DIR is <bundle>/Contents/x86_64-linux, so a POST_BUILD copy places libonnxruntime.so.1.31.0 and cmudict.dict beside 'Sing VST.so'; pluginval 1.0.4 --strictness-level 5 --skip-gui-tests passes on the silent stub plugin under xvfb (includes its 'vst3 validator' test).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/plugin-stub/output.txt",
+    "doi": "",
+    "title": "spike plugin-stub",
+    "version": "",
+    "locator": "bundle, pluginval lines",
+    "accessed": "2026-10-14",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-024",
+   "D-023",
+   "T-059"
+  ]
  }
 ]
