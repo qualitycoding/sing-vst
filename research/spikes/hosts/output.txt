@@ -1,0 +1,14 @@
+== probed 2026-10-14T14:37:32Z from the planning sandbox (egress via agent proxy)
+pypi-index                         https://pypi.org/simple/pyworld/                                                 200
+pypi-files                         https://files.pythonhosted.org/                                                  404
+github-web                         https://github.com/qualitycoding/sing-vst                                        200
+github-git                         https://github.com/juce-framework/JUCE.git/info/refs?service=git-upload-pack     200
+github-releases-ort                https://github.com/microsoft/onnxruntime/releases/download/v1.31.0/onnxruntime-linux-x64-1.31.0.tgz 302
+github-releases-pluginval          https://github.com/Tracktion/pluginval/releases/download/v1.0.4/pluginval_Linux.zip 302
+github-raw                         https://raw.githubusercontent.com/cmusphinx/cmudict/master/cmudict.dict          200
+github-api                         https://api.github.com/repos/qualitycoding/sing-vst                              200
+huggingface-rvc-assets             https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt   000
+pytorch-index                      https://download.pytorch.org/whl/cpu/                                            000
+colab                              https://colab.research.google.com/                                               000
+kaggle                             https://www.kaggle.com/                                                          000
+actions-results                    https://results-receiver.actions.githubusercontent.com/                          000

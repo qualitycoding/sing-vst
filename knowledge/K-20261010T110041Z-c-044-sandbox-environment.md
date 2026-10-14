@@ -1,7 +1,7 @@
 ---
 id: K-20261010T110041Z-c-044-sandbox-environment
 statement: "From the planning sandbox on 2026-10-10: pypi.org and GitHub git/releases are reachable; huggingface.co, download.pytorch.org, kaggle.com and colab.research.google.com are not; the GitHub API works through gh only for attached repositories; Actions log hosts are not reachable."
-status: current
+status: superseded
 supersedes: []
 tags: [subject:sandbox-environment, tech:github, phase:research]
 applies_to_version: "sandbox 2026-10-10"

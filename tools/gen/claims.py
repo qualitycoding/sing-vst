@@ -87,8 +87,8 @@ claim("C-026", "Some Windows installations carry C:\\Windows\\System32\\onnxrunt
                          S("https://github.com/k2-fsa/sherpa-onnx/issues/3059", "sherpa-onnx issue 3059", "API version [23] not available, 1.17.1 loaded", 2),
                          S("https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order", "Dynamic-link library search order", "standard search order", 1)],
       "corroborated", ["D-024", "T-041"], ["subject:windows-dll-loading", "tech:onnxruntime"], pubs=3)
-claim("C-027", "pyworld 0.3.5 builds on Python 3.12 with numpy 1.26.4 and its harvest+stonemask track a clean 220 Hz sine on interior frames.",
-      "software", True, [spike("pyworld", "output.txt")], "verified", ["T-P10", "D-017"], ["subject:pyworld", "tech:python"], "pyworld 0.3.5")
+claim("C-027", "pyworld 0.3.5 on Python 3.12 / numpy 1.26.4 imports pkg_resources (needs setuptools < 81). Its harvest+stonemask leave a pure 220 Hz sine fully unvoiced (0/161 interior frames, default or 50-1100 Hz range) but track a 15-partial harmonic 220 Hz tone exactly (161/161 voiced, 0.098 cents RMS); F0 known-answer tests must use a harmonic tone.",
+      "software", True, [S("research/spikes/pyworld/output.txt", "spike pyworld", "all '==' lines", 1, "2026-10-14")], "verified", ["T-P10", "D-017", "PK-31"], ["subject:pyworld", "tech:python"], "pyworld 0.3.5")
 claim("C-028", "Resemblyzer 0.1.4 bundles its speaker-encoder weights (resemblyzer/pretrained.pt, 17,090,379 bytes) in the wheel and depends on torch, librosa and webrtcvad.",
       "software", True, [spike("pyfacts", "resemblyzer wheel listing")], "verified", ["D-017"], ["subject:resemblyzer", "tech:python"], "resemblyzer 0.1.4")
 claim("C-029", "RVC filelist f0 line format is gt_wav|feature768|2a_f0|2b-f0nsf|speaker, plus 2 mute lines per speaker.",
@@ -125,8 +125,8 @@ claim("C-042", "With ORT_API_MANUAL_INIT, a program that does not link onnxrunti
       "software", True, [spike("ort-manual-init", "output.txt")], "verified", ["D-024", "T-041"], ["subject:onnxruntime", "tech:onnxruntime", "tech:cpp"], "onnxruntime 1.31.0 (Linux)")
 claim("C-043", "audio-separator 0.47.0 (MIT, Python >= 3.10) lists the de-reverb model dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt ('MelBand Roformer | De-Reverb by anvuew', stems noreverb/reverb, target noreverb) and downloads model files from GitHub releases; the model's own licence is not stated.",
       "software", True, [spike("pyfacts", "audio-separator wheel inspection")], "verified", ["D-025", "R-009"], ["subject:audio-separator", "tech:python", "domain:audio"], "audio-separator 0.47.0")
-claim("C-044", "From the planning sandbox on 2026-10-10: pypi.org and GitHub git/releases are reachable; huggingface.co, download.pytorch.org, kaggle.com and colab.research.google.com are not; the GitHub API works through gh only for attached repositories; Actions log hosts are not reachable.",
-      "software", True, [S("plan/ENVIRONMENT.md", "host probe table", "Hosts", 1)], "verified", ["D-018", "PK-13"], ["subject:sandbox-environment", "tech:github"], "sandbox 2026-10-10")
+claim("C-044", "From the planning sandbox (probed 2026-10-14): pypi.org (index and wheel downloads), GitHub web, git, raw, releases and the REST API for attached repositories are reachable; huggingface.co, download.pytorch.org, colab.research.google.com, kaggle.com and the Actions results host are not.",
+      "software", True, [S("research/spikes/hosts/output.txt", "spike hosts", "all lines", 1, "2026-10-14"), spike("pyworld", "pip install lines (wheel downloads)")], "verified", ["D-018", "PK-13", "plan/ENVIRONMENT.md"], ["subject:sandbox-environment", "tech:github"], "sandbox 2026-10-14")
 claim("C-045", "Current major tags: actions/checkout v7, actions/setup-python v7, actions/upload-artifact v7, actions/download-artifact v8; Catch2 latest v3.16.1.",
       "software", True, [spike(UF, "upstream tips (drift check)")], "verified", ["D-018", "plan/ENVIRONMENT.md"], ["subject:github-actions", "tech:github-actions"], "2026-10-10")
 
@@ -135,6 +135,9 @@ cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "appl
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)
 bad = [c["id"] for c in C if c["confidence"] == "corroborated" and (c["independent_publishers"] < 2 or not any(s["tier"] == 1 for s in c["sources"]))]
 bad += [c["id"] for c in C if c["confidence"] == "verified" and not any(s["url"].startswith("research/spikes/") or s["url"].startswith("plan/") for s in c["sources"])]
+# A cited spike or plan file must exist in the tree (lesson L-20261014T142000Z: C-027 was 'verified' against an output file never written)
+bad += [f"{c['id']}:{s['url']}" for c in C for s in c["sources"]
+        if (s["url"].startswith("research/") or s["url"].startswith("plan/")) and not (ROOT / s["url"]).exists()]
 if bad: sys.exit("label rule violated: " + ", ".join(bad))
 kd = ROOT / "knowledge"; kd.mkdir(exist_ok=True)
 for i, c in enumerate(C):

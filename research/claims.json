@@ -727,7 +727,7 @@
  },
  {
   "id": "C-027",
-  "claim": "pyworld 0.3.5 builds on Python 3.12 with numpy 1.26.4 and its harvest+stonemask track a clean 220 Hz sine on interior frames.",
+  "claim": "pyworld 0.3.5 on Python 3.12 / numpy 1.26.4 imports pkg_resources (needs setuptools < 81). Its harvest+stonemask leave a pure 220 Hz sine fully unvoiced (0/161 interior frames, default or 50-1100 Hz range) but track a 15-partial harmonic 220 Hz tone exactly (161/161 voiced, 0.098 cents RMS); F0 known-answer tests must use a harmonic tone.",
   "kind": "software",
   "load_bearing": true,
   "sources": [
@@ -736,8 +736,8 @@
     "doi": "",
     "title": "spike pyworld",
     "version": "",
-    "locator": "output.txt",
-    "accessed": "2026-10-10",
+    "locator": "all '==' lines",
+    "accessed": "2026-10-14",
     "tier": 1
    }
   ],
@@ -747,7 +747,8 @@
   "contradicted_by": [],
   "informs": [
    "T-P10",
-   "D-017"
+   "D-017",
+   "PK-31"
   ]
  },
  {
@@ -1196,16 +1197,25 @@
  },
  {
   "id": "C-044",
-  "claim": "From the planning sandbox on 2026-10-10: pypi.org and GitHub git/releases are reachable; huggingface.co, download.pytorch.org, kaggle.com and colab.research.google.com are not; the GitHub API works through gh only for attached repositories; Actions log hosts are not reachable.",
+  "claim": "From the planning sandbox (probed 2026-10-14): pypi.org (index and wheel downloads), GitHub web, git, raw, releases and the REST API for attached repositories are reachable; huggingface.co, download.pytorch.org, colab.research.google.com, kaggle.com and the Actions results host are not.",
   "kind": "software",
   "load_bearing": true,
   "sources": [
    {
-    "url": "plan/ENVIRONMENT.md",
+    "url": "research/spikes/hosts/output.txt",
     "doi": "",
-    "title": "host probe table",
+    "title": "spike hosts",
     "version": "",
-    "locator": "Hosts",
+    "locator": "all lines",
+    "accessed": "2026-10-14",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/pyworld/output.txt",
+    "doi": "",
+    "title": "spike pyworld",
+    "version": "",
+    "locator": "pip install lines (wheel downloads)",
     "accessed": "2026-10-10",
     "tier": 1
    }
@@ -1216,7 +1226,8 @@
   "contradicted_by": [],
   "informs": [
    "D-018",
-   "PK-13"
+   "PK-13",
+   "plan/ENVIRONMENT.md"
   ]
  },
  {

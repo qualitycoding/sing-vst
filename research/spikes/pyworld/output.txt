@@ -1,0 +1,8 @@
+== import without setuptools:
+ModuleNotFoundError: No module named 'pkg_resources'
+
+== python 3.12.3 numpy 1.26.4 pyworld 0.3.5
+== pure sine 220 Hz                   harvest{}: frames 201, interior voiced 0/161, rms cents vs 220 Hz (A4=440) nan
+== pure sine 220 Hz                   harvest{'f0_floor': 50, 'f0_ceil': 1100}: frames 201, interior voiced 0/161, rms cents vs 220 Hz (A4=440) nan
+== harmonic 220 Hz, 15 partials 1/k   harvest{}: frames 201, interior voiced 161/161, rms cents vs 220 Hz (A4=440) 0.0976
+== harmonic 220 Hz, 15 partials 1/k   harvest{'f0_floor': 50, 'f0_ceil': 1100}: frames 201, interior voiced 161/161, rms cents vs 220 Hz (A4=440) 0.0976
