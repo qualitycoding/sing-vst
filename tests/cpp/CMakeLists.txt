@@ -9,7 +9,7 @@ set(_defs SINGVST_FIXTURES="${PROJECT_SOURCE_DIR}/tests/fixtures" SINGVST_TEST_O
 target_compile_definitions(singvst_tests PRIVATE ${_defs})
 singvst_copy_runtime_files(singvst_tests $<TARGET_FILE_DIR:singvst_tests>)
 catch_discover_tests(singvst_tests DISCOVERY_MODE PRE_TEST PROPERTIES TIMEOUT 120)
-if(SINGVST_BUILD_PLUGIN)
+if(SINGVST_BUILD_PLUGIN AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_plugin.cpp)
     add_executable(singvst_plugin_tests ${CMAKE_CURRENT_SOURCE_DIR}/test_plugin.cpp)
     target_link_libraries(singvst_plugin_tests PRIVATE SingVst Catch2::Catch2WithMain)
     target_compile_definitions(singvst_plugin_tests PRIVATE ${_defs} JUCE_STANDALONE_APPLICATION=0)

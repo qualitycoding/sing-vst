@@ -49,5 +49,5 @@ voice V OY1 S
 world W ER1 L D
 you Y UW1
 
-world W AO1 R L D # duplicate word line: the first entry (W ER1 L D) wins
+world ZH ER1 L D # duplicate word line: the first entry (W ER1 L D) wins
 zzz Z IY1 # comment after an entry
