@@ -10,7 +10,7 @@
   },
   "phase": "1",
   "subphase": "1.3",
-  "research_round": 4,
+  "research_round": 5,
   "exploration_round": 0,
   "proof_review_round": 0,
   "premortem_round": 0,
@@ -102,6 +102,7 @@
     "knowledge/K-20261010T110042Z-c-045-github-actions.md": "81df5cbf15dd441450d9147f290f7263cc04ad03b3a933e17345893375015a57",
     "knowledge/K-20261014T143900Z-c-027-pyworld.md": "d1a6642587e381125e62d79c47c5baa132f85281e4d9abe6f8c5ad732a2fa599",
     "knowledge/K-20261014T143901Z-c-044-sandbox-environment.md": "987d93e3b9280d90d5eade3e67064e4411baeed0cbd3f5eae36ff0ccfd9c6ffe",
+    "knowledge/K-20261014T195000Z-c-046-pyworld.md": "f77200cbb3ddb2c3d51a2524948f3d103cdadd3e862deeb558f2834107ef167a",
     "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
     "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
     "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
@@ -121,12 +122,17 @@
     "lessons/L-20261010T001500Z-ci-tool-flags-and-versions-from-memory.md": "00d413207384bc7b5923ea797deaad495ae755c621453f5b94189088dfd48389",
     "lessons/L-20261010T094000Z-continuation-left-work-uncommitted-and-checkpoint-stale.md": "7061bc8729166d493255845abb0e2a10e16fdf76e55341555cca58cd9c2bc962",
     "lessons/L-20261014T142000Z-verified-label-cited-a-file-never-written.md": "10c925236fbf543eb67e444894e816f8d0cdee2175869626903107fa87db616d",
+    "lessons/L-20261014T195500Z-session-cut-off-left-spike-and-tool-edit-uncommitted-again.md": "2ea7d6c9afbefddfe553e0ac06f55216d35c3b7ec73c02c1832d6adea1d0a7f7",
+    "lessons/L-20261014T195600Z-claims-generator-hard-coded-knowledge-item-date.md": "bb06ec96c45cab4a7410cc7ee9598be3cc263b040c993de0da7b9c3e5e9854a1",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
+    "python/requirements-lock.txt": "a05381edd0780e4d6ed4292236fbc098aa17e0c5940d399732b470f2aa517eaf",
+    "python/requirements.in": "d6a1e02f7708f0fdfd0c43f3f67f65c61e16b684dbef86962e45d69620e19215",
     "research/PRIOR_KNOWLEDGE.md": "e25fd0a495664159409c013910f5fe0ab660057bdfc3c179f32f879cb3ef3191",
     "research/QUESTIONS.md": "4046681681db5d134a6615d4ea29d9f19955e88957764d074cdefeb63f115b32",
-    "research/claims.json": "ff48ae33ed8902ff6811c512a4e78a1514222add442925d4959a2feaa3a4817f",
+    "research/claims.json": "1adc355cfa86623cec8ba0df0e8b64d5b28e48e92fce166b3cdc0132c085079a",
     "research/rounds/round-1-3.md": "755204e39b43b7aa003c74ab6dc20db63166475dbc9b7a53ac843d1fd0b07edd",
     "research/rounds/round-4.md": "62f714adf96b51b314ef58cfa272c2cd4a04d68209675f29e5d5536d4894a93e",
+    "research/rounds/round-5.md": "c10d83de8191512bd9cba540170e0541f5761763366c4fb3f9f72c3f505d2436",
     "research/spikes/hosts/output.txt": "f8195c6a0834d315ef5f225e0ee6c73da4c49be58f98cd727b97ebbe659bac06",
     "research/spikes/hosts/run.sh": "4d324f7471d59ce67171b1010ac9d32d1537caa868e5b891b2848b8bff24cc03",
     "research/spikes/juce-lyrics/CMakeLists.txt": "f0c4fa0a208bb0245a5e357315f2f4c5c3a052cab3b89ba5786fe18d10090863",
@@ -143,8 +149,12 @@
     "research/spikes/ort/make_model.py": "d5b796c10c1cffb90d3249981169cc9030cdf78196dabff217e120a41c9a704b",
     "research/spikes/ort/output.txt": "39b7476af88fe6cbe076b74de7a68623f81d13cb25ae39459985613a2c977177",
     "research/spikes/ort/run.sh": "18d812b96cf7e4cfe9065615c0272d007ec0a4e231058c7b76bb82efeea350a5",
+    "research/spikes/pip-audit-setuptools/output.txt": "33681bfe29f8e0aa3c202ba01fb69f206194fdd4f7b7be4199a1df25681ce3df",
+    "research/spikes/pip-audit-setuptools/run.sh": "f0f4caf98a80422ba2feb66b7ae46c4c48bcf8c52c7792cc28061ebf5aa95c33",
     "research/spikes/pyfacts/output.txt": "fc07663c360cf291d13c125223594da820cc505b0228c7566d2d844cccbdd2b0",
     "research/spikes/pyfacts/run.sh": "b2e3c5c6014cb3246957a9cb986c32c92694652b14960d31de43887b85918cc9",
+    "research/spikes/pyworld-direct/output.txt": "c411de1ad51dd3813a4c2f3df59af6186c13bd27d85da7e46ae0b1f375a10323",
+    "research/spikes/pyworld-direct/run.sh": "6d76014f366f7a95ed3f5dc00c1abe8b31bb2de8520373ed8ddfa28081c40019",
     "research/spikes/pyworld/output.txt": "a19ed38aa2485f3b4cde569aabc09b6db09d1ec62b7e644f70a3fd8026387bc7",
     "research/spikes/pyworld/run.sh": "094b36b39b40d4a1481ae99551999bdd5b5438a91d06bbcc5e26e1a1f2046fc8",
     "research/spikes/tiger-guide/README.md": "b56e96e96d994a7e8562bdb5de45019496f23007d352f346846f4eb43c749204",
@@ -155,17 +165,19 @@
     "research/spikes/upstream-facts/verify.sh": "75ceb197e49c5b63eab5d2f1f421c263312135df3474e76a89eeea8503cc4052",
     "research/spikes/vocoder-onnx/output.txt": "1a0365c79a367bce16a75432c2c692110c833540422131d8ec2a1fc55f5bb95c",
     "research/spikes/vocoder-onnx/run.sh": "f59a59ba67edd37ce9696fc952c8323bdf3256dedb9dc2826d6e8da68bbc0c5f",
-    "tools/bootstrap_test_env.sh": "69159eb1803050a14f332c22a9c970bfa0e0b0374029f42a9f9ec103109252db",
+    "tools/bootstrap_test_env.sh": "640fb0c198c2b9d43e6fe16a6a6933264c4a326a1f54b6845cfe82115f0f3304",
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "ada58b6097a6a5317c57ef43605306d7de7ae5c235f5b4199cc345db41776c7f",
-    "tools/gen/claims.py": "74d1212233e264319f25ce2e9efab7abfda82d8f0a64b96bf16e2d6114d66e26",
-    "tools/gen/lessons.py": "27927aa535ce9985368b12e51d1f9236957aaf387a4f93274b0f5500aa03b3e8",
+    "tools/gen/claims.py": "8a90d381c9b86623e1feeed5175201d129606bb54dc3e37569f9a40838755c0a",
+    "tools/gen/lessons.py": "05cda29de993cf65cc835ef415c250f5f315f07497c0d6afc7c221989599afc4",
     "tools/gen/pk_checklist.json": "dfbbf2ab8247558924e2ed2a7f10da28be7bbca344fca11e1b773dca880eb1d0",
     "tools/gen/pk_knowledge.json": "99587b290a74f735b0ac71f7e901f4cd344d3288cc04d926919cc9b78153e614",
     "tools/gen/pk_map.json": "40076af46f4c064abe27ddc18ade87029be2c15856600b10efa78e2bda9447a2",
     "tools/gen/prior_knowledge.py": "abe574d475ad7f1c86d40ead0bc220c27a1ef528a39e3943b59899b0c02eb81f",
     "tools/gen/supersede.py": "f05242a9eec9c280a9631ad3c5fdd501f3ed090b7bde90f6b3b3a23619afa57f",
-    "tools/gen/taxonomy.py": "8e39b670fb359708da3ebc26fc607c9dd558c6db8651745058f5f026fb8bda81"
+    "tools/gen/taxonomy.py": "8e39b670fb359708da3ebc26fc607c9dd558c6db8651745058f5f026fb8bda81",
+    "tools/save.sh": "877d8517e72040a99eaecf985aaeaa3dc90496d96d9c27c940ef15a7895f144d",
+    "tools/turn_end_check.sh": "9ad41f3a4cb421639abd750a7a9e91a1dec74ffbc60fbbaf7bc6b8b4df6461b3"
   },
   "tier_substitutions": [],
   "open_items": [],
@@ -400,7 +412,9 @@
     "L-20261010T000115Z-corroborated-label-from-one-publisher",
     "L-20261010T001500Z-ci-tool-flags-and-versions-from-memory",
     "L-20261010T094000Z-continuation-left-work-uncommitted-and-checkpoint-stale",
-    "L-20261014T142000Z-verified-label-cited-a-file-never-written"
+    "L-20261014T142000Z-verified-label-cited-a-file-never-written",
+    "L-20261014T195500Z-session-cut-off-left-spike-and-tool-edit-uncommitted-again",
+    "L-20261014T195600Z-claims-generator-hard-coded-knowledge-item-date"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -447,7 +461,8 @@
     "K-20261010T110041Z-c-044-sandbox-environment",
     "K-20261010T110042Z-c-045-github-actions",
     "K-20261014T143900Z-c-027-pyworld",
-    "K-20261014T143901Z-c-044-sandbox-environment"
+    "K-20261014T143901Z-c-044-sandbox-environment",
+    "K-20261014T195000Z-c-046-pyworld"
   ],
   "environment": {},
   "notes": [
@@ -455,7 +470,8 @@
     "2026-10-10: sandbox found reset; branch recreated under the original run id; every source re-opened and every spike re-run in this session; earlier outputs are not cited.",
     "2026-10-10 09:30: continuation found the 01:03 attempt's branch pushed at f9ca064, checkpoint hashes all matched, core/ and research/spikes/oracle/ untracked (lesson L-20261010T094000Z). Resumed at R0.",
     "2026-10-10: research round 3 (TIGER guide voicebank, ORT explicit-path loading, de-reverb, Resemblyzer, JUCE lyric spike re-run); WebFetch hit a weekly usage limit at 09:50, web research closed.",
-    "2026-10-14: resumed; round 4 corrected C-027 (pyworld sine) and C-044 (hosts); round logs backfilled"
+    "2026-10-14: resumed; round 4 corrected C-027 (pyworld sine) and C-044 (hosts); round logs backfilled",
+    "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046."
   ],
-  "updated_at": "2026-10-14T14:38:46Z"
+  "updated_at": "2026-10-14T19:40:53Z"
 }

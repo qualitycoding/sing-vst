@@ -1254,5 +1254,41 @@
    "D-018",
    "plan/ENVIRONMENT.md"
   ]
+ },
+ {
+  "id": "C-046",
+  "claim": "setuptools < 83 carries PYSEC-2026-3447 (fixed in 83.0.0) and setuptools >= 81 no longer ships pkg_resources, so with setuptools 84.0.0 'import pyworld' (0.3.5) fails with ModuleNotFoundError; loading the compiled extension pyworld.pyworld directly works and tracks a 15-partial 220 Hz harmonic tone on 161/161 interior frames at 0.0976 cents RMS (A4 = 440 Hz).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/pyworld-direct/output.txt",
+    "doi": "",
+    "title": "spike pyworld-direct",
+    "version": "",
+    "locator": "all '==' lines",
+    "accessed": "2026-10-14",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/pip-audit-setuptools/output.txt",
+    "doi": "",
+    "title": "spike pip-audit-setuptools",
+    "version": "",
+    "locator": "PYSEC-2026-3447 rows",
+    "accessed": "2026-10-14",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-019",
+   "D-017",
+   "T-P10",
+   "PK-41"
+  ]
  }
 ]

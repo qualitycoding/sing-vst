@@ -18,7 +18,7 @@ def spike(name, locator):
 def claim(id, text, kind, lb, sources, conf, informs, tags, version="version-independent", pubs=None, contra=None, kstamp=None):
     C.append(dict(id=id, claim=text, kind=kind, load_bearing=lb, sources=sources, confidence=conf, evidence_class="n/a",
                   independent_publishers=pubs if pubs is not None else len({(s["url"].split("/")[2] if "://" in s["url"] else "this-run") for s in sources}),
-                  contradicted_by=contra or [], informs=informs, tags=tags, applies_to_version=version))
+                  contradicted_by=contra or [], informs=informs, tags=tags, applies_to_version=version, kstamp=kstamp))
 
 UF = "upstream-facts"
 claim("C-001", "RVC-Project/Retrieval-based-Voice-Conversion-WebUI is MIT-licensed; pinned commit 81eed5e8f68b6bed1789f682fe78cdd324495afc (latest release 2.3.260718, 2026-07-21).",
@@ -129,9 +129,13 @@ claim("C-044", "From the planning sandbox (probed 2026-10-14): pypi.org (index a
       "software", True, [S("research/spikes/hosts/output.txt", "spike hosts", "all lines", 1, "2026-10-14"), spike("pyworld", "pip install lines (wheel downloads)")], "verified", ["D-018", "PK-13", "plan/ENVIRONMENT.md"], ["subject:sandbox-environment", "tech:github"], "sandbox 2026-10-14")
 claim("C-045", "Current major tags: actions/checkout v7, actions/setup-python v7, actions/upload-artifact v7, actions/download-artifact v8; Catch2 latest v3.16.1.",
       "software", True, [spike(UF, "upstream tips (drift check)")], "verified", ["D-018", "plan/ENVIRONMENT.md"], ["subject:github-actions", "tech:github-actions"], "2026-10-10")
+claim("C-046", "setuptools < 83 carries PYSEC-2026-3447 (fixed in 83.0.0) and setuptools >= 81 no longer ships pkg_resources, so with setuptools 84.0.0 'import pyworld' (0.3.5) fails with ModuleNotFoundError; loading the compiled extension pyworld.pyworld directly works and tracks a 15-partial 220 Hz harmonic tone on 161/161 interior frames at 0.0976 cents RMS (A4 = 440 Hz).",
+      "software", True, [S("research/spikes/pyworld-direct/output.txt", "spike pyworld-direct", "all '==' lines", 1, "2026-10-14"),
+                         S("research/spikes/pip-audit-setuptools/output.txt", "spike pip-audit-setuptools", "PYSEC-2026-3447 rows", 1, "2026-10-14")],
+      "verified", ["D-019", "D-017", "T-P10", "PK-41"], ["subject:pyworld", "tech:python"], "pyworld 0.3.5 / setuptools 84.0.0", kstamp="20261014T195000Z")
 
 cl = ROOT / "research" / "claims.json"
-cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version")} for c in C], indent=1) + "\n")
+cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)
 bad = [c["id"] for c in C if c["confidence"] == "corroborated" and (c["independent_publishers"] < 2 or not any(s["tier"] == 1 for s in c["sources"]))]
 bad += [c["id"] for c in C if c["confidence"] == "verified" and not any(s["url"].startswith("research/spikes/") or s["url"].startswith("plan/") for s in c["sources"])]
@@ -143,7 +147,7 @@ kd = ROOT / "knowledge"; kd.mkdir(exist_ok=True)
 for i, c in enumerate(C):
     if list(kd.glob(f"K-*-{c['id'].lower()}-*.md")):
         continue
-    ts = "20261010T1100" + f"{i:02d}" + "Z"
+    ts = c["kstamp"] or ("20261010T1100" + f"{i:02d}" + "Z")  # kstamp: real UTC time for claims added after 2026-10-10
     subj = next(t for t in c["tags"] if t.startswith("subject:")).split(":")[1]
     kid = f"K-{ts}-{c['id'].lower()}-{subj}"
     s0 = c["sources"][0]

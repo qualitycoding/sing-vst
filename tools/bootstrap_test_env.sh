@@ -5,8 +5,12 @@
 # and prints the cmake configure line. Pins: plan/ENVIRONMENT.md.
 set -euo pipefail
 DEPS=${1:?usage: bootstrap_test_env.sh <deps dir>}; mkdir -p "$DEPS"; cd "$DEPS"
-clone() { # dir url tag
-  if [ -d "$1/.git" ]; then echo "have $1 @ $(git -C "$1" rev-parse --short HEAD)"; else git clone -q --depth 1 --branch "$3" "$2" "$1"; fi
+clone() { # dir url tag — an existing clone must sit on the tag's peeled commit (annotated or lightweight)
+  if [ ! -d "$1/.git" ]; then git clone -q --depth 1 --branch "$3" "$2" "$1"; fi
+  want=$(git ls-remote "$2" "refs/tags/$3^{}" | cut -f1); [ -n "$want" ] || want=$(git ls-remote "$2" "refs/tags/$3" | cut -f1)
+  have=$(git -C "$1" rev-parse HEAD)
+  if [ "$have" != "$want" ]; then echo "$1 is at $have, pinned tag $3 is $want: delete $DEPS/$1 and re-run" >&2; exit 3; fi
+  echo "ok $1 @ $3 ($have)"
 }
 clone JUCE https://github.com/juce-framework/JUCE.git 9.0.3
 clone Catch2 https://github.com/catchorg/Catch2.git v3.16.1

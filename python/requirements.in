@@ -1,0 +1,15 @@
+# Direct pins for the singvst_train toolkit (D-019). Compatible with RVC 81eed5e requirements (numpy>=1.26.4,<2; scipy>=1.13.1,<2; C-023).
+# The full lock (requirements-lock.txt, incl. build backend) is generated from a clean venv by S-012 / plan/ENVIRONMENT.md.
+pip==26.2.1
+setuptools==84.0.0  # pyworld loaded via its extension, not 'import pyworld' (C-046)
+wheel==0.48.0
+numpy==1.26.4
+scipy==1.13.1
+soundfile==0.13.1
+pyworld==0.3.5
+mido==1.3.3
+nbformat==5.10.4
+pyyaml==6.0.3
+onnx==1.23.2
+onnxruntime==1.31.0
+pytest==9.1.1

@@ -181,6 +181,25 @@ lesson("20261010T094000Z", "continuation-left-work-uncommitted-and-checkpoint-st
        "`git status --short` is empty and `grep -rhoE 'L-2026[0-9T]+Z-[a-z0-9-]+' research plan | sort -u` names only files that exist, at the end of every turn.",
        "git status of 2026-10-10 09:30 (`?? core/`, `?? research/spikes/oracle/`); .checkpoints/state.json subphase 0.3.7.",
        recurrence="L-20261009T234122Z-checkpoint-state-stale-after-implementation-and-main-not-default")
+lesson("20261014T195500Z", "session-cut-off-left-spike-and-tool-edit-uncommitted-again",
+       "A continuation session wrote a spike, a dependency lock and a bootstrap-script fix after its last commit and ended without committing them", "High",
+       ["applies:all", "tech:git", "kind:process"],
+       "A planning session writes files after its last commit, and the session can end between tool calls (usage limit, cut-off, reset) before any turn-end check runs.",
+       "At 15:38 the 2026-10-14 session committed round 4; by 15:43 it had written research/spikes/pyworld-direct/, python/requirements.in, python/requirements-lock.txt and a stricter clone check in tools/bootstrap_test_env.sh, then stopped. The 20:35 session found them untracked or modified, and the bootstrap edit failed the checkpoint hash check. This repeats L-20261010T094000Z, whose rule ('git status is empty at the end of every turn') cannot work when the turn never reaches its end.",
+       "Re-ran the pyworld-direct spike to completion (identical output), verified its PYSEC-2026-3447 premise with a committed pip-audit spike, ran the bootstrap check on the pinned deps and on a wrong JUCE tag (exit 3), then committed all of it with claim C-046 through tools/save.sh.",
+       "Commit and push in the same tool call that writes a file: every command that creates or edits a path in the repository ends with `bash tools/save.sh \"<msg>\" <those paths>`; run `bash tools/turn_end_check.sh` as the last call of every turn as a second line of defence.",
+       "`git status --porcelain` is empty after every tool call that wrote into the repository (the call's own output shows `saved <sha> ... unpushed commits: 0`).",
+       "state.json hash mismatch on tools/bootstrap_test_env.sh at 2026-10-14T19:40Z; `git status` showed ?? python/requirements*.txt, ?? research/spikes/pyworld-direct/.",
+       recurrence="L-20261010T094000Z-continuation-left-work-uncommitted-and-checkpoint-stale")
+lesson("20261014T195600Z", "claims-generator-hard-coded-knowledge-item-date",
+       "The claims generator stamped every new knowledge item 2026-10-10T11:00:<index>Z regardless of when the claim was added", "Low",
+       ["applies:all", "tech:python", "kind:verification-gap"],
+       "A generator writes dated records (knowledge items, lessons) and is re-run in later sessions to add new entries.",
+       "tools/gen/claims.py built the item timestamp from a fixed prefix plus the claim's list index and accepted but ignored a kstamp argument, so C-046 (found 2026-10-14) would have been recorded as discovered on 2026-10-10.",
+       "Stored kstamp on each claim, used it for the item ID and recorded_at when given, and gave C-046 its real time (2026-10-14T19:50:00Z).",
+       "Generators of dated records take the timestamp from the record's own field or the clock, never from a constant; a claim added after the first generation run carries kstamp.",
+       "`grep -L 'recorded_at: 2026-10-10' knowledge/K-20261014*.md` lists every item stamped 20261014.",
+       "tools/gen/claims.py lines 18-21 and 150 before and after this commit.")
 
 def render(x):
     rec = x["recurrence"] or "null"
