@@ -168,6 +168,30 @@ for pth in ["../acoustic.onnx", "guide/../../acoustic.onnx", "/etc/acoustic.onnx
 for d in ("voice-legacy", "voice-convert", "voice-ca"):
     check("T-028", d + " fixture accepted", accepts((ROOT / f"tests/fixtures/{d}/manifest.json").read_text()), True)
 
+# ---- test_playback.cpp ----
+tsa = lambda ppq, hb, tol=0.1: o.take_sample_at(4.0, 120.0, 48000, 48000, ppq, hb, tol)
+for ppq, hb, tol, exp in [(4.0, 120.0, .1, 0), (5.0, 120.0, .1, 24000), (4.0 + 1.2 / 48000, 120.0, .1, 1), (4.0 + .8 / 48000, 120.0, .1, 0),
+                          (4.0 + 2.0 * 47999 / 48000, 120.0, .1, 47999), (3.99, 120.0, .1, None), (6.0, 120.0, .1, None), (5.0, 120.1, .1, 24000), (5.0, 120.2, .1, None), (5.0, 121.0, .5, None)]:
+    check("T-032", f"ppq {ppq} bpm {hb}", tsa(ppq, hb, tol), exp)
+def rb(start, bpm, sr, samples, playing, ppq, hbpm, hsr, gain, n):
+    out = []
+    for i in range(n):
+        q = ppq + i * hbpm / (60 * hsr)
+        k = o.take_sample_at(start, bpm, sr, len(samples), q, hbpm) if playing and samples is not None else None
+        out.append(o.soft_clip(gain * samples[k]) if k is not None else 0.0)
+    return out
+ramp = [1e-5 * k for k in range(48000)]
+blk = rb(2.0, 120.0, 48000, ramp, True, 2.0, 120.0, 44100.0, 1.0, 64)
+results.append(("T-033", "44.1k mapping", all(abs(blk[i] - 1e-5 * math.floor(i / 44100 * 48000 + .5)) <= 1e-7 for i in range(64)), None, None))
+for ppq, g, exp in [(2.8, 2.0, .384), (2.9, 2.0, .432), (2.9, 4.0, o.soft_clip(.864))]:
+    results.append(("T-033", f"ppq {ppq} gain {g}", abs(rb(2.0, 120.0, 48000, ramp, True, ppq, 120.0, 48000.0, g, 1)[0] - exp) <= 1e-6, None, exp))
+for what, args in [("stopped", (False, 2.5, 120.0)), ("stale", (True, 2.5, 130.0)), ("before", (True, 0.0, 120.0)), ("after", (True, 4.0, 120.0))]:
+    check("T-033", what + " silent", rb(2.0, 120.0, 48000, ramp, args[0], args[1], args[2], 48000.0, 1.0, 64), [0.0] * 64)
+tail = rb(2.0, 120.0, 48000, ramp, True, 4.0 - 2.0 * 10 / 48000, 120.0, 48000.0, 1.0, 20)
+results.append(("T-033", "end of take", abs(tail[9] - 1e-5 * 47999) <= 1e-6 and tail[10] == 0.0, (tail[9], tail[10]), None))
+pp = dict(voiceId="v1", bpm=120.0, outputSampleRate=48000, conversionEnabled=True, portamentoSec=0.06, vibratoCents=0.0, seed=0)
+h0, _ = o.phrase_hash([N(0.0, 1.0, 60)], [o.Tok(o.TEXT, "la", [], False)], pp); check("T-034", "golden", h0, 14710552853263154277)
+
 if __name__ == "__main__":
     bad = [r for r in results if not r[2]]
     print(f"expectations checked: {len(results)}; mismatches: {len(bad)}")
