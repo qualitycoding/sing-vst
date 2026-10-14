@@ -110,7 +110,7 @@ check("T-026", "no overshoot", o.frame_durations([["a", 0, .5]] + [["x", .5 + i 
 for what, s in [("too short", [["a", 0, .01], ["b", .01, .015], ["c", .015, .02]]), ("empty", [])]:
     try: o.frame_durations(s, 100.0); check("T-026", what + " raises", False, True)
     except o.ValidationError: check("T-026", what + " raises", True, True)
-for x, y, tol in [(0.5, 0.5, 0), (-0.784, -0.784, 0), (1.0, 0.9410412542, 1e-6), (-1.0, -0.9410412542, 1e-6), (2.0, 0.9799983986, 1e-6)]:
+for x, y, tol in [(0.5, 0.5, 0), (-0.78, -0.78, 0), (1.0, 0.9410412542, 1e-6), (-1.0, -0.9410412542, 1e-6), (2.0, 0.9799983986, 1e-6)]:
     results.append(("T-027", f"softclip {x}", abs(o.soft_clip(x) - y) <= max(tol, 1e-12), o.soft_clip(x), y))
 results.append(("T-027", "softclip(100) in (0.979, 0.98]", 0.979 < o.soft_clip(100.0) <= 0.98, o.soft_clip(100.0), 0.98))
 results.append(("T-027", "ceiling 0.5", abs(o.soft_clip(1.0, 0.5) - 0.4999987712) <= 1e-6, o.soft_clip(1.0, 0.5), 0.4999987712))

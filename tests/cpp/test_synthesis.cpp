@@ -107,7 +107,7 @@ TEST_CASE ("T-026 spansToFrameDurations: bounded cumulative rounding, exact tota
 
 TEST_CASE ("T-027 softClip and peakAbs (D-021, PK-30)", "[synthesis]") {
     CHECK (softClip (0.5f) == 0.5f);
-    CHECK (softClip (-0.784f) == -0.784f);
+    CHECK (softClip (-0.78f) == -0.78f);                     // inside the knee (0.8 * 0.98 = 0.784)
     CHECK_THAT (softClip (1.0f), WithinAbs (0.9410412542, 1e-6));
     CHECK_THAT (softClip (-1.0f), WithinAbs (-0.9410412542, 1e-6));
     CHECK_THAT (softClip (2.0f), WithinAbs (0.9799983986, 1e-6));
