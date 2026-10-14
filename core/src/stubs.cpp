@@ -1,10 +1,12 @@
-// STUBS: every function throws NotImplemented until its plan step replaces it (plan/PLAN.md S-002..S-008).
-// The implementer deletes this file once every symbol has a real definition (S-008).
+// STUBS: every function throws NotImplemented until its plan step replaces it (plan/PLAN.md S-002..S-009).
+// The implementer deletes this file once every symbol has a real definition (S-009).
 #include "singvst/align.hpp"
 #include "singvst/engine.hpp"
 #include "singvst/errors.hpp"
 #include "singvst/g2p.hpp"
 #include "singvst/lyrics.hpp"
+#include "singvst/midifile.hpp"
+#include "singvst/ort_runtime.hpp"
 #include "singvst/playback.hpp"
 #include "singvst/render.hpp"
 #include "singvst/synthesis.hpp"
@@ -54,6 +56,12 @@ std::size_t TakeSlot::retiredCount() const { throw NotImplemented ("TakeSlot::re
 std::unique_ptr<GuideEngine> GuideEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("GuideEngine::load"); }
 std::unique_ptr<ConverterEngine> ConverterEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("ConverterEngine::load"); }
 std::vector<float> resample (const std::vector<float>&, int, int) { throw NotImplemented ("resample"); }
+std::vector<float> standardNormal (std::uint64_t, std::size_t) { throw NotImplemented ("standardNormal"); }
+const OrtRuntimeInfo& loadOrtRuntime (const std::filesystem::path&) { throw NotImplemented ("loadOrtRuntime"); }
+bool ortRuntimeLoaded() noexcept { return false; }
+std::string bundledOrtFileName() { throw NotImplemented ("bundledOrtFileName"); }
+MidiImport importMidi (std::string_view) { throw NotImplemented ("importMidi"); }
+std::string sha256Hex (std::string_view) { throw NotImplemented ("sha256Hex"); }
 
 RenderedTake renderTake (const RenderRequest&, const Dictionary&, GuideEngine&, ConverterEngine*, const std::atomic<bool>&, std::vector<std::string>*) { throw NotImplemented ("renderTake"); }
 struct Renderer::Impl {};

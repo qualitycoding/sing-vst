@@ -1,0 +1,10 @@
+# singvst-render (D-014)
+execute_process(COMMAND git rev-parse HEAD WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE SINGVST_GIT_COMMIT
+                OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+if(NOT SINGVST_GIT_COMMIT)
+    set(SINGVST_GIT_COMMIT unknown)
+endif()
+add_executable(singvst-render main.cpp)
+target_link_libraries(singvst-render PRIVATE singvst_core nlohmann_json::nlohmann_json)
+target_compile_definitions(singvst-render PRIVATE SINGVST_GIT_COMMIT="${SINGVST_GIT_COMMIT}" SINGVST_ORT_VERSION="${SINGVST_ORT_VERSION}")
+singvst_copy_runtime_files(singvst-render $<TARGET_FILE_DIR:singvst-render>)

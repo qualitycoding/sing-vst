@@ -1,0 +1,18 @@
+# Frozen C++ suites (plan/TRACEABILITY.md). Core tests need no JUCE; plugin tests link the plugin's shared code.
+include(${catch2_SOURCE_DIR}/extras/Catch.cmake)
+file(GLOB SINGVST_CORE_TESTS CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/test_*.cpp)
+list(FILTER SINGVST_CORE_TESTS EXCLUDE REGEX "test_plugin\\.cpp$")
+add_executable(singvst_tests ${SINGVST_CORE_TESTS})
+target_link_libraries(singvst_tests PRIVATE singvst_core Catch2::Catch2WithMain)
+set(_defs SINGVST_FIXTURES="${PROJECT_SOURCE_DIR}/tests/fixtures" SINGVST_TEST_ORT_LIB="${SINGVST_ORT_LIBRARY}"
+          SINGVST_CMUDICT="${SINGVST_CMUDICT}" _USE_MATH_DEFINES)
+target_compile_definitions(singvst_tests PRIVATE ${_defs})
+singvst_copy_runtime_files(singvst_tests $<TARGET_FILE_DIR:singvst_tests>)
+catch_discover_tests(singvst_tests DISCOVERY_MODE PRE_TEST PROPERTIES TIMEOUT 120)
+if(SINGVST_BUILD_PLUGIN)
+    add_executable(singvst_plugin_tests ${CMAKE_CURRENT_SOURCE_DIR}/test_plugin.cpp)
+    target_link_libraries(singvst_plugin_tests PRIVATE SingVst Catch2::Catch2WithMain)
+    target_compile_definitions(singvst_plugin_tests PRIVATE ${_defs} JUCE_STANDALONE_APPLICATION=0)
+    singvst_copy_runtime_files(singvst_plugin_tests $<TARGET_FILE_DIR:singvst_plugin_tests>)
+    catch_discover_tests(singvst_plugin_tests DISCOVERY_MODE PRE_TEST PROPERTIES TIMEOUT 120)
+endif()
