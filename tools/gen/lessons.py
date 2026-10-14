@@ -209,6 +209,15 @@ lesson("20261014T203000Z", "oracle-had-three-rule-defects-and-no-checks-of-its-o
        "Before an oracle checks any frozen expectation, give it randomised invariant checks derived from the decisions, and show those checks fail on a deliberately broken copy.",
        "`python -I research/spikes/oracle/properties.py 3000` exits 0 and research/spikes/oracle/properties-output.txt shows 0 failures; the mutation run is recorded in research/rounds/round-5.md.",
        "research/spikes/oracle/properties-output.txt; mutation run against `git show 6fe0e5d:research/spikes/oracle/oracle.py` (4 failures).")
+lesson("20261014T220000Z", "hand-derived-test-expectations-wrong-at-boundaries",
+       "Three expected values written by hand into tests were wrong; the oracle cross-check caught all three before the freeze", "Medium",
+       ["applies:all", "tech:cpp", "kind:verification-gap"],
+       "Writing expected values for tests about rounding, indexing or set membership by mental arithmetic, before running them through an independent oracle.",
+       "test_g2p.cpp asserted 'ao' was absent from the mini dictionary (it occurs in 'song'); test_playback.cpp expected sample 1 at exactly half a sample (binary rounding of 4 + x - 4 gives 0.4999...) and sample 47999 at ppq 5.99998 (that is sample 47999.52, which rounds out of range).",
+       "Re-derived each expectation with research/spikes/oracle/check_expectations.py, changed the fixture duplicate line to a phone no other word uses (zh), and moved the rounding cases off exact .5 boundaries (0.6 / 0.4 sample) and onto the exact last-sample position.",
+       "Compute every expected value with the oracle before writing it into a test, and keep inputs away from exact rounding boundaries unless the boundary is the subject (then build the input so the boundary is exact in binary).",
+       "`python -I research/spikes/oracle/check_expectations.py` reports 0 mismatches and is run before every test-file commit.",
+       "check_expectations output: 'MISMATCH T-007 hasPhone ao', 'MISMATCH T-032 ppq 4.000020833333333', 'MISMATCH T-032 ppq 5.99998'.")
 
 def render(x):
     rec = x["recurrence"] or "null"
