@@ -65,17 +65,18 @@ TEST_CASE ("T-041 loadOrtRuntime: explicit path only, version check, idempotent,
     CHECK_THROWS_AS (loadOrtRuntime (fs::path { SINGVST_FIXTURES } / "does-not-exist" / bundledOrtFileName()), ValidationError);
     CHECK_THROWS_AS (loadOrtRuntime (testutil::fixture ("not_ort.bin")), ValidationError);
     CHECK_FALSE (ortRuntimeLoaded());
-    const auto& info = loadOrtRuntime (SINGVST_TEST_ORT_LIB);
+    const fs::path lib { SINGVST_TEST_ORT_LIB };
+    const auto& info = loadOrtRuntime (lib);
     CHECK (info.version == "1.31.0");
-    CHECK (fs::equivalent (info.path, fs::path { SINGVST_TEST_ORT_LIB }));
+    CHECK (fs::equivalent (info.path, lib));
     CHECK (info.path.is_absolute());
     CHECK (ortRuntimeLoaded());
-    CHECK (&loadOrtRuntime (SINGVST_TEST_ORT_LIB) == &info);               // idempotent for the same path
+    CHECK (&loadOrtRuntime (lib) == &info);               // idempotent for the same path
     std::mt19937_64 rng { std::random_device {}() };
     const auto copyDir = fs::temp_directory_path() / ("singvst-T041-" + std::to_string (rng()));
     fs::create_directories (copyDir);
     const auto copy = copyDir / bundledOrtFileName();
-    fs::copy_file (SINGVST_TEST_ORT_LIB, copy);
+    fs::copy_file (lib, copy);
     CHECK_THROWS_AS (loadOrtRuntime (copy), ValidationError);             // a second, different library is refused
     std::error_code ec; fs::remove_all (copyDir, ec);
 }

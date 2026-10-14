@@ -2,6 +2,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <atomic>
+#include <chrono>
 #include <clocale>
 #include <cmath>
 #include <thread>
@@ -170,14 +171,21 @@ TEST_CASE ("T-038 TakeSlot under concurrent publish and acquire: every acquired 
             slot.release();
         }
     });
-    for (int i = 1; i <= 2000; ++i) {
-        auto t = std::make_unique<RenderedTake>(); t->contentHash = (std::uint64_t) i; t->samples.assign (256, (float) i);
-        slot.publish (std::move (t));
-        if (i % 7 == 0) (void) slot.collect();
+    struct Joiner {                                          // stops and joins the reader on every exit path (no std::terminate)
+        std::atomic<bool>& done; std::thread& t;
+        ~Joiner() { done = true; if (t.joinable()) t.join(); }
+    };
+    {
+        Joiner joiner { done, reader };
+        for (int i = 1; i <= 2000; ++i) {
+            auto t = std::make_unique<RenderedTake>(); t->contentHash = (std::uint64_t) i; t->samples.assign (256, (float) i);
+            slot.publish (std::move (t));
+            if (i % 7 == 0) (void) slot.collect();
+        }
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds (10);
+        while (reads.load() < 1000 && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
     }
-    while (reads.load() < 1000) std::this_thread::yield();
-    done = true;
-    reader.join();
+    CHECK (reads.load() >= 1000);
     CHECK (corrupt.load() == 0);
     (void) slot.collect();
     CHECK (slot.retiredCount() == 0);
