@@ -1,0 +1,1 @@
+cases 3000 x2; invariant failures: 0

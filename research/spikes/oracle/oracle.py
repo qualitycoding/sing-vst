@@ -92,14 +92,15 @@ def syllabify(phones, n):
 @dataclass
 class Note:
     start: float; end: float; midi: int
+EPS_BEAT = 1e-9
 def to_monophonic(notes):
-    ns = sorted(notes, key=lambda x: (x.start, -x.midi))
+    ns = sorted([x for x in notes if x.end - x.start > EPS_BEAT], key=lambda x: (x.start, -x.midi))   # D-006 step 1-2
     out = []
     for x in ns:
-        if out and abs(out[-1].start - x.start) < 1e-12: continue  # equal start: highest pitch kept (sorted first)
+        if out and abs(out[-1].start - x.start) <= EPS_BEAT: continue    # equal start: highest pitch (sorted first) kept
         if out and out[-1].end > x.start: out[-1] = Note(out[-1].start, x.start, out[-1].midi)
         out.append(Note(x.start, x.end, x.midi))
-    return [x for x in out if x.end - x.start > 0]
+    return [x for x in out if x.end - x.start > EPS_BEAT]
 @dataclass
 class Assign:
     note: Note; phonemes: list; ext: bool = False
@@ -121,6 +122,7 @@ def align(notes, toks, d: Dictionary):
             keep = [p for p in t.phonemes if d.has_phone(p) or p in ("sp", "ap")]
             bad = [p for p in t.phonemes if p not in keep]
             if bad: warn.append("unknown phonemes " + " ".join(bad))
+            keep = [{"sp": "SP", "ap": "AP"}.get(p, p) for p in keep]
             units.append(("syl", keep or ["ah"])); i += 1
         else:
             units.append(("ext", None)); i += 1
@@ -146,6 +148,8 @@ def layout(assigns, bpm, c=0.06):
     segs = []   # (kind, start, end, assign)
     for k, a in enumerate(assigns):
         s, e = sec(a.note.start), sec(a.note.end)
+        if e - s <= 0 or (k > 0 and a.note.start < assigns[k-1].note.end - EPS_BEAT) or not a.phonemes:
+            raise ValidationError("layout needs sorted, non-overlapping notes of positive length with phonemes")
         if segs and s > segs[-1][2] + 1e-12: segs.append(["gap", segs[-1][2], s, None])
         segs.append(["note", s, e, a])
     # per segment: lists of (phone, dur) at head and tail; nucleus fills the rest
@@ -167,18 +171,19 @@ def layout(assigns, bpm, c=0.06):
     spans = []
     for k, (kind, s, e, a) in enumerate(segs):
         dur = e - s
-        if kind == "note" and equal[k]:
-            ph = a.phonemes; step = dur / len(ph)
-            for i, p in enumerate(ph): spans.append([p, s + i * step, s + (i + 1) * step])
-            continue
         hsum = sum(x[1] for x in head[k]); tsum = sum(x[1] for x in tail[k])
         if kind == "note" and hsum + tsum > 0.8 * dur:
             f = 0.8 * dur / (hsum + tsum); head[k] = [(p, x * f) for p, x in head[k]]; tail[k] = [(p, x * f) for p, x in tail[k]]
             hsum *= f; tsum *= f
         t = s
         for p, x in head[k]: spans.append([p, t, t + x]); t += x
-        nuc = "SP" if kind == "gap" else a.phonemes[next(i for i, p in enumerate(a.phonemes) if is_vowel(p))]
-        spans.append([nuc, t, e - tsum]); t = e - tsum
+        if kind == "note" and equal[k]:          # no vowel: the phones share [s, e - tsum] equally; the tail still follows
+            ph = a.phonemes; step = (e - tsum - t) / len(ph)
+            for i, p in enumerate(ph): spans.append([p, t + i * step, t + (i + 1) * step])
+        else:
+            nuc = "SP" if kind == "gap" else a.phonemes[next(i for i, p in enumerate(a.phonemes) if is_vowel(p))]
+            spans.append([nuc, t, e - tsum])
+        t = e - tsum
         for p, x in tail[k]: spans.append([p, t, t + x]); t += x
         spans[-1][2] = e
     return spans
@@ -207,12 +212,13 @@ def rvc_coarse(h):
     m = 1 if m <= 1 else min(m, 255)
     return int(math.floor(m + 0.5)) if abs((m % 1) - 0.5) > 1e-12 else int(round(m))   # numpy rint = half-to-even
 def frame_durations(spans, fr):
+    n = len(spans)
+    if n == 0: raise ValidationError("no spans")
     total = int(math.floor(spans[-1][2] * fr + 0.5))
-    if total < len(spans): raise ValidationError("too short")
+    if total < n: raise ValidationError("too short")
     b, out = 0, []
     for k, sp in enumerate(spans):
-        nb = int(math.floor(sp[2] * fr + 0.5)); nb = max(nb, b + 1)
-        if k == len(spans) - 1: nb = max(total, b + 1)
+        nb = total if k == n - 1 else min(max(int(math.floor(sp[2] * fr + 0.5)), b + 1), total - (n - 1 - k))
         out.append(nb - b); b = nb
     return out
 def soft_clip(x, c=0.98):

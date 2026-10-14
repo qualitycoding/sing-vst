@@ -18,6 +18,12 @@ L-20261014T195500Z, recurrence of L-20261010T094000Z). The store (Lessons @ ac02
   checkpoint in logs/<exp>, so a hosted session cut at its time limit continues if logs/<exp> persists (D-016); the
   inference weights for export are assets/weights/<name>.pth in float16 with keys config, weight, sr, f0, version (D-012, S-013).
 
+- **Oracle defects (corrected, lesson L-20261014T203000Z).** research/spikes/oracle/oracle.py had three rule defects:
+  a vowel-less syllable dropped the next onset, frame durations could overshoot their total, and a zero-length note with an
+  equal start removed the real note. Fixed; research/spikes/oracle/properties.py now checks six invariants over 6000 random
+  cases (0 failures, properties-output.txt). Mutation check: against the unpatched oracle (commit 6fe0e5d) it reports 4
+  invariant failures, so the checks can fail.
+
 ## Saturation (provisional)
 New load-bearing claims: 3 (C-046, C-047, C-048). Downgrades: 0. Contradictions: 0. Not yet saturated: round 6 runs the cited-file existence
 check and the oracle over the Phase 2 expectations; if it adds nothing, research closes at round 6 (protocol maximum).
