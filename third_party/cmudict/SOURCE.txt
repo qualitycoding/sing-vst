@@ -1,0 +1,2 @@
+CMUdict, https://github.com/cmusphinx/cmudict at commit 74790861f652b15e4ac49015a90074ad62a27690 (cmudict.dict, LICENSE), unmodified.
+SHA-256 cmudict.dict 81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22 (research/spikes/deps-pins/output.txt, C-016).

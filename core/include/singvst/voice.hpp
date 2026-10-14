@@ -35,6 +35,9 @@ struct VoiceManifest {
     std::map<std::string, std::string> sha256; // relative path -> lower-case hex SHA-256; must cover every referenced file
 };
 
+/** Lower-case hex SHA-256 of bytes (FIPS 180-4), implemented in the core (D-008). */
+std::string sha256Hex (std::string_view bytes);
+
 /** Parses manifest.json text. Throws ValidationError on any schema rule in D-008. */
 VoiceManifest parseManifest (std::string_view json);
 
