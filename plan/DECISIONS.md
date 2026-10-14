@@ -258,8 +258,13 @@ while armed; event positions = block PPQ + sample offset · bpm / (60 · sample 
 stored notes replaced, bpm taken from the host, render submitted, back to `Idle`; disarm returns to `Idle` and keeps stored
 notes. Renders are submitted (message thread, 4 Hz timer) after: capture end, import, voice load, lyric edits (500 ms after
 the last keystroke), changes of `convert`/`portamento`/`vibrato`/`seed`, a host tempo differing from the take's by > 0.1
-bpm, or a host sample rate differing from the take's. `gain` never triggers a render. No voice loaded → no render, status
-message "Load a voice". State = `PluginState` JSON (UTF-8) carrying lyrics, voice path, stored notes, render params and
+bpm, or a host sample rate differing from the take's. `gain` never triggers a render. No voice loaded → no render and
+`lastError()` = `Load a voice`. `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
+last. Capture never allocates on the audio thread (D-022): `arm(true)` preallocates a buffer of 4096 raw note events; the
+audio thread appends `(ppq, note, on/off)` without allocating (events beyond 4096 are dropped and counted); the message-thread
+timer feeds them to `CaptureRecorder`, and after the stop it stores the notes (a dropped-event count > 0 adds the warning
+`capture buffer full: <n> events dropped`). The plugin finds `cmudict.dict` and the ONNX Runtime library beside its own
+binary (`juce::File::currentExecutableFile`, which is the plug-in module itself when hosted; D-024). State = `PluginState` JSON (UTF-8) carrying lyrics, voice path, stored notes, render params and
 gain; restore applies the parameters, loads the voice if the path exists (else `lastError`, notes and lyrics kept) and
 submits a render; malformed state → defaults kept and `lastError` set. Tests: T-035, T-036, T-053…T-058.
 

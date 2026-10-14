@@ -15,7 +15,8 @@ juce_add_plugin(SingVst
 file(GLOB SINGVST_PLUGIN_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 target_sources(SingVst PRIVATE ${SINGVST_PLUGIN_SOURCES})
 target_include_directories(SingVst PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_definitions(SingVst PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0 JUCE_STRICT_REFCOUNTEDPOINTER=1)
+target_compile_definitions(SingVst PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0 JUCE_STRICT_REFCOUNTEDPOINTER=1
+    JUCE_MODAL_LOOPS_PERMITTED=1)   # tests pump the message loop with runDispatchLoopUntil (T-054..T-058)
 target_link_libraries(SingVst
     PUBLIC singvst_core juce::juce_audio_utils
            juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags)
