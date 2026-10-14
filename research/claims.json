@@ -1290,5 +1290,57 @@
    "T-P10",
    "PK-41"
   ]
+ },
+ {
+  "id": "C-047",
+  "claim": "RVC 81eed5e train/train.py resumes automatically: it loads the newest D_*.pth and G_*.pth in logs/<exp> (sorted by the digits in the name) and falls back to the pretrained models only when none load; checkpoints are written every save_every_epoch epochs, as G_/D_2333333.pth when if_latest (-l 1) is set.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/rvc-resume/output.txt",
+    "doi": "",
+    "title": "spike rvc-resume",
+    "version": "",
+    "locator": "resume and checkpoint lines",
+    "accessed": "2026-10-14",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-016",
+   "S-014",
+   "T-P05"
+  ]
+ },
+ {
+  "id": "C-048",
+  "claim": "RVC 81eed5e writes inference weights with savee() to assets/weights/<name>.pth (relative to the RVC working directory): weights stored as float16, keys config (synthesiser constructor list; 48k upsample rates 10,6,2,2,2 = 480 samples per 100 fps frame), sr, f0, version; one file per save when -sw 1 and a final file when training completes.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/rvc-resume/output.txt",
+    "doi": "",
+    "title": "spike rvc-resume",
+    "version": "",
+    "locator": "inference weights lines",
+    "accessed": "2026-10-14",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-012",
+   "D-016",
+   "S-013"
+  ]
  }
 ]

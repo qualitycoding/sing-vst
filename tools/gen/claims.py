@@ -133,6 +133,12 @@ claim("C-046", "setuptools < 83 carries PYSEC-2026-3447 (fixed in 83.0.0) and se
       "software", True, [S("research/spikes/pyworld-direct/output.txt", "spike pyworld-direct", "all '==' lines", 1, "2026-10-14"),
                          S("research/spikes/pip-audit-setuptools/output.txt", "spike pip-audit-setuptools", "PYSEC-2026-3447 rows", 1, "2026-10-14")],
       "verified", ["D-019", "D-017", "T-P10", "PK-41"], ["subject:pyworld", "tech:python"], "pyworld 0.3.5 / setuptools 84.0.0", kstamp="20261014T195000Z")
+claim("C-047", "RVC 81eed5e train/train.py resumes automatically: it loads the newest D_*.pth and G_*.pth in logs/<exp> (sorted by the digits in the name) and falls back to the pretrained models only when none load; checkpoints are written every save_every_epoch epochs, as G_/D_2333333.pth when if_latest (-l 1) is set.",
+      "software", True, [S("research/spikes/rvc-resume/output.txt", "spike rvc-resume", "resume and checkpoint lines", 1, "2026-10-14")],
+      "verified", ["D-016", "S-014", "T-P05"], ["subject:rvc", "tech:rvc", "domain:ml-training"], "RVC 81eed5e", kstamp="20261014T201000Z")
+claim("C-048", "RVC 81eed5e writes inference weights with savee() to assets/weights/<name>.pth (relative to the RVC working directory): weights stored as float16, keys config (synthesiser constructor list; 48k upsample rates 10,6,2,2,2 = 480 samples per 100 fps frame), sr, f0, version; one file per save when -sw 1 and a final file when training completes.",
+      "software", True, [S("research/spikes/rvc-resume/output.txt", "spike rvc-resume", "inference weights lines", 1, "2026-10-14")],
+      "verified", ["D-012", "D-016", "S-013"], ["subject:rvc", "tech:rvc", "tech:onnx"], "RVC 81eed5e", kstamp="20261014T201001Z")
 
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")

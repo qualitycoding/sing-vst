@@ -14,6 +14,10 @@ L-20261014T195500Z, recurrence of L-20261010T094000Z). The store (Lessons @ ac02
   deps (exit 0) and on a JUCE 9.0.2 clone (exit 3).
 - tools/gen/claims.py now honours kstamp (lesson L-20261014T195600Z).
 
+- **C-047, C-048 (new, load-bearing, verified; research/spikes/rvc-resume).** RVC training resumes from the newest G_/D_
+  checkpoint in logs/<exp>, so a hosted session cut at its time limit continues if logs/<exp> persists (D-016); the
+  inference weights for export are assets/weights/<name>.pth in float16 with keys config, weight, sr, f0, version (D-012, S-013).
+
 ## Saturation (provisional)
-New load-bearing claims: 1 (C-046). Downgrades: 0. Contradictions: 0. Not yet saturated: round 6 runs the cited-file existence
+New load-bearing claims: 3 (C-046, C-047, C-048). Downgrades: 0. Contradictions: 0. Not yet saturated: round 6 runs the cited-file existence
 check and the oracle over the Phase 2 expectations; if it adds nothing, research closes at round 6 (protocol maximum).
