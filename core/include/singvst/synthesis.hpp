@@ -34,8 +34,8 @@ int rvcCoarsePitch (double hz);
     number of spans. */
 std::vector<std::int64_t> spansToFrameDurations (const std::vector<PhonemeSpan>& spans, double frameRateHz);
 
-/** Output soft clip (D-021): identity for |x| <= 0.8*ceiling, then a tanh knee that approaches but never reaches ceiling;
-    odd-symmetric and monotonic. Safe on the audio thread. */
+/** Output soft clip (D-021): identity for |x| <= 0.8*ceiling, then a tanh knee towards ceiling that never exceeds it;
+    odd-symmetric, monotonic, non-finite input -> 0. Safe on the audio thread. */
 float softClip (float x, float ceiling = 0.98f) noexcept;
 
 /** Largest absolute sample value (0 for empty input). */

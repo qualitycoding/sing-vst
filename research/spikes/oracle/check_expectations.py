@@ -73,6 +73,49 @@ check("T-017", "no lyrics", al(2, ""), ([(["ah"], True), (["ah"], True)], ["2 no
 check("T-018", "sp/ap", al(1, "[sp hh ah ap]"), ([(["SP", "hh", "ah", "AP"], False)], []))
 check("T-018", "unknown phones", al(2, "[zz qq] [hh zz ow]"), ([(["ah"], False), (["hh", "ow"], False)], ["unknown phonemes zz qq", "unknown phonemes zz"]))
 
+# ---- test_synthesis.cpp ----
+A = o.Assign
+def lay(assigns, bpm=120.0): return o.layout(assigns, bpm)
+def spans_eq(tid, what, got, exp):
+    ok = len(got) == len(exp) and all(g[0] == e[0] and abs(g[1] - e[1]) <= 1e-9 and abs(g[2] - e[2]) <= 1e-9 for g, e in zip(got, exp))
+    results.append((tid, what, ok, got, exp))
+for m, hz in [(69, 440.0), (57, 220.0), (81, 880.0), (60, 261.6255653005986)]: check("T-019", f"midi {m}", o.midi_to_hz(m), hz)
+check("T-019", "0 cents 0..127", max(abs(1200 * math.log2(o.midi_to_hz(m) / 440) - 100 * (m - 69)) for m in range(128)) <= 1e-9, True)
+spans_eq("T-020", "hh ah / l ow", lay([A(N(0, 1, 60), ["hh", "ah"]), A(N(1, 2, 62), ["l", "ow"])]), [("hh", 0, .06), ("ah", .06, .44), ("l", .44, .5), ("ow", .5, 1.0)])
+spans_eq("T-021", "clamp + SP", lay([A(N(0, .2, 60), ["l", "aa"]), A(N(.2, 1, 62), ["s", "t", "r", "ah", "ng", "k", "th"]), A(N(2, 3, 64), ["aa"])]),
+         [("l", 0, .04), ("aa", .04, .06), ("s", .06, .06 + .04 / 3), ("t", .06 + .04 / 3, .06 + .08 / 3), ("r", .06 + .08 / 3, .1), ("ah", .1, .34),
+          ("ng", .34, .34 + .16 / 3), ("k", .34 + .16 / 3, .34 + .32 / 3), ("th", .34 + .32 / 3, .5), ("SP", .5, 1.0), ("aa", 1.0, 1.5)])
+spans_eq("T-022", "vowel-less keeps onset", lay([A(N(0, 1, 60), ["hh", "m"]), A(N(1, 2, 62), ["hh", "ah"])]), [("hh", 0, .22), ("m", .22, .44), ("hh", .44, .5), ("ah", .5, 1.0)])
+spans_eq("T-022", "scale 2/3", lay([A(N(0, .2, 60), ["s", "t", "r", "eh", "ng", "k", "th"]), A(N(.2, 1.0, 62), ["s", "t", "ah"])]),
+         [("s", 0, .08 / 9), ("t", .08 / 9, .16 / 9), ("r", .16 / 9, .24 / 9), ("eh", .24 / 9, .24 / 9 + .02), ("ng", .24 / 9 + .02, .32 / 9 + .02),
+          ("k", .32 / 9 + .02, .40 / 9 + .02), ("th", .40 / 9 + .02, .48 / 9 + .02), ("s", .48 / 9 + .02, .48 / 9 + .02 + .04 / 3), ("t", .48 / 9 + .02 + .04 / 3, .1), ("ah", .1, .5)])
+check("T-022", "empty", lay([]), [])
+for what, a in [("overlap", [A(N(0, 2, 60), ["aa"]), A(N(1, 3, 62), ["aa"])]), ("zero", [A(N(1, 1, 60), ["aa"])]), ("no phones", [A(N(0, 1, 60), [])])]:
+    try: lay(a); check("T-022", what + " raises", False, True)
+    except o.ValidationError: check("T-022", what + " raises", True, True)
+f = o.f0_curve([A(N(0, 1, 69), ["aa"]), A(N(1, 2, 81), ["aa"]), A(N(3, 4, 69), ["aa"])], 60.0, 100.0, 4.0, 0.1, 0.0)
+check("T-023", "len", len(f), 400)
+for i, hz in [(50, 440.0), (100, 440.0), (105, 622.2539674441622), (110, 880.0), (150, 880.0), (250, 0.0), (300, 440.0)]:
+    results.append(("T-023", f"f[{i}]", abs(f[i] - hz) <= 1e-6 * max(1, hz), f[i], hz))
+one = [A(N(0, 1, 69), ["aa"])]
+for tot, n in [(0.5, 50), (0.501, 51), (0.5 + 1e-12, 50)]: check("T-024", f"frames {tot}", len(o.f0_curve(one, 120.0, 100.0, tot)), n)
+v = o.f0_curve([A(N(0, 4, 69), ["aa"])], 60.0, 1000.0, 4.0, 0.0, 100.0, 5.0); cents = [1200 * math.log2(x / 440) for x in v]
+results.append(("T-024", "vibrato +-100", abs(max(cents) - 100) <= .01 and abs(min(cents) + 100) <= .01 and all(x > 0 for x in v), (max(cents), min(cents)), (100, -100)))
+results.append(("T-024", "v[50]", abs(v[50] - 466.1637615) <= 1e-6 * 466, v[50], 466.1637615))
+for hz, b in [(0, 1), (-5, 1), (50, 1), (100, 20), (220, 60), (261.6255653005986, 73), (330, 93), (440, 122), (523.25, 143), (660, 174), (880, 217), (1046.5, 246), (1100, 255), (2000, 255)]:
+    check("T-025", f"{hz} Hz", o.rvc_coarse(hz), b)
+bins = [o.rvc_coarse(50 + 0.5 * k) for k in range(2101)]; check("T-025", "monotonic", all(b2 >= b1 for b1, b2 in zip(bins, bins[1:])), True)
+check("T-026", "[1,1,84]", o.frame_durations([["SP", 0, .0101], ["hh", .0101, .0102], ["ah", .0102, 1.0]], 44100 / 512), [1, 1, 84])
+check("T-026", "no overshoot", o.frame_durations([["a", 0, .5]] + [["x", .5 + i * 1e-4, .5 + (i + 1) * 1e-4] for i in range(5)], 100.0), [45, 1, 1, 1, 1, 1])
+for what, s in [("too short", [["a", 0, .01], ["b", .01, .015], ["c", .015, .02]]), ("empty", [])]:
+    try: o.frame_durations(s, 100.0); check("T-026", what + " raises", False, True)
+    except o.ValidationError: check("T-026", what + " raises", True, True)
+for x, y, tol in [(0.5, 0.5, 0), (-0.784, -0.784, 0), (1.0, 0.9410412542, 1e-6), (-1.0, -0.9410412542, 1e-6), (2.0, 0.9799983986, 1e-6)]:
+    results.append(("T-027", f"softclip {x}", abs(o.soft_clip(x) - y) <= max(tol, 1e-12), o.soft_clip(x), y))
+results.append(("T-027", "softclip(100) in (0.979, 0.98]", 0.979 < o.soft_clip(100.0) <= 0.98, o.soft_clip(100.0), 0.98))
+results.append(("T-027", "ceiling 0.5", abs(o.soft_clip(1.0, 0.5) - 0.4999987712) <= 1e-6, o.soft_clip(1.0, 0.5), 0.4999987712))
+check("T-027", "NaN", o.soft_clip(float("nan")), 0.0); check("T-027", "inf", o.soft_clip(float("inf")), 0.0)
+
 if __name__ == "__main__":
     bad = [r for r in results if not r[2]]
     print(f"expectations checked: {len(results)}; mismatches: {len(bad)}")

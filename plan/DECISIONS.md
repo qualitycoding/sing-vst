@@ -131,7 +131,8 @@ The oracle `research/spikes/oracle/oracle.py` implements D-004…D-007, D-009, D
 ### D-021 Gain staging
 Renders are kept **unclipped** in `RenderedTake::samples` and `unclippedPeak` records their peak (PK-30). The only clipping
 is at the output: `softClip(x, c = 0.98)`: non-finite → 0; `|x| ≤ 0.8c` → `x`; else
-`sign(x)·(0.8c + 0.2c·tanh((|x| − 0.8c)/(0.2c)))` — odd, monotonic, `< c` for every finite input. The `gain` parameter
+`sign(x)·(0.8c + 0.2c·tanh((|x| − 0.8c)/(0.2c)))` — odd, monotonic, never exceeds `c` (it equals `c` only where `tanh`
+rounds to 1 in floating point). The `gain` parameter
 (−36…+12 dB) is applied before the soft clip. The CLI applies the same output stage unless `--raw`. Tests: T-027, T-033.
 
 ---
