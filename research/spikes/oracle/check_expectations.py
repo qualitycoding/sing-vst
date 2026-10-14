@@ -192,6 +192,24 @@ results.append(("T-033", "end of take", abs(tail[9] - 1e-5 * 47999) <= 1e-6 and 
 pp = dict(voiceId="v1", bpm=120.0, outputSampleRate=48000, conversionEnabled=True, portamentoSec=0.06, vibratoCents=0.0, seed=0)
 h0, _ = o.phrase_hash([N(0.0, 1.0, 60)], [o.Tok(o.TEXT, "la", [], False)], pp); check("T-034", "golden", h0, 14710552853263154277)
 
+# ---- test_midifile.cpp ----
+def mid(name): return o.import_midi((ROOT / "tests/fixtures" / name).read_bytes())
+n, txt, bpm, w = mid("lyrics.mid"); check("T-064", "lyrics.mid", (n, txt, bpm, w), ([(0, 1, 60), (1, 2, 62), (2, 3, 64)], "hel- lo world", 120.0, []))
+n, txt, bpm, w = mid("complex.mid")
+check("T-065", "complex notes", n, [(0, .5, 69), (.5, 1, 71), (1, 2, 48), (1, 2, 71), (2, 2.5, 72)]); check("T-065", "complex lyrics", txt, "a b c")
+check("T-065", "complex bpm", bpm, 60e6 / 666667.0); check("T-065", "complex warnings", w, ["tempo changes after beat 2 are ignored"])
+B = lambda *v: bytes(v); HDR0 = b"MThd" + B(0, 0, 0, 6, 0, 0, 0, 1, 0x01, 0xE0)
+trk = lambda body: b"MTrk" + len(body).to_bytes(4, "big") + body
+check("T-065", "empty track", o.import_midi(HDR0 + trk(B(0, 0xFF, 0x2F, 0))), ([], "", 120.0, []))
+for what, b in [("empty", b""), ("not MThd", b"RIFF" + HDR0[4:]), ("truncated header", HDR0[:10]), ("header length 5", b"MThd" + B(0, 0, 0, 5, 0, 0, 0, 1, 1)),
+                ("SMPTE", (ROOT / "tests/fixtures/smpte.mid").read_bytes()), ("format 2", (ROOT / "tests/fixtures/format2.mid").read_bytes()),
+                ("PPQ 0", b"MThd" + B(0, 0, 0, 6, 0, 0, 0, 1, 0, 0) + trk(B(0, 0xFF, 0x2F, 0))), ("chunk past end", HDR0 + b"MTrk" + B(0, 0, 1, 0) + B(0, 0xFF, 0x2F, 0)),
+                ("varlen 5", HDR0 + trk(B(0x81, 0x81, 0x81, 0x81, 1, 0x90, 60, 64))), ("data without status", HDR0 + trk(B(0, 0x3C, 0x40))),
+                ("tempo 2 bytes", HDR0 + trk(B(0, 0xFF, 0x51, 2, 7, 0xA1, 0, 0xFF, 0x2F, 0))), ("meta past end", HDR0 + trk(B(0, 0xFF, 5, 0x10, ord("a")))),
+                ("truncated note", HDR0 + trk(B(0, 0x90, 0x3C)))]:
+    try: o.import_midi(b); check("T-066", what + " rejected", False, True)
+    except o.ValidationError: check("T-066", what + " rejected", True, True)
+
 if __name__ == "__main__":
     bad = [r for r in results if not r[2]]
     print(f"expectations checked: {len(results)}; mismatches: {len(bad)}")

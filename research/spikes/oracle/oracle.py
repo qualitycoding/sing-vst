@@ -298,3 +298,56 @@ def parse_manifest(text):
     sh = m.get("sha256"); need(isinstance(sh, dict) and set(sh) == set(files), "sha256 keys")
     need(all(isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v) for v in sh.values()), "sha256 values")
     return m
+
+# ---------------- D-031 Standard MIDI File import ----------------
+import struct as _st
+def import_midi(b: bytes):
+    def need(c, what):
+        if not c: raise ValidationError(what)
+    need(len(b) >= 14 and b[:4] == b"MThd", "header")
+    hl = _st.unpack(">I", b[4:8])[0]; need(hl >= 6 and 8 + hl <= len(b), "header length")
+    fmt, ntr, div = _st.unpack(">HHH", b[8:14]); need(fmt in (0, 1), "format"); need(not (div & 0x8000), "smpte"); need(div > 0, "ppq")
+    pos = 8 + hl; tracks = []
+    while pos < len(b):
+        need(pos + 8 <= len(b), "chunk header"); cid = b[pos:pos + 4]; ln = _st.unpack(">I", b[pos + 4:pos + 8])[0]
+        need(pos + 8 + ln <= len(b), "chunk length"); body = b[pos + 8:pos + 8 + ln]; pos += 8 + ln
+        if cid == b"MTrk": tracks.append(body)
+    notes, lyrics, tempos = [], [], []
+    for ti, d in enumerate(tracks):
+        i, tick, run, held, order = 0, 0, None, {}, 0
+        def vlq():
+            nonlocal i
+            v = 0
+            for k in range(4):
+                need(i < len(d), "truncated varlen"); c = d[i]; i += 1; v = (v << 7) | (c & 0x7F)
+                if not c & 0x80: return v
+            raise ValidationError("varlen > 4 bytes")
+        while i < len(d):
+            tick += vlq(); need(i < len(d), "truncated event"); s = d[i]
+            if s >= 0x80: i += 1
+            else: need(run is not None, "data byte without status"); s = run
+            if s == 0xFF:
+                run = None; need(i < len(d), "meta type"); mt = d[i]; i += 1; ln = vlq(); need(i + ln <= len(d), "meta length"); data = d[i:i + ln]; i += ln
+                if mt == 0x05: lyrics.append((tick, ti, order, data)); order += 1
+                elif mt == 0x51: need(ln == 3, "tempo length"); tempos.append((tick, ti, int.from_bytes(data, "big")))
+                elif mt == 0x2F: break
+            elif s in (0xF0, 0xF7):
+                run = None; ln = vlq(); need(i + ln <= len(d), "sysex length"); i += ln
+            elif 0x80 <= s <= 0xEF:
+                run = s; hi = s & 0xF0; nb = 1 if hi in (0xC0, 0xD0) else 2; need(i + nb <= len(d), "channel data")
+                data = d[i:i + nb]; i += nb
+                if hi in (0x80, 0x90):
+                    key = (s & 0x0F, data[0]); on = hi == 0x90 and data[1] > 0
+                    if key in held: notes.append((held.pop(key), tick, data[0]))
+                    if on: held[key] = tick
+            else: raise ValidationError("bad status")
+        for (ch, k), st in held.items(): notes.append((st, tick, k))
+    out = sorted(((s / div, e / div, k) for s, e, k in notes if e > s), key=lambda x: (x[0], x[2]))
+    words = [x[3].decode("latin-1").strip(" \t\r\n") for x in sorted(lyrics, key=lambda x: (x[0], x[1], x[2]))]
+    txt = " ".join(w for w in words if w)
+    warns, bpm = [], 120.0
+    if tempos:
+        first = min(tempos, key=lambda x: (x[0], x[1])); bpm = 60e6 / first[2]
+        later = [x for x in tempos if x[0] > first[0] and x[2] != first[2]]
+        if later: warns.append("tempo changes after beat %g are ignored" % (min(x[0] for x in later) / div))
+    return out, txt, bpm, warns

@@ -151,7 +151,9 @@ t0 = trk([(0, tempo(90)), (960, tempo(140)), (0, meta(0x01, b"text event, not a 
 t1 = trk([(0, lyr("a")), (0, b"\x91\x45\x40"), (240, b"\x45\x00"), (0, b"\x47\x40"),       # running status: on 71, off via vel 0
           (240, b"\xf0\x03\x7e\x7f\xf7"),                                                 # sysex skipped
           (0, b"\x91\x47\x40"),                                                           # retrigger 71 at tick 480
-          (480, b"\x81\x47\x00"), (0, lyr("c")), (0, b"\x91\x48\x40")])                     # 72 held to track end (tick 960)
+          (480, b"\x81\x47\x00"), (0, lyr("c")), (0, b"\x91\x48\x40"),                      # 72 held to track end (tick 1200)
+          (0, b"\x91\x49\x40"), (0, b"\x81\x49\x00"),                                         # 73: zero length, dropped
+          (240, meta(0x01, b"pad"))])
 t2 = trk([(0, lyr("b")), (480, b"\x92\x30\x40"), (480, b"\x82\x30\x00"), (0, b"\x82\x31\x00")])   # stray off ignored
 unknown = b"XFIH" + struct.pack(">I", 4) + b"abcd"
 (ROOT / "complex.mid").write_bytes(b"MThd" + struct.pack(">IHHH", 6, 1, 3, 480) + t0 + unknown + t1 + t2)
