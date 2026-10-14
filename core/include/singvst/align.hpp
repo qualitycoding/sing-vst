@@ -15,8 +15,8 @@ struct Note {
     bool operator== (const Note&) const = default;
 };
 
-/** Sorts by start; notes with equal start keep only the highest pitch; an overlap truncates the earlier note at the later
-    start; notes whose length is <= 0 after this are dropped. */
+/** D-006: drops notes of length <= 1e-9 beats, sorts by (start, pitch descending), keeps only the highest pitch among notes
+    whose starts are within 1e-9 beats, truncates an earlier note at the next kept start, and drops notes of length <= 1e-9. */
 std::vector<Note> toMonophonic (std::vector<Note> notes);
 
 struct NoteAssignment {

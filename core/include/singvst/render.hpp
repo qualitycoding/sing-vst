@@ -29,8 +29,9 @@ enum class RenderStatus { Idle, Rendering, Ready, Failed };
 
 using RenderFn = std::function<RenderedTake (const RenderRequest&, const std::atomic<bool>& cancel)>;
 
-/** Background renderer (D-013): one worker thread; submit() cancels any in-flight job; results of superseded jobs are
-    discarded; a request whose phraseHash equals the current Ready take's is not re-rendered. */
+/** Background renderer (D-013): one worker thread; submit() cancels any in-flight job and keeps only the newest queued
+    request; results of superseded or cancelled jobs are discarded; a request whose phraseHash equals the current Ready
+    take's is not re-rendered; a failure sets Failed and lastError() but keeps latest(); the destructor cancels and joins. */
 class Renderer {
 public:
     explicit Renderer (RenderFn fn);

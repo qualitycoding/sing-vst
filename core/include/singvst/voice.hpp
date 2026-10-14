@@ -13,9 +13,8 @@ struct GuideSpec {
     int sampleRate = 44100;            // must be 44100 (C-009, C-036)
     int hopSize = 512;                 // must be 512
     std::string language = "en";       // prefix tried as '<language>/<phone>' when a phone is not in the model vocabulary (C-035)
-    int steps = 20;                    // diffusion sampling steps, 1..1000 (C-034)
-    double depth = 1.0;                // shallow-diffusion depth in (0, 1], already clamped to the model's max_depth by the packer (C-034)
-    int speedupLegacy = 0;             // unused in format v1 (must be 0); reserved
+    int steps = 20;                    // diffusion sampling steps, 1..1000; legacy models derive 'speedup' from it (C-034, D-012)
+    double depth = 1.0;                // shallow-diffusion depth in (0, 1], clamped to the model's max_depth by the packer (C-034)
     // role -> relative path. Required: acoustic, vocoder, phonemes. Optional: speaker (raw float32 .emb), languages (JSON map).
     std::map<std::string, std::string> files;
 };

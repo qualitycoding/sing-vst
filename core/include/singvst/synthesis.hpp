@@ -17,7 +17,8 @@ struct PhonemeSpan {
 double midiToHz (double midiNote);
 
 /** Contiguous phoneme spans covering [0, end of the last note] with note times taken relative to the first note's start;
-    gaps become "SP". Onset/coda placement and clamping by D-007. */
+    gaps become "SP". Onset/coda placement and clamping by D-007. Throws ValidationError unless the notes are sorted,
+    non-overlapping (start >= previous end - 1e-9 beats), of positive length and each has at least one phone. */
 std::vector<PhonemeSpan> layoutPhonemes (const std::vector<NoteAssignment>& notes, double bpm, double consonantSec = 0.06);
 
 /** f0 in Hz per frame (0 = unvoiced) for times i / frameRateHz, i in [0, ceil(totalSec * frameRateHz)), note times relative
@@ -28,8 +29,9 @@ std::vector<float> f0Curve (const std::vector<NoteAssignment>& notes, double bpm
 /** RVC coarse pitch bin 1..255 for a frequency in Hz, as RVC infer/vc/pipeline.py get_f0 (f0_min 50 Hz, f0_max 1100 Hz) (C-021). */
 int rvcCoarsePitch (double hz);
 
-/** Converts spans to frame counts by D-007: every count >= 1 and the sum equals round(lastEnd * frameRateHz).
-    Throws ValidationError when that total is smaller than the number of spans. */
+/** Converts spans to frame counts by D-007 (bounded cumulative rounding): every count >= 1 and the sum equals
+    floor(lastEnd * frameRateHz + 0.5) exactly. Throws ValidationError for no spans or when that total is smaller than the
+    number of spans. */
 std::vector<std::int64_t> spansToFrameDurations (const std::vector<PhonemeSpan>& spans, double frameRateHz);
 
 /** Output soft clip (D-021): identity for |x| <= 0.8*ceiling, then a tanh knee that approaches but never reaches ceiling;
