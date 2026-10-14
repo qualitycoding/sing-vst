@@ -116,6 +116,58 @@ results.append(("T-027", "softclip(100) in (0.979, 0.98]", 0.979 < o.soft_clip(1
 results.append(("T-027", "ceiling 0.5", abs(o.soft_clip(1.0, 0.5) - 0.4999987712) <= 1e-6, o.soft_clip(1.0, 0.5), 0.4999987712))
 check("T-027", "NaN", o.soft_clip(float("nan")), 0.0); check("T-027", "inf", o.soft_clip(float("inf")), 0.0)
 
+# ---- test_voice.cpp (T-028..T-030): the C++ mutations, re-created here; each must be valid JSON breaking exactly its rule ----
+import json
+H64 = "a" * 64
+BASE = '{"format": "singvoice", "format_version": 1, "name": "Me", "consent": "my own voice",\n "guide_licence": "TIGER v102, personal non-commercial",\n "guide": {"type": "diffsinger", "sample_rate": 44100, "hop_size": 512, "language": "en", "steps": 20, "depth": 0.4,\n           "files": {"acoustic": "guide/acoustic.onnx", "vocoder": "guide/vocoder.onnx", "phonemes": "guide/phonemes.txt"}},\n "converter": {"type": "rvc-v2", "sample_rate": 48000, "speaker_id": 0, "files": {"synth": "conv/rvc.onnx", "content": "conv/content.onnx"}},\n "sha256": {"guide/acoustic.onnx": "HASH", "guide/vocoder.onnx": "HASH", "guide/phonemes.txt": "HASH", "conv/rvc.onnx": "HASH", "conv/content.onnx": "HASH"}}'
+def ra(s, a, b):
+    assert a in s, f"pattern not in manifest: {a!r}"; return s.replace(a, b)
+base = lambda: ra(BASE, "HASH", H64)
+cpp = (ROOT / "tests/cpp/test_voice.cpp").read_text()
+check("T-029", "C++ BASE literal == checker BASE", BASE in cpp.replace('R"(', "").replace(')"', ""), True)
+def accepts(s):
+    try: o.parse_manifest(s); return True
+    except o.ValidationError: return False
+check("T-029", "base accepted", accepts(base()), True)
+m = o.parse_manifest(ra(ra(base(), '"language": "en", ', ""), '"speaker_id": 0, ', "")); check("T-028", "defaults", (m["guide"].get("language", "en"), m["converter"].get("speaker_id", 0)), ("en", 0))
+noconv = ra(ra(ra(base(), '"converter": {"type": "rvc-v2", "sample_rate": 48000, "speaker_id": 0, "files": {"synth": "conv/rvc.onnx", "content": "conv/content.onnx"}},', ""),
+         ', "conv/rvc.onnx": "' + H64 + '"', ""), ', "conv/content.onnx": "' + H64 + '"', "")
+check("T-028", "no converter accepted", accepts(noconv) and o.parse_manifest(noconv).get("converter") is None, True)
+check("T-028", "unknown top-level key accepted", accepts(ra(base(), '"format": "singvoice",', '"format": "singvoice", "comment": "x",')), True)
+bad = {
+ "not JSON": "{not json", "array": "[]", "empty": "",
+ "format": ra(base(), '"singvoice"', '"voice"'), "format_version": ra(base(), '"format_version": 1', '"format_version": 2'),
+ "name empty": ra(base(), '"name": "Me"', '"name": ""'), "consent missing": ra(base(), '"consent": "my own voice",', ""),
+ "guide_licence empty": ra(base(), '"TIGER v102, personal non-commercial"', '""'), "guide type": ra(base(), '"diffsinger"', '"nnsvs"'),
+ "guide sample_rate": ra(base(), '"sample_rate": 44100', '"sample_rate": 48000'), "hop_size": ra(base(), '"hop_size": 512', '"hop_size": 256'),
+ "steps 0": ra(base(), '"steps": 20', '"steps": 0'), "steps 1001": ra(base(), '"steps": 20', '"steps": 1001'), "steps fractional": ra(base(), '"steps": 20', '"steps": 2.5'),
+ "depth 0": ra(base(), '"depth": 0.4', '"depth": 0'), "depth 1.5": ra(base(), '"depth": 0.4', '"depth": 1.5'),
+ "language empty": ra(base(), '"language": "en"', '"language": ""'),
+ "acoustic role missing": ra(ra(base(), '"acoustic": "guide/acoustic.onnx", ', ""), '"guide/acoustic.onnx": "' + H64 + '", ', ""),
+ "unknown guide role": ra(base(), '"phonemes": "guide/phonemes.txt"}', '"phonemes": "guide/phonemes.txt", "pitch": "guide/phonemes.txt"}'),
+ "converter type": ra(base(), '"rvc-v2"', '"so-vits"'), "converter sample_rate": ra(base(), '"sample_rate": 48000', '"sample_rate": 22050'),
+ "speaker_id negative": ra(base(), '"speaker_id": 0', '"speaker_id": -1'),
+ "unknown converter role": ra(base(), '"content": "conv/content.onnx"}', '"content": "conv/content.onnx", "index": "conv/rvc.onnx"}'),
+ "sha256 missing a file": ra(base(), '"conv/content.onnx": "' + H64 + '"', '"conv/other.onnx": "' + H64 + '"'),
+ "sha256 extra key": ra(base(), '"conv/content.onnx": "' + H64 + '"', '"conv/content.onnx": "' + H64 + '", "extra.bin": "' + H64 + '"'),
+ "sha256 upper case": ra(base(), '"conv/rvc.onnx": "' + H64 + '"', '"conv/rvc.onnx": "' + "A" * 64 + '"'),
+ "sha256 63 digits": ra(base(), '"conv/rvc.onnx": "' + H64 + '"', '"conv/rvc.onnx": "' + "a" * 63 + '"')}
+for what, s in bad.items():
+    check("T-029", what + " rejected", accepts(s), False)
+    if what not in ("not JSON", "empty"):
+        try: json.loads(s); valid = True
+        except Exception: valid = False
+        check("T-029", what + " is valid JSON (only the rule is broken)", valid, True)
+check("T-030", "safe path accepted", accepts(ra(base(), "guide/acoustic.onnx", "guide/a-b_c.1.onnx")), True)
+for pth in ["../acoustic.onnx", "guide/../../acoustic.onnx", "/etc/acoustic.onnx", "C:/acoustic.onnx", "guide\\\\acoustic.onnx", "guide//acoustic.onnx",
+            "./acoustic.onnx", "guide/./acoustic.onnx", "guide/", "guide/a b.onnx", "guide/café.onnx", ".."]:
+    s = ra(base(), "guide/acoustic.onnx", pth)
+    check("T-030", f"{pth!r} rejected", accepts(s), False)
+    try: json.loads(s); check("T-030", f"{pth!r} valid JSON", True, True)
+    except Exception: check("T-030", f"{pth!r} valid JSON", False, True)
+for d in ("voice-legacy", "voice-convert", "voice-ca"):
+    check("T-028", d + " fixture accepted", accepts((ROOT / f"tests/fixtures/{d}/manifest.json").read_text()), True)
+
 if __name__ == "__main__":
     bad = [r for r in results if not r[2]]
     print(f"expectations checked: {len(results)}; mismatches: {len(bad)}")

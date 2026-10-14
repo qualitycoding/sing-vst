@@ -263,3 +263,38 @@ def standard_normal(seed, n):
         out.append(r * math.cos(2 * math.pi * u2))
         if len(out) < n: out.append(r * math.sin(2 * math.pi * u2))
     return out
+
+# ---------------- D-008 manifest ----------------
+import json as _json
+SAFE_SEG = re.compile(r"^[A-Za-z0-9._-]+$")
+def safe_path(pth):
+    if not isinstance(pth, str) or not pth or pth.startswith("/") or "\\" in pth or ":" in pth: return False
+    segs = pth.split("/")
+    return all(s and s not in (".", "..") and SAFE_SEG.match(s) for s in segs)
+def parse_manifest(text):
+    try: m = _json.loads(text)
+    except Exception: raise ValidationError("json")
+    if not isinstance(m, dict): raise ValidationError("not object")
+    def need(cond, what):
+        if not cond: raise ValidationError(what)
+    is_int = lambda v: isinstance(v, int) and not isinstance(v, bool)
+    is_num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+    need(m.get("format") == "singvoice", "format"); need(m.get("format_version") == 1 and is_int(m.get("format_version")), "format_version")
+    for k in ("name", "consent", "guide_licence"): need(isinstance(m.get(k), str) and m[k] != "", k)
+    g = m.get("guide"); need(isinstance(g, dict), "guide")
+    need(g.get("type") == "diffsinger", "guide.type"); need(g.get("sample_rate") == 44100 and is_int(g.get("sample_rate")), "guide.sample_rate")
+    need(g.get("hop_size") == 512 and is_int(g.get("hop_size")), "guide.hop_size")
+    need(is_int(g.get("steps")) and 1 <= g["steps"] <= 1000, "guide.steps"); need(is_num(g.get("depth")) and 0 < g["depth"] <= 1, "guide.depth")
+    lang = g.get("language", "en"); need(isinstance(lang, str) and lang != "", "guide.language")
+    gf = g.get("files"); need(isinstance(gf, dict), "guide.files")
+    need({"acoustic", "vocoder", "phonemes"} <= set(gf) and set(gf) <= {"acoustic", "vocoder", "phonemes", "speaker", "languages"}, "guide.files roles")
+    files = list(gf.values()); conv = m.get("converter")
+    if conv is not None:
+        need(isinstance(conv, dict) and conv.get("type") == "rvc-v2", "converter.type")
+        need(conv.get("sample_rate") in (48000, 32000) and is_int(conv.get("sample_rate")), "converter.sample_rate")
+        sid = conv.get("speaker_id", 0); need(is_int(sid) and sid >= 0, "converter.speaker_id")
+        cf = conv.get("files"); need(isinstance(cf, dict) and set(cf) == {"synth", "content"}, "converter.files roles"); files += list(cf.values())
+    need(all(safe_path(f) for f in files), "unsafe path")
+    sh = m.get("sha256"); need(isinstance(sh, dict) and set(sh) == set(files), "sha256 keys")
+    need(all(isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v) for v in sh.values()), "sha256 values")
+    return m
