@@ -142,6 +142,7 @@
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
+    "pytest.ini": "bf778a6612e16ef93499e93df562379024f4cf356e76094e758350e625db9aba",
     "python/pyproject.toml": "7491b80ae2d7c9e09d60ccf11210c5f87134188baf18c5ea46b6c6a4036e2d58",
     "python/requirements-lock.txt": "a05381edd0780e4d6ed4292236fbc098aa17e0c5940d399732b470f2aa517eaf",
     "python/requirements.in": "d6a1e02f7708f0fdfd0c43f3f67f65c61e16b684dbef86962e45d69620e19215",
@@ -254,6 +255,10 @@
     "tests/fixtures/voice-legacy/guide/speaker.emb": "bb5f01878113000f16ce91be1275eda29f7ca5e04fb3e13f652a94ed5b480b5d",
     "tests/fixtures/voice-legacy/guide/vocoder.onnx": "85360b9d7d6ac03e70c3d8a1bbe1514637e48bc84a68ef64e4a9500370e3dc0c",
     "tests/fixtures/voice-legacy/manifest.json": "2e41a8bae21891b770cf5a9e9fbff4978f637306d4af2d0d6c4a8ced3bdad6ea",
+    "tests/python/conftest.py": "b3adf2e5b8781df4146122912c0afb7bdcbe1012ef8ee6beb809e4e9650ce55b",
+    "tests/python/test_pipeline.py": "eb612daa5b892dc6edbb61af6a9b37793af3094bfa9f77c0a05cc3984b676e46",
+    "tests/python/test_prepare.py": "9fa3560966473f43e0da901c55aec70b5d147ab35f9dd407b83242338793aa4b",
+    "tests/python/test_provenance.py": "edc17f964f526cd4566b07f4d864ed13012fda1df73293108367e009bed724bd",
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
     "third_party/cmudict/SOURCE.txt": "9055797f1532cd2199a480009da8e0a566287561e391acb70900cf3817562dc7",
     "third_party/cmudict/cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
@@ -574,5 +579,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:15:05Z"
+  "updated_at": "2026-10-15T07:16:32Z"
 }
