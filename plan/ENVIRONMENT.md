@@ -61,6 +61,6 @@ ran red (research/spikes/red-verification/output.txt); the clean venv reproduced
 | Actions results/log host | unreachable | GitHub REST API: jobs, steps, check-run annotations (D-018, `tools/ci_annotate.py`) |
 
 ## Open environment questions
-- **Q-E7** (QUESTIONS E3.4): JUCE 9.0.3 builds succeed on `windows-2022` (CI run 38699430452, Build step success). The
-  Linux runner build is re-checked by S-001 after the bounded-parallelism fix (C-055).
+- **Q-E7** (QUESTIONS E3.4) — answered: JUCE 9.0.3 builds succeed on `windows-2022` and, with `--parallel 4` (C-055), on
+  `ubuntu-24.04`; T-059 passes on the stub on both (CI run 38733038059). S-001 re-checks it on the impl branch.
 - **Q-E8**: the Hugging Face revision of `lj1995/VoiceConversionWebUI` used by T-P19b; S-013 records it in the pins table.
