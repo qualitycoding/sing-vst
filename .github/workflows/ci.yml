@@ -33,8 +33,8 @@ jobs:
       - name: Lock reproduction and pip-audit (T-P21)
         if: always()
         run: python -m pytest tests/python/test_repo.py -m network -q --junitxml=lock.xml
-      - name: Annotate failures
-        if: failure()
+      - name: Annotate results (test-summary notice + failures)
+        if: always()
         run: python tools/ci_annotate.py repo.xml readme.xml lock.xml
   cpp:
     strategy:
@@ -54,7 +54,10 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --parallel 4   # bounded: a bare --parallel is make -j with no limit (C-055)
       - name: C++ tests (T-001..T-058, T-063..T-066)
-        run: ctest --test-dir build -C Release --output-on-failure --output-junit ${{ github.workspace }}/ctest.xml
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then X="xvfb-run -a"; else X=""; fi   # plugin tests need a display on Linux
+          $X ctest --test-dir build -C Release --output-on-failure --output-junit "$GITHUB_WORKSPACE/ctest.xml"
       - name: pluginval strictness 5 (T-059)
         if: always()
         shell: bash
@@ -76,29 +79,32 @@ jobs:
           name: cli-linux
           path: build/cli/
           if-no-files-found: error
-      - name: Annotate failures
-        if: failure()
+      - name: Annotate results (test-summary notice + failures)
+        if: always()
         shell: bash
         run: python3 tools/ci_annotate.py ctest.xml || python tools/ci_annotate.py ctest.xml
   sanitizers:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - name: ASan + UBSan, all core tests
+      - name: ASan + UBSan build
         run: |
           cmake -S . -B asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined"
           cmake --build asan --parallel 4
-          ctest --test-dir asan --output-on-failure --output-junit ${{ github.workspace }}/asan.xml
+      - name: ASan + UBSan, all core tests
+        run: ctest --test-dir asan --output-on-failure --output-junit ${{ github.workspace }}/asan.xml
+      - name: TSan build
+        if: always()
+        run: |
+          cmake -S . -B tsan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer"
+          cmake --build tsan --parallel 4
       - name: TSan, threaded tests (T-038, T-050, T-051)
         if: always()
         env:
           TSAN_OPTIONS: suppressions=${{ github.workspace }}/tools/tsan.supp halt_on_error=1
-        run: |
-          cmake -S . -B tsan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer"
-          cmake --build tsan --parallel 4
-          ctest --test-dir tsan -R "T-038|T-050|T-051" --output-on-failure --output-junit ${{ github.workspace }}/tsan.xml
-      - name: Annotate failures
-        if: failure()
+        run: ctest --test-dir tsan -R "T-038|T-050|T-051" --output-on-failure --output-junit ${{ github.workspace }}/tsan.xml
+      - name: Annotate results (test-summary notice + failures)
+        if: always()
         run: python3 tools/ci_annotate.py asan.xml tsan.xml
   python:
     needs: cpp
@@ -120,8 +126,8 @@ jobs:
           chmod +x bin/singvst-render
           export SINGVST_RENDER_BIN="$PWD/bin/singvst-render"
           python -m pytest -q -m "not torch and not voice and not network" --junitxml=py.xml
-      - name: Annotate failures
-        if: failure()
+      - name: Annotate results (test-summary notice + failures)
+        if: always()
         run: python tools/ci_annotate.py py.xml
   python-torch:
     runs-on: ubuntu-24.04
@@ -148,6 +154,6 @@ jobs:
           ls -l rvc/assets/hubert_base
       - name: Export parity (T-P19)
         run: SINGVST_RVC_ROOT="$PWD/rvc" python -m pytest -q -m torch --junitxml=torch.xml
-      - name: Annotate failures
-        if: failure()
+      - name: Annotate results (test-summary notice + failures)
+        if: always()
         run: python tools/ci_annotate.py torch.xml

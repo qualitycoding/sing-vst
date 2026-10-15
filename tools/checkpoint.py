@@ -3,9 +3,9 @@
 changes them), a sequence number, and a snapshot in .checkpoints/snapshots/checkpoint-<run_id>-seq-<N>.json. Atomic:
 state.tmp.json -> state.json. Called by tools/save.sh on every save, and directly when context changes.
 Examples:
-  python3 tools/checkpoint.py --phase 3 --subphase 3.5 --active-step HANDOFF.md \\
+  python3.12 tools/checkpoint.py --phase 3 --subphase 3.5 --active-step HANDOFF.md \\
      --objective "write the handoff" --pointer '{"item_index": 2, "sub_action": "rules verbatim"}' --scratchpad "..."
-  python3 tools/checkpoint.py --open-question "Q-E8: HF revision" --var 'python="/usr/bin/python3.12"'
+  python3.12 tools/checkpoint.py --open-question "Q-E8: HF revision" --var 'python="/usr/bin/python3.12"'
 """
 import argparse, datetime, hashlib, json, pathlib, subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -17,6 +17,7 @@ ap.add_argument("--done-pending", action="append", default=[], help="remove from
 ap.add_argument("--note", action="append", default=[])
 ap.add_argument("--set", action="append", default=[], help="key=json value at top level (replaces)")
 ap.add_argument("--merge", action="append", default=[], help="key=json object merged into the top-level object key")
+ap.add_argument("--append", action="append", default=[], help="key=json value appended to the top-level list key")
 ap.add_argument("--objective"); ap.add_argument("--scratchpad"); ap.add_argument("--call-stack", help="json list")
 ap.add_argument("--pointer", help="json object merged into execution_context.step_pointer")
 ap.add_argument("--in-flight", help="json value (null when nothing is in flight)")
@@ -38,6 +39,8 @@ for kv in a.set:
     k, v = kv.split("=", 1); st[k] = json.loads(v)
 for kv in a.merge:
     k, v = kv.split("=", 1); st.setdefault(k, {}).update(json.loads(v))
+for kv in a.append:
+    k, v = kv.split("=", 1); st.setdefault(k, []).append(json.loads(v))
 ec = st.setdefault("execution_context", {})
 for k, v in (("current_objective", ""), ("call_stack", []), ("scratchpad", ""), ("in_flight_operation", None), ("tool_cache", {})):
     ec.setdefault(k, v)

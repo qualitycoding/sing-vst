@@ -1,20 +1,27 @@
-"""Prints a GitHub ::error:: annotation for every failed or errored test case in JUnit XML files (D-018, PK-14), so
-failures are readable through the check-run annotations API. Usage: python tools/ci_annotate.py <junit.xml>..."""
+"""GitHub annotations from JUnit XML (D-018, D-036, PK-14). For each file: one `::notice title=test-summary <file>::` line
+listing the test IDs (T-###, T-P##) that passed and failed — the pass criterion of D-036, immune to the per-step limit on
+error annotations — then an `::error::` line per failing case (may be capped by GitHub). Usage: python3.12 tools/ci_annotate.py <junit.xml>..."""
+import re
 import sys
 import xml.etree.ElementTree as ET
 
-n = 0
+ID = re.compile(r"\bT-P?\d{2,3}\b")
 for path in sys.argv[1:]:
     try:
         root = ET.parse(path).getroot()
     except (OSError, ET.ParseError) as e:
-        print(f"::error title=junit::{path}: {e}")
-        n += 1
+        print(f"::error title=junit {path}::{e}")
         continue
+    passed, failed = set(), set()
+    for case in root.iter("testcase"):
+        text = f"{case.get('name', '')} {case.get('classname', '')}"
+        ids = set(ID.findall(text)) | {f"T-P{m}" for m in re.findall(r"\btest_P(\d{2})", text)} \
+            | {f"T-{m}" for m in re.findall(r"\btest_T(\d{3})", text)}
+        bad = list(case.findall("failure")) + list(case.findall("error"))
+        (failed if bad else passed).update(ids or {case.get("name", "?")[:40]})
+    passed -= failed
+    print(f"::notice title=test-summary {path}::passed: {' '.join(sorted(passed)) or '-'} | failed: {' '.join(sorted(failed)) or '-'}")
     for case in root.iter("testcase"):
         for bad in list(case.findall("failure")) + list(case.findall("error")):
             msg = (bad.get("message") or bad.text or "").strip().splitlines()
-            title = (case.get("name") or "?")[:120].replace(":", " ")
-            print(f"::error title={title}::{(msg[0] if msg else 'failed')[:300]}")
-            n += 1
-print(f"{n} failing test case(s) annotated")
+            print(f"::error title={(case.get('name') or '?')[:120].replace(':', ' ')}::{(msg[0] if msg else 'failed')[:300]}")
