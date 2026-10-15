@@ -2,35 +2,44 @@
 
 # Execution plan — sing-vst
 
-Read `HANDOFF.md` first. Every step uses the template of protocol 3.1. "Full suite" means: `ctest` in the core and full
-build trees, plugin tests under `xvfb-run -a`, and `python3.12 -m pytest -q -m "not torch and not voice"` with
+Read `HANDOFF.md` first. Every step uses the template of protocol 3.1. Steps run **one at a time, in ID order** (they share
+one branch, `.checkpoints/state.json`, `core/src/stubs.cpp` and `python/singvst_train/cli.py`); a later step may start only
+when every step in its `Depends on` has passed. "Full suite" means: `ctest` in the core and full build trees, plugin tests
+under `xvfb-run -a`, and `../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice and not network"` with
 `SINGVST_RENDER_BIN` set once S-010 is done — all green except tests whose step has not been reached (listed in
 `EXECUTION_LOG.md` per attempt). "Save" means `bash tools/save.sh "<S-### …>" <paths>` (commit + push + state.json, D-029).
 Defaults for every step unless the step says otherwise:
 - **On failure (default):** fix the implementation, never a frozen test (DR-04); re-run the full suite after any fix to
   shared code (PK-51); after three failed attempts on the same test write `BLOCKED.md` (test, logs, hypotheses) and halt.
-- **Checkpoint (default):** `python3 tools/checkpoint.py --phase impl --subphase <S-###> --complete <S-###>`, append one line to
-  `EXECUTION_LOG.md` (UTC time, step, attempt, pass|fail|blocked, commit, note), then Save.
+- **Checkpoint (default):** `python3.12 tools/checkpoint.py --phase impl --subphase <S-###> --active-step <next step> --complete <S-###>
+  --done-pending <S-###>`, append one row to `EXECUTION_LOG.md` (HANDOFF §Logs), then Save. Before any high-latency action
+  (long build, CI wait, gate) write `--in-flight '{"op": "…"}'` first and `--in-flight null` after (D-034).
 - **Exclusive resources (default):** the workspace CPU for builds — one heavy build at a time (PK-43).
 
 ### S-000 Environment & access verification
 - Tier: Haiku
 - Profile: software
 - Depends on: none
-- Inputs: generation branch `gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`; plan/ENVIRONMENT.md; plan/ASSUMPTIONS.md A-014
-- Actions:
-  1. Create `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` from the generation branch and push it.
-  2. Clone `qualitycoding/Lessons` and `qualitycoding/knowledge`; record their HEAD commits in `.checkpoints/state.json`
-     (`knowledge_store`); list lessons whose tags match plan/ENVIRONMENT.md's task tags that are newer than `ac028c7`
-     and add any new prevention rule to `DEVIATIONS.md` (PK-02).
-  3. Attach repositories through the session's GitHub connection (never a token on disk); `git config --get-regexp credential`
-     shows no token; `bash tools/turn_end_check.sh` passes (PK-12).
-  4. Re-probe the hosts table of plan/ENVIRONMENT.md and record results in `EXECUTION_LOG.md` (PK-13).
-  5. `bash tools/bootstrap_test_env.sh "$HOME/deps"`; create both build trees and the Python 3.12 venv exactly as in
-     plan/ENVIRONMENT.md (PK-20, PK-55).
+- Inputs: generation branch `gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`; plan/ENVIRONMENT.md; plan/ASSUMPTIONS.md A-014; research/PRIOR_KNOWLEDGE.md (task tags, line 3)
+- Actions: 
+  1. Create `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` from the generation branch and push it. Set
+     `SINGVST_COMMIT_TRAILERS` to your own session's commit trailers for every later save (tools/save.sh).
+  2. Preflight (stop at the first failure with `BLOCKED.md`): `gh api user` succeeds (the session's GitHub connection;
+     attach repositories with the session's repository tool, never a pasted token — PK-12); `gh api repos/qualitycoding/sing-vst
+     --jq .default_branch` prints `main`; `git push --dry-run` succeeds; `cmake --version` ≥ 3.22, `ninja`, `g++` 13,
+     `python3.12`, `curl`, `unzip`, `xvfb-run` exist; the JUCE Linux packages of the `cpp` job in `.github/workflows/ci.yml`
+     are installed or installable with `sudo apt-get install -y …`.
+  3. Clone `qualitycoding/Lessons` to `../store-lessons` and `qualitycoding/knowledge` to `../store-knowledge`; record their
+     HEADs with `python3.12 tools/checkpoint.py --merge 'knowledge_store={"commit_at_impl": {"lessons": "<sha>", "knowledge":
+     "<sha>"}}'`; list lesson files added after `ac028c7` (`git -C ../store-lessons log --name-only --format= ac028c7..HEAD`)
+     whose tags include any task tag of research/PRIOR_KNOWLEDGE.md line 3, and add each one's prevention rule to
+     `DEVIATIONS.md` as a rule to follow (PK-02).
+  4. Re-probe the hosts table of plan/ENVIRONMENT.md and record the results in `EXECUTION_LOG.md` (PK-13).
+  5. `bash tools/bootstrap_test_env.sh "$HOME/deps"`; create the build trees and the Python 3.12 venv exactly as in
+     plan/ENVIRONMENT.md; clone RVC to `../rvc` at 81eed5e for reading (D-036) (PK-20, PK-55).
   6. `sha256sum -c tests/FROZEN_MANIFEST.sha256`; `git check-ignore` behaves as T-062 expects (PK-08).
-  7. Start `EXECUTION_LOG.md` and `DEVIATIONS.md` (empty table).
-- Outputs: impl branch; EXECUTION_LOG.md; DEVIATIONS.md; state.json knowledge_store
+  7. Start `EXECUTION_LOG.md` and `DEVIATIONS.md` with the HANDOFF §Logs templates.
+- Outputs: impl branch; EXECUTION_LOG.md; DEVIATIONS.md; state.json knowledge_store.commit_at_impl; ../store-lessons, ../store-knowledge, ../rvc, ../deps, build trees, ../venv-lock
 - Evidence produced: none
 - Done when: every action succeeded; T-060, T-061, T-062, T-P21, T-P22, T-P27 pass.
 - Checkpoint: default
@@ -45,17 +54,18 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-000
 - Inputs: `.github/workflows/ci.yml`; the impl branch push from S-000
-- Actions:
-  1. Read the CI run for the impl branch's HEAD through the REST API:
-     `gh api repos/qualitycoding/sing-vst/actions/runs?branch=<impl>&per_page=1`, then `…/runs/<id>/jobs` and
-     `…/check-runs/<job id>/annotations` (D-018, PK-14).
-  2. Expected on stubs: jobs `repo` green; `cpp` builds on `ubuntu-24.04` **and** `windows-2022`, ctest red, pluginval
-     (T-059) green on the silent stub; `sanitizers` builds; `python` red only on stub-caused tests; `python-torch` red on
-     T-P19 (stubs).
-  3. Record the Windows build result as the answer to Q-E7 in plan/ENVIRONMENT.md via `DEVIATIONS.md` if it differs.
+- Actions: 
+  1. Read the CI run of the impl branch's HEAD as D-036 says:
+     `gh api "repos/qualitycoding/sing-vst/actions/runs?branch=<impl>&head_sha=$(git rev-parse HEAD)&per_page=5"`, then
+     `gh api "repos/qualitycoding/sing-vst/actions/runs/<id>/jobs"` and `gh api "repos/qualitycoding/sing-vst/check-runs/<job id>/annotations"`
+     (D-018, PK-14).
+  2. Expected on stubs: job `repo` green except its step "README claims (T-P23)" (red until S-018); `cpp` **builds** on
+     `ubuntu-24.04` and `windows-2022`, its ctest step red, pluginval (T-059) green on the silent stub; `sanitizers` builds,
+     tests red; `python` red only on stub-caused tests; `python-torch` red on T-P19, with an `hf-revision` notice annotation.
+  3. If the Linux build fails, compare with C-055 (bounded `--parallel`) before anything else.
 - Outputs: EXECUTION_LOG.md line with run id and per-job conclusions
 - Evidence produced: T-059 (stub), Q-E7 answer
-- Done when: both `cpp` builds succeed and T-059 passes on both platforms; `repo` is green.
+- Done when: both `cpp` builds succeed and T-059 passes on both OSes; every `repo` step except "README claims (T-P23)" is green.
 - Checkpoint: default
 - On failure: a Windows-only build failure → fix the build files (not tests) and re-run; if the cause is a JUCE 9.0.3 or
   runner defect reproduced with a JUCE example project → `BLOCKED.md` (DR-03). pluginval failure on the stub → DR-05.
@@ -86,8 +96,8 @@ Defaults for every step unless the step says otherwise:
 - Profile: software, computational
 - Depends on: S-002
 - Inputs: core/include/singvst/synthesis.hpp; D-007, D-012 (standardNormal), D-021
-- Actions: implement every function declared in synthesis.hpp in `core/src/synthesis.cpp` (D-033), including `softClip`
-  and `standardNormal` with the golden values of D-012; run the full suite.
+- Actions: implement every function declared in synthesis.hpp (including `softClip` and `peakAbs`) in `core/src/synthesis.cpp`
+  (D-033); run the full suite. (`standardNormal` is declared in engine.hpp and belongs to S-007.)
 - Outputs: core/src/synthesis.cpp, core/src/stubs.cpp
 - Evidence produced: T-019…T-027
 - Done when: T-019…T-027 pass.
@@ -121,8 +131,7 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-003
 - Inputs: core/include/singvst/playback.hpp; D-009, D-010, D-022
 - Actions: implement playback.hpp in `core/src/playback.cpp` (lock-free `TakeSlot` hand-off with no allocation on the reader
-  side, D-022); run the full suite; run T-038 under TSan locally
-  (`-DCMAKE_CXX_FLAGS=-fsanitize=thread`, `TSAN_OPTIONS=suppressions=tools/tsan.supp`).
+  side, D-022); run the full suite; run T-038 in `../build-tsan` with the plan/ENVIRONMENT.md sanitizer lines.
 - Outputs: core/src/playback.cpp, core/src/stubs.cpp
 - Evidence produced: T-032…T-038
 - Done when: T-032…T-038 pass, and T-038 is clean under TSan.
@@ -138,8 +147,8 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-002
 - Inputs: core/include/singvst/midifile.hpp; D-031
-- Actions: implement `importMidi` in `core/src/midifile.cpp` with bounds-checked reads; run the full suite, then T-066
-  under ASan+UBSan locally.
+- Actions: implement `importMidi` in `core/src/midifile.cpp` with bounds-checked reads; run the full suite, then
+  T-064…T-066 in `../build-asan` with the plan/ENVIRONMENT.md sanitizer lines.
 - Outputs: core/src/midifile.cpp, core/src/stubs.cpp
 - Evidence produced: T-064…T-066
 - Done when: T-064…T-066 pass, clean under ASan+UBSan.
@@ -155,9 +164,10 @@ Defaults for every step unless the step says otherwise:
 - Profile: software, computational
 - Depends on: S-001
 - Inputs: core/include/singvst/{ort_runtime,engine}.hpp; D-011, D-024
-- Actions: implement `loadOrtRuntime`, `bundledOrtFileName` and `resample` in `core/src/ort_runtime.cpp` and
-  `core/src/resample.cpp`; push; read the CI `cpp` job on **both** OSes through the API.
-- Outputs: core/src/ort_runtime.cpp, core/src/resample.cpp, core/src/stubs.cpp
+- Actions: implement `standardNormal` (golden values of D-012) in `core/src/random.cpp`, `loadOrtRuntime` and
+  `bundledOrtFileName` in `core/src/ort_runtime.cpp`, and `resample` in `core/src/resample.cpp`; push; read the CI `cpp` job
+  on **both** OSes through the API (D-036).
+- Outputs: core/src/random.cpp, core/src/ort_runtime.cpp, core/src/resample.cpp, core/src/stubs.cpp
 - Evidence produced: T-039…T-041
 - Done when: T-039…T-041 pass locally and in CI on Linux and Windows.
 - Checkpoint: default
@@ -174,8 +184,9 @@ Defaults for every step unless the step says otherwise:
 - Inputs: core/include/singvst/engine.hpp; D-012; tests/fixtures/onnx; research/spikes/oracle/engines.py
 - Actions: implement `GuideEngine` and `ConverterEngine` in `core/src/guide_engine.cpp` and `core/src/converter_engine.cpp`
   exactly as D-012 (input discovery, phrase splitting at SP ≥ 22 frames with 8-frame padding, chunked conversion with
-  100-frame context, `standardNormal` noise); run the full suite; compare a fixture render against
-  `research/spikes/oracle/engines.py`.
+  100-frame context, `standardNormal` noise); run the full suite. `research/spikes/oracle/engines.py` (an independent
+  Python implementation that derived the frozen expected values) is a debugging reference only; the pass criterion is the
+  frozen tests.
 - Outputs: core/src/guide_engine.cpp, core/src/converter_engine.cpp, core/src/stubs.cpp
 - Evidence produced: T-042…T-047
 - Done when: T-042…T-047 pass on Linux and in CI on Windows.
@@ -191,7 +202,7 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-005, S-006, S-008
 - Inputs: core/include/singvst/render.hpp; D-013
-- Actions: implement render.hpp in `core/src/render.cpp`; run the full suite; T-050 and T-051 under TSan locally.
+- Actions: implement render.hpp in `core/src/render.cpp`; run the full suite; T-050 and T-051 in `../build-tsan` (plan/ENVIRONMENT.md).
 - Outputs: core/src/render.cpp, core/src/stubs.cpp (now empty of definitions; delete it if nothing remains)
 - Evidence produced: T-048…T-052
 - Done when: all core tests T-001…T-052, T-063…T-066 pass; T-050/T-051 clean under TSan; CI `sanitizers` green.
@@ -210,8 +221,8 @@ Defaults for every step unless the step says otherwise:
 - Actions: implement D-014 in `cli/main.cpp` (options, exit codes, float32 WAV writer, provenance sidecar with
   `seeds = {"converter": <seed>}`); set `SINGVST_RENDER_BIN` to the built binary for every later run of the suite.
 - Outputs: cli/main.cpp
-- Evidence produced: T-P13b, T-P18
-- Done when: T-P13b and T-P18 pass locally and in CI job `python`.
+- Evidence produced: T-P13 (binary part, `test_P13b_…`), T-P18
+- Done when: T-P13 (binary part) and T-P18 pass locally and in CI job `python`.
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -227,8 +238,8 @@ Defaults for every step unless the step says otherwise:
 - Actions: implement `plugin/PluginProcessor.cpp` and `plugin/PluginEditor.{h,cpp}` (D-033); grep the JUCE 9.0.3 headers for
   every API used before using it (PK-37); build `build-full`; run plugin tests under `xvfb-run -a`; run pluginval 1.0.4
   locally as in the CI step; list editor behaviour that cannot be run headless as "implemented, unverified" in
-  `GATE-G-001.md` material (PK-39).
-- Outputs: plugin/PluginProcessor.cpp, plugin/PluginEditor.h, plugin/PluginEditor.cpp
+  `docs/UNVERIFIED.md` (one bullet per behaviour, with the D-027 item it belongs to); S-017 copies it into GATE-G-001.md (PK-39).
+- Outputs: plugin/PluginProcessor.cpp, plugin/PluginEditor.h, plugin/PluginEditor.cpp, docs/UNVERIFIED.md
 - Evidence produced: T-053…T-058, T-059
 - Done when: T-053…T-059 pass locally and in CI on both OSes; the full suite is green.
 - Checkpoint: default
@@ -243,11 +254,12 @@ Defaults for every step unless the step says otherwise:
 - Profile: software, computational
 - Depends on: S-000
 - Inputs: python/singvst_train/{prepare,pipeline,provenance,metrics,pack,security,cli}.py; D-015, D-016, D-017, D-019
-- Actions: implement the bodies (signatures and docstrings unchanged, T-P27), including the CLI commands `prepare`, `split`,
-  `pack`, `provenance`; close every resource with context managers (PK-41).
+- Actions: implement the bodies (signatures and docstrings unchanged, T-P27; conventions of D-033), register **all nine**
+  sub-commands of `cli.COMMANDS` (T-P25 needs every `--help`; later steps add the options and bodies of theirs), and implement
+  `split`, `prepare`, `pack`, `provenance` exactly as D-035; close every resource with context managers (PK-41).
 - Outputs: those modules
-- Evidence produced: T-P01…T-P15, T-P25
-- Done when: T-P01…T-P15 (T-P13b after S-010), T-P25, T-P27 pass; `python -m singvst_train.cli prepare --help` works.
+- Evidence produced: T-P01…T-P15 (T-P13 without its binary part), T-P25
+- Done when: T-P01…T-P15 (except the binary part of T-P13, which belongs to S-010), T-P25 and T-P27 pass; `../venv-lock/bin/python -m singvst_train.cli prepare --help` works.
 - Checkpoint: default
 - On failure: a pip-audit finding → DR-07.
 - Gate: none
@@ -261,12 +273,13 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-012
 - Inputs: python/singvst_train/export_rvc.py; RVC 81eed5e; D-012
 - Actions: implement `export_synth`, `export_content`, `make_test_weights`, `parity` and the CLI commands `export`,
-  `make-test-weights`; push and read the CI `python-torch` job through the API; record the Hugging Face revision that
-  `hf download` resolved (job log line printed by `ls -l rvc/assets/hubert_base` and `hf download` output, read via the
-  annotations or step summary) in plan/ENVIRONMENT.md pins via `DEVIATIONS.md`.
+  `make-test-weights` (D-035); push and read the CI `python-torch` job (D-036: one attempt = one CI run of a new commit; no
+  local torch); read the `hf-revision` notice annotation of that job and replace "`--revision main` (S-013 records the
+  resolved revision here)" in the plan/ENVIRONMENT.md pins table with the printed SHA (the job's RVC checkout and its
+  `rvc/assets/hubert_base` exist only on the CI runner).
 - Outputs: python/singvst_train/export_rvc.py, python/singvst_train/cli.py
-- Evidence produced: T-P19
-- Done when: T-P19 (both functions) passes in CI job `python-torch`.
+- Evidence produced: T-P19 (both functions, incl. the content-encoder part `test_P19b_…`)
+- Done when: T-P19 passes in CI job `python-torch`; plan/ENVIRONMENT.md names the Hugging Face revision.
 - Checkpoint: default
 - On failure: parity > 1e-3 → DR-14.
 - Gate: none
@@ -280,7 +293,7 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-012
 - Inputs: python/singvst_train/rvc_files.py
 - Actions: implement `write_filelist`, `copy_config`, `train_command`, `latest_weights` and the CLI commands `rvc-files`,
-  `rvc-train-command`.
+  `rvc-train-command` exactly as D-035.
 - Outputs: python/singvst_train/rvc_files.py, python/singvst_train/cli.py
 - Evidence produced: T-P24
 - Done when: T-P24 and T-P25 pass.
@@ -295,10 +308,10 @@ Defaults for every step unless the step says otherwise:
 - Tier: Opus
 - Profile: computational
 - Depends on: S-010, S-012
-- Inputs: python/singvst_train/evaluate.py; eval/phrases; eval/thresholds.json; D-017
-- Actions: implement `transpose_semitones` and `evaluate_voice` and the CLI command `evaluate`; Resemblyzer and Whisper are
-  imported inside `evaluate_voice` only (they are not in the toolkit lock; the notebooks install them, D-019). The
-  procedure's first full run is the owner's at S-017 (T-P20); no run on fixtures is required here.
+- Inputs: python/singvst_train/evaluate.py; eval/PROCEDURE.md; eval/phrases; eval/thresholds.json; D-017, D-035
+- Actions: implement `transpose_semitones`, `evaluate_voice` and the CLI command `evaluate` exactly as
+  `eval/PROCEDURE.md` (frozen) and D-035 (`verdict.json`); Resemblyzer and Whisper are imported inside `evaluate_voice` only
+  (D-033). The procedure's first full run is the owner's at S-017 (T-P20); no run on fixtures is required here.
 - Outputs: python/singvst_train/evaluate.py, python/singvst_train/cli.py
 - Evidence produced: T-P26
 - Done when: T-P26 and T-P25 pass.
@@ -314,13 +327,10 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-013, S-014, S-015, G-005 answered
 - Inputs: D-016, D-019, D-025; plan/GATES.md G-004; the chosen guide voicebank (G-005)
-- Actions: write `notebooks/train_voice_colab.ipynb` and `notebooks/train_voice_kaggle.ipynb` (nbformat 4, no outputs):
-  cell 1 `!nvidia-smi`; consent cells (`CONSENT_CONFIRMED = False`, attestation, `assert CONSENT_CONFIRMED and …`); install
-  RVC 81eed5e with `requirments_cu128_py312.txt` from the official indexes and the toolkit `--no-deps`; download RVC assets
-  with `hf download` (C-032); then cells calling `python -m singvst_train.cli prepare | split | rvc-files |
-  rvc-train-command | export | pack | evaluate`, each wrapped by `pipeline.run_stages` markers on Drive / the Kaggle output;
-  build `singvst-render` (core only) in the notebook; `tar` archives in and out; the guide voicebank is downloaded by the
-  owner inside the notebook from its release URL and never stored in the repository.
+- Actions: write `notebooks/train_voice_colab.ipynb` and `notebooks/train_voice_kaggle.ipynb` (nbformat 4, no outputs)
+  with exactly the cells of D-035 §Notebook layout (RVC's own `requirments_cu128_py312.txt` from the RVC checkout at 81eed5e,
+  official indexes, C-023), and the guide voicebank cells of D-035 §Guide voicebank for the G-005 answer; the voicebank is
+  downloaded by the owner inside the notebook and never stored in the repository.
 - Outputs: notebooks/train_voice_colab.ipynb, notebooks/train_voice_kaggle.ipynb
 - Evidence produced: T-P16, T-P17
 - Done when: T-P16, T-P17, T-P22 pass.
@@ -336,14 +346,14 @@ Defaults for every step unless the step says otherwise:
 - Profile: computational
 - Depends on: S-016, S-011
 - Inputs: G-004 response; notebooks
-- Actions:
-  1. Halt at G-004 and write `GATE-G-004.md` (plan/GATES.md).
-  2. After the owner's response, wait for `report.json`, its provenance sidecar and the renders archive (the owner runs the
-     notebook, which runs `pytest -m voice` (T-P20) as its last cell).
-  3. Commit `results/<voice name>/report.json`, `report.json.provenance.json`, `verdict.json` (never audio of the owner's
-     voice unless the owner says so in the G-004 response).
-  4. Halt at G-001 with `GATE-G-001.md`.
-- Outputs: results/<voice>/report.json, report.json.provenance.json, verdict.json, GATE-G-004.md, GATE-G-001.md
+- Actions: 
+  1. Halt at G-004: write `GATE-G-004.md` (plan/GATES.md) and end the turn with the gate message.
+  2. After the owner runs the notebook, they attach `report.json`, `report.json.provenance.json` and `verdict.json` (D-035);
+     the notebook's last test cell is T-P20.
+  3. Commit those three files to `results/<voice>/` (`<voice>` = the `--name` given to `pack`; check it in `report.json`'s
+     provenance `params`); never commit audio, recordings or voice packages (T-062).
+  4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`) and halt.
+- Outputs: results/<voice>/report.json, results/<voice>/report.json.provenance.json, results/<voice>/verdict.json, GATE-G-004.md, GATE-G-001.md
 - Evidence produced: T-P20 (run by the owner); G-001 record
 - Done when: the G-001 response is recorded in `GATE-G-001.md`.
 - Checkpoint: default
@@ -360,7 +370,10 @@ Defaults for every step unless the step says otherwise:
 - Inputs: G-001 record; D-026, D-030
 - Actions: write `README.md` with a `## What it does` section whose every bullet cites a test ID; install instructions
   (copy the VST3 bundle to the user VST3 folder; COPY_PLUGIN_AFTER_BUILD is FALSE); training instructions pointing to the
-  notebooks; `docs/PARAMETERS.md` generated from `kParams` by a script; `THIRD_PARTY_NOTICES.md` (JUCE, ONNX Runtime,
+  notebooks; `docs/PARAMETERS.md` generated by `tools/gen/parameters.py`, which reads `core/include/singvst/params.hpp`
+  with the regex `\{\s*"(\w+)",\s*"([^"]+)",\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*"([^"]*)"\s*\}`
+  and writes a table `| ID | Name | Minimum | Maximum | Default | Step | Unit |` under a line naming the source file
+  (5 rows; fail if the count differs from `kParams`' declared size); `THIRD_PARTY_NOTICES.md` (JUCE, ONNX Runtime,
   nlohmann/json, CMUdict, RVC, TIGER/other voicebank terms, openvpi vocoder if used); sound descriptions only with the G-001
   record (PK-46).
 - Outputs: README.md, docs/PARAMETERS.md, THIRD_PARTY_NOTICES.md, tools/gen/parameters.py
@@ -380,7 +393,9 @@ Defaults for every step unless the step says otherwise:
 - Inputs: everything above
 - Actions: run the full suite locally; read the final CI run of all jobs through the API; map every plan step and
   pre-mortem control to a delivering file or test in `plan/TRACEABILITY.md` (PK-07); open a pull request impl → `main`
-  (`gh pr create --base main --head <impl>`), body ending with the attribution lines; do **not** merge (G-002).
+  (`gh pr create --base main --head <impl> --title "sing-vst implementation" --body-file <file>`), the body summarising the
+  results and ending with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)` and the executing
+  session's link if it has one; do **not** merge (G-002).
 - Outputs: pull request URL in EXECUTION_LOG.md
 - Evidence produced: all tests
 - Done when: every frozen test passes (T-P20 from S-017's record), CI green on both OSes, the pull request exists.
@@ -395,7 +410,7 @@ Defaults for every step unless the step says otherwise:
 - Tier: Opus
 - Profile: software, computational
 - Depends on: S-000…S-019
-- Inputs: EXECUTION_LOG.md, commits, DEVIATIONS.md, BLOCKED.md, TEST_CHALLENGE.md, GATE-*.md, CI history,
+- Inputs: EXECUTION_LOG.md, commits, DEVIATIONS.md, BLOCKED.md and TEST_CHALLENGE.md (if present), GATE-*.md, CI history,
   research/PRIOR_KNOWLEDGE.md, lessons/, knowledge/
 - Actions: a Haiku agent collects the inputs into one digest; a fresh Opus agent answers the four questions of protocol
   3.7.1 and writes `RETROSPECTIVE.md`, a lesson for each unrecorded correction or overlooked step, and a knowledge item for
@@ -415,9 +430,11 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-RETRO
 - Inputs: lessons/, knowledge/, TAXONOMY.md, plan/ASSUMPTIONS.md A-014
-- Actions: protocol 3.7.2 — halt at G-003; on `push-to-proposed` copy lessons into `qualitycoding/Lessons` and knowledge
-  items into `qualitycoding/knowledge` in the Appendix C layout, regenerate both indexes, merge the run's tags into
-  `TAXONOMY.md`, push (3 retries with pull-and-regenerate; else `git bundle create knowledge-<run_id>.bundle`).
+- Actions: plan/PROTOCOL_EXCERPTS.md §3.7.2 — halt at G-003; on `push-to-proposed` copy lessons into `../store-lessons`
+  and knowledge items into `../store-knowledge` in the Appendix C layout, regenerate each store's `lessons/INDEX.md` /
+  `knowledge/INDEX.md` (tag → IDs, titles/statements, severity; generated, never hand-edited), merge this run's tags into
+  each store's `TAXONOMY.md` (from the repository's `TAXONOMY.md`), push (3 retries with pull-and-regenerate; else
+  `git bundle create knowledge-<run_id>.bundle`).
 - Outputs: pushes to the stores, or the bundle path
 - Evidence produced: none
 - Done when: protocol 3.7.2 item 4.

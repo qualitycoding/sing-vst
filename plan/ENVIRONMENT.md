@@ -56,7 +56,7 @@ ran red (research/spikes/red-verification/output.txt); the clean venv reproduced
 |---|---|---|
 | pypi.org, GitHub (web, git, raw, releases, REST API) | reachable | — |
 | download.pytorch.org | unreachable | CI runners (`python-torch` job) and the owner's notebooks |
-| huggingface.co | unreachable | CI runners (T-P19b assets) and notebooks (D-016) |
+| huggingface.co | unreachable | CI runners (T-P19 content-encoder assets) and notebooks (D-016) |
 | colab.research.google.com, kaggle.com | unreachable | the owner runs the notebooks at G-004 (A-016) |
 | Actions results/log host | unreachable | GitHub REST API: jobs, steps, check-run annotations (D-018, `tools/ci_annotate.py`) |
 

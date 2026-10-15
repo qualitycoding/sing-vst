@@ -137,7 +137,7 @@ def test_P22_every_cited_id_exists(root):
     missing = []
     for g in SCANNED:
         for f in sorted(root.glob(g)):
-            if not f.is_file() or "__pycache__" in f.parts:
+            if not f.is_file() or "__pycache__" in f.parts or f.name == "PROTOCOL_EXCERPTS.md":   # verbatim external text
                 continue
             text = f.read_text(encoding="utf-8", errors="replace")
             if f.name == "PRIOR_KNOWLEDGE.md":   # drop the column that quotes store lessons' own summaries (other runs' IDs)
