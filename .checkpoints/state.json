@@ -164,11 +164,13 @@
     "lessons/L-20261015T073400Z-main-guard-ran-before-the-test-overlay.md": "4b6f2580cdd11219e860c39f1cc7cf54b9a69b6fc946388a9e9d4f8c0bd47716",
     "lessons/L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary.md": "17317a572bc012632684d691b5d865c2d375291327e06da3c32beed55430f934",
     "lessons/L-20261015T090100Z-unbounded-parallel-build-flag-from-memory.md": "b8c6a7c05b51a6fe847def805f2ca97a08e980e5d6df0323b2e299d08ce6f17c",
-    "lessons/L-20261015T180000Z-plan-left-interfaces-that-later-steps-call-unspecified.md": "3dab8fc7634b41d9fe0956686420bc7258a4a78d6a758abb6985689c59877040",
+    "lessons/L-20261015T180000Z-plan-left-interfaces-that-later-steps-call-unspecified.md": "d759c70e649ad6cf20affb638dc872b1e5b4120392c674dbaf7cb39303a0fcc4",
     "lessons/L-20261015T180100Z-ci-gate-step-ran-a-test-that-cannot-pass-yet.md": "b071f32365342918302e01cf8da91f11ca8f64c19f4f2e9156d745b1ea777c4b",
     "lessons/L-20261015T180200Z-plan-cross-references-stale-after-renames.md": "f1688d815396d953460d6df5cf4b523eb873a186bf911322cce16fa7e7ac61ee",
     "lessons/L-20261015T180300Z-plan-allowed-what-a-frozen-test-forbids.md": "4ad59edf15e2ec85fe772b32ab16f2989122e8e10776af9464147d91515445a7",
     "lessons/L-20261015T180400Z-protocol-procedures-cited-but-not-shipped.md": "7f788384456183d9456f7a41f834c58549a335ecd582bcc135e02e9932e4cde9",
+    "lessons/L-20261015T190000Z-ci-pass-criterion-relied-on-absent-error-annotations.md": "fcbe450b0108b51cda3f9d675987f94badd99f93a41f69d17a82c858ed30ccb0",
+    "lessons/L-20261015T190100Z-resumable-stage-could-delete-its-own-checkpoints.md": "950a3194991b2f5c4757fd3b3e42715a06df1ebd4a0f53ca2a148bea7a3baf50",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "c11e979dc18cd8018c587f79326dcd73a5736a419de4382b541e19196971b58d",
     "plan/ENVIRONMENT.md": "bdba89905b43c44d4baf23e59d4aa74d5a6df386d65161b29b985e680dad0b7e",
@@ -200,7 +202,7 @@
     "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
     "python/singvst_train/rvc_files.py": "f3223c4efc1ddead1379b99265dcf0d76bd66f2a3b72b59caa8fc35aafd0de1e",
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
-    "research/PRIOR_KNOWLEDGE.md": "1fa253c2940006163aeb7ecd8f846344784ce9e387571c72d52b847373af2ad0",
+    "research/PRIOR_KNOWLEDGE.md": "a35219ea72c3a5029acdf590acb5141a3e22bb68dc564c20fd18fc13c291a70f",
     "research/QUESTIONS.md": "f17be19a0051a188838e20360206ec7549f9b7864df368551b8b6ee20b38bc1d",
     "research/SOURCES.md": "f850fa8e8ad1bdad5ede34b2d4590848e4f4398018859d4b53db44246d15c66d",
     "research/claims.json": "20b680abcf2ace54d45a71aa4a1356a08e1856b8c4a678a6c6b2d7f69eb816ff",
@@ -262,7 +264,7 @@
     "research/spikes/upstream-facts/verify.sh": "75ceb197e49c5b63eab5d2f1f421c263312135df3474e76a89eeea8503cc4052",
     "research/spikes/vocoder-onnx/output.txt": "1a0365c79a367bce16a75432c2c692110c833540422131d8ec2a1fc55f5bb95c",
     "research/spikes/vocoder-onnx/run.sh": "f59a59ba67edd37ce9696fc952c8323bdf3256dedb9dc2826d6e8da68bbc0c5f",
-    "tests/FROZEN_MANIFEST.sha256": "a2a254808ab48b13d12bd96d4e84c09f0c5c39b2e8d3b3cc5f6adb3b8e5dfb71",
+    "tests/FROZEN_MANIFEST.sha256": "347a069a3cb6bf43ecd558afeacb234a5d94c29a40bb1edd4a7ae4e3a868a2ee",
     "tests/cpp/CMakeLists.txt": "6d846659b5db59a1510097edf4f8692fd676dd89a202d0c0dea2efe1fda0f0fd",
     "tests/cpp/helpers.hpp": "7bfaadcbbbde4ca1dbc9dcf98259fcadf238256061100c31adb157dbed4538e2",
     "tests/cpp/test_align.cpp": "3dcca21830aca19421aee7e0520c45d46e94966054d2d0486ee92c9d8ec17a86",
@@ -338,11 +340,11 @@
     "tools/gen/claims.py": "0a141ac7bbe22390c45996820dfe22437c6310390792efaec77c25baf9443a7b",
     "tools/gen/handoff.py": "85ac65f746bfedecdce1033d4c0e72cea88733bc706d7ed101735f73430aa201",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
-    "tools/gen/lessons.py": "829dd52d114c351b46e23206f359817564adc829783368600033192f54678472",
+    "tools/gen/lessons.py": "2f5c152e5ef50cd0115731429ab4ee7486333bbe8aa5affcd5434035fe6fa08f",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
-    "tools/gen/pk_checklist.json": "84d7c74ae220888bf70f103fb4553f79ce13d426d15137fb3db535bc9bfbc607",
+    "tools/gen/pk_checklist.json": "1b6d367f8819207dccd02d872799eaa6a824d0cfb52aea81589d779045bd260f",
     "tools/gen/pk_knowledge.json": "4e4620e0de56740fa874231e1996c1cb5d558b05a3a5d56e7899122d4dd34526",
-    "tools/gen/pk_map.json": "a186128654344d0a3fe52eb4529261f0e6da4984f4951563e056aee15ba67ed3",
+    "tools/gen/pk_map.json": "2381236c81f4a1c88d2aed26ee21fb3c72c9bdb6589bd592cc2d09a004466577",
     "tools/gen/plan.py": "0ab09cb74ce4ab1989eb5a44d2c08ffc30ddbf089c2d3212e0dab717a47e07e7",
     "tools/gen/prior_knowledge.py": "4796b62a539dbb4c9144b228654cb85522de615467f9969a95aff1617d198d37",
     "tools/gen/protocol_excerpts.py": "39051fc8ba8d7acd38295fb345f1ee1d86cca4533d46c5e0675496c90d4786c2",
@@ -605,7 +607,9 @@
     "L-20261015T180100Z-ci-gate-step-ran-a-test-that-cannot-pass-yet",
     "L-20261015T180200Z-plan-cross-references-stale-after-renames",
     "L-20261015T180300Z-plan-allowed-what-a-frozen-test-forbids",
-    "L-20261015T180400Z-protocol-procedures-cited-but-not-shipped"
+    "L-20261015T180400Z-protocol-procedures-cited-but-not-shipped",
+    "L-20261015T190000Z-ci-pass-criterion-relied-on-absent-error-annotations",
+    "L-20261015T190100Z-resumable-stage-could-delete-its-own-checkpoints"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -674,7 +678,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T18:03:30Z",
+  "updated_at": "2026-10-15T18:03:56Z",
   "active_step_id": "3.6",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -724,7 +728,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 31,
+  "sequence": 32,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

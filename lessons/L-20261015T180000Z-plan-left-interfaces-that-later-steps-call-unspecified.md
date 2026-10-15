@@ -4,7 +4,7 @@ title: 'The plan froze tests for the toolkit CLI and notebooks but never specifi
 status: active
 supersedes: []
 recurrence_of: null
-occurrences: 1
+occurrences: 2
 severity: High
 tags: [applies:all, kind:verification-gap, domain:ml-training, phase:planning]
 recorded_by: planner
@@ -23,3 +23,4 @@ Before the cold read, write an explicit specification (options, files, exit code
 Each S-### that produces glue cites a D-### that lists its interface; the cold read reports no 'undefined option/layout' item.
 ## Evidence
 premortem/coldread-pass-1.md S9, S10, S12, S27.
+Occurrence 2 (cold read pass 2): stage inputs/outputs, the time and budget controls, exit codes per error type, the notebook ref and the transposition mechanics were still unspecified (premortem/coldread-pass-2.md S3, S5-S7, S20, S23, S24).

@@ -329,7 +329,7 @@ lesson("20261015T180000Z", "plan-left-interfaces-that-later-steps-call-unspecifi
        "Added D-035 (per-command options, notebook cells, RVC command lines from the pinned source, voicebank roles, upload set).",
        "Before the cold read, write an explicit specification (options, files, exit codes, exact third-party command lines) for every interface a later step or a human-run artefact calls.",
        "Each S-### that produces glue cites a D-### that lists its interface; the cold read reports no 'undefined option/layout' item.",
-       "premortem/coldread-pass-1.md S9, S10, S12, S27.")
+       "premortem/coldread-pass-1.md S9, S10, S12, S27.", occ=2)
 lesson("20261015T180100Z", "ci-gate-step-ran-a-test-that-cannot-pass-yet",
        "The CI job required to be green at S-001 ran T-P23, which only passes after S-018, and its failure skipped the later lock-audit step", "Medium",
        ["tech:github-actions", "kind:process"],
@@ -366,6 +366,24 @@ lesson("20261015T180400Z", "protocol-procedures-cited-but-not-shipped",
        "Ship verbatim excerpts of every external procedure the implementer must follow, generated from the pinned source.",
        "Every protocol section cited in PLAN.md or HANDOFF.md appears in plan/PROTOCOL_EXCERPTS.md.",
        "premortem/coldread-pass-1.md S3, S8, H8.")
+lesson("20261015T190000Z", "ci-pass-criterion-relied-on-absent-error-annotations",
+       "D-036 counted a test as passed when no error annotation named it, but GitHub caps error annotations per step, so a failing test could be invisible", "High",
+       ["tech:github-actions", "kind:verification-gap"],
+       "CI results can only be read through check-run annotations, and a step runs many tests of which many fail by design.",
+       "Cold read pass 2 item S2: with 10-60 stub failures per step, the cap would hide failures and a test would look passed.",
+       "tools/ci_annotate.py now writes one test-summary notice per JUnit file listing passed and failed IDs on every run; D-036 uses it.",
+       "Define a CI pass by a positive record (a summary listing the test as passed), never by the absence of a failure annotation.",
+       "Every annotate step runs `if: always()` and its output contains a `test-summary` notice.",
+       "premortem/coldread-pass-2.md S2.")
+lesson("20261015T190100Z", "resumable-stage-could-delete-its-own-checkpoints",
+       "The plan ran training through a stage runner that deletes a stage's outputs before re-running it, without saying the RVC experiment directory must not be an output", "High",
+       ["domain:ml-training", "tech:rvc", "kind:wrong-assumption"],
+       "A resumable pipeline wraps a long job that keeps its own checkpoints, and the wrapper cleans outputs before a rerun.",
+       "Cold read pass 2 item S6: listing logs/<voice> as the train stage's output would wipe every checkpoint on resume.",
+       "D-035 stage table: the train stage's only output is the final weights file; the experiment directory is never an output.",
+       "When a wrapper deletes outputs on rerun, list as outputs only artefacts that are cheap to regenerate; never a job's own checkpoint directory.",
+       "The D-035 stage table names no checkpoint directory in the Outputs column.",
+       "premortem/coldread-pass-2.md S6.")
 OUT.mkdir(exist_ok=True)
 for x in L:
     p = OUT / f"{x['id']}.md"

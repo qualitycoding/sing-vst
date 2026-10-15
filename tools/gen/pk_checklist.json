@@ -298,5 +298,15 @@
   "Ship verbatim, generated excerpts of every external procedure the implementer must follow.",
   "plan/PROTOCOL_EXCERPTS.md; HANDOFF \u00a7Amendments",
   "planner"
+ ],
+ "PK-61": [
+  "A CI pass is a positive record (a summary listing the test as passed), never the absence of a failure annotation.",
+  "D-036; tools/ci_annotate.py",
+  "both"
+ ],
+ "PK-62": [
+  "A stage runner that deletes outputs on rerun never lists a job's own checkpoint directory as an output.",
+  "D-035 stage table; S-016",
+  "both"
  ]
 }
