@@ -163,9 +163,11 @@
     "plan/PLAN.md": "b776c270c6be63303cf485c46bd6387c7fbb91f57f222030b1860a8b30fda988",
     "plan/PLAN.src.md": "616182b7f2b3b66f967e0003f40f9546540a3e09934834c58184456d625117e7",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
+    "plan/TRACEABILITY.md": "f32ba96aa268af9ea3a939695496abd4eb396d862ded1e7da5086ca4b422dd08",
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
+    "premortem/RISK_REGISTER.md": "8785a970a9c996c3540fd0d09bfe801d4f48c60498fdc926277a8bc89c97f396",
     "pytest.ini": "bf778a6612e16ef93499e93df562379024f4cf356e76094e758350e625db9aba",
     "python/pyproject.toml": "7491b80ae2d7c9e09d60ccf11210c5f87134188baf18c5ea46b6c6a4036e2d58",
     "python/requirements-lock.txt": "a05381edd0780e4d6ed4292236fbc098aa17e0c5940d399732b470f2aa517eaf",
@@ -319,6 +321,7 @@
     "tools/gen/prior_knowledge.py": "abe574d475ad7f1c86d40ead0bc220c27a1ef528a39e3943b59899b0c02eb81f",
     "tools/gen/supersede.py": "f05242a9eec9c280a9631ad3c5fdd501f3ed090b7bde90f6b3b3a23619afa57f",
     "tools/gen/taxonomy.py": "8e39b670fb359708da3ebc26fc607c9dd558c6db8651745058f5f026fb8bda81",
+    "tools/gen/traceability.py": "6f529ab94915db59dd6265cf962f13b40d8fc49a0d5ff15800674a7ffa24f353",
     "tools/save.sh": "38b823f85949075bc69358e963b3414b10f0e14bd27a9bfa1476dd3e5897afa4",
     "tools/tsan.supp": "ef4093a99304f1b50ccab56b8dc92db04e01f9c0110ff16f365caa3b02c8e1bd",
     "tools/turn_end_check.sh": "9ad41f3a4cb421639abd750a7a9e91a1dec74ffbc60fbbaf7bc6b8b4df6461b3"
@@ -632,5 +635,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T12:06:08Z"
+  "updated_at": "2026-10-15T12:07:09Z"
 }
