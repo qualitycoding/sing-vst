@@ -4,7 +4,7 @@ title: 'The secret-scan test planted a private-key marker as a literal, so its o
 status: active
 supersedes: []
 recurrence_of: null
-occurrences: 1
+occurrences: 2
 severity: Low
 tags: [tech:python, kind:verification-gap, phase:planning]
 recorded_by: planner
@@ -23,3 +23,4 @@ Build every planted secret from concatenated parts at run time; grep the reposit
 `python tools/check_schema.py` and the scan_secrets patterns report nothing anywhere in the repository (T-P15).
 ## Evidence
 Commit f6ee132.
+Occurrence 2 (same session): the lesson recording this mistake quoted the key header itself; tools/check_schema.py reported 'possible secret' and the wording was changed (commit c9eb886).

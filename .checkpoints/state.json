@@ -152,7 +152,7 @@
     "lessons/L-20261015T071500Z-checkpoint-not-rewritten-after-phase-2b-commits.md": "4173c90a6b7a52d7057ed71d5ec5fd3c01a49eda7588944b7584d026a3e39496",
     "lessons/L-20261015T073000Z-default-python3-changed-between-sessions.md": "21930b6c9224fcd1110b140653695af4a1552f3bd4968a4eb0853009cd2f27e9",
     "lessons/L-20261015T073100Z-stub-docstring-paraphrased-the-claim-not-the-spike.md": "880f58f2112ed21f92796e604be4d1614b3e89ace01130e706a70b6443e89f9f",
-    "lessons/L-20261015T073200Z-secret-scan-test-contained-a-literal-it-scans-for.md": "b4e217d04a05b583033faffc386a306d2ed555e8cb0ddc06ce2e2dda439d5a8a",
+    "lessons/L-20261015T073200Z-secret-scan-test-contained-a-literal-it-scans-for.md": "87a0cfc6cc538d288b6c607239e019cb680deb4aac8b6113e2b3910074161319",
     "lessons/L-20261015T073300Z-script-resolved-its-own-directory-after-cd.md": "9577337952e132f0f2046d5e109cb591f2726463a1a00a5c69347996b4520f92",
     "lessons/L-20261015T073400Z-main-guard-ran-before-the-test-overlay.md": "4b6f2580cdd11219e860c39f1cc7cf54b9a69b6fc946388a9e9d4f8c0bd47716",
     "lessons/L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary.md": "17317a572bc012632684d691b5d865c2d375291327e06da3c32beed55430f934",
@@ -304,7 +304,7 @@
     "tools/ci_annotate.py": "ffed4924358fd5acacb75f16c37d7f6b03bc91af843b157df800cc4d0f7f39dc",
     "tools/gen/claims.py": "064594ff97b08be9f5884318ac57448f2b710faff34ce2e93e5dcb2ae6912116",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
-    "tools/gen/lessons.py": "ac4583ef9b582af9aec18f7616f6c2761e628f0531bdb7ccd98863f4066eb51a",
+    "tools/gen/lessons.py": "68f9fe024918e01715ee3e00e5fee03c83690c75632d008dfde77d0dbd9113ee",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
     "tools/gen/pk_checklist.json": "dfbbf2ab8247558924e2ed2a7f10da28be7bbca344fca11e1b773dca880eb1d0",
     "tools/gen/pk_knowledge.json": "99587b290a74f735b0ac71f7e901f4cd344d3288cc04d926919cc9b78153e614",
@@ -625,5 +625,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:31:57Z"
+  "updated_at": "2026-10-15T07:32:05Z"
 }

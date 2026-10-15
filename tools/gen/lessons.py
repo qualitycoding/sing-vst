@@ -283,7 +283,7 @@ lesson("20261015T073200Z", "secret-scan-test-contained-a-literal-it-scans-for",
        "Assembled the marker from two parts at run time ('...PRIV' + 'ATE KEY-----'), like the token strings in the same test.",
        "Build every planted secret from concatenated parts at run time; grep the repository with the scanner's own patterns before committing.",
        "`python tools/check_schema.py` and the scan_secrets patterns report nothing anywhere in the repository (T-P15).",
-       "Commit f6ee132.")
+       "Commit f6ee132.", occ=2)
 lesson("20261015T073300Z", "script-resolved-its-own-directory-after-cd",
        "The sketch harness looked up a helper with $(dirname \"$0\") after changing directory, so the helper silently never ran", "Low",
        ["tech:bash", "kind:tooling"],
