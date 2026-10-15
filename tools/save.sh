@@ -7,7 +7,7 @@ msg=${1:?usage: save.sh "<message>" <paths...>}; shift; [ $# -gt 0 ] || { echo "
 cd "$(git rev-parse --show-toplevel)"
 # Refresh the checkpoint hash map in every commit, so state.json can never lag the branch (L-20261015T071500Z).
 python3 tools/checkpoint.py >/dev/null
-git add -- "$@" .checkpoints/state.json
+git add -- "$@" .checkpoints/state.json .checkpoints/snapshots
 git diff --cached --stat
 if git diff --cached --quiet; then echo "save.sh: nothing staged"; else
   git commit -q -m "$msg" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -m "Claude-Session: https://claude.ai/code/session_016Ltp4MhMKiaYAbZSCVGTy8"

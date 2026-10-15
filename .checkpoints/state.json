@@ -8,8 +8,8 @@
   "mode_flags": {
     "software.deploys": false
   },
-  "phase": "2",
-  "subphase": "2B",
+  "phase": "3",
+  "subphase": "3.5",
   "research_round": 5,
   "exploration_round": 0,
   "proof_review_round": 0,
@@ -157,7 +157,7 @@
     "lessons/L-20261015T073400Z-main-guard-ran-before-the-test-overlay.md": "4b6f2580cdd11219e860c39f1cc7cf54b9a69b6fc946388a9e9d4f8c0bd47716",
     "lessons/L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary.md": "17317a572bc012632684d691b5d865c2d375291327e06da3c32beed55430f934",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "9778add6c27b13807e95c06037d12826e15c518472684bd01440588201f0c668",
+    "plan/DECISIONS.md": "6461b078f25d983da19f0cc8a2dac25a957842140e753df3a01f93c41a71a9b6",
     "plan/ENVIRONMENT.md": "1cd2d95fcffa681b1445e0697c459cc61a74122b9d2ba5264caae26442fe887f",
     "plan/GATES.md": "fb177e41a561e2b4bba41cd8bc7f9c3e7e302456fdb64f72b48017e750ea9094",
     "plan/PLAN.md": "b776c270c6be63303cf485c46bd6387c7fbb91f57f222030b1860a8b30fda988",
@@ -308,7 +308,7 @@
     "third_party/cmudict/cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
     "tools/bootstrap_test_env.sh": "640fb0c198c2b9d43e6fe16a6a6933264c4a326a1f54b6845cfe82115f0f3304",
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
-    "tools/checkpoint.py": "ada58b6097a6a5317c57ef43605306d7de7ae5c235f5b4199cc345db41776c7f",
+    "tools/checkpoint.py": "d0a53e80887db73b21e3688950e4b9b4987219916038a42964f3048ab360b76c",
     "tools/ci_annotate.py": "ffed4924358fd5acacb75f16c37d7f6b03bc91af843b157df800cc4d0f7f39dc",
     "tools/gen/claims.py": "064594ff97b08be9f5884318ac57448f2b710faff34ce2e93e5dcb2ae6912116",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
@@ -322,7 +322,7 @@
     "tools/gen/supersede.py": "f05242a9eec9c280a9631ad3c5fdd501f3ed090b7bde90f6b3b3a23619afa57f",
     "tools/gen/taxonomy.py": "8e39b670fb359708da3ebc26fc607c9dd558c6db8651745058f5f026fb8bda81",
     "tools/gen/traceability.py": "6f529ab94915db59dd6265cf962f13b40d8fc49a0d5ff15800674a7ffa24f353",
-    "tools/save.sh": "38b823f85949075bc69358e963b3414b10f0e14bd27a9bfa1476dd3e5897afa4",
+    "tools/save.sh": "c7096891e5c106493c19eb7ab859467a10a6b4d8e7b44727174018288fbb5c0f",
     "tools/tsan.supp": "ef4093a99304f1b50ccab56b8dc92db04e01f9c0110ff16f365caa3b02c8e1bd",
     "tools/turn_end_check.sh": "9ad41f3a4cb421639abd750a7a9e91a1dec74ffbc60fbbaf7bc6b8b4df6461b3"
   },
@@ -635,5 +635,52 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T12:07:09Z"
+  "updated_at": "2026-10-15T12:08:09Z",
+  "active_step_id": "HANDOFF.md",
+  "execution_context": {
+    "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
+    "call_stack": [
+      "Phase 3 plan construction",
+      "3.5 handoff document"
+    ],
+    "scratchpad": "Done: 2B tests (C++ 62 + plugin + Python T-P01..T-P27), red verification, sketch, PLAN/ASSUMPTIONS/GATES/ENVIRONMENT/PROFILE/TRACEABILITY, initial risks. Next: HANDOFF, research round-6 log + SOURCES.md, freeze (2E), cold read with fresh agents, pre-mortem with fresh agents, status header (tools/gen/status.py), push.",
+    "in_flight_operation": null,
+    "tool_cache": {},
+    "step_pointer": {
+      "phase": "3",
+      "subphase": "3.5",
+      "item_index": 0,
+      "sub_action": "write HANDOFF.md with Rules 9, 11, 12, 13 verbatim from protocol v3.3",
+      "retry_count": 0
+    }
+  },
+  "active_variables": {
+    "intake_parameters": {
+      "repo": "qualitycoding/sing-vst",
+      "training": "free hosted GPU (Colab primary, Kaggle fallback)",
+      "defaults": "A-001..A-016"
+    },
+    "user_constraints": [
+      "use the planning protocol in qualitycoding/skills",
+      "use available tools e.g. so-vits/RVC",
+      "produce a VST that accepts pitch and lyrics",
+      "train on a free online GPU (Google Colab)"
+    ],
+    "open_questions": [
+      "Q-E7: JUCE 9.0.3 builds on windows-2022 (answered by CI at S-001)",
+      "Q-E8: Hugging Face revision for RVC assets (S-013)"
+    ],
+    "resolved_questions": [],
+    "candidate_decisions": [],
+    "uncommitted_drafts": {},
+    "variable_store": {
+      "protocol": "qualitycoding/skills@9636a79 planning-protocol v3.3",
+      "python": "/usr/bin/python3.12",
+      "venv": "/home/claude/venv-lock",
+      "build_core": "/home/claude/build-core",
+      "build_full": "/home/claude/build-full",
+      "deps": "/home/claude/deps"
+    }
+  },
+  "sequence": 2
 }

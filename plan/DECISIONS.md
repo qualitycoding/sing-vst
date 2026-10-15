@@ -407,6 +407,13 @@ error, not a silent override). The plugin step replaces `plugin/PluginProcessor.
 CLI step replaces `cli/main.cpp`; Python steps replace the bodies in `python/singvst_train/*.py` without touching any
 signature or docstring (T-P27). Private helpers may be added freely in new files.
 
+### D-034 Protocol version
+The run started under planning protocol v3.2 and adopts **v3.3** (qualitycoding/skills `9636a79`, read 2026-10-15) from
+Phase 3 onward: checkpoints carry `sequence`, `active_step_id`, `execution_context` and `active_variables`, are written
+atomically (`state.tmp.json` → `state.json`) with a snapshot in `.checkpoints/snapshots/`, on every save and before every
+high-latency action (subagent, long build, web research, gate wait) — `tools/checkpoint.py`, called by `tools/save.sh`.
+The implementer resumes with the zero-context procedure of v3.3 1.2.3 (HANDOFF.md §Resume).
+
 ---
 
 ## Decision rules (if → then)
