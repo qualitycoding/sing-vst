@@ -150,7 +150,7 @@
     "lessons/L-20261014T203000Z-oracle-had-three-rule-defects-and-no-checks-of-its-own.md": "a884f6cce7cc04876ce1cb350eb99a043988d4e814e27b86a8be31498a7ff8fd",
     "lessons/L-20261014T220000Z-hand-derived-test-expectations-wrong-at-boundaries.md": "7581d2871bc94adb169ef5270e99f3d43611ccb1bda30c7f85cc0a69431930df",
     "lessons/L-20261015T071500Z-checkpoint-not-rewritten-after-phase-2b-commits.md": "4173c90a6b7a52d7057ed71d5ec5fd3c01a49eda7588944b7584d026a3e39496",
-    "plan/DECISIONS.md": "ce2ccd061d5c9cd0bd2f247ece997fa99aa46cb426a7fa44f2b3240d7429fd11",
+    "plan/DECISIONS.md": "c303b10ab732fcb14b5dd925c55f3ce87d934905f27171b6f85ad9209b05e6df",
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
@@ -208,8 +208,15 @@
     "research/spikes/pyworld-direct/run.sh": "6d76014f366f7a95ed3f5dc00c1abe8b31bb2de8520373ed8ddfa28081c40019",
     "research/spikes/pyworld/output.txt": "a19ed38aa2485f3b4cde569aabc09b6db09d1ec62b7e644f70a3fd8026387bc7",
     "research/spikes/pyworld/run.sh": "094b36b39b40d4a1481ae99551999bdd5b5438a91d06bbcc5e26e1a1f2046fc8",
+    "research/spikes/red-verification/README.md": "bfaadd8b7c4e9d66459a221d0002dd42d18e9fb169dd8c2b46341b148e79824f",
+    "research/spikes/red-verification/output.txt": "71d69978ee9ca4249a9701355822b710dee9a7235549b5695c0a97c2e21f16d8",
+    "research/spikes/red-verification/run.sh": "43b9eaf18addcc20f0db4de0b4552497a3d617c3b4274037db732c5ccc251f0c",
     "research/spikes/rvc-resume/output.txt": "a8128beab07eb672f9b660488055e5640d715ffed45eecb19cf1c1dbac6cfe41",
     "research/spikes/rvc-resume/verify.sh": "f84db57a4cf407de4bda17e1269006f8dc6b129c110619133fa4e76cb4f37521",
+    "research/spikes/sketch-py/output.txt": "b5e43c5f38cf227fd0e0341af7ac73eb27e333546d49d9399a5dcbac16b12556",
+    "research/spikes/sketch-py/run.sh": "a983f32b0bc3557405e8632ab9c895fbcb82aab2ebf2f98ac13077c26f37bc2f",
+    "research/spikes/sketch-py/sketch_docs.py": "efbb30cb20a848d8b9444f7abfdf0d2e640ac50b9615ecc886e746d50e2d6ac1",
+    "research/spikes/sketch-py/sketch_impl.py": "a49f796bf0f8ff56247a5d7c1dc92e3669f084d4678890768275a5c023a34b56",
     "research/spikes/tiger-guide/README.md": "b56e96e96d994a7e8562bdb5de45019496f23007d352f346846f4eb43c749204",
     "research/spikes/tiger-guide/output.txt": "1ca1bc1fdb9f062e73d06723ee876a89bfae7e600aff04a31d2ea2a89856d332",
     "research/spikes/tiger-guide/run.py": "478ccfab3603398aa567e6d75e25d1016c163db94a51e9455e47cc3ff807f4a1",
@@ -606,5 +613,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:24:46Z"
+  "updated_at": "2026-10-15T07:30:58Z"
 }

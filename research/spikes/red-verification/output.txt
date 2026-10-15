@@ -1,0 +1,103 @@
+== repo ba1b504
+== C++ core (singvst_tests)
+build exit 0
+test cases:    56 |    0 passed |   56 failed
+assertions: 16258 | 8007 passed | 8251 failed
+-- failure causes
+     29 not implemented: isVowel
+     21 not implemented: parseLyrics
+     15 not implemented: rvcCoarsePitch
+     15 not implemented: importMidi
+     10 not implemented: takeSampleAt
+     10 not implemented: loadOrtRuntime
+     10 not implemented: Dictionary::fromCmuText
+      8 not implemented: sha
+      8 not implemented: resample
+      5 not implemented: midiToHz
+      5 not implemented: f
+      4 not implemented: toMonophonic
+      4 not implemented: spansToFrameDurations
+      4 not implemented: parseManifest
+      3 not implemented: layoutPhonemes
+      3 not implemented: Renderer
+      2 not implemented: bundledOrtFileName
+      2 not implemented: TakeSlot::publish
+      1 not implemented: toJson
+      1 not implemented: standardNormal
+      1 not implemented: phraseHash
+      1 not implemented: GuideEngine::load
+      1 not implemented: CaptureRecorder::noteOn
+-- failures not caused by NotImplemented (expected: softClip only, a noexcept stub returning 1e9)
+      2 /home/claude/sing-vst/tests/cpp/test_midifile.cpp
+     74 /home/claude/sing-vst/tests/cpp/test_playback.cpp
+   8012 /home/claude/sing-vst/tests/cpp/test_synthesis.cpp
+== C++ plugin (singvst_plugin_tests, xvfb)
+build exit 0
+test cases: 6 | 6 failed
+assertions: 9 | 9 failed
+== CLI stub
+singvst-render: not implemented (plan S-010)
+exit 99
+== Python (not torch, not voice; SINGVST_RENDER_BIN = core stub CLI)
+___________ test_P06_failed_stage_leaves_no_marker_and_resumes_there ___________
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-11/test_P06_failed_stage_leaves_n0')
+    def test_P06_failed_stage_leaves_no_marker_and_resumes_there(tmp_path):
+PASSED tests/python/test_repo.py::test_T061_workflow_keeps_the_required_jobs_and_checks
+PASSED tests/python/test_repo.py::test_T062_ignore_rules_and_no_private_data_tracked
+PASSED tests/python/test_repo.py::test_P21_lock_reinstalls_exactly_and_audits_clean
+PASSED tests/python/test_repo.py::test_P27_python_interfaces_match_the_frozen_record
+FAILED tests/python/test_cli.py::test_P25_cli_surface_and_split_command
+FAILED tests/python/test_cli_binary.py::test_P18_singvst_render_end_to_end_with_the_fixture_voice
+FAILED tests/python/test_evaluate.py::test_P26_transpose_semitones_nearest_whole_shift
+FAILED tests/python/test_evaluate.py::test_P26b_evaluation_phrases_exist_with_reference_text
+FAILED tests/python/test_metrics.py::test_P09_cents_and_per_note_f0_scoring
+FAILED tests/python/test_metrics.py::test_P10_extract_f0_tracks_a_harmonic_tone
+FAILED tests/python/test_metrics.py::test_P11_wer_and_text_normalisation
+FAILED tests/python/test_metrics.py::test_P12_judge_and_thresholds_file
+FAILED tests/python/test_notebooks.py::test_P16_notebooks_are_valid_and_committed_without_outputs[train_voice_colab.ipynb]
+FAILED tests/python/test_notebooks.py::test_P16_notebooks_are_valid_and_committed_without_outputs[train_voice_kaggle.ipynb]
+FAILED tests/python/test_notebooks.py::test_P17_notebooks_follow_the_hosted_gpu_rules[train_voice_colab.ipynb]
+FAILED tests/python/test_notebooks.py::test_P17_notebooks_follow_the_hosted_gpu_rules[train_voice_kaggle.ipynb]
+FAILED tests/python/test_pack.py::test_P13_pack_voice_writes_the_d008_manifest
+FAILED tests/python/test_pack.py::test_P13b_cpp_parser_accepts_what_pack_voice_writes
+FAILED tests/python/test_pack.py::test_P14_pack_voice_rejects_invalid_input_and_writes_nothing
+FAILED tests/python/test_pipeline.py::test_P05_stages_skip_when_done_and_cascade_on_change
+FAILED tests/python/test_pipeline.py::test_P06_failed_stage_leaves_no_marker_and_resumes_there
+FAILED tests/python/test_pipeline.py::test_P07_content_hash_definition_and_atomic_write
+FAILED tests/python/test_prepare.py::test_P01_split_heldout_is_deterministic_disjoint_and_order_free
+FAILED tests/python/test_prepare.py::test_P02_slice_on_silence_keeps_loud_regions_drops_short_splits_long
+FAILED tests/python/test_prepare.py::test_P02b_slice_on_silence_frame_count_includes_the_partial_last_frame
+FAILED tests/python/test_prepare.py::test_P03_normalise_sets_rms_then_limits_peak
+FAILED tests/python/test_prepare.py::test_P04_dataset_manifest_records_sha256_and_params
+FAILED tests/python/test_provenance.py::test_P08_provenance_contract
+FAILED tests/python/test_provenance.py::test_P08b_collect_reads_the_repository_commit
+FAILED tests/python/test_repo.py::test_T060_freeze_manifest_matches_and_covers_every_frozen_file
+FAILED tests/python/test_repo.py::test_P22_every_cited_id_exists
+FAILED tests/python/test_repo.py::test_P23_readme_states_behaviour_only_with_test_ids
+FAILED tests/python/test_rvc_files.py::test_P24_filelist_config_command_and_weights
+FAILED tests/python/test_security.py::test_P15_secret_scan_finds_planted_tokens_and_the_repository_is_clean
+30 failed, 4 passed, 3 deselected in 31.07s
+-- failure causes
+      3 pack.py: NotImplementedError: pack_voice
+      2 test_notebooks.py: AssertionError: missing notebooks/train_voice_kaggle.ipynb 
+      2 test_notebooks.py: AssertionError: missing notebooks/train_voice_colab.ipynb 
+      2 provenance.py: NotImplementedError: collect
+      2 prepare.py: NotImplementedError: slice_on_silence
+      2 metrics.py: NotImplementedError: normalise_text
+      1 test_repo.py: AssertionError: README.md needs a '## What it does' section (plan step S-019)
+      1 test_pipeline.py: AssertionError: Regex pattern did not match.
+      1 test_cli_binary.py: AssertionError: singvst-render: not implemented (plan S-010)
+      1 security.py: NotImplementedError: scan_secrets
+      1 rvc_files.py: NotImplementedError: write_filelist
+      1 prepare.py: NotImplementedError: split_heldout
+      1 prepare.py: NotImplementedError: normalise
+      1 prepare.py: NotImplementedError: build_dataset_manifest
+      1 pipeline.py: NotImplementedError: run_stages
+      1 pipeline.py: NotImplementedError: content_hash
+      1 pathlib.py: FileNotFoundError: [Errno 2] No such file or directory: '/home/claude/sing-vst/tests/FROZEN_MANIFE
+      1 pathlib.py: FileNotFoundError: [Errno 2] No such file or directory: '/home/claude/sing-vst/plan/ASSUMPTIONS.md
+      1 metrics.py: NotImplementedError: load_pyworld
+      1 metrics.py: NotImplementedError: judge
+      1 metrics.py: NotImplementedError: cents
+      1 evaluate.py: NotImplementedError: transpose_semitones
+      1 cli.py: NotImplementedError: build_parser

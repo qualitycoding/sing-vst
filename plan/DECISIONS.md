@@ -308,7 +308,9 @@ Package `python/singvst_train` (Python 3.12): `prepare`, `pipeline`, `provenance
 `rvc_files`, `export_rvc`, `evaluate`, `cli`. Signatures are frozen in the stubs. Every result file gets a provenance sidecar
 `<file>.provenance.json` with `git_commit`, `lockfile_sha256`, `seeds`, `params`, `utc_timestamp` (ISO-8601 `Z`),
 `hardware` (platform, CPU, GPU name or `none`), `threads` (protocol 2B.2). pyworld is loaded through its compiled extension
-(`metrics.load_pyworld`) because `import pyworld` fails with setuptools 84 (C-046). Tests: T-P01…T-P15, T-P24, T-P25.
+(`metrics.load_pyworld`) because `import pyworld` fails with setuptools 84 (C-046). The frozen interface record
+`tests/python/interfaces.json` (signatures, docstring hashes, constants; `tools/gen/interfaces.py`) is checked by T-P27.
+Tests: T-P01…T-P15, T-P24…T-P27.
 
 ### D-016 Training on a free hosted GPU
 Training runs where the owner has a free GPU (A-009): **Google Colab** free tier (primary) or **Kaggle** (fallback), driven by
@@ -370,7 +372,8 @@ sandbox (C-044, PK-14); failing steps emit `::error::` annotations with the fail
 ### D-023 Red-verification exemptions
 Tests that check repository or environment properties, not stub behaviour, are exempt from "must fail against stubs":
 T-059 (pluginval: the silent stub plugin is a valid VST3), T-060 (freeze manifest), T-061 (workflow lint), T-062 (ignore
-rules), T-P21 (lock reproducible and audit clean), T-P22 (cited IDs exist). Every other test must fail cleanly (PK-25).
+rules), T-P21 (lock reproducible and audit clean), T-P22 (cited IDs exist), T-P23 (README citations; written at S-019),
+T-P27 (interface record). Record: research/spikes/red-verification/. Every other test must fail cleanly (PK-25).
 
 ### D-026 Licences
 sing-vst code: Apache-2.0. JUCE 9.0.3: AGPLv3 or commercial (C-012) — any distributed plugin binary is under AGPLv3 unless the

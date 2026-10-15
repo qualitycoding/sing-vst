@@ -1,0 +1,43 @@
+self = PosixPath('/tmp/claude-0/-home-claude/d351eef4-4ce3-5bec-8a6e-290271682adb/scratchpad/sketch-run/plan/ASSUMPTIONS.md')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-0/-home-claude/d351eef4-4ce3-5bec-8a6e-290271682adb/scratchpad/sketch-run/plan/ASSUMPTIONS.md'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+_____________ test_P23_readme_states_behaviour_only_with_test_ids ______________
+
+root = PosixPath('/tmp/claude-0/-home-claude/d351eef4-4ce3-5bec-8a6e-290271682adb/scratchpad/sketch-run')
+
+    def test_P23_readme_states_behaviour_only_with_test_ids(root):
+        """T-P23 (D-030, PK-04, PK-46): each bullet under '## What it does' cites a test; claims about how the voice sounds
+        appear only on lines that cite the G-001 listening record."""
+        docs = [root / "README.md", *sorted((root / "docs").glob("**/*.md"))]
+        readme = docs[0].read_text(encoding="utf-8")
+        section = re.search(r"^## What it does\n(.*?)(?=^## |\Z)", readme, re.M | re.S)
+>       assert section, "README.md needs a '## What it does' section (plan step S-019)"
+E       AssertionError: README.md needs a '## What it does' section (plan step S-019)
+E       assert None
+
+tests/python/test_repo.py:165: AssertionError
+=========================== short test summary info ============================
+FAILED tests/python/test_notebooks.py::test_P16_notebooks_are_valid_and_committed_without_outputs[train_voice_colab.ipynb]
+FAILED tests/python/test_notebooks.py::test_P16_notebooks_are_valid_and_committed_without_outputs[train_voice_kaggle.ipynb]
+FAILED tests/python/test_notebooks.py::test_P17_notebooks_follow_the_hosted_gpu_rules[train_voice_colab.ipynb]
+FAILED tests/python/test_notebooks.py::test_P17_notebooks_follow_the_hosted_gpu_rules[train_voice_kaggle.ipynb]
+FAILED tests/python/test_repo.py::test_T060_freeze_manifest_matches_and_covers_every_frozen_file
+FAILED tests/python/test_repo.py::test_P22_every_cited_id_exists - FileNotFou...
+FAILED tests/python/test_repo.py::test_P23_readme_states_behaviour_only_with_test_ids
+7 failed, 24 passed, 6 deselected in 1.34s
+== with sketch notebooks and README section (T-P16, T-P17, T-P23 satisfiable)
+.....                                                                    [100%]
+5 passed in 0.14s
