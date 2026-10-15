@@ -4,7 +4,7 @@ title: 'Three expected values written by hand into tests were wrong; the oracle 
 status: active
 supersedes: []
 recurrence_of: null
-occurrences: 1
+occurrences: 2
 severity: Medium
 tags: [applies:all, tech:cpp, kind:verification-gap, phase:planning]
 recorded_by: planner
@@ -23,3 +23,4 @@ Compute every expected value with the oracle before writing it into a test, and 
 `python -I research/spikes/oracle/check_expectations.py` reports 0 mismatches and is run before every test-file commit.
 ## Evidence
 check_expectations output: 'MISMATCH T-007 hasPhone ao', 'MISMATCH T-032 ppq 4.000020833333333', 'MISMATCH T-032 ppq 5.99998'.
+2026-10-15 (occurrence 2, Python): T-P02 placed the 32 s tone at 6 s instead of 7 s (miscounted the leading 1+3+1+1+1 s); caught by a hand re-check before the first commit, and every Python expectation was then run against the sketch implementation (research/spikes/sketch-py), which passed all 24 tests whose inputs exist.

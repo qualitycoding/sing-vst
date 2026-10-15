@@ -217,7 +217,7 @@ lesson("20261014T220000Z", "hand-derived-test-expectations-wrong-at-boundaries",
        "Re-derived each expectation with research/spikes/oracle/check_expectations.py, changed the fixture duplicate line to a phone no other word uses (zh), and moved the rounding cases off exact .5 boundaries (0.6 / 0.4 sample) and onto the exact last-sample position.",
        "Compute every expected value with the oracle before writing it into a test, and keep inputs away from exact rounding boundaries unless the boundary is the subject (then build the input so the boundary is exact in binary).",
        "`python -I research/spikes/oracle/check_expectations.py` reports 0 mismatches and is run before every test-file commit.",
-       "check_expectations output: 'MISMATCH T-007 hasPhone ao', 'MISMATCH T-032 ppq 4.000020833333333', 'MISMATCH T-032 ppq 5.99998'.")
+       "check_expectations output: 'MISMATCH T-007 hasPhone ao', 'MISMATCH T-032 ppq 4.000020833333333', 'MISMATCH T-032 ppq 5.99998'.", occ=2)
 
 def render(x):
     rec = x["recurrence"] or "null"
@@ -257,6 +257,60 @@ lesson("20261015T071500Z", "checkpoint-not-rewritten-after-phase-2b-commits",
        "`git show --stat HEAD` lists .checkpoints/state.json for every commit made through tools/save.sh.",
        "2026-10-15 resume: state.json updated_at 2026-10-14T19:40:53Z, HEAD 02fa6ea at 2026-10-14T21:30Z; 11 mismatches, 78 artefacts missing from the map.",
        recurrence="L-20261010T094000Z-continuation-left-work-uncommitted-and-checkpoint-stale")
+lesson("20261015T073000Z", "default-python3-changed-between-sessions",
+       "/usr/bin/python3 became 3.13 between sessions, so a clean venv built with `python3 -m venv` could not install the 3.12 lock", "Medium",
+       ["applies:all", "tech:python", "kind:environment"],
+       "A run resumes after days in a sandbox it does not control; a lock pins packages for one Python minor version (here 3.12).",
+       "`python3 -m venv` picked Python 3.13.16; pip found no cp313 wheel for scipy 1.13.1 and tried to build it from source (meson: no Fortran compiler), so the clean-room install failed.",
+       "Rebuilt the venv with /usr/bin/python3.12 explicitly; the lock then reproduced exactly and pyworld's extension loaded.",
+       "Name the interpreter by its full minor version (python3.12) in every venv, script and CI step; never rely on `python3`.",
+       "`grep -rn 'python3 -m venv' tools research/spikes .github` prints nothing; plan/ENVIRONMENT.md names /usr/bin/python3.12.",
+       "venv-lock.install.log: 'ERROR: Unknown compiler(s): [[gfortran] ...' under /usr/lib/python3.13.")
+lesson("20261015T073100Z", "stub-docstring-paraphrased-the-claim-not-the-spike",
+       "load_pyworld's frozen docstring said importlib.import_module('pyworld.pyworld'), which still runs the package __init__ that C-046 says fails", "Medium",
+       ["tech:python", "domain:audio", "kind:wrong-assumption"],
+       "An interface docstring is written from a claim's one-line summary while the spike that verified the claim contains the exact working code.",
+       "The stub promised a loading method the spike had not used; the clean-room venv showed it raising ModuleNotFoundError: pkg_resources.",
+       "Rewrote the docstring from research/spikes/pyworld-direct/run.sh (ExtensionFileLoader on the file listed in the distribution metadata) and ran the sketch implementation of it (T-P10 passes).",
+       "When a frozen docstring describes a mechanism a spike verified, copy the mechanism from the spike's code, then run it once in the pinned environment before committing.",
+       "research/spikes/sketch-py/output.txt shows T-P10 passing with the documented loader.",
+       "venv-lock.log 2026-10-15: importlib.import_module('pyworld.pyworld') -> ModuleNotFoundError: No module named 'pkg_resources'.")
+lesson("20261015T073200Z", "secret-scan-test-contained-a-literal-it-scans-for",
+       "The secret-scan test planted a private-key marker as a literal, so its own whole-repository scan would have reported the test file", "Low",
+       ["tech:python", "kind:verification-gap"],
+       "A test plants strings that a scanner must detect and also asserts that the scanned repository (which contains the test) is clean.",
+       "test_security.py contained the literal '-----BEGIN RSA PRIVATE KEY-----' while asserting scan_secrets(root) == [].",
+       "Assembled the marker from two parts at run time ('...PRIV' + 'ATE KEY-----'), like the token strings in the same test.",
+       "Build every planted secret from concatenated parts at run time; grep the repository with the scanner's own patterns before committing.",
+       "`grep -rnE 'BEGIN [A-Z ]*PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,}' --exclude-dir=.git .` prints nothing.",
+       "Commit f6ee132.")
+lesson("20261015T073300Z", "script-resolved-its-own-directory-after-cd",
+       "The sketch harness looked up a helper with $(dirname \"$0\") after changing directory, so the helper silently never ran", "Low",
+       ["tech:bash", "kind:tooling"],
+       "A shell script invoked with a relative path changes directory and later refers to files next to itself.",
+       "sketch_docs.py was never executed; the notebook tests still failed with 'missing notebooks' and the output looked like a test defect.",
+       "Resolve the script's own directory once at the top (D=$(cd \"$(dirname \"$0\")\" && pwd)) and report a failed helper explicitly.",
+       "Resolve the script directory to an absolute path before any cd, and make helper failures print a FAILED line.",
+       "`grep -n 'dirname \"\\$0\"' research/spikes/*/run.sh` shows uses only in the first lines.",
+       "research/spikes/sketch-py/run.sh before and after commit 5365bb3.")
+lesson("20261015T073400Z", "main-guard-ran-before-the-test-overlay",
+       "Appending an overlay to a module whose __main__ guard calls main() left `python -m` running the stub", "Low",
+       ["tech:python", "kind:tooling"],
+       "A harness patches a module by appending code, and the module is also run as a script (`python -m`).",
+       "T-P25 failed in the sketch run with NotImplementedError: main, which looked like a test defect.",
+       "Moved the __main__ guard after the overlay in the harness copy; T-P25 then passed.",
+       "When overlaying a module by appending code, move its `if __name__ == \"__main__\"` block to the end first.",
+       "research/spikes/sketch-py/output.txt: test_cli.py passes.",
+       "Sketch run 2026-10-15, first attempt: 'raise NotImplementedError(\"main\")' from python -m singvst_train.cli --help.")
+lesson("20261015T073500Z", "syllable-split-assumed-instead-of-read-from-the-dictionary",
+       "An evaluation phrase split 'every' into two syllables, but CMUdict gives it three vowels (eh v er iy)", "Low",
+       ["domain:singing-voice-synthesis", "tech:g2p", "kind:wrong-assumption"],
+       "Writing lyric fixtures with hyphenated syllables for a pipeline that syllabifies by dictionary vowels (D-005).",
+       "The phrase 'ev- ery morn- ing ...' would have produced an alignment warning in every evaluation render.",
+       "The generator's dictionary check stopped it; split as 'ev- er- y' and added a note.",
+       "Generate lyric fixtures with a check that each word's hyphen count + 1 equals its CMUdict vowel count.",
+       "`python -I tools/gen/phrases.py` exits 0.",
+       "AssertionError: every: 2 syllables but 3 vowels ['eh', 'v', 'er', 'iy'].")
 OUT.mkdir(exist_ok=True)
 for x in L:
     p = OUT / f"{x['id']}.md"
