@@ -39,7 +39,7 @@ def test_P13_pack_voice_writes_the_d008_manifest(tmp_path, root):
 @pytest.mark.binary
 def test_P13b_cpp_parser_accepts_what_pack_voice_writes(tmp_path, root):
     """T-P13 (D-008, D-014): singvst-render --check-voice prints 'ok <name>' for a package written by pack_voice."""
-    binary = need_env("SINGVST_RENDER_BIN", "S-009")
+    binary = need_env("SINGVST_RENDER_BIN", "S-010")
     guide, conv = _fixture_files(root)
     pack_voice(tmp_path / "v", "Packed", "my own voice", "test licence", guide, conv)
     r = subprocess.run([binary, "--check-voice", str(tmp_path / "v")], capture_output=True, text=True, timeout=120)

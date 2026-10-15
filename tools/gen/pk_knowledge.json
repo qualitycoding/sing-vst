@@ -8,7 +8,7 @@
  "K-20261008T223321Z-juce-vst3-linux-build-14-packages": "Linux CI package list (D-018). Version JUCE 7.0.12/8.0.15: re-verified for 9.0.3 by the S-001 CI build (open question Q-E7).",
  "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change": "JUCE 9.x restructures the VST3 client extension API; plan uses no VST3 client extensions (D-001).",
  "K-20261009T092101Z-juce-vst3-can-replace-vst2-default-and-error": "JUCE_VST3_CAN_REPLACE_VST2=0 in plugin/CMakeLists.txt (PK-47).",
- "K-20261009T092103Z-vst3-system-folder-needs-write-access-windows": "COPY_PLUGIN_AFTER_BUILD FALSE; install instructions copy to the user VST3 folder (S-019).",
+ "K-20261009T092103Z-vst3-system-folder-needs-write-access-windows": "COPY_PLUGIN_AFTER_BUILD FALSE; install instructions copy to the user VST3 folder (S-018).",
  "K-20261009T092102Z-juce-standalone-target-compiles-vst3-client": "VST3-client macros are set on the shared target so Standalone builds too (plugin/CMakeLists.txt).",
  "K-20261009T092107Z-msvc-ninja-needs-vcvars-environment": "Windows CI uses the Visual Studio generator, not Ninja (D-018).",
  "K-20261009T140031Z-pip-tools-hash-locking-build-backend": "setuptools is listed in the lock inputs (D-019, PK-41).",

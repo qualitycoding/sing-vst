@@ -16,7 +16,7 @@ PROVENANCE_KEYS = {"git_commit", "voice_sha256", "params", "seeds", "utc_timesta
 def test_P18_singvst_render_end_to_end_with_the_fixture_voice(tmp_path, root):
     """T-P18 (D-014, D-021, D-031): renders a MIDI file with lyric events, writes float32 mono WAV at 48 kHz soft-clipped
     to <= 0.98, a provenance sidecar, and reports errors with the documented exit codes."""
-    binary = need_env("SINGVST_RENDER_BIN", "S-009")
+    binary = need_env("SINGVST_RENDER_BIN", "S-010")
     fx = root / "tests" / "fixtures"
     voice, mid, dic = fx / "voice-convert", fx / "lyrics.mid", fx / "cmudict-mini.dict"
     out = tmp_path / "out.wav"

@@ -388,7 +388,7 @@ all of these (S-018).
 The implementer works on `impl-<run_id>` (from the generation branch). Every command that writes into the repository ends
 with `bash tools/save.sh "<msg>" <paths>` (commit + push in the same call; lesson L-20261014T195500Z); one commit per plan
 step at minimum, rewriting `.checkpoints/state.json` with `tools/checkpoint.py`, appending `EXECUTION_LOG.md`; the last call
-of every turn is `bash tools/turn_end_check.sh` (PK-01, PK-03). At the end a pull request impl → `main` is opened (S-018);
+of every turn is `bash tools/turn_end_check.sh` (PK-01, PK-03). At the end a pull request impl → `main` is opened (S-019);
 merging it is the owner's decision.
 
 ### D-030 Claims about behaviour

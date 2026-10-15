@@ -18,12 +18,12 @@ Status: **A** answered (claim at `verified`/`corroborated`), **R** answered but 
 - **E3 Plugin framework and host integration**
   - E3.1 JUCE version, licence, build requirements → C-012 → D-001, D-026. **A**
   - E3.2 Can lyrics arrive from the host? No (C-011) → D-010 (text box + MIDI-file lyric events, C-013), A-005. **A**
-  - E3.3 Plugin validation tool and its real CLI → C-015 → T-053, D-018. **A**
+  - E3.3 Plugin validation tool and its real CLI → C-015 → T-059, D-018. **A**
   - E3.4 Does JUCE 9.0.3 build a VST3 on the CI runners (Linux 24.04, Windows 2022)? → S-001 records the CI run; open question Q-E7 in plan/ENVIRONMENT.md. **O**
 - **E4 Native inference runtime**
   - E4.1 ORT version, assets, checksums, C++20 → C-014 → D-002. **A**
   - E4.2 Windows DLL conflicts → C-026 → D-024. **A**
-  - E4.3 Explicit-path loading with manual API init → C-042 (Linux verified; Windows in CI at S-008) → D-024, T-041. **A/O**
+  - E4.3 Explicit-path loading with manual API init → C-042 (Linux verified; Windows in CI at S-007) → D-024, T-041. **A/O**
 - **E5 Lyrics → phonemes**
   - E5.1 Dictionary, licence, coverage → C-016 → D-005, T-007. **A**
   - E5.2 Does the guide's phoneme set cover CMUdict? Yes for TIGER (C-036) → D-012. **A**
@@ -46,7 +46,7 @@ Status: **A** answered (claim at `verified`/`corroborated`), **R** answered but 
 - **N3 Quality measurement (unknown outcomes, Rule 8)**
   - N3.1 Speaker similarity → C-028 (Resemblyzer weights in package) → D-017, T-P20. **A**
   - N3.2 F0 accuracy → C-027 (pyworld harvest; needs setuptools < 81) → D-017, T-P10. **A**
-  - N3.3 Intelligibility → Whisper (`openai-whisper` 20250625, D-017) → T-P20. **O**: runs only on the hosted GPU at S-018.
+  - N3.3 Intelligibility → Whisper (`openai-whisper` 20250625, D-017) → T-P20. **O**: runs only on the hosted GPU at S-017.
   - N3.4 Acceptance thresholds: unmeasured defaults until G-001 (PK-29) → A-012, eval/thresholds.json. **O** (by design)
 - **N4 Gain staging** → D-021 (soft clip at 0.98, unclipped peak reported), T-023, T-030. **A**
 

@@ -162,7 +162,7 @@ def test_P23_readme_states_behaviour_only_with_test_ids(root):
     docs = [root / "README.md", *sorted((root / "docs").glob("**/*.md"))]
     readme = docs[0].read_text(encoding="utf-8")
     section = re.search(r"^## What it does\n(.*?)(?=^## |\Z)", readme, re.M | re.S)
-    assert section, "README.md needs a '## What it does' section (plan step S-019)"
+    assert section, "README.md needs a '## What it does' section (plan step S-018)"
     bullets = [l for l in section.group(1).splitlines() if l.lstrip().startswith(("- ", "* "))]
     assert bullets and all(re.search(r"\bT-P?\d{2,3}\b", b) for b in bullets), bullets
     for d in docs:

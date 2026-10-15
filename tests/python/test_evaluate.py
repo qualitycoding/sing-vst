@@ -37,7 +37,7 @@ def test_P20_evaluation_procedure_produces_a_complete_measured_report(tmp_path, 
     Verdicts are recorded for gate G-001 and are not asserted here (PK-29, PK-35)."""
     voice = Path(need_env("SINGVST_VOICE", "S-017 (gate G-004)"))
     held = Path(need_env("SINGVST_HELDOUT", "S-017 (gate G-004)"))
-    binary = Path(need_env("SINGVST_RENDER_BIN", "S-009"))
+    binary = Path(need_env("SINGVST_RENDER_BIN", "S-010"))
     rep = evaluate.evaluate_voice(voice, held, root / "eval" / "phrases", binary, tmp_path, seed=0)
     assert set(rep) == set(evaluate.REPORT_KEYS) and rep["status"] == "measured"
     assert json.loads((tmp_path / "report.json").read_text(encoding="utf-8")) == rep
