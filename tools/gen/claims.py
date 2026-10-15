@@ -149,6 +149,16 @@ claim("C-051", "The JUCE 9.0.3 VST3 target's TARGET_FILE_DIR is <bundle>/Content
       "software", True, [S("research/spikes/plugin-stub/output.txt", "spike plugin-stub", "bundle, pluginval lines", 1, "2026-10-14")],
       "verified", ["D-024", "D-023", "T-059"], ["subject:pluginval", "tech:pluginval", "tech:vst3", "tech:juce"], "JUCE 9.0.3 / pluginval 1.0.4", kstamp="20261014T213002Z")
 
+claim("C-052", "RVC 81eed5e's README documents its model downloads as `hf download lj1995/VoiceConversionWebUI --revision main` with `--include \"hubert_base/*\" --local-dir assets` (content encoder), `rmvpe.pt --local-dir assets/rmvpe`, `--include \"pretrained/*\" \"pretrained_v2/*\"` and `mute.zip` unzipped into logs.",
+      "software", True, [S("research/spikes/hf-cli/output.txt", "spike hf-cli (RVC README.md lines 170-190)", "README download commands", 1, "2026-10-15")],
+      "verified", ["D-016", "D-018", "S-013", "S-016", "R-010"], ["subject:rvc", "tech:rvc", "domain:ml-training"], "RVC 81eed5e", kstamp="20261015T080000Z")
+claim("C-053", "huggingface_hub 2.2.0 installs the `hf` CLI; `hf download [OPTIONS] REPO_ID [FILENAMES]...` accepts `--revision`, `--include` and `--local-dir`.",
+      "software", True, [S("research/spikes/hf-cli/output.txt", "spike hf-cli", "hf download --help", 1, "2026-10-15")],
+      "verified", ["D-018", "S-013", "S-016"], ["subject:huggingface-hub", "tech:python"], "huggingface_hub 2.2.0", kstamp="20261015T080001Z")
+claim("C-054", "transformers 4.49.0 (RVC 81eed5e pins >=4.49.0,<4.50) requires huggingface-hub <1.0,>=0.26.0, so the hf 2.2.0 CLI must be installed in a separate venv from RVC's environment.",
+      "software", True, [S("research/spikes/hf-cli/output.txt", "spike hf-cli (PyPI JSON for transformers 4.49.0)", "requires_dist", 1, "2026-10-15")],
+      "verified", ["D-018", "S-016"], ["subject:huggingface-hub", "tech:python", "tech:rvc"], "transformers 4.49.0", kstamp="20261015T080002Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)

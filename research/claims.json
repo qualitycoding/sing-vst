@@ -1420,5 +1420,84 @@
    "D-023",
    "T-059"
   ]
+ },
+ {
+  "id": "C-052",
+  "claim": "RVC 81eed5e's README documents its model downloads as `hf download lj1995/VoiceConversionWebUI --revision main` with `--include \"hubert_base/*\" --local-dir assets` (content encoder), `rmvpe.pt --local-dir assets/rmvpe`, `--include \"pretrained/*\" \"pretrained_v2/*\"` and `mute.zip` unzipped into logs.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/hf-cli/output.txt",
+    "doi": "",
+    "title": "spike hf-cli (RVC README.md lines 170-190)",
+    "version": "",
+    "locator": "README download commands",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-016",
+   "D-018",
+   "S-013",
+   "S-016",
+   "R-010"
+  ]
+ },
+ {
+  "id": "C-053",
+  "claim": "huggingface_hub 2.2.0 installs the `hf` CLI; `hf download [OPTIONS] REPO_ID [FILENAMES]...` accepts `--revision`, `--include` and `--local-dir`.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/hf-cli/output.txt",
+    "doi": "",
+    "title": "spike hf-cli",
+    "version": "",
+    "locator": "hf download --help",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-018",
+   "S-013",
+   "S-016"
+  ]
+ },
+ {
+  "id": "C-054",
+  "claim": "transformers 4.49.0 (RVC 81eed5e pins >=4.49.0,<4.50) requires huggingface-hub <1.0,>=0.26.0, so the hf 2.2.0 CLI must be installed in a separate venv from RVC's environment.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/hf-cli/output.txt",
+    "doi": "",
+    "title": "spike hf-cli (PyPI JSON for transformers 4.49.0)",
+    "version": "",
+    "locator": "requires_dist",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-018",
+   "S-016"
+  ]
  }
 ]

@@ -10,7 +10,7 @@
   },
   "phase": "3",
   "subphase": "3.5",
-  "research_round": 5,
+  "research_round": 6,
   "exploration_round": 0,
   "proof_review_round": 0,
   "premortem_round": 0,
@@ -18,15 +18,15 @@
     "0.1",
     "0.3.7",
     "R0",
-    "1.3"
+    "1.3",
+    "1.4",
+    "2B",
+    "3.1-3.5"
   ],
   "pending": [
     "1.1",
-    "1.4",
-    "2B",
     "2C",
     "2E",
-    "3",
     "3.6",
     "4",
     "5"
@@ -128,6 +128,9 @@
     "knowledge/K-20261014T213000Z-c-049-nlohmann-json.md": "fe939be248fc296cc1e3b20f1936fb7d12eea2e34dfe3024d1fb18b72c3c1143",
     "knowledge/K-20261014T213001Z-c-050-juce.md": "ab9e7592e0092804ff73754441a21b1bb0d6c8d0347c0102954fe46b8dd4c738",
     "knowledge/K-20261014T213002Z-c-051-pluginval.md": "44fb97c9368cd441c92ec8f17a027ebdc3dea60e54d10b25a7d18cdb5ecb1864",
+    "knowledge/K-20261015T080000Z-c-052-rvc.md": "2f905606d9cd5c763b9545eeb822ae09225062754dddf7f7b8edd575247f99ba",
+    "knowledge/K-20261015T080001Z-c-053-huggingface-hub.md": "f47a6ae5e43622b543e3a0d3d5d3f454c702eadbc8a01b92550ccf9e34803937",
+    "knowledge/K-20261015T080002Z-c-054-huggingface-hub.md": "1d693929a7e12a272660fa33d525d72b33d40f18b12c890f5e498f5957bf7ef1",
     "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
     "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
     "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
@@ -188,12 +191,16 @@
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
     "research/PRIOR_KNOWLEDGE.md": "7828cfb9ec5d5066e79f2cef5855ad58ca3c007ec34c8e5024eaf3d70eecccc9",
     "research/QUESTIONS.md": "1f41ab2ea5c070f0b55ead9cd88e570181bff41f0fd78fda6afc4e277dc86c71",
-    "research/claims.json": "38fe677c36815d7c427ad994407c22b413c045d3938ebc595df5590ff5a32aff",
+    "research/SOURCES.md": "42014984fcc560de04615052c90a7f68f6fd453503b38b0fe0e539d932cc802b",
+    "research/claims.json": "e62fed185ee643822705743a9a028b9cb5cd4d4df4c410e899e65741d9fa461f",
     "research/rounds/round-1-3.md": "755204e39b43b7aa003c74ab6dc20db63166475dbc9b7a53ac843d1fd0b07edd",
     "research/rounds/round-4.md": "62f714adf96b51b314ef58cfa272c2cd4a04d68209675f29e5d5536d4894a93e",
     "research/rounds/round-5.md": "87aac3ff6c3bce73e22817f34129063fcc64e8e29bdf117a1548936e7bce81f4",
+    "research/rounds/round-6.md": "1d2631efb6ed35ddce9b4500f51a024c24cfc8b6c1509f7f0f12b27a143205c8",
     "research/spikes/deps-pins/output.txt": "a1f6120b1bbcfcd97a95c22a7775bc4ffc62b231d64d40c00fe197a0831d3373",
     "research/spikes/deps-pins/run.sh": "adefd8efb63fc08875cb0d9af2bd1d6343e706138d7c4079eefb7718fc0b8077",
+    "research/spikes/hf-cli/output.txt": "62c38a647205bb4bf12bd07ed4172a36f7a4d50a970cbe5ab4740f42a96e4db2",
+    "research/spikes/hf-cli/run.sh": "43edc7c214bdb5c7e3b46d696dc1823502a380175aed452e0ccc9d4d50b56cee",
     "research/spikes/hosts/output.txt": "f8195c6a0834d315ef5f225e0ee6c73da4c49be58f98cd727b97ebbe659bac06",
     "research/spikes/hosts/run.sh": "4d324f7471d59ce67171b1010ac9d32d1537caa868e5b891b2848b8bff24cc03",
     "research/spikes/juce-lyrics/CMakeLists.txt": "f0c4fa0a208bb0245a5e357315f2f4c5c3a052cab3b89ba5786fe18d10090863",
@@ -202,6 +209,7 @@
     "research/spikes/juce-lyrics/make_mid.py": "e14aea8906b86cd31be2588038f86bf34a5f43d194835533624fa1e2b3e02c1f",
     "research/spikes/juce-lyrics/output.txt": "dacd4f11e1b2b1ab7405ec82729ef3194431acb6ae630eb0827b0cd92864deb4",
     "research/spikes/juce-lyrics/run.sh": "9a333c82ed264e6c671608d1ee97a30282656d728f012036496cd4980527fd14",
+    "research/spikes/oracle/check_expectations-output.txt": "6d6d23994f1220684d99b9ed7f52fed6c474270e794e2e7974454499deef33b7",
     "research/spikes/oracle/check_expectations.py": "7871fcc0859c6a76c43bfccc7e24ec5343c1125b6e53e1802399ae436aaab42d",
     "research/spikes/oracle/engines.py": "6925570d62fbf6a29c3bafd815a9cf81b7a09eca2bcea6ca848f50aa74babfb4",
     "research/spikes/oracle/oracle.py": "15629a4094c54d83f45b24b78e7904f7db44669fbc474449991ab04c154117e9",
@@ -312,7 +320,7 @@
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "d0a53e80887db73b21e3688950e4b9b4987219916038a42964f3048ab360b76c",
     "tools/ci_annotate.py": "ffed4924358fd5acacb75f16c37d7f6b03bc91af843b157df800cc4d0f7f39dc",
-    "tools/gen/claims.py": "064594ff97b08be9f5884318ac57448f2b710faff34ce2e93e5dcb2ae6912116",
+    "tools/gen/claims.py": "98db44682b462be1af6777dd69733497b03cd8fba23606fbfaf54a8a8a8c18a1",
     "tools/gen/handoff.py": "bc9b790a66aafef1424d4eab1ceaea87fa3270a32886e644ac29cfcbce4ff43e",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "68f9fe024918e01715ee3e00e5fee03c83690c75632d008dfde77d0dbd9113ee",
@@ -322,6 +330,7 @@
     "tools/gen/pk_map.json": "d57d21b6edf31cebe914b253503e64307381c6ceeafbb44160d904a68e862876",
     "tools/gen/plan.py": "cf3a2c50cf219bb40247bf233a3d8c00449fcad37027052cd29de656ff1b789c",
     "tools/gen/prior_knowledge.py": "abe574d475ad7f1c86d40ead0bc220c27a1ef528a39e3943b59899b0c02eb81f",
+    "tools/gen/sources.py": "4de95023182d1ddf5abe0707442e619ae4f8861f8e53486b37505f9e69ec1299",
     "tools/gen/supersede.py": "f05242a9eec9c280a9631ad3c5fdd501f3ed090b7bde90f6b3b3a23619afa57f",
     "tools/gen/taxonomy.py": "8e39b670fb359708da3ebc26fc607c9dd558c6db8651745058f5f026fb8bda81",
     "tools/gen/traceability.py": "6f529ab94915db59dd6265cf962f13b40d8fc49a0d5ff15800674a7ffa24f353",
@@ -626,7 +635,10 @@
     "K-20261014T201001Z-c-048-rvc",
     "K-20261014T213000Z-c-049-nlohmann-json",
     "K-20261014T213001Z-c-050-juce",
-    "K-20261014T213002Z-c-051-pluginval"
+    "K-20261014T213002Z-c-051-pluginval",
+    "K-20261015T080000Z-c-052-rvc",
+    "K-20261015T080001Z-c-053-huggingface-hub",
+    "K-20261015T080002Z-c-054-huggingface-hub"
   ],
   "environment": {},
   "notes": [
@@ -638,7 +650,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T12:08:45Z",
+  "updated_at": "2026-10-15T12:10:06Z",
   "active_step_id": "HANDOFF.md",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -652,8 +664,8 @@
     "step_pointer": {
       "phase": "3",
       "subphase": "3.5",
-      "item_index": 0,
-      "sub_action": "write HANDOFF.md with Rules 9, 11, 12, 13 verbatim from protocol v3.3",
+      "item_index": 1,
+      "sub_action": "next: 2E freeze, then 3.6 cold read with fresh agents",
       "retry_count": 0
     }
   },
@@ -685,5 +697,5 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 3
+  "sequence": 5
 }

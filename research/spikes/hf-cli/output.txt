@@ -1,0 +1,19 @@
+== RVC 81eed5e8f68b6bed1789f682fe78cdd324495afc README.md download commands
+170:hf download lj1995/VoiceConversionWebUI --revision main \
+172:hf download lj1995/VoiceConversionWebUI rmvpe.pt --revision main \
+176:hf download lj1995/VoiceConversionWebUI --revision main \
+178:hf download lj1995/VoiceConversionWebUI mute.zip --revision main \
+183:hf download lj1995/VoiceConversionWebUI --revision main \
+190:hf download lj1995/VoiceConversionWebUI rmvpe.onnx --revision main \
+== hf version: 2.2.0
+Usage: hf download [OPTIONS] REPO_ID [FILENAMES]...
+ --revision TEXT Git revision id which can be a branch name,
+ --include TEXT Glob patterns to include from files to
+ --local-dir TEXT If set, the downloaded file will be placed
+ $ hf download meta-llama/Llama-3.2-1B-Instruct --include "*.safetensors"
+ $ hf download meta-llama/Llama-3.2-1B-Instruct --local-dir ./models/llama
+== RVC CUDA/CPU requirement pins for transformers
+/home/claude/deps/rvc-src/rvc/requirments_cpu_py312.txt:58:transformers>=4.49.0,<4.50
+/home/claude/deps/rvc-src/rvc/requirments_cu128_py312.txt:54:transformers>=4.49.0,<4.50
+== PyPI metadata: transformers 4.49.0 requires_dist (huggingface-hub)
+['huggingface-hub<1.0,>=0.26.0', 'huggingface-hub<1.0,>=0.26.0; extra == "torchhub"']
