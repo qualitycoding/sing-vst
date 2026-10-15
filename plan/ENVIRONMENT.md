@@ -29,12 +29,24 @@ cmake -S . -B ../build-core -G Ninja -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_
   -DFETCHCONTENT_SOURCE_DIR_JUCE="$HOME/deps/JUCE" -DFETCHCONTENT_SOURCE_DIR_CATCH2="$HOME/deps/Catch2" -DSINGVST_ORT_DIR="$HOME/deps/ort"
 cmake -S . -B ../build-full -G Ninja -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_PLUGIN=ON -DSINGVST_BUILD_TESTS=ON \
   -DFETCHCONTENT_SOURCE_DIR_JUCE="$HOME/deps/JUCE" -DFETCHCONTENT_SOURCE_DIR_CATCH2="$HOME/deps/Catch2" -DSINGVST_ORT_DIR="$HOME/deps/ort"
-setsid nohup cmake --build ../build-core > ../build-core.log 2>&1 < /dev/null &      # long builds: PK-18
+setsid nohup cmake --build ../build-core --parallel 2 > ../build-core.log 2>&1 < /dev/null &   # long builds: PK-18; bounded -j (C-055)
 # Linux packages for the plugin build (C-050): see .github/workflows/ci.yml step "JUCE Linux packages"; xvfb for plugin tests.
 # Python toolkit
 /usr/bin/python3.12 -m venv ../venv-lock && ../venv-lock/bin/python -m pip install --no-deps -r python/requirements-lock.txt
-../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice"
+../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice and not network"   # local suite; T-P21 (network) in S-000/S-019
+# Sanitizer trees (S-005, S-006, S-009; same flags as CI)
+cmake -S . -B ../build-asan -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_PLUGIN=OFF \
+  -DFETCHCONTENT_SOURCE_DIR_CATCH2="$HOME/deps/Catch2" -DSINGVST_ORT_DIR="$HOME/deps/ort" \
+  -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined"
+cmake -S . -B ../build-tsan -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_PLUGIN=OFF \
+  -DFETCHCONTENT_SOURCE_DIR_CATCH2="$HOME/deps/Catch2" -DSINGVST_ORT_DIR="$HOME/deps/ort" \
+  -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer"
+cmake --build ../build-asan --parallel 2 && ctest --test-dir ../build-asan --output-on-failure -R "<tests of the step>"
+cmake --build ../build-tsan --parallel 2 && TSAN_OPTIONS="suppressions=$PWD/tools/tsan.supp halt_on_error=1" \
+  ctest --test-dir ../build-tsan --output-on-failure -R "T-038|T-050|T-051"
 ```
+Interpreters: tools under `tools/` run with `python3.12` (standard library only); tests and toolkit commands run with
+`../venv-lock/bin/python` (the lock). Bare `python3` is never used (PK-55).
 Evidence: `tools/bootstrap_test_env.sh` printed the pinned commits and ORT 1.31.0; both build trees built (BUILD_EXIT=0) and
 ran red (research/spikes/red-verification/output.txt); the clean venv reproduced the lock exactly and pip-audit was clean
 (T-P21 passed live, same file).
