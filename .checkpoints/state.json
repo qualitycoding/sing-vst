@@ -156,7 +156,11 @@
     "lessons/L-20261015T073300Z-script-resolved-its-own-directory-after-cd.md": "9577337952e132f0f2046d5e109cb591f2726463a1a00a5c69347996b4520f92",
     "lessons/L-20261015T073400Z-main-guard-ran-before-the-test-overlay.md": "4b6f2580cdd11219e860c39f1cc7cf54b9a69b6fc946388a9e9d4f8c0bd47716",
     "lessons/L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary.md": "17317a572bc012632684d691b5d865c2d375291327e06da3c32beed55430f934",
+    "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "80fbe5da4cfc5890c682db96de7972e7aa6f709f27102c33a74317e0365ca2b4",
+    "plan/ENVIRONMENT.md": "1cd2d95fcffa681b1445e0697c459cc61a74122b9d2ba5264caae26442fe887f",
+    "plan/GATES.md": "fb177e41a561e2b4bba41cd8bc7f9c3e7e302456fdb64f72b48017e750ea9094",
+    "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
@@ -625,5 +629,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T12:02:52Z"
+  "updated_at": "2026-10-15T12:04:09Z"
 }
