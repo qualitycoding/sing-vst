@@ -1,4 +1,4 @@
-<!-- STATUS HEADER (generated at Phase 5 by tools/gen/status.py) -->
+<!-- STATUS HEADER: written by the planning agent's final consistency check (protocol Phase 5) with tools/gen/status.py -->
 
 # Execution plan — sing-vst
 

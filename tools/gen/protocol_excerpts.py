@@ -9,7 +9,8 @@ def between(start, end):
     return src[i:j].rstrip()
 
 parts = [
-    ("Rule 10 — Human Gates", between("10. **Human Gates**", "11. **Lessons**")),
+    ("Global Rules 1–13", between("## Global Rules", "---\n\n## Phase 0")),
+    ("3.1 — Step template", between("### 3.1 Step Template", "### 3.2 Decision Rules")),
     ("1.2.3 — Zero-Context Resumption Protocol", between("#### 1.2.3 Zero-Context Resumption Protocol", "### 1.3 Iterative Research Loop")),
     ("2E.3–2E.4 — Immutability and Test Challenge", between("3. **Immutability Rule:**", "---\n\n## Phase 3")),
     ("3.2 — Default rule", between("* `[All]` **The default rule**", "### 3.3 Human Gates")),

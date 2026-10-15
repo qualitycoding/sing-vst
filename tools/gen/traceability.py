@@ -25,7 +25,7 @@ for f, s in {"test_lyrics": "S-002", "test_g2p": "S-002", "test_align": "S-002",
     for t, (file, _) in tests.items():
         if pathlib.Path(file).stem == f:
             STEP[t] = s
-STEP.update({"T-059": "S-001, S-011", "T-P13": "S-012 (T-P13b: S-010)", "T-P20": "S-017 (owner, G-004)", "T-P23": "S-018",
+STEP.update({"T-059": "S-001, S-011", "T-P13": "S-012 (binary part: S-010)", "T-P20": "S-017 (owner, G-004)", "T-P23": "S-018",
              "T-P26": "S-015"})
 REQ = {
     "SC-1 builds on Windows x64 and Linux x64": {"T-059"} | rng(39, 41),

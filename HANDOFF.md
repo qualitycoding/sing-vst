@@ -12,7 +12,7 @@ Colab/Kaggle notebooks.
 ## Reading order
 1. This file. 2. `plan/PLAN.md` (steps). 3. `plan/DECISIONS.md` (interfaces, behaviour, decision rules DR-01…DR-14).
 4. `plan/GATES.md`. 5. `plan/ASSUMPTIONS.md` (A-001…A-016, success criteria SC-1…SC-10). 6. `plan/ENVIRONMENT.md`.
-7. `plan/TRACEABILITY.md`. 8. `research/PRIOR_KNOWLEDGE.md` (prevention-rule checklist PK-01…PK-57 — follow every rule).
+7. `plan/TRACEABILITY.md`. 8. `research/PRIOR_KNOWLEDGE.md` (prevention-rule checklist — follow every rule whose `Applies to` is `both`).
 9. `premortem/RISK_REGISTER.md`. Background: `research/claims.json`, `research/QUESTIONS.md`, `research/rounds/`.
 
 ## Sandbox rules
