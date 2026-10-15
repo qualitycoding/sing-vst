@@ -1,7 +1,7 @@
 {
  "PK-01": [
   "Push the generation/implementation branch after every commit that ends a sub-phase or step; never end a turn with `git log origin/<branch>..HEAD` non-empty.",
-  "D-029; S-000 (resume check); every S-### `Checkpoint` line",
+  "D-029; HANDOFF.md \u00a7Resume; every S-### `Checkpoint` line",
   "both"
  ],
  "PK-02": [
