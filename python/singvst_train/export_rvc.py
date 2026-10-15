@@ -14,7 +14,8 @@ def export_synth(rvc_root: Path, weights: Path, out_path: Path, opset: int = 17)
 
 def export_content(rvc_root: Path, out_path: Path, opset: int = 17) -> Path:
     """Export RVC's hubert_base (``rvc_root/assets/hubert_base``) final layer as ONNX: input ``source`` float[1,N] at
-    16 kHz → output ``units`` float[1,Tc,768] (C-020); returns ``out_path``."""
+    16 kHz (N dynamic, no padding) → output ``units`` float[1,Tc,768] with ``Tc = floor((N - 400) / 320) + 1`` (the
+    hubert convolution stack: receptive field 400, stride 320; C-020); runs ``onnx.checker``; returns ``out_path``."""
     raise NotImplementedError("export_content")
 
 

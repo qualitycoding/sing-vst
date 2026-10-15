@@ -7,8 +7,10 @@ import numpy as np
 
 
 def load_pyworld() -> ModuleType:
-    """Return the compiled extension module ``pyworld.pyworld`` loaded directly (``importlib.import_module``), because
-    ``import pyworld`` fails without pkg_resources under setuptools 84 (C-046)."""
+    """Return pyworld's compiled extension ``pyworld.pyworld`` loaded from its file, never through the package: the
+    ``.so``/``.pyd`` is found in ``importlib.metadata.distribution("pyworld").files`` and executed with
+    ``importlib.machinery.ExtensionFileLoader`` (research/spikes/pyworld-direct), because the package ``__init__``
+    imports pkg_resources, which setuptools 84 no longer ships (C-046). Not installed → ``ModuleNotFoundError``."""
     raise NotImplementedError("load_pyworld")
 
 

@@ -8,7 +8,9 @@ COMMANDS = ("prepare", "split", "rvc-files", "rvc-train-command", "export", "mak
 
 def build_parser():
     """``argparse.ArgumentParser`` (prog ``singvst-train``) with one sub-command per name in COMMANDS; each sub-parser
-    has ``--help``. Unknown commands exit 2 via argparse."""
+    has ``--help``. Unknown commands exit 2 via argparse. ``split --files-dir DIR --seed N [--fraction F] --out FILE``
+    lists ``*.wav`` names directly in DIR, applies ``prepare.split_heldout`` and writes ``{"train": [...], "heldout":
+    [...]}`` (1-space indent) to FILE. The other commands' options are defined by the steps that implement them."""
     raise NotImplementedError("build_parser")
 
 
