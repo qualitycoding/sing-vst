@@ -310,7 +310,7 @@
     "tests/python/test_pipeline.py": "eb612daa5b892dc6edbb61af6a9b37793af3094bfa9f77c0a05cc3984b676e46",
     "tests/python/test_prepare.py": "9fa3560966473f43e0da901c55aec70b5d147ab35f9dd407b83242338793aa4b",
     "tests/python/test_provenance.py": "edc17f964f526cd4566b07f4d864ed13012fda1df73293108367e009bed724bd",
-    "tests/python/test_repo.py": "40ccc4606a2706388e85e205f2b5cc738677480ceda6b0e178cddd881b06651a",
+    "tests/python/test_repo.py": "1721131638afc7e1284874970f0ce792ca459d91f4db8e52d53df78cc3267427",
     "tests/python/test_rvc_files.py": "d2a0cbc92ad0762dfea3bc72cf4bd9ffe872237d8110d6b3336d7a1758c73175",
     "tests/python/test_security.py": "d01256f660ee513987203bb4337301622303beccf8dff5887330b9017c44fa8c",
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
@@ -650,7 +650,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T12:10:06Z",
+  "updated_at": "2026-10-15T12:10:46Z",
   "active_step_id": "HANDOFF.md",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -697,5 +697,23 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 5
+  "sequence": 7,
+  "knowledge_loaded": [
+    "K-20261004T102024Z-sandbox-working-directory-resets",
+    "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
+    "K-20261008T223321Z-juce-vst3-linux-build-14-packages",
+    "K-20261009T092101Z-juce-vst3-can-replace-vst2-default-and-error",
+    "K-20261009T092102Z-juce-standalone-target-compiles-vst3-client",
+    "K-20261009T092103Z-vst3-system-folder-needs-write-access-windows",
+    "K-20261009T092107Z-msvc-ninja-needs-vcvars-environment",
+    "K-20261009T120115Z-github-repo-access-is-per-session",
+    "K-20261009T120116Z-sandbox-background-jobs-and-git-proxy-limits",
+    "K-20261009T140031Z-pip-tools-hash-locking-build-backend",
+    "K-20261009T160120Z-actions-blob-unreachable",
+    "K-20261009T164500Z-juce-module-build-on-one-cpu-core-exceeds-a-300-second-tool-call",
+    "K-20261009T193501Z-sandbox-egress-policy",
+    "K-20261009T193502Z-git-proxy-repo-authorization",
+    "K-20261009T193504Z-proxy-injected-git-config",
+    "K-20261009T234256Z-dash-lacks-pipestatus-and-time-keyword"
+  ]
 }

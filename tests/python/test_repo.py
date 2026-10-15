@@ -139,7 +139,11 @@ def test_P22_every_cited_id_exists(root):
         for f in sorted(root.glob(g)):
             if not f.is_file() or "__pycache__" in f.parts:
                 continue
-            for m in ID.finditer(f.read_text(encoding="utf-8", errors="replace")):
+            text = f.read_text(encoding="utf-8", errors="replace")
+            if f.name == "PRIOR_KNOWLEDGE.md":   # drop the column that quotes store lessons' own summaries (other runs' IDs)
+                text = "\n".join(" | ".join(l.split(" | ")[:3] + l.split(" | ")[4:]) if l.startswith("| `L-") else l
+                                 for l in text.splitlines())
+            for m in ID.finditer(text):
                 if m.group(1):
                     ok = f"{m.group(1)}-{m.group(2)}" in reg[m.group(1)]
                 elif m.group(3):
