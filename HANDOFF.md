@@ -7,7 +7,8 @@ free hosted GPU converts the timbre (D-020). Plus the CLI `singvst-render` and t
 Colab/Kaggle notebooks.
 
 **Active profiles:** `software`, `computational` (plan/PROFILE.md). `software.deploys = false`.
-**Protocol:** qualitycoding/skills `protocols/planning-protocol.md` v3.3 (`9636a79`, D-034).
+**Protocol:** planning protocol v3.3 (external repository qualitycoding/skills, commit `9636a79`, D-034); every
+section the implementer needs is copied verbatim in `plan/PROTOCOL_EXCERPTS.md`.
 
 ## Reading order
 1. This file. 2. `plan/PLAN.md` (steps). 3. `plan/DECISIONS.md` (interfaces, behaviour, decision rules DR-01…DR-14).
@@ -53,9 +54,9 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | S-007 | Resampler and runtime loading | T-039…T-041 | none |
 | S-008 | Guide and converter engines | T-042…T-047 | none |
 | S-009 | Render pipeline and background renderer | T-048…T-052 | none |
-| S-010 | CLI `singvst-render` | T-P13 (binary part, `test_P13b_…`), T-P18 | none |
+| S-010 | CLI `singvst-render` | T-P18 | none |
 | S-011 | Plugin processor and editor | T-053…T-058, T-059 | none |
-| S-012 | Python toolkit core | T-P01…T-P15 (T-P13 without its binary part), T-P25 | none |
+| S-012 | Python toolkit core | T-P01…T-P15 (T-P13 including its binary part `test_P13b_…`), T-P25 | none |
 | S-013 | RVC → ONNX export | T-P19 (both functions, incl. the content-encoder part `test_P19b_…`) | none |
 | S-014 | RVC training files | T-P24 | none |
 | S-015 | Evaluation procedure | T-P26 | G-005 |

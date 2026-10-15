@@ -11,7 +11,7 @@
  ],
  "PK-03": [
   "Commit once per plan step; rewrite .checkpoints/state.json in that commit; append EXECUTION_LOG.md; open DEVIATIONS.md at the first departure from the plan.",
-  "HANDOFF.md \u00a7Halt/deviation protocol; every S-### `Checkpoint`",
+  "HANDOFF.md \u00a7Halt / deviation protocol; every S-### `Checkpoint`",
   "both"
  ],
  "PK-04": [
@@ -76,7 +76,7 @@
  ],
  "PK-16": [
   "Parse every workflow file with a YAML loader (and actionlint where available) before marking the plan ready; take CI tool flags and action versions from the pinned source, not memory.",
-  "T-061; research/spikes/upstream-facts (C-015b/c)",
+  "T-061; research/spikes/upstream-facts (C-015)",
   "both"
  ],
  "PK-17": [

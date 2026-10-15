@@ -7,7 +7,8 @@ free hosted GPU converts the timbre (D-020). Plus the CLI `singvst-render` and t
 Colab/Kaggle notebooks.
 
 **Active profiles:** `software`, `computational` (plan/PROFILE.md). `software.deploys = false`.
-**Protocol:** qualitycoding/skills `protocols/planning-protocol.md` v3.3 (`9636a79`, D-034).
+**Protocol:** planning protocol v3.3 (external repository qualitycoding/skills, commit `9636a79`, D-034); every
+section the implementer needs is copied verbatim in `plan/PROTOCOL_EXCERPTS.md`.
 
 ## Reading order
 1. This file. 2. `plan/PLAN.md` (steps). 3. `plan/DECISIONS.md` (interfaces, behaviour, decision rules DR-01…DR-14).

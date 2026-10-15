@@ -11,6 +11,8 @@ def between(start, end):
 parts = [
     ("Global Rules 1–13", between("## Global Rules", "---\n\n## Phase 0")),
     ("3.1 — Step template", between("### 3.1 Step Template", "### 3.2 Decision Rules")),
+    ("0.2 — Model tier hierarchy", between("### 0.2 Model Tier Hierarchy", "### 0.3 Intake")),
+    ("Phase 5 — GitHub push and termination (planning agent)", between("## Phase 5:", "## Appendix A:")),
     ("1.2.3 — Zero-Context Resumption Protocol", between("#### 1.2.3 Zero-Context Resumption Protocol", "### 1.3 Iterative Research Loop")),
     ("2E.3–2E.4 — Immutability and Test Challenge", between("3. **Immutability Rule:**", "---\n\n## Phase 3")),
     ("3.2 — Default rule", between("* `[All]` **The default rule**", "### 3.3 Human Gates")),

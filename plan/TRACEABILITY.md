@@ -104,7 +104,7 @@ SC-1…SC-10 are the success criteria of plan/ASSUMPTIONS.md A-012; PR-1…PR-4 
 | T-P10 | tests/python/test_metrics.py | C-027, C-046, D-017, PK-31 | SC-5 | S-012 |
 | T-P11 | tests/python/test_metrics.py | D-017 | SC-6 | S-012 |
 | T-P12 | tests/python/test_metrics.py | A-012, D-017, PK-29 | SC-4 | S-012 |
-| T-P13 | tests/python/test_pack.py | D-008 | SC-2, PR-1 | S-012 (binary part: S-010) |
+| T-P13 | tests/python/test_pack.py | D-008 | SC-2, PR-1 | S-012 (binary part needs the S-010 binary) |
 | T-P14 | tests/python/test_pack.py | A-011, D-008, PK-42 | PR-1 | S-012 |
 | T-P15 | tests/python/test_security.py | PK-12 | PR-2 | S-012 |
 | T-P16 | tests/python/test_notebooks.py | D-016 | SC-9 | S-016 |

@@ -233,8 +233,8 @@ Defaults for every step unless the step says otherwise:
 - Actions: implement D-014 in `cli/main.cpp` (options, exit codes, float32 WAV writer, provenance sidecar with
   `seeds = {"converter": <seed>}`); set `SINGVST_RENDER_BIN` to the built binary for every later run of the suite.
 - Outputs: cli/main.cpp
-- Evidence produced: T-P13 (binary part, `test_P13b_…`), T-P18
-- Done when: T-P13 (binary part) and T-P18 pass locally and in CI job `python`.
+- Evidence produced: T-P18
+- Done when: T-P18 passes locally and in CI job `python`. (The binary part of T-P13 needs `pack_voice` and is checked at S-012.)
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -264,14 +264,14 @@ Defaults for every step unless the step says otherwise:
 ### S-012 Python toolkit core
 - Tier: Sonnet
 - Profile: software, computational
-- Depends on: S-000
+- Depends on: S-000, S-010
 - Inputs: python/singvst_train/{prepare,pipeline,provenance,metrics,pack,security,cli}.py; D-015, D-016, D-017, D-019
 - Actions: implement the bodies (signatures and docstrings unchanged, T-P27; conventions of D-033), register **all nine**
   sub-commands of `cli.COMMANDS` (T-P25 needs every `--help`; later steps add the options and bodies of theirs), and implement
   `split`, `prepare`, `pack`, `provenance` exactly as D-035; close every resource with context managers (PK-41).
 - Outputs: those modules
-- Evidence produced: T-P01…T-P15 (T-P13 without its binary part), T-P25
-- Done when: T-P01…T-P15 (except the binary part of T-P13, which belongs to S-010), T-P25 and T-P27 pass; `(cd python && ../../venv-lock/bin/python -m singvst_train.cli prepare --help)` exits 0.
+- Evidence produced: T-P01…T-P15 (T-P13 including its binary part `test_P13b_…`), T-P25
+- Done when: T-P01…T-P15 (T-P13 with `SINGVST_RENDER_BIN` set to the S-010 binary), T-P25 and T-P27 pass; `(cd python && ../../venv-lock/bin/python -m singvst_train.cli prepare --help)` exits 0.
 - Checkpoint: default
 - On failure: a pip-audit finding → DR-07.
 - Gate: none
@@ -412,7 +412,8 @@ Defaults for every step unless the step says otherwise:
 - Inputs: everything above
 - Actions: run the full suite locally; read the final CI run of all jobs through the API (D-036); write
   `plan/IMPLEMENTATION_MAP.md` — a table `| Item | Delivered by (file or test) | Status |` with one row per plan step, per
-  `Mitigation` cell of `premortem/RISK_REGISTER.md` and per control listed in `premortem/round-*.md`, unmapped items listed
+  `Mitigation` cell of `premortem/RISK_REGISTER.md` and per control listed in `premortem/round-*.md` (the planning
+  pre-mortem rounds), unmapped items listed
   in `DEVIATIONS.md` (PK-07); open a pull request impl → `main`
   (`gh pr create --base main --head <impl> --title "sing-vst implementation" --body-file <file>`), the body summarising the
   results and ending with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)` and the executing

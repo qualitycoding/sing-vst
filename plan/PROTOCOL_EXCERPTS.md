@@ -91,6 +91,46 @@ Every step in `plan/PLAN.md` uses this exact structure:
 ```
 A step may start as soon as every step in its `Depends on` list has passed. When subagents are available, independent steps run concurrently unless they list the same exclusive resource.
 
+## 0.2 — Model tier hierarchy
+
+### 0.2 Model Tier Hierarchy `[All]`
+```
+Fable (Mythos)  (Primary Orchestrator / Architecture / Proof Strategy / Complex Reasoning)
+└── Opus            (Deep Analysis, Code Logic, Proof Review, Referee Simulation)
+    └── Sonnet           (Standard Synthesis, Drafting, Refactoring, Figure Scripts)
+        └── Haiku            (Parsing, Fact Retrieval, Citation/Link Checks, Mechanical Checks)
+```
+Delegate routine searches, document and bibliography parsing, link and DOI checking, and log scanning to `Haiku`/`Sonnet`. Reserve `Fable (Mythos)`/`Opus` for architecture, proof strategy, proof review, research synthesis, adversarial review, referee simulation, and pre-mortem evaluation.
+
+## Phase 5 — GitHub push and termination (planning agent)
+
+## Phase 5: GitHub Push & Workflow Termination `[All]`
+
+1. **Final Consistency Check (Haiku):** Verify:
+   * `[All]` the freeze manifest hashes; that every applicable file in the layout exists and no N/A artifact is required; that every traceability row is complete; that `plan/GATES.md` defines every gate required by Rule 10 (or justifies "no gates required"); and that `state.json` shows all applicable phases complete;
+   * `[math]` that every `M-###` has an evidence class consistent with its planned wording;
+   * `[computational, publication]` that every `F-###` has a producing step and a test;
+   * `[software, if software.deploys]` that `plan/OPERATIONS.md` contains a rollback command;
+   * `[All]` that every lesson and knowledge item on the branch passes the Appendix C schema check, including the secret scan; that `research/PRIOR_KNOWLEDGE.md` covers every lesson loaded in R0; and that `plan/PLAN.md` begins with `S-000`, ends with `S-RETRO` and `S-KNOW`, and `plan/GATES.md` defines `G-003`.
+2. Write a status header at the top of `plan/PLAN.md`: `READY` or `BLOCKED — HUMAN DECISION REQUIRED`, plus the active profiles and counts of:
+   * `[All]` claims by confidence; tests by category; steps; gates; risks by severity;
+   * `[math]` statements by evidence class and conjectures;
+   * `[computational, publication]` figures.
+3. Commit and push all files to the generation branch. If the push fails, retry up to 3 times with backoff; if it still fails, write a local bundle (`git bundle create`) and report its path.
+4. **STOP INSTRUCTION:** Output only:
+   * Final commit hash and branch URL
+   * Active profiles and plan status (`READY` or `BLOCKED`)
+   * Research summary: rounds run, claims by confidence level, and `[math, publication]` the novelty rating
+   * Prior knowledge: lessons loaded and how many were applied; knowledge items reused
+   * Lessons recorded and knowledge items added during planning, with their paths on the branch
+   * `[math]` Statements by current and target evidence class, and open conjectures
+   * Any residual Medium/Low risks, and (if `BLOCKED`) the decisions needed from the human
+   * Confirmation that execution has halted
+
+**Do not execute any plan step. Do not deploy, release, deposit, publish, or submit anything. Halt immediately.**
+
+---
+
 ## 1.2.3 — Zero-Context Resumption Protocol
 
 #### 1.2.3 Zero-Context Resumption Protocol
