@@ -56,7 +56,7 @@ def test_T061_workflow_keeps_the_required_jobs_and_checks(root):
     assert "--strictness-level 5" in runs["cpp"] and "--skip-gui-tests" in runs["cpp"]
     assert "--validate-in-process" not in text
     assert "-fsanitize=address" in text and "-fsanitize=thread" in text
-    assert re.search(r"pytest .*-m \"not torch and not voice\"", runs["python"])
+    assert re.search(r"pytest .*-m \"not torch and not voice", runs["python"])
     assert re.search(r"pytest .*-m torch", runs["python-torch"])
     assert "pip-audit" in runs["repo"] or "network" in runs["repo"]
     if shutil.which("actionlint"):

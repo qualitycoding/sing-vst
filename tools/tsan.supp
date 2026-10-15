@@ -1,0 +1,2 @@
+# ThreadSanitizer suppressions (D-018): ONNX Runtime is a prebuilt, uninstrumented library loaded by path (D-024).
+called_from_lib:libonnxruntime.so.1.31.0

@@ -41,6 +41,7 @@
     "plan/OPERATIONS.md"
   ],
   "artifacts": {
+    ".github/workflows/ci.yml": "a301ad0629a7b6919c5e08efa2aee06f7bf56856e8c252edb2cc33ad916ea3c2",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -278,7 +279,7 @@
     "tests/python/test_pipeline.py": "eb612daa5b892dc6edbb61af6a9b37793af3094bfa9f77c0a05cc3984b676e46",
     "tests/python/test_prepare.py": "9fa3560966473f43e0da901c55aec70b5d147ab35f9dd407b83242338793aa4b",
     "tests/python/test_provenance.py": "edc17f964f526cd4566b07f4d864ed13012fda1df73293108367e009bed724bd",
-    "tests/python/test_repo.py": "4b4410ae433cc1c065dcc707573eb57ceae465544f9e487510945b3e8a200af8",
+    "tests/python/test_repo.py": "17388e06d357d41d651ecd2f4fc00d059538bd52212cd9ed95936e0039486ae0",
     "tests/python/test_rvc_files.py": "d2a0cbc92ad0762dfea3bc72cf4bd9ffe872237d8110d6b3336d7a1758c73175",
     "tests/python/test_security.py": "d01256f660ee513987203bb4337301622303beccf8dff5887330b9017c44fa8c",
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
@@ -287,6 +288,7 @@
     "tools/bootstrap_test_env.sh": "640fb0c198c2b9d43e6fe16a6a6933264c4a326a1f54b6845cfe82115f0f3304",
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "ada58b6097a6a5317c57ef43605306d7de7ae5c235f5b4199cc345db41776c7f",
+    "tools/ci_annotate.py": "ffed4924358fd5acacb75f16c37d7f6b03bc91af843b157df800cc4d0f7f39dc",
     "tools/gen/claims.py": "064594ff97b08be9f5884318ac57448f2b710faff34ce2e93e5dcb2ae6912116",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "7992499fdeac5e09254504579148c96f8f4274affed126aed32883cf8369d143",
@@ -298,6 +300,7 @@
     "tools/gen/supersede.py": "f05242a9eec9c280a9631ad3c5fdd501f3ed090b7bde90f6b3b3a23619afa57f",
     "tools/gen/taxonomy.py": "8e39b670fb359708da3ebc26fc607c9dd558c6db8651745058f5f026fb8bda81",
     "tools/save.sh": "38b823f85949075bc69358e963b3414b10f0e14bd27a9bfa1476dd3e5897afa4",
+    "tools/tsan.supp": "ef4093a99304f1b50ccab56b8dc92db04e01f9c0110ff16f365caa3b02c8e1bd",
     "tools/turn_end_check.sh": "9ad41f3a4cb421639abd750a7a9e91a1dec74ffbc60fbbaf7bc6b8b4df6461b3"
   },
   "tier_substitutions": [],
@@ -603,5 +606,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:22:55Z"
+  "updated_at": "2026-10-15T07:24:46Z"
 }

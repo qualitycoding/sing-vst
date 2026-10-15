@@ -1,0 +1,144 @@
+# sing-vst CI (plan D-018). T-061 checks the structure of this file; change it only within those rules.
+# On the generation branch the test steps are expected red (stubs); build, freeze and repository checks must be green.
+name: ci
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+env:
+  PLUGINVAL_LINUX_SHA256: c01c49d8063965c4c2dea8324468336768f5c9139e0b1caebde14c2400b55352
+  PLUGINVAL_WINDOWS_SHA256: c08e61ce3b96db41636f8ec7e76f4c7e2c13ebdac7fa1b5a1f52b4f32ec715ab
+  RVC_COMMIT: 81eed5e8f68b6bed1789f682fe78cdd324495afc
+jobs:
+  repo:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Freeze manifest (T-060)
+        run: sha256sum -c tests/FROZEN_MANIFEST.sha256
+      - name: Toolkit environment (D-019)
+        run: python -m pip install --no-deps -r python/requirements-lock.txt
+      - name: Repository checks (T-060, T-061, T-062, T-P22, T-P23, T-P27)
+        run: python -m pytest tests/python/test_repo.py -m "not network" -q --junitxml=repo.xml
+      - name: Lock reproduction and pip-audit (T-P21)
+        run: python -m pytest tests/python/test_repo.py -m network -q --junitxml=lock.xml
+      - name: Annotate failures
+        if: failure()
+        run: python tools/ci_annotate.py repo.xml lock.xml
+  cpp:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: JUCE Linux packages (C-050)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libjack-jackd2-dev libfreetype-dev libfontconfig1-dev libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev libxi-dev libglu1-mesa-dev mesa-common-dev libegl-dev xvfb
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=ON
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: C++ tests (T-001..T-058, T-063..T-066)
+        run: ctest --test-dir build -C Release --output-on-failure --output-junit ${{ github.workspace }}/ctest.xml
+      - name: pluginval strictness 5 (T-059)
+        if: always()
+        shell: bash
+        run: |
+          B="build/plugin/SingVst_artefacts/Release/VST3/Sing VST.vst3"
+          if [ "$RUNNER_OS" = "Linux" ]; then Z=pluginval_Linux.zip; H=$PLUGINVAL_LINUX_SHA256; else Z=pluginval_Windows.zip; H=$PLUGINVAL_WINDOWS_SHA256; fi
+          curl -sSfL -o "$Z" "https://github.com/Tracktion/pluginval/releases/download/v1.0.4/$Z"
+          echo "$H  $Z" | sha256sum -c -
+          unzip -o -q "$Z" -d pv
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            xvfb-run -a ./pv/pluginval --strictness-level 5 --skip-gui-tests --output-dir pv-logs --validate "$B"
+          else
+            ./pv/pluginval.exe --strictness-level 5 --skip-gui-tests --output-dir pv-logs --validate "$B"
+          fi
+      - name: CLI artifact for the Python job
+        if: runner.os == 'Linux' && always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cli-linux
+          path: build/cli/
+          if-no-files-found: error
+      - name: Annotate failures
+        if: failure()
+        shell: bash
+        run: python3 tools/ci_annotate.py ctest.xml || python tools/ci_annotate.py ctest.xml
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: ASan + UBSan, all core tests
+        run: |
+          cmake -S . -B asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined"
+          cmake --build asan --parallel
+          ctest --test-dir asan --output-on-failure --output-junit ${{ github.workspace }}/asan.xml
+      - name: TSan, threaded tests (T-038, T-050, T-051)
+        if: always()
+        env:
+          TSAN_OPTIONS: suppressions=${{ github.workspace }}/tools/tsan.supp halt_on_error=1
+        run: |
+          cmake -S . -B tsan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer"
+          cmake --build tsan --parallel
+          ctest --test-dir tsan -R "T-038|T-050|T-051" --output-on-failure --output-junit ${{ github.workspace }}/tsan.xml
+      - name: Annotate failures
+        if: failure()
+        run: python3 tools/ci_annotate.py asan.xml tsan.xml
+  python:
+    needs: cpp
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Toolkit environment (D-019)
+        run: python -m pip install --no-deps -r python/requirements-lock.txt
+      - uses: actions/download-artifact@v8
+        with:
+          name: cli-linux
+          path: bin
+      - name: Toolkit tests and CLI integration (T-P01..T-P18, T-P24..T-P27)
+        run: |
+          chmod +x bin/singvst-render
+          export SINGVST_RENDER_BIN="$PWD/bin/singvst-render"
+          python -m pytest -q -m "not torch and not voice and not network" --junitxml=py.xml
+      - name: Annotate failures
+        if: failure()
+        run: python tools/ci_annotate.py py.xml
+  python-torch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: RVC at the pinned commit, CPU requirements from the official indexes (D-019, C-023)
+        run: |
+          git clone -q https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git rvc
+          git -C rvc checkout -q "$RVC_COMMIT"
+          grep -vE -- '--(extra-)?index-url|torch-directml' rvc/requirments_cpu_py312.txt > rvc-req.txt
+          python -m pip install -r rvc-req.txt --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cpu
+          python -m pip install --no-deps -e python
+          python -m pip install onnx==1.23.2 onnxruntime==1.31.0 pytest==9.1.1 nbformat==5.10.4 PyYAML==6.0.3
+      - name: hubert_base from Hugging Face (C-032; separate venv, transformers<4.50 needs huggingface_hub<1)
+        run: |
+          python -m venv "$RUNNER_TEMP/hfv"
+          "$RUNNER_TEMP/hfv/bin/pip" install -q huggingface_hub==2.2.0
+          "$RUNNER_TEMP/hfv/bin/hf" download lj1995/VoiceConversionWebUI --revision main --include "hubert_base/*" --local-dir rvc/assets
+          ls -l rvc/assets/hubert_base
+      - name: Export parity (T-P19)
+        run: SINGVST_RVC_ROOT="$PWD/rvc" python -m pytest -q -m torch --junitxml=torch.xml
+      - name: Annotate failures
+        if: failure()
+        run: python tools/ci_annotate.py torch.xml
