@@ -1,5 +1,5 @@
 """Renders HANDOFF.md from HANDOFF.src.md: {{RULE:n}} = Global Rule n copied verbatim from the protocol file, {{STEPS}} = one
-row per step of plan/PLAN.md. Usage: python3 tools/gen/handoff.py <path to planning-protocol.md>"""
+row per step of plan/PLAN.md. Usage: python3.12 tools/gen/handoff.py <path to planning-protocol.md>"""
 import pathlib, re, sys
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 proto = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")

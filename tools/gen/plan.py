@@ -1,5 +1,5 @@
 """Renders plan/PLAN.md from plan/PLAN.src.md: each {{L:PK-xx,...}} becomes the PK rules with the source-lesson IDs listed
-for them in research/PRIOR_KNOWLEDGE.md (IDs generated, never typed — PK-05). Usage: python3 tools/gen/plan.py"""
+for them in research/PRIOR_KNOWLEDGE.md (IDs generated, never typed — PK-05). Usage: python3.12 tools/gen/plan.py"""
 import pathlib, re
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 pk = {}

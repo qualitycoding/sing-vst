@@ -23,8 +23,8 @@ may be dash: wrap brace expansion, arrays and `[[ ]]` in `bash -c` (PK-19). Reso
 
 ## Running the frozen suites
 ```bash
-cmake --build ../build-core && ctest --test-dir ../build-core --output-on-failure            # T-001…T-052, T-063…T-066
-cmake --build ../build-full --target singvst_plugin_tests && (cd ../build-full/tests/cpp && xvfb-run -a ./singvst_plugin_tests)  # T-053…T-058
+cmake --build ../build-core --parallel 2 && ctest --test-dir ../build-core --output-on-failure            # T-001…T-052, T-063…T-066
+cmake --build ../build-full --parallel 2 --target singvst_plugin_tests && (cd ../build-full/tests/cpp && xvfb-run -a ./singvst_plugin_tests)  # T-053…T-058
 export SINGVST_RENDER_BIN=$PWD/../build-core/cli/singvst-render                               # after S-010
 ../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice and not network"         # T-P01…T-P27, T-060…T-062
 ```
@@ -36,7 +36,7 @@ at S-017. Read CI results through the REST API (jobs, steps, check-run annotatio
 
 ## Immutability
 Frozen files (everything listed in `tests/FROZEN_MANIFEST.sha256`: tests, fixtures, public headers, `eval/thresholds.json`,
-`eval/phrases/*`, `tests/python/interfaces.json`) are never modified, skipped, marked expected-failure or weakened. Python
+`eval/PROCEDURE.md`, `eval/phrases/*`, `tests/python/interfaces.json`) are never modified, skipped, marked expected-failure or weakened. Python
 signatures and docstrings never change (T-P27). If a frozen test is wrong: write `TEST_CHALLENGE.md` (item ID, evidence,
 proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 
@@ -58,7 +58,7 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | S-012 | Python toolkit core | T-P01…T-P15 (T-P13 without its binary part), T-P25 | none |
 | S-013 | RVC → ONNX export | T-P19 (both functions, incl. the content-encoder part `test_P19b_…`) | none |
 | S-014 | RVC training files | T-P24 | none |
-| S-015 | Evaluation procedure | T-P26 | none |
+| S-015 | Evaluation procedure | T-P26 | G-005 |
 | S-016 | Training notebooks | T-P16, T-P17 | G-005 must be answered before this step starts. |
 | S-017 | Owner's training run and evaluation | T-P20 (run by the owner); G-001 record | G-004, then G-001 |
 | S-018 | Documentation and notices | T-P23 | none |
@@ -67,8 +67,9 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | S-KNOW | Lessons and knowledge push | none | G-003 |
 
 The plan begins with **S-000** and ends with the closing steps **S-RETRO** and **S-KNOW**. A step may start as soon as every
-step in its `Depends on` has passed; independent steps may run concurrently unless they share an exclusive resource. While
-halted at a gate, continue any step that does not depend on that gate's outcome — never an external or irreversible action.
+step in its `Depends on` has passed, and steps run one at a time in ID order (they share one branch and checkpoint). While
+halted at a gate, continue any later step that does not depend on that gate's outcome, in ID order — never an external or
+irreversible action.
 
 ## Human gates
 G-001 result (after S-017) · G-002 any external/irreversible action (none scheduled; merging the PR is the owner's) · G-003
@@ -77,9 +78,11 @@ Details, evidence bundles, allowed responses and how a gate is announced and ans
 saved, the turn ends with a message naming the gate, and the owner's answer is copied verbatim into the file).
 
 ## Tiers
-Each step names a model tier (Haiku < Sonnet < Opus < Fable). Run the step yourself when you are at or above that tier, or
-delegate it to a subagent of that tier when your environment offers subagents; otherwise use the next higher available tier
-and record the substitution with `python3.12 tools/checkpoint.py --set 'tier_substitutions=[…]'` (protocol Global Rule 5).
+Each step names a model tier (Haiku < Sonnet < Opus < Fable; Fable is the Mythos tier of protocol 0.2). Your own tier is the
+model your session reports. Run the step yourself when you are at or above that tier, or delegate it to a subagent of that
+tier when your environment offers subagents (plan/PROTOCOL_EXCERPTS.md, Global Rule 5). If neither is possible, run it
+yourself and record the substitution: `python3.12 tools/checkpoint.py --append 'tier_substitutions={"step": "S-###",
+"wanted": "<tier>", "used": "<model>"}'` plus a DEVIATIONS.md row.
 S-RETRO's "fresh Opus agent" means a subagent that has not seen the run; without subagents, write the retrospective from the
 digest alone and say so in RETROSPECTIVE.md.
 
@@ -120,7 +123,7 @@ merges the generation branch into the impl branch and resumes.
 1. Read `.checkpoints/state.json` (or the highest `.checkpoints/snapshots/*-seq-<N>.json`). 2. Verify every artifact hash;
 re-run the generating step of any mismatch. 3. Rehydrate `active_variables` and `execution_context`. 4. If
 `in_flight_operation` is not null, reconcile its side effects (git log, CI run, files) before repeating anything. 5. Continue
-from `active_step_id` / `step_pointer.sub_action`. Checkpoints: `python3 tools/checkpoint.py --active-step S-### --objective
+from `active_step_id` / `step_pointer.sub_action`. Checkpoints: `python3.12 tools/checkpoint.py --active-step S-### --objective
 … --pointer '{…}' --scratchpad …` before every high-latency action (build, CI wait, gate) and via every save.
 
 ## Working rules (from the prevention checklist; follow every rule marked `both` in research/PRIOR_KNOWLEDGE.md)
@@ -156,7 +159,7 @@ without the G-001 listening record (PK-46). After a push by any non-git mechanis
 13. **Knowledge Store** `[All]`: Lessons and knowledge items persist across tasks in the knowledge store recorded at intake (`A-###`; layout in Appendix C). The store is read at the start of research (R0) and written only at the end of implementation, after gate `G-003` (3.7.2). During a run, new lessons and items accumulate on the working branch. Lessons and items must never contain credentials, tokens, secrets, or personal data; redact them (for example, `github_pat_***`).
 
 During this run lessons go to `lessons/L-<UTC>-<slug>.md` and knowledge items to `knowledge/K-<UTC>-<slug>.md` on the impl
-branch (templates: protocol Appendices A and B; check with `python3 tools/check_schema.py`). They reach the store only at
+branch (templates: protocol Appendices A and B; check with `python3.12 tools/check_schema.py`). They reach the store only at
 S-KNOW after G-003.
 
 ## Figures and publication

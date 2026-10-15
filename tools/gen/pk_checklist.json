@@ -6,7 +6,7 @@
  ],
  "PK-02": [
   "S-000 clones qualitycoding/Lessons and qualitycoding/knowledge, lists the lessons matching the task tags and records the commits read before any delivery work.",
-  "S-000 action 2; state.json knowledge_store",
+  "S-000 action 3; state.json knowledge_store",
   "both"
  ],
  "PK-03": [
@@ -31,7 +31,7 @@
  ],
  "PK-07": [
   "Before closing implementation, map every plan step and pre-mortem control to a delivering file or test; list unmapped ones in DEVIATIONS.md.",
-  "S-RETRO action 3; plan/TRACEABILITY.md",
+  "S-019 (plan/IMPLEMENTATION_MAP.md)",
   "both"
  ],
  "PK-08": [
@@ -56,7 +56,7 @@
  ],
  "PK-12": [
   "Attach every repository with add_repo (push) before any token; never write a pasted token to disk; check git config and grep for tokens at turn end; tell the owner to revoke pasted tokens.",
-  "S-000 action 3; S-KNOW; T-P15",
+  "S-000 action 2; S-KNOW; T-P15",
   "both"
  ],
  "PK-13": [
@@ -81,7 +81,7 @@
  ],
  "PK-17": [
   "Probe permissions with read endpoints only; never write to a live object to test access.",
-  "S-000 action 3",
+  "S-000 action 2",
   "both"
  ],
  "PK-18": [

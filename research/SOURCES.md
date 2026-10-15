@@ -1,6 +1,6 @@
 # Sources
 
-Generated from research/claims.json by `python3 tools/gen/sources.py`. Tier 1 = official docs, source code at the
+Generated from research/claims.json by `python3.12 tools/gen/sources.py`. Tier 1 = official docs, source code at the
 pinned version, specifications, or a committed spike; Tier 2 = maintainer statements, release notes, issue trackers; Tier 3
 = reputable secondary write-ups; Tier 4 = forums (never sufficient alone). Every source was opened in this run (PK-06).
 

@@ -1,6 +1,6 @@
 """Writes tests/FROZEN_MANIFEST.sha256 (2E.2) for every tracked file matching the frozen globs of T-060, plus
 eval/thresholds.json. Run ONLY by the planning agent at a freeze or an amendment (2E.4); never by the implementer (PK-24).
-Usage: python3 tools/freeze.py"""
+Usage: python3.12 tools/freeze.py"""
 import fnmatch, hashlib, pathlib, subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 GLOBS = ("tests/**/*", "core/include/singvst/*.hpp", "plugin/PluginProcessor.h", "eval/phrases/*")
