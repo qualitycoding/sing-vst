@@ -8,8 +8,8 @@
   "mode_flags": {
     "software.deploys": false
   },
-  "phase": "3",
-  "subphase": "3.5",
+  "phase": "2",
+  "subphase": "2E",
   "research_round": 6,
   "exploration_round": 0,
   "proof_review_round": 0,
@@ -21,12 +21,12 @@
     "1.3",
     "1.4",
     "2B",
-    "3.1-3.5"
+    "3.1-3.5",
+    "2E"
   ],
   "pending": [
     "1.1",
     "2C",
-    "2E",
     "3.6",
     "4",
     "5"
@@ -249,6 +249,7 @@
     "research/spikes/upstream-facts/verify.sh": "75ceb197e49c5b63eab5d2f1f421c263312135df3474e76a89eeea8503cc4052",
     "research/spikes/vocoder-onnx/output.txt": "1a0365c79a367bce16a75432c2c692110c833540422131d8ec2a1fc55f5bb95c",
     "research/spikes/vocoder-onnx/run.sh": "f59a59ba67edd37ce9696fc952c8323bdf3256dedb9dc2826d6e8da68bbc0c5f",
+    "tests/FROZEN_MANIFEST.sha256": "611ddb0d9b43a7e4efe74fcc9651a7df551fc99dea4544ff4bca1a932ae3da81",
     "tests/cpp/CMakeLists.txt": "6d846659b5db59a1510097edf4f8692fd676dd89a202d0c0dea2efe1fda0f0fd",
     "tests/cpp/helpers.hpp": "7bfaadcbbbde4ca1dbc9dcf98259fcadf238256061100c31adb157dbed4538e2",
     "tests/cpp/test_align.cpp": "3dcca21830aca19421aee7e0520c45d46e94966054d2d0486ee92c9d8ec17a86",
@@ -320,6 +321,7 @@
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "d0a53e80887db73b21e3688950e4b9b4987219916038a42964f3048ab360b76c",
     "tools/ci_annotate.py": "ffed4924358fd5acacb75f16c37d7f6b03bc91af843b157df800cc4d0f7f39dc",
+    "tools/freeze.py": "148a0917d7d2c31812a86fef8d30beaf947ec5fc2db6b48a65470e3dd8ce052c",
     "tools/gen/claims.py": "98db44682b462be1af6777dd69733497b03cd8fba23606fbfaf54a8a8a8c18a1",
     "tools/gen/handoff.py": "bc9b790a66aafef1424d4eab1ceaea87fa3270a32886e644ac29cfcbce4ff43e",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
@@ -650,8 +652,8 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T12:10:46Z",
-  "active_step_id": "HANDOFF.md",
+  "updated_at": "2026-10-15T12:11:23Z",
+  "active_step_id": "3.6",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
     "call_stack": [
@@ -659,13 +661,16 @@
       "3.5 handoff document"
     ],
     "scratchpad": "Done: 2B tests (C++ 62 + plugin + Python T-P01..T-P27), red verification, sketch, PLAN/ASSUMPTIONS/GATES/ENVIRONMENT/PROFILE/TRACEABILITY, initial risks. Next: HANDOFF, research round-6 log + SOURCES.md, freeze (2E), cold read with fresh agents, pre-mortem with fresh agents, status header (tools/gen/status.py), push.",
-    "in_flight_operation": null,
+    "in_flight_operation": {
+      "op": "freeze written; next: subagent cold read",
+      "since": "2026-10-15"
+    },
     "tool_cache": {},
     "step_pointer": {
-      "phase": "3",
-      "subphase": "3.5",
-      "item_index": 1,
-      "sub_action": "next: 2E freeze, then 3.6 cold read with fresh agents",
+      "phase": "2",
+      "subphase": "2E",
+      "item_index": 0,
+      "sub_action": "3.6 cold read pass 1 with a fresh Sonnet agent + Haiku mechanical check",
       "retry_count": 0
     }
   },
@@ -697,7 +702,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 7,
+  "sequence": 9,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
