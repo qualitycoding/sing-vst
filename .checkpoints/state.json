@@ -63,6 +63,16 @@
     "core/include/singvst/synthesis.hpp": "f759f86dd4494ad3f78ce7f044340da6cc91ca94927c1c78ded9ba06cc7a7a68",
     "core/include/singvst/voice.hpp": "304da299930ead4adeccfb6acefcbf021022d67cba6a23362a3b369c4c290fdb",
     "core/src/stubs.cpp": "f3a292672e38788d03e637befa0353e4e7058896f67081dbcfbe7ae4fb0e8d94",
+    "eval/phrases/p1.mid": "7ea321f576c32f8051c5c67a99f553dcab89ab768ce4ee8ea50a40d2b3eda573",
+    "eval/phrases/p1.txt": "5086a84ad85f517fc6e2fe2051f2c0921735127e8974f65ebab41cf6c2f8e762",
+    "eval/phrases/p2.mid": "69aa4962231e285310fd1dc99e659e7627cf558c714b60182c9e58d9496dbbed",
+    "eval/phrases/p2.txt": "195fdda0f5c8ebafae0e0be26e92f0b76cf8cea55bbf912dd2fa93c12b21b656",
+    "eval/phrases/p3.mid": "41ab0b674bf0cda0a1fd33bf0e55a0e70e19d4c246d0c8bf7a3d2567cfe50821",
+    "eval/phrases/p3.txt": "3185b21ea5d60c652096b33dcbef515f9c055d099fddf0f5126f251d4ba3ddf7",
+    "eval/phrases/p4.mid": "e6fe3b0c4620c4264a99bcc3cf19fcd304c5cc0a2a47efcbb7099d443afc693b",
+    "eval/phrases/p4.txt": "59f27348b082e3da584aa18ce7ac4890a4eec2f80717a355323aa0ad1a725d27",
+    "eval/phrases/p5.mid": "6ad2b9c961a5dd3eea9b68b3490e0b3bb061ca1b2c4efd22a51e6cfe00c119bb",
+    "eval/phrases/p5.txt": "757737a652bf91dab1470c485bfc85a3588e56eea8339aeb721110bada7dba6e",
     "eval/thresholds.json": "34547481258b7ccb9f80cbdd5a4d478940b4fc1fac24df97541e84839fbadd2c",
     "knowledge/K-20261010T110000Z-c-001-rvc.md": "23360eeb43c7e7296c1169e9210ea4f07b018589b672ff00c81aa90462327c76",
     "knowledge/K-20261010T110001Z-c-002-so-vits-svc.md": "bd1142efef0c7d7f545383e940657b25b9921e6a97b4da9f3238d61687da16bc",
@@ -271,6 +281,7 @@
     "tools/checkpoint.py": "ada58b6097a6a5317c57ef43605306d7de7ae5c235f5b4199cc345db41776c7f",
     "tools/gen/claims.py": "064594ff97b08be9f5884318ac57448f2b710faff34ce2e93e5dcb2ae6912116",
     "tools/gen/lessons.py": "7992499fdeac5e09254504579148c96f8f4274affed126aed32883cf8369d143",
+    "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
     "tools/gen/pk_checklist.json": "dfbbf2ab8247558924e2ed2a7f10da28be7bbca344fca11e1b773dca880eb1d0",
     "tools/gen/pk_knowledge.json": "99587b290a74f735b0ac71f7e901f4cd344d3288cc04d926919cc9b78153e614",
     "tools/gen/pk_map.json": "40076af46f4c064abe27ddc18ade87029be2c15856600b10efa78e2bda9447a2",
@@ -583,5 +594,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:18:55Z"
+  "updated_at": "2026-10-15T07:19:34Z"
 }
