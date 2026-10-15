@@ -1499,5 +1499,30 @@
    "D-018",
    "S-016"
   ]
+ },
+ {
+  "id": "C-055",
+  "claim": "With the Unix Makefiles generator, `cmake --build <dir> --parallel` without a number runs `make -j` (no job limit) while `--parallel 4` runs `make -j4`; an unbounded JUCE plugin build was terminated on the ubuntu-24.04 runner (exit 143, CI run 38699430452) while Windows (MSBuild) built.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/cmake-parallel/output.txt",
+    "doi": "",
+    "title": "spike cmake-parallel (CMake 3.28.3)",
+    "version": "",
+    "locator": "MAKE ARGS lines",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-018",
+   "S-001"
+  ]
  }
 ]

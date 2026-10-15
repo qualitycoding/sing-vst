@@ -48,7 +48,7 @@ jobs:
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=ON
       - name: Build
-        run: cmake --build build --config Release --parallel
+        run: cmake --build build --config Release --parallel 4   # bounded: a bare --parallel is make -j with no limit (C-055)
       - name: C++ tests (T-001..T-058, T-063..T-066)
         run: ctest --test-dir build -C Release --output-on-failure --output-junit ${{ github.workspace }}/ctest.xml
       - name: pluginval strictness 5 (T-059)
@@ -83,7 +83,7 @@ jobs:
       - name: ASan + UBSan, all core tests
         run: |
           cmake -S . -B asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined"
-          cmake --build asan --parallel
+          cmake --build asan --parallel 4
           ctest --test-dir asan --output-on-failure --output-junit ${{ github.workspace }}/asan.xml
       - name: TSan, threaded tests (T-038, T-050, T-051)
         if: always()
@@ -91,7 +91,7 @@ jobs:
           TSAN_OPTIONS: suppressions=${{ github.workspace }}/tools/tsan.supp halt_on_error=1
         run: |
           cmake -S . -B tsan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer"
-          cmake --build tsan --parallel
+          cmake --build tsan --parallel 4
           ctest --test-dir tsan -R "T-038|T-050|T-051" --output-on-failure --output-junit ${{ github.workspace }}/tsan.xml
       - name: Annotate failures
         if: failure()

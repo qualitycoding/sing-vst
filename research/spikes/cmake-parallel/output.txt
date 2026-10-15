@@ -1,0 +1,5 @@
+cmake version 3.28.3
+== cmake --build b --parallel
+MAKE ARGS: -f Makefile -j
+== cmake --build b --parallel 4
+MAKE ARGS: -f Makefile -j4

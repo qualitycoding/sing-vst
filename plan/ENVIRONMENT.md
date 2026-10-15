@@ -9,7 +9,7 @@
 | ONNX Runtime | 1.31.0 | linux tgz `cc5c72ba…eb03a57`, win zip `3958d8a4…0b82195` | D-002 |
 | CMUdict | `74790861f652b15e4ac49015a90074ad62a27690` | cmudict.dict `81917843…91c3d22` (vendored, third_party/cmudict) | C-016 |
 | pluginval | 1.0.4 | Linux zip `c01c49d8…b55352`, Windows zip `c08e61ce…ec715ab` | C-015, C-049 |
-| CMake | ≥ 3.22 (sandbox 3.31.6; CI runner default) | | C-012 |
+| CMake | ≥ 3.22 (sandbox `cmake --version` 3.28.3 on 2026-10-15; CI runner default); always `--parallel <N>` (C-055) | | C-012, C-055 |
 | Compilers | GCC 13.3 (ubuntu-24.04), MSVC (windows-2022) | | D-001 |
 | Python | **3.12** (`/usr/bin/python3.12` in the sandbox; `python-version: "3.12"` in CI) — never bare `python3` (PK-55) | | D-019 |
 | Toolkit lock | `python/requirements-lock.txt` (32 lines, incl. pip 26.2.1, setuptools 84.0.0, wheel 0.48.0) | | D-019, C-046 |

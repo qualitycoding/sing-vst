@@ -41,7 +41,7 @@
     "plan/OPERATIONS.md"
   ],
   "artifacts": {
-    ".github/workflows/ci.yml": "6930dd17ebce37cab739c879ffdcf04a79f2385d842b3781507658d286c23e26",
+    ".github/workflows/ci.yml": "2d878482dd2c83d815ac31a6089e3f375cfd23fec99360d9ae8179fb95b98b32",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "HANDOFF.md": "b09b1a3ac21cbc2e96e74f1f2f3eca114d093a68ae0d36f544ff0e2fa0f72561",
@@ -131,6 +131,7 @@
     "knowledge/K-20261015T080000Z-c-052-rvc.md": "2f905606d9cd5c763b9545eeb822ae09225062754dddf7f7b8edd575247f99ba",
     "knowledge/K-20261015T080001Z-c-053-huggingface-hub.md": "f47a6ae5e43622b543e3a0d3d5d3f454c702eadbc8a01b92550ccf9e34803937",
     "knowledge/K-20261015T080002Z-c-054-huggingface-hub.md": "1d693929a7e12a272660fa33d525d72b33d40f18b12c890f5e498f5957bf7ef1",
+    "knowledge/K-20261015T090000Z-c-055-cmake.md": "90dc4ba7bd39e3b5b7c1109827d36e2ecb8bc32c97ac08381442cc0c39d420f8",
     "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
     "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
     "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
@@ -161,11 +162,12 @@
     "lessons/L-20261015T073300Z-script-resolved-its-own-directory-after-cd.md": "9577337952e132f0f2046d5e109cb591f2726463a1a00a5c69347996b4520f92",
     "lessons/L-20261015T073400Z-main-guard-ran-before-the-test-overlay.md": "4b6f2580cdd11219e860c39f1cc7cf54b9a69b6fc946388a9e9d4f8c0bd47716",
     "lessons/L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary.md": "17317a572bc012632684d691b5d865c2d375291327e06da3c32beed55430f934",
+    "lessons/L-20261015T090100Z-unbounded-parallel-build-flag-from-memory.md": "b8c6a7c05b51a6fe847def805f2ca97a08e980e5d6df0323b2e299d08ce6f17c",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "6461b078f25d983da19f0cc8a2dac25a957842140e753df3a01f93c41a71a9b6",
-    "plan/ENVIRONMENT.md": "1cd2d95fcffa681b1445e0697c459cc61a74122b9d2ba5264caae26442fe887f",
+    "plan/ENVIRONMENT.md": "de73d09fcacf73f82473c595b1a7adb5ef4c62acdf89024c4717535932cd9269",
     "plan/GATES.md": "fb177e41a561e2b4bba41cd8bc7f9c3e7e302456fdb64f72b48017e750ea9094",
-    "plan/PLAN.md": "b776c270c6be63303cf485c46bd6387c7fbb91f57f222030b1860a8b30fda988",
+    "plan/PLAN.md": "44d8e613c8a5506f5a4f41c46439c6dd0ad538b7f7a5e6f55ad14303bdbd286a",
     "plan/PLAN.src.md": "616182b7f2b3b66f967e0003f40f9546540a3e09934834c58184456d625117e7",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/TRACEABILITY.md": "f32ba96aa268af9ea3a939695496abd4eb396d862ded1e7da5086ca4b422dd08",
@@ -189,14 +191,16 @@
     "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
     "python/singvst_train/rvc_files.py": "f3223c4efc1ddead1379b99265dcf0d76bd66f2a3b72b59caa8fc35aafd0de1e",
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
-    "research/PRIOR_KNOWLEDGE.md": "7828cfb9ec5d5066e79f2cef5855ad58ca3c007ec34c8e5024eaf3d70eecccc9",
+    "research/PRIOR_KNOWLEDGE.md": "0250ebcca376c34b31134b84865cffb91834a38cf832d6e7f72ba7f30e6b0e5f",
     "research/QUESTIONS.md": "1f41ab2ea5c070f0b55ead9cd88e570181bff41f0fd78fda6afc4e277dc86c71",
-    "research/SOURCES.md": "42014984fcc560de04615052c90a7f68f6fd453503b38b0fe0e539d932cc802b",
-    "research/claims.json": "e62fed185ee643822705743a9a028b9cb5cd4d4df4c410e899e65741d9fa461f",
+    "research/SOURCES.md": "58dd99563fd09681a46c7acd3c19d52978d4a2119e26ac29d2dae389940f7d02",
+    "research/claims.json": "20b680abcf2ace54d45a71aa4a1356a08e1856b8c4a678a6c6b2d7f69eb816ff",
     "research/rounds/round-1-3.md": "755204e39b43b7aa003c74ab6dc20db63166475dbc9b7a53ac843d1fd0b07edd",
     "research/rounds/round-4.md": "62f714adf96b51b314ef58cfa272c2cd4a04d68209675f29e5d5536d4894a93e",
     "research/rounds/round-5.md": "87aac3ff6c3bce73e22817f34129063fcc64e8e29bdf117a1548936e7bce81f4",
     "research/rounds/round-6.md": "1d2631efb6ed35ddce9b4500f51a024c24cfc8b6c1509f7f0f12b27a143205c8",
+    "research/spikes/cmake-parallel/output.txt": "b4453886217b339051b054204eb8e7ddb882859670628a3f3403802d2a5a523f",
+    "research/spikes/cmake-parallel/run.sh": "1dd175c0e8bc090a40becd14f27f9036c980c707bb77eae52bc6404563a1bf31",
     "research/spikes/deps-pins/output.txt": "a1f6120b1bbcfcd97a95c22a7775bc4ffc62b231d64d40c00fe197a0831d3373",
     "research/spikes/deps-pins/run.sh": "adefd8efb63fc08875cb0d9af2bd1d6343e706138d7c4079eefb7718fc0b8077",
     "research/spikes/hf-cli/output.txt": "62c38a647205bb4bf12bd07ed4172a36f7a4d50a970cbe5ab4740f42a96e4db2",
@@ -322,14 +326,14 @@
     "tools/checkpoint.py": "d0a53e80887db73b21e3688950e4b9b4987219916038a42964f3048ab360b76c",
     "tools/ci_annotate.py": "ffed4924358fd5acacb75f16c37d7f6b03bc91af843b157df800cc4d0f7f39dc",
     "tools/freeze.py": "148a0917d7d2c31812a86fef8d30beaf947ec5fc2db6b48a65470e3dd8ce052c",
-    "tools/gen/claims.py": "98db44682b462be1af6777dd69733497b03cd8fba23606fbfaf54a8a8a8c18a1",
+    "tools/gen/claims.py": "0a141ac7bbe22390c45996820dfe22437c6310390792efaec77c25baf9443a7b",
     "tools/gen/handoff.py": "bc9b790a66aafef1424d4eab1ceaea87fa3270a32886e644ac29cfcbce4ff43e",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
-    "tools/gen/lessons.py": "68f9fe024918e01715ee3e00e5fee03c83690c75632d008dfde77d0dbd9113ee",
+    "tools/gen/lessons.py": "3baf1c18e446d29435e9ad66cd1d460c9673f7c2f02bfe3f71ffcc02d67ca5f7",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
     "tools/gen/pk_checklist.json": "82500e37713565c082470876754c48ddf3d4d3546957e0560c5ba1e48c5af459",
     "tools/gen/pk_knowledge.json": "4e4620e0de56740fa874231e1996c1cb5d558b05a3a5d56e7899122d4dd34526",
-    "tools/gen/pk_map.json": "d57d21b6edf31cebe914b253503e64307381c6ceeafbb44160d904a68e862876",
+    "tools/gen/pk_map.json": "1f4a713c8ab50f680e867403bc2490c6d2a8ca02260ffdf84e8bae7df7f9dabb",
     "tools/gen/plan.py": "cf3a2c50cf219bb40247bf233a3d8c00449fcad37027052cd29de656ff1b789c",
     "tools/gen/prior_knowledge.py": "abe574d475ad7f1c86d40ead0bc220c27a1ef528a39e3943b59899b0c02eb81f",
     "tools/gen/sources.py": "4de95023182d1ddf5abe0707442e619ae4f8861f8e53486b37505f9e69ec1299",
@@ -584,7 +588,8 @@
     "L-20261015T073200Z-secret-scan-test-contained-a-literal-it-scans-for",
     "L-20261015T073300Z-script-resolved-its-own-directory-after-cd",
     "L-20261015T073400Z-main-guard-ran-before-the-test-overlay",
-    "L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary"
+    "L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary",
+    "L-20261015T090100Z-unbounded-parallel-build-flag-from-memory"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -640,7 +645,8 @@
     "K-20261014T213002Z-c-051-pluginval",
     "K-20261015T080000Z-c-052-rvc",
     "K-20261015T080001Z-c-053-huggingface-hub",
-    "K-20261015T080002Z-c-054-huggingface-hub"
+    "K-20261015T080002Z-c-054-huggingface-hub",
+    "K-20261015T090000Z-c-055-cmake"
   ],
   "environment": {},
   "notes": [
@@ -652,7 +658,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T12:11:23Z",
+  "updated_at": "2026-10-15T12:13:12Z",
   "active_step_id": "3.6",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -702,7 +708,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 9,
+  "sequence": 10,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

@@ -18,6 +18,7 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | infer/module/models.py | https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/blob/81eed5e8f68b6bed1789f682fe78cdd324495afc/infer/module/models.py | 1 |  | 2026-10-10 | lines 646-676 | C-003 (verified) |
 | oracle rvc_coarse | research/spikes/oracle/oracle.py | 1 |  | 2026-10-10 | function rvc_coarse | C-021 (verified) |
 | release notes | https://github.com/Tracktion/pluginval/releases/tag/v1.0.4 | 1 |  | 2026-10-04 | 1.0.0 changes | C-015 (verified) |
+| spike cmake-parallel (CMake 3.28.3) | research/spikes/cmake-parallel/output.txt | 1 |  | 2026-10-15 | MAKE ARGS lines | C-055 (verified) |
 | spike deps-pins | research/spikes/deps-pins/output.txt | 1 |  | 2026-10-14 | downloads, tag commits | C-049 (verified) |
 | spike hf-cli | research/spikes/hf-cli/output.txt | 1 |  | 2026-10-15 | hf download --help | C-053 (verified) |
 | spike hf-cli (PyPI JSON for transformers 4.49.0) | research/spikes/hf-cli/output.txt | 1 |  | 2026-10-15 | requires_dist | C-054 (verified) |
@@ -44,4 +45,4 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | Notre Dame course notes | https://www3.nd.edu/~dchiang/teaching/nlp/2023/kaggle.html | 3 |  | 2026-10-04 | batch sessions | C-019 (single-source) |
 | OpenUtau voicebank development | https://www.openutau.com/Voicebank-development/ | 3 |  | 2026-10-10 | Machine Learning voicebank development | C-010 (single-source) |
 
-37 sources, 52 claims.
+38 sources, 53 claims.

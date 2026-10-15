@@ -159,6 +159,10 @@ claim("C-054", "transformers 4.49.0 (RVC 81eed5e pins >=4.49.0,<4.50) requires h
       "software", True, [S("research/spikes/hf-cli/output.txt", "spike hf-cli (PyPI JSON for transformers 4.49.0)", "requires_dist", 1, "2026-10-15")],
       "verified", ["D-018", "S-016"], ["subject:huggingface-hub", "tech:python", "tech:rvc"], "transformers 4.49.0", kstamp="20261015T080002Z")
 
+claim("C-055", "With the Unix Makefiles generator, `cmake --build <dir> --parallel` without a number runs `make -j` (no job limit) while `--parallel 4` runs `make -j4`; an unbounded JUCE plugin build was terminated on the ubuntu-24.04 runner (exit 143, CI run 38699430452) while Windows (MSBuild) built.",
+      "software", True, [S("research/spikes/cmake-parallel/output.txt", "spike cmake-parallel (CMake 3.28.3)", "MAKE ARGS lines", 1, "2026-10-15")],
+      "verified", ["D-018", "S-001"], ["subject:cmake", "tech:cmake", "tech:github-actions"], "CMake 3.28", kstamp="20261015T090000Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)

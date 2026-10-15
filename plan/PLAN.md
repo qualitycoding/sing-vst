@@ -61,7 +61,7 @@ Defaults for every step unless the step says otherwise:
   runner defect reproduced with a JUCE example project → `BLOCKED.md` (DR-03). pluginval failure on the stub → DR-05.
 - Gate: none
 - Relevant decisions/claims: D-001, D-018, D-023, C-015, C-045, C-050, C-051
-- Lessons applied: PK-14 (L-20261009T191300, L-20261009T150601, L-20261009T150701); PK-15 (L-20261009T151301, L-20261009T151001, L-20261009T150901); PK-16 (L-20261010T001500, L-20261004T161503, L-20261009T150801); PK-47 (L-20261009T092005)
+- Lessons applied: PK-14 (L-20261009T191300, L-20261009T150601, L-20261009T150701); PK-15 (L-20261009T151301, L-20261009T151001, L-20261009T150901); PK-16 (L-20261015T090100, L-20261010T001500, L-20261004T161503); PK-47 (L-20261009T092005)
 - Exclusive resources: none
 
 ### S-002 Lyrics, pronunciation and alignment
