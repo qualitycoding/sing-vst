@@ -163,6 +163,19 @@ claim("C-055", "With the Unix Makefiles generator, `cmake --build <dir> --parall
       "software", True, [S("research/spikes/cmake-parallel/output.txt", "spike cmake-parallel (CMake 3.28.3)", "MAKE ARGS lines", 1, "2026-10-15")],
       "verified", ["D-018", "S-001"], ["subject:cmake", "tech:cmake", "tech:github-actions"], "CMake 3.28", kstamp="20261015T090000Z")
 
+claim("C-056", "Ubuntu 24.04 images ship only the C, C.utf8 and POSIX locales; after `localedef -i de_DE -f UTF-8 de_DE.UTF-8` (root) or `sudo locale-gen de_DE.UTF-8`, setlocale(LC_ALL, \"de_DE.UTF-8\") succeeds with decimal point ',' — which T-034 requires.",
+      "software", True, [S("research/spikes/locale-de/output.txt", "spike locale-de", "before/after lines", 1, "2026-10-15")],
+      "verified", ["D-018", "S-000", "T-034"], ["subject:posix-locale", "tech:cpp", "tech:github-actions"], "Ubuntu 24.04 glibc 2.39", kstamp="20261015T221000Z")
+claim("C-057", "RVC 81eed5e: `extract_f0.py cuda <n_part> <i_part> <i_gpu> <exp_dir> <is_half>` always uses rmvpe; `extract_hubert_feature.py <device> <n_part> <i_part> <i_gpu> <exp_dir> <version> <is_half>` (8 args) or without i_gpu (7 args); `preprocess.py <inp_root> <sr> <n_p> <exp_dir> <noparallel> <per> [manifest]`; its cu128 requirements pin no pyworld or mido.",
+      "software", True, [S("research/spikes/eval-apis/output.txt", "spike eval-apis (sys.argv lines, requirements grep)", "RVC section", 1, "2026-10-15")],
+      "verified", ["D-035", "S-016"], ["subject:rvc", "tech:rvc", "domain:ml-training"], "RVC 81eed5e", kstamp="20261015T221001Z")
+claim("C-058", "Resemblyzer 0.1.4 `preprocess_wav(fpath_or_wav, source_sr=None)` loads a str/Path with librosa at its own rate and resamples to 16 kHz; a numpy array is resampled only when `source_sr` is given (otherwise assumed 16 kHz); `VoiceEncoder.embed_utterance(wav)` embeds the preprocessed waveform.",
+      "software", True, [S("research/spikes/eval-apis/output.txt", "spike eval-apis (resemblyzer/audio.py, voice_encoder.py)", "resemblyzer section", 1, "2026-10-15")],
+      "verified", ["D-017", "S-015"], ["subject:resemblyzer", "tech:python"], "resemblyzer 0.1.4", kstamp="20261015T221002Z")
+claim("C-059", "openai-whisper 20250625: `whisper.load_model(name)`; `model.transcribe(audio, temperature=..., language=...)` where temperature defaults to the fallback tuple (0.0, 0.2, …, 1.0) and a file path is decoded by `load_audio` (ffmpeg) at 16 kHz.",
+      "software", True, [S("research/spikes/eval-apis/output.txt", "spike eval-apis (whisper/__init__.py, transcribe.py, audio.py)", "whisper section", 1, "2026-10-15")],
+      "verified", ["D-017", "S-015"], ["subject:openai-whisper", "tech:python"], "openai-whisper 20250625", kstamp="20261015T221003Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)

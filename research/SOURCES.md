@@ -20,11 +20,15 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | release notes | https://github.com/Tracktion/pluginval/releases/tag/v1.0.4 | 1 |  | 2026-10-04 | 1.0.0 changes | C-015 (verified) |
 | spike cmake-parallel (CMake 3.28.3) | research/spikes/cmake-parallel/output.txt | 1 |  | 2026-10-15 | MAKE ARGS lines | C-055 (verified) |
 | spike deps-pins | research/spikes/deps-pins/output.txt | 1 |  | 2026-10-14 | downloads, tag commits | C-049 (verified) |
+| spike eval-apis (resemblyzer/audio.py, voice_encoder.py) | research/spikes/eval-apis/output.txt | 1 |  | 2026-10-15 | resemblyzer section | C-058 (verified) |
+| spike eval-apis (sys.argv lines, requirements grep) | research/spikes/eval-apis/output.txt | 1 |  | 2026-10-15 | RVC section | C-057 (verified) |
+| spike eval-apis (whisper/__init__.py, transcribe.py, audio.py) | research/spikes/eval-apis/output.txt | 1 |  | 2026-10-15 | whisper section | C-059 (verified) |
 | spike hf-cli | research/spikes/hf-cli/output.txt | 1 |  | 2026-10-15 | hf download --help | C-053 (verified) |
 | spike hf-cli (PyPI JSON for transformers 4.49.0) | research/spikes/hf-cli/output.txt | 1 |  | 2026-10-15 | requires_dist | C-054 (verified) |
 | spike hf-cli (RVC README.md lines 170-190) | research/spikes/hf-cli/output.txt | 1 |  | 2026-10-15 | README download commands | C-052 (verified) |
 | spike hosts | research/spikes/hosts/output.txt | 1 |  | 2026-10-14 | all lines | C-044 (verified) |
 | spike juce-lyrics | research/spikes/juce-lyrics/output.txt | 1 |  | 2026-10-10 | output.txt | C-013 (verified) |
+| spike locale-de | research/spikes/locale-de/output.txt | 1 |  | 2026-10-15 | before/after lines | C-056 (verified) |
 | spike ort | research/spikes/ort/output.txt | 1 |  | 2026-10-10 | sha256 lines, ORT 1.31.0 out[0]=9 | C-014 (verified) |
 | spike ort-manual-init | research/spikes/ort-manual-init/output.txt | 1 |  | 2026-10-10 | output.txt | C-042 (verified) |
 | spike pip-audit-setuptools | research/spikes/pip-audit-setuptools/output.txt | 1 |  | 2026-10-14 | PYSEC-2026-3447 rows | C-046 (verified) |
@@ -45,4 +49,4 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | Notre Dame course notes | https://www3.nd.edu/~dchiang/teaching/nlp/2023/kaggle.html | 3 |  | 2026-10-04 | batch sessions | C-019 (single-source) |
 | OpenUtau voicebank development | https://www.openutau.com/Voicebank-development/ | 3 |  | 2026-10-10 | Machine Learning voicebank development | C-010 (single-source) |
 
-38 sources, 53 claims.
+42 sources, 57 claims.

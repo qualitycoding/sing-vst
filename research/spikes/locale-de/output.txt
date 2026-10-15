@@ -1,0 +1,7 @@
+== before: C C.utf8 POSIX 
+setlocale failed
+exit before 1
+localedef exit 0
+== after: C C.utf8 POSIX de_DE.utf8 
+setlocale de_DE.UTF-8 ok, decimal point [,]
+exit after 0

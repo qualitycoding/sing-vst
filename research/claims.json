@@ -1524,5 +1524,106 @@
    "D-018",
    "S-001"
   ]
+ },
+ {
+  "id": "C-056",
+  "claim": "Ubuntu 24.04 images ship only the C, C.utf8 and POSIX locales; after `localedef -i de_DE -f UTF-8 de_DE.UTF-8` (root) or `sudo locale-gen de_DE.UTF-8`, setlocale(LC_ALL, \"de_DE.UTF-8\") succeeds with decimal point ',' \u2014 which T-034 requires.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/locale-de/output.txt",
+    "doi": "",
+    "title": "spike locale-de",
+    "version": "",
+    "locator": "before/after lines",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-018",
+   "S-000",
+   "T-034"
+  ]
+ },
+ {
+  "id": "C-057",
+  "claim": "RVC 81eed5e: `extract_f0.py cuda <n_part> <i_part> <i_gpu> <exp_dir> <is_half>` always uses rmvpe; `extract_hubert_feature.py <device> <n_part> <i_part> <i_gpu> <exp_dir> <version> <is_half>` (8 args) or without i_gpu (7 args); `preprocess.py <inp_root> <sr> <n_p> <exp_dir> <noparallel> <per> [manifest]`; its cu128 requirements pin no pyworld or mido.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/eval-apis/output.txt",
+    "doi": "",
+    "title": "spike eval-apis (sys.argv lines, requirements grep)",
+    "version": "",
+    "locator": "RVC section",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "S-016"
+  ]
+ },
+ {
+  "id": "C-058",
+  "claim": "Resemblyzer 0.1.4 `preprocess_wav(fpath_or_wav, source_sr=None)` loads a str/Path with librosa at its own rate and resamples to 16 kHz; a numpy array is resampled only when `source_sr` is given (otherwise assumed 16 kHz); `VoiceEncoder.embed_utterance(wav)` embeds the preprocessed waveform.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/eval-apis/output.txt",
+    "doi": "",
+    "title": "spike eval-apis (resemblyzer/audio.py, voice_encoder.py)",
+    "version": "",
+    "locator": "resemblyzer section",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-017",
+   "S-015"
+  ]
+ },
+ {
+  "id": "C-059",
+  "claim": "openai-whisper 20250625: `whisper.load_model(name)`; `model.transcribe(audio, temperature=..., language=...)` where temperature defaults to the fallback tuple (0.0, 0.2, \u2026, 1.0) and a file path is decoded by `load_audio` (ffmpeg) at 16 kHz.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/eval-apis/output.txt",
+    "doi": "",
+    "title": "spike eval-apis (whisper/__init__.py, transcribe.py, audio.py)",
+    "version": "",
+    "locator": "whisper section",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-017",
+   "S-015"
+  ]
  }
 ]
