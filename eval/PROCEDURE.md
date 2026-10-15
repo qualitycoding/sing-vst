@@ -13,14 +13,17 @@ in the owner's notebook at S-017; values are judged at gate G-001.
 ## Steps
 1. **Training pitch.** Median F0 of the held-out recordings: `metrics.extract_f0` on each file, voiced frames pooled, median.
 2. **Transpose.** One shift for all phrases: `k = transpose_semitones(MIDI pitches of p1…p5 pooled, median F0)`; every note
-   of every phrase is shifted by `k`; the report's `transpose_semitones` is that integer (T-P20).
+   of every phrase is shifted by `k`; the report's `transpose_semitones` is that integer (T-P20). The transposed phrases
+   are written with mido 1.3.3 to `<out>/phrases/<p>.mid` (every `note_on`/`note_off` note number + `k`; all other events,
+   including lyric and tempo meta events, unchanged); a shifted note outside 0…127 is a validity failure.
 3. **Render.** `singvst-render --voice V --midi <transposed phrase> --out renders/<p>.converted.wav --seed 0` and the same
    with `--no-convert` → `renders/<p>.guide.wav`. Render time and audio length come from each render's provenance sidecar.
 4. **Speaker similarity.** Resemblyzer 0.1.4 `VoiceEncoder` on CPU; reference = mean of the embeddings of every held-out
    file (`preprocess_wav` applied); `speaker_similarity` = mean over phrases of `cosine(embed(converted), reference)`;
    `guide_similarity` = the same for the guide renders (baseline, PK-35).
-5. **F0 accuracy.** `extract_f0` (10 ms) on each converted render; `score_f0` per phrase with the transposed notes
-   (seconds from the phrase tempo), `edge_s` 0.05, `octave_cents` 600; pooled over phrases: `f0_rms_cents` = RMS of all
+5. **F0 accuracy.** `extract_f0` (10 ms) on each converted render; `score_f0` per phrase with the transposed notes, whose
+   times are `(note start/end in beats − first note's start in beats) × 60 / bpm` (a render starts at its first note,
+   D-013; beats = ticks / PPQ, bpm from the phrase's tempo event), `edge_s` 0.05, `octave_cents` 600; pooled over phrases: `f0_rms_cents` = RMS of all
    scored errors, `octave_fraction` = octave errors / (scored + octave errors).
 6. **Intelligibility.** openai-whisper 20250625, model `small.en`, `language="en"`, `temperature=0`, on each converted render
    (`wer`) and each guide render (`guide_wer`) against `pN.txt`; mean over phrases.
@@ -33,4 +36,6 @@ in the owner's notebook at S-017; values are judged at gate G-001.
 
 ## Output
 `report.json` with exactly the keys of `evaluate.REPORT_KEYS`, `status` "measured" (or "invalid: …"); its provenance sidecar;
-`renders/`; and, from the CLI, `verdict.json` = `metrics.judge(report, thresholds)`. Values are never edited by hand (Rule 9).
+`renders/`; and, from the CLI, `verdict.json` = `metrics.judge(report, thresholds)`. The provenance sidecar's `params` are
+`{"voice_name": <manifest name>, "voice_sha256": <SHA-256 of manifest.json>, "phrases": <phrases dir>, "heldout_files": <count>}`
+and its `seeds` `{"converter": <seed>}`. Values are never edited by hand (Rule 9).
