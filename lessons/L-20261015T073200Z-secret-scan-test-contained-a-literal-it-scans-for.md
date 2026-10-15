@@ -14,12 +14,12 @@ recorded_at: 2026-10-15T07:32:00Z
 ## Trigger
 A test plants strings that a scanner must detect and also asserts that the scanned repository (which contains the test) is clean.
 ## What went wrong
-test_security.py contained the literal '-----BEGIN RSA PRIVATE KEY-----' while asserting scan_secrets(root) == [].
+test_security.py contained the RSA private-key header (BEGIN ... PRIVATE KEY between five dashes) as a literal while asserting scan_secrets(root) == [].
 ## Correction
 Assembled the marker from two parts at run time ('...PRIV' + 'ATE KEY-----'), like the token strings in the same test.
 ## Prevention rule
 Build every planted secret from concatenated parts at run time; grep the repository with the scanner's own patterns before committing.
 ## Detection check
-`grep -rnE 'BEGIN [A-Z ]*PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,}' --exclude-dir=.git .` prints nothing.
+`python tools/check_schema.py` and the scan_secrets patterns report nothing anywhere in the repository (T-P15).
 ## Evidence
 Commit f6ee132.
