@@ -41,7 +41,9 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
   (3) Colab or Kaggle?
 - **Responses:** `run: colab|kaggle, dereverb: yes|no[, epochs: <N>]` (the owner runs the notebook per D-035 and attaches `report.json`,
-  `report.json.provenance.json` and `verdict.json` to the conversation) · `stop`. Recordings, renders and voice packages are
+  `report.json.provenance.json`, `verdict.json` and `budget.json` to the conversation, or pastes them) ·
+  `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three, then
+  `BLOCKED.md`; GPU hours already used stay in `budget.json` — and re-issues G-004) · `stop`. Recordings, renders and voice packages are
   never uploaded to the repository (A-011, T-062).
 
 ### G-005 Guide voicebank (before S-016)

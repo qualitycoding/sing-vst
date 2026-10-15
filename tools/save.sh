@@ -22,6 +22,8 @@ Claude-Session: https://claude.ai/code/session_016Ltp4MhMKiaYAbZSCVGTy8"; fi
   git commit -q -m "$msg" -m "$trailers"
 fi
 b=$(git branch --show-current)
-for i in 1 2 3; do git push -q origin "$b" && break; echo "push attempt $i failed" >&2; sleep $((i * 5)); done
-left=$(git log --oneline "origin/$b..HEAD" | wc -l); echo "saved $(git rev-parse --short HEAD) on $b; unpushed commits: $left"
+for i in 1 2 3; do git push -q -u origin "$b" && break; echo "push attempt $i failed" >&2; sleep $((i * 5)); done
+# Refresh the remote-tracking ref explicitly: a clone with a narrow fetch refspec has no origin/<branch> otherwise.
+git fetch -q origin "$b:refs/remotes/origin/$b" || { echo "save.sh: cannot fetch origin/$b" >&2; exit 1; }
+left=$(git rev-list --count "origin/$b..HEAD"); echo "saved $(git rev-parse --short HEAD) on $b; unpushed commits: $left"
 [ "$left" -eq 0 ]

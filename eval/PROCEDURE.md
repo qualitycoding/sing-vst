@@ -18,8 +18,8 @@ in the owner's notebook at S-017; values are judged at gate G-001.
    including lyric and tempo meta events, unchanged); a shifted note outside 0…127 is a validity failure.
 3. **Render.** `singvst-render --voice V --midi <transposed phrase> --out renders/<p>.converted.wav --seed 0` and the same
    with `--no-convert` → `renders/<p>.guide.wav`. Render time and audio length come from each render's provenance sidecar.
-4. **Speaker similarity.** Resemblyzer 0.1.4 `VoiceEncoder` on CPU; reference = mean of the embeddings of every held-out
-   file (`preprocess_wav` applied); `speaker_similarity` = mean over phrases of `cosine(embed(converted), reference)`;
+4. **Speaker similarity.** Resemblyzer 0.1.4 `VoiceEncoder` on CPU; every waveform is passed to `preprocess_wav` **as a file
+   path** (so Resemblyzer resamples it to 16 kHz itself, C-058); reference = mean of the embeddings of every held-out file; `speaker_similarity` = mean over phrases of `cosine(embed(converted), reference)`;
    `guide_similarity` = the same for the guide renders (baseline, PK-35).
 5. **F0 accuracy.** `extract_f0` (10 ms) on each converted render; `score_f0` per phrase with the transposed notes, whose
    times are `(note start/end in beats − first note's start in beats) × 60 / bpm` (a render starts at its first note,
@@ -29,7 +29,8 @@ in the owner's notebook at S-017; values are judged at gate G-001.
    (`wer`) and each guide render (`guide_wer`) against `pN.txt`; mean over phrases.
 7. **Speed.** `realtime_factor` = Σ render seconds / Σ audio seconds over the converted renders.
 
-## Validity checks (a report failing one is still written, with `status` "invalid: <reason>")
+## Validity checks (a report failing one is still written, with `status` "invalid: <reason>" and `null` for every metric
+that could not be computed; T-P20 then fails, which is the intended outcome)
 - Every render exists and its provenance sidecar has `unclipped_peak` > 0.
 - At least 20 scored F0 frames per phrase.
 - Every held-out file yields an embedding.

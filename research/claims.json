@@ -1625,5 +1625,30 @@
    "D-017",
    "S-015"
   ]
+ },
+ {
+  "id": "C-060",
+  "claim": "uv 0.13.1 (`pip install uv==0.13.1`) creates a Python 3.12 venv with `uv venv --python 3.12 --python-preference only-managed`, downloading its own CPython (3.12.15) regardless of the host Python, and installs wheels into it with `uv pip install --python <venv>/bin/python`.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/uv-python/output.txt",
+    "doi": "",
+    "title": "spike uv-python (host Python 3.13)",
+    "version": "",
+    "locator": "all lines",
+    "accessed": "2026-10-15",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "S-016"
+  ]
  }
 ]

@@ -302,9 +302,10 @@ Notes, lyrics and tempo come from the MIDI file as in D-010 unless overridden. O
 `voice_sha256` (of manifest.json), `params`, `seeds` (`{"converter": <seed>}`), `utc_timestamp`, `hardware`, `threads`, `ort_version`, `warnings`,
 `unclipped_peak`, `render_seconds`, `audio_seconds`. `--check-voice` prints `ok <name>` (exit 0). Exit codes: 0 success; 2
 usage, missing file or invalid voice (stderr names the cause, containing the word `voice` for voice errors); 3 render
-failure. Errors raised **before rendering starts** (arguments, voice manifest/package validation, engine loading, MIDI import,
-lyrics parsing, dictionary loading, `toMonophonic`/`renderTake` input checks such as "no notes") exit 2; errors raised while
-the engines run (including `ValidationError` from an unknown phoneme in the guide vocabulary, ONNX Runtime errors) exit 3.
+failure. Mechanical rule: the CLI itself calls, in order, argument parsing, `parseManifest` + `validatePackage`, engine loading,
+`importMidi`, `parseLyrics`, dictionary loading and `toMonophonic` (empty result → "no notes"); any exception from these
+exits 2. It then calls `renderTake`; **any** exception from `renderTake` (including `ValidationError`, e.g. an unknown
+phoneme, and ONNX Runtime errors) exits 3.
 `--check-voice` runs `parseManifest`, `validatePackage`, `GuideEngine::load` and, when present, `ConverterEngine::load`.
 `RenderParams::voiceId` is the voice's `voice_sha256` (SHA-256 of its manifest.json) in the CLI and the plugin, so loading a
 different voice always changes the phrase hash. Tests: T-P13, T-P18.
@@ -338,7 +339,8 @@ archive to Drive. Budget: ≤ 20 GPU-hours per voice (A-015), each session ≤ 1
 ### D-017 Evaluation (unknown outcomes)
 Procedure (frozen as `eval/PROCEDURE.md` and implemented in `evaluate.py`; values recorded at G-001, never typed — PK-05):
 the five original **evaluation phrases** in `eval/phrases/` (MIDI with lyric meta events; written for this project, no
-third-party lyrics) are transposed by whole semitones so their median pitch is nearest the median F0 of the training data,
+third-party lyrics) are transposed by one whole-semitone shift so their pooled median pitch is nearest the median F0 of the
+**held-out** recordings (eval/PROCEDURE.md wins over any other wording),
 then rendered twice with `singvst-render` (seed 0): with and without conversion.
 - **Speaker similarity**: cosine between the Resemblyzer 0.1.4 embedding (C-028) of each converted render and the mean
   embedding of the held-out source recordings (10 % by file, `split_heldout`, never trained on); the guide-only render gives
@@ -374,7 +376,8 @@ dryest subset). `prepare --dereverb` is the only switch.
 ### D-018 Continuous integration
 GitHub Actions workflow `.github/workflows/ci.yml`, triggered on push and pull request (no `workflow_dispatch` on the critical
 path; PK-15). Jobs: `repo` (freeze manifest, workflow lint, ignore rules, claim references, secret scan, lock audit),
-`cpp` (matrix `ubuntu-24.04`, `windows-2022`: build, ctest, pluginval 1.0.4 strictness 5 with `--skip-gui-tests`
+`cpp` (matrix `ubuntu-24.04`, `windows-2022`: on Linux `sudo locale-gen de_DE.UTF-8` for T-034 (C-056) and plugin tests
+under `xvfb-run -a`; build, ctest, pluginval 1.0.4 strictness 5 with `--skip-gui-tests`
 on Linux under xvfb; C-015), `sanitizers` (Linux, ASan+UBSan for all C++ tests; TSan for T-038, T-050, T-051), `python`
 (toolkit tests with the Linux CLI artifact), `python-torch` (export parity T-P19). Action major tags per C-045. Results are
 read through the GitHub REST API (jobs, steps, check-run annotations), because the Actions results host is unreachable from the
@@ -444,6 +447,24 @@ on stderr). Paths are absolute or relative to the working directory.
 | `evaluate` | `--voice D --heldout D --phrases D --render-bin F --out D [--seed 0] [--thresholds eval/thresholds.json]` | `evaluate_voice`, then writes `OUT/verdict.json` = `metrics.judge(report, thresholds)`; the report's provenance `params` = `{"voice_name": <manifest name>, "voice_sha256", "phrases": <dir>, "heldout_files": <count>}`, `seeds` = `{"converter": <seed>}` (eval/PROCEDURE.md) |
 | `provenance` | `--result F --params JSON --seeds JSON [--repo .] [--lockfile python/requirements-lock.txt]` | `collect` + `write_sidecar` |
 
+**Notebook environment.** Every Python command of the notebook runs in a uv-managed Python 3.12 venv, whatever the runtime's
+Python (C-060): `pip install uv==0.13.1`; `uv venv --python 3.12 --python-preference only-managed /content/py312`
+(Kaggle: `/kaggle/working/py312`); then with `uv pip install --python <venv>/bin/python`: RVC's
+`requirments_cu128_py312.txt` (official indexes, C-023), `uv pip uninstall onnxruntime-gpu onnxruntime`, then
+`onnx==1.23.2 onnxruntime==1.31.0 pyworld==0.3.5 mido==1.3.3 pytest==9.1.1 nbformat==5.10.4 PyYAML==6.0.3
+resemblyzer==0.1.4 openai-whisper==20250625` (+ `audio-separator==0.47.0` only when `DEREVERB`), and the toolkit with
+`-e <sing-vst>/python --no-deps` (editable, so `provenance.collect` finds the repository root as
+`Path(singvst_train.__file__).resolve().parents[2]` and the lockfile `python/requirements-lock.txt` there; the same rule
+applies to `prepare` and `evaluate` sidecars). `ffmpeg` must be on PATH for Whisper (C-059): `which ffmpeg || apt-get install
+-y ffmpeg`. The RVC experiment and weights live on persistent storage: `<rvc>/logs/<voice>` and `<rvc>/assets/weights` are
+symlinks to `<root>/logs/<voice>` and `<root>/weights` (Drive on Colab, `/kaggle/working` on Kaggle).
+**Parameters cell** (the only cell the owner edits, after the consent cell): `VOICE = "myvoice"` (lower-case letters,
+digits and `-`; used for `--name`, the Drive folder and the RVC experiment), `DEREVERB = False`, `EPOCHS = 200`,
+`SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). `--consent` = the attestation text; `--guide-licence` =
+the D-035 §Guide voicebank string. **Memory check** (PK-43) before training: print GPU name, GPU memory and RAM; batch size
+8 when GPU memory ≥ 14 GiB, else 4; RAM < 10 GiB → stop with a message to choose a High-RAM runtime.
+**GPU time** = the wall-clock time of the stages rvc-f0, rvc-features, train, export and evaluate. Kaggle's weekly quota
+cannot be read from code: the notebook prints a reminder to check it in Kaggle's settings before the train stage.
 **Notebook layout** (Colab: Google Drive folder `MyDrive/singvst/<voice>/`; Kaggle: input dataset `singvst-<voice>` and the
 notebook's `/kaggle/working` output): `raw/` the owner's recordings (WAV; FLAC is converted to WAV first with soundfile),
 `state/` stage markers (`pipeline.run_stages`), `logs/<voice>/` the RVC experiment (kept for resume, C-047), `out/` exports,
@@ -458,9 +479,10 @@ this environment — stop if it fails; (7) `split` the recordings (seed 0) → `
 train --out prepared`; (9) in the RVC checkout: `python train/preprocess.py <prepared>/segments 48000 <n_cpu>
 <rvc>/logs/<voice> False 3.0`; `python train/dataset/extract_f0.py cuda 1 0 0 <rvc>/logs/<voice> False`;
 `python train/dataset/extract_hubert_feature.py cuda 1 0 0 <rvc>/logs/<voice> v2 False` (full precision, RVC's fp32
-path, works on every GPU type; C-022, research/spikes/hf-cli); (10) `rvc-files`; (11) run the JSON argv printed by
+path, works on every GPU type; rmvpe is RVC's fixed f0 method in cuda mode; argv verified in C-057); (10) `rvc-files`; (11) run the JSON argv printed by
 `rvc-train-command` (RVC resumes from `logs/<voice>` automatically, C-047; no retrieval index is trained — the converter does
-not use it, D-012); (12) `export --exp-name <voice>`; (13) build `singvst-render` (core only, `-DSINGVST_BUILD_PLUGIN=OFF`);
+not use it, D-012); (12) `export --exp-name <voice>`; (13) build `singvst-render`: `cmake -S <sing-vst> -B <root>/build-render -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_PLUGIN=OFF
+-DSINGVST_BUILD_TESTS=OFF && cmake --build <root>/build-render --target singvst-render --parallel 4` (C-055);
 (14) the guide voicebank (§Guide voicebank) and `pack`; (15) `evaluate`; (16) `pytest -m voice` (T-P20) with
 `SINGVST_VOICE`, `SINGVST_HELDOUT`, `SINGVST_RENDER_BIN` set to the paths above; (17) `tar` the `out/` folder to Drive /
 Kaggle output. Every stage from (7) runs through `pipeline.run_stages` with markers in `state/` and these inputs → outputs (the RVC
@@ -487,7 +509,8 @@ when the session has run ≥ 9.5 h. The train stage runs `train.py` with a timeo
 newest `assets/weights/<voice>_e<N>_s<M>.pth` (`latest_weights`) to `assets/weights/<voice>.pth`, records
 `"stopped_by_budget": <N>` in `budget.json` and completes (DR-13). **Epochs:** `--epochs` is 200 unless the G-004 response
 gives `epochs: <N>`; `--save-every` 10.
-**Upload to the implementer (G-004):** `report.json`, `report.json.provenance.json`, `verdict.json` and `budget.json` only. Renders and voice
+**Upload to the implementer (G-004):** `report.json`, `report.json.provenance.json`, `verdict.json` and `budget.json` only,
+attached to the conversation (or pasted as text, which the implementer writes byte-for-byte to the same file names). Renders and voice
 packages stay on the owner's Drive or machine (A-011, T-062); `<voice>` is the `--name` given to `pack`.
 
 **Guide voicebank** (when G-005 answers `use-tiger`): the owner downloads
@@ -517,6 +540,9 @@ Frozen files cannot be edited, so comments that are wrong are corrected here and
 - E-3 `core/include/singvst/voice.hpp` `GuideSpec::depth`: "clamped … by the packer" → the **caller of `pack`** clamps
   (D-035 §Guide voicebank); `pack_voice` validates (0, 1] only. The struct default 1.0 is never used: `depth` is required.
 - E-4 test docstrings name sub-tests by function (`test_P13b_…`, `test_P19b_…`); they are parts of **T-P13** and **T-P19**.
+- E-5 `tests/python/test_evaluate.py` T-P26 docstring "toward the training data's median pitch" → the **held-out**
+  recordings' median F0 (D-017, eval/PROCEDURE.md).
+- E-6 `tests/cpp/test_playback.cpp` T-034 comment "CI installs de_DE.UTF-8 (D-018)" — true from this amendment on (D-018).
 
 ---
 

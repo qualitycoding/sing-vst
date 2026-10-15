@@ -176,6 +176,10 @@ claim("C-059", "openai-whisper 20250625: `whisper.load_model(name)`; `model.tran
       "software", True, [S("research/spikes/eval-apis/output.txt", "spike eval-apis (whisper/__init__.py, transcribe.py, audio.py)", "whisper section", 1, "2026-10-15")],
       "verified", ["D-017", "S-015"], ["subject:openai-whisper", "tech:python"], "openai-whisper 20250625", kstamp="20261015T221003Z")
 
+claim("C-060", "uv 0.13.1 (`pip install uv==0.13.1`) creates a Python 3.12 venv with `uv venv --python 3.12 --python-preference only-managed`, downloading its own CPython (3.12.15) regardless of the host Python, and installs wheels into it with `uv pip install --python <venv>/bin/python`.",
+      "software", True, [S("research/spikes/uv-python/output.txt", "spike uv-python (host Python 3.13)", "all lines", 1, "2026-10-15")],
+      "verified", ["D-035", "S-016"], ["subject:uv", "tech:python"], "uv 0.13.1", kstamp="20261015T222000Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)

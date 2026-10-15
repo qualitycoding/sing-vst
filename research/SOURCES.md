@@ -39,6 +39,7 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | spike rvc-resume | research/spikes/rvc-resume/output.txt | 1 |  | 2026-10-14 | inference weights lines; resume and checkpoint lines | C-047 (verified), C-048 (verified) |
 | spike tiger-guide | research/spikes/tiger-guide/output.txt | 1 |  | 2026-10-10 | acoustic determinism line; ORT seed grep line; acoustic inputs; acoustic/vocoder timing line; frames 188 (incl. 8+8 pad), waveform 188.0 frames; pack extra/LICENSE.md (read 2026-10-10); phoneme count; inputs; vocoder.yaml; rank0/rank1 lines; rank0/rank1 scalars accepted; render | C-009 (verified), C-034 (verified), C-036 (verified), C-037 (verified), C-038 (verified), C-039 (verified), C-040 (verified), C-041 (verified) |
 | spike upstream-facts | research/spikes/upstream-facts/output.txt | 1 |  | 2026-10-10 | PASS C-001; PASS C-002a; PASS C-003a/b/c; PASS C-004; PASS C-005; PASS C-006a/b; PASS C-007a; PASS C-009a..e; PASS C-011a/b; PASS C-012a/b; PASS C-015a/b/c; PASS C-016a/b; sha256 line; PASS C-020a/b/c; PASS C-021a/b; PASS C-022a/b/c; PASS C-023a/b/c; PASS C-024; PASS C-029; PASS C-030; PASS C-031; PASS C-032; PASS C-033; PASS C-034; PASS C-035; upstream tips (drift check) | C-001 (verified), C-002 (verified), C-003 (verified), C-004 (verified), C-005 (verified), C-006 (verified), C-007 (verified), C-009 (verified), C-011 (verified), C-012 (verified), C-015 (verified), C-016 (verified), C-020 (verified), C-021 (verified), C-022 (verified), C-023 (verified), C-024 (verified), C-029 (verified), C-030 (verified), C-031 (verified), C-032 (verified), C-033 (verified), C-034 (verified), C-035 (verified), C-045 (verified) |
+| spike uv-python (host Python 3.13) | research/spikes/uv-python/output.txt | 1 |  | 2026-10-15 | all lines | C-060 (verified) |
 | spike vocoder-onnx | research/spikes/vocoder-onnx/output.txt | 1 |  | 2026-10-10 | licence line, inputs, outputs | C-007 (verified) |
 | onnxruntime discussion 23239 | https://github.com/microsoft/onnxruntime/discussions/23239 | 2 |  | 2026-10-10 | fdwr 2025-02-27 | C-026 (corroborated) |
 | onnxruntime issue 11799 | https://github.com/microsoft/onnxruntime/issues/11799 | 2 |  | 2026-10-10 | maintainer: 'By Windows team' | C-026 (corroborated) |
@@ -49,4 +50,4 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | Notre Dame course notes | https://www3.nd.edu/~dchiang/teaching/nlp/2023/kaggle.html | 3 |  | 2026-10-04 | batch sessions | C-019 (single-source) |
 | OpenUtau voicebank development | https://www.openutau.com/Voicebank-development/ | 3 |  | 2026-10-10 | Machine Learning voicebank development | C-010 (single-source) |
 
-42 sources, 57 claims.
+43 sources, 58 claims.
