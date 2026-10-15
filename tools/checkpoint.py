@@ -15,7 +15,8 @@ ap.add_argument("--phase"); ap.add_argument("--subphase"); ap.add_argument("--ac
 ap.add_argument("--complete", action="append", default=[]); ap.add_argument("--pending", action="append", default=[])
 ap.add_argument("--done-pending", action="append", default=[], help="remove from pending")
 ap.add_argument("--note", action="append", default=[])
-ap.add_argument("--set", action="append", default=[], help="key=json value at top level")
+ap.add_argument("--set", action="append", default=[], help="key=json value at top level (replaces)")
+ap.add_argument("--merge", action="append", default=[], help="key=json object merged into the top-level object key")
 ap.add_argument("--objective"); ap.add_argument("--scratchpad"); ap.add_argument("--call-stack", help="json list")
 ap.add_argument("--pointer", help="json object merged into execution_context.step_pointer")
 ap.add_argument("--in-flight", help="json value (null when nothing is in flight)")
@@ -35,6 +36,8 @@ st["pending"] = [p for p in st.get("pending", []) if p not in a.done_pending and
 st.setdefault("notes", []).extend(a.note)
 for kv in a.set:
     k, v = kv.split("=", 1); st[k] = json.loads(v)
+for kv in a.merge:
+    k, v = kv.split("=", 1); st.setdefault(k, {}).update(json.loads(v))
 ec = st.setdefault("execution_context", {})
 for k, v in (("current_objective", ""), ("call_stack", []), ("scratchpad", ""), ("in_flight_operation", None), ("tool_cache", {})):
     ec.setdefault(k, v)
