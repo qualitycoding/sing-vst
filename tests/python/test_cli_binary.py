@@ -31,7 +31,7 @@ def test_P18_singvst_render_end_to_end_with_the_fixture_voice(tmp_path, root):
     assert PROVENANCE_KEYS <= set(side)
     assert side["unclipped_peak"] >= float(np.max(np.abs(y))) - 1e-6
     assert abs(side["audio_seconds"] * 48000 - len(y)) <= 1
-    assert side["seeds"] == {"converter": 0} or side["seeds"].get("converter") == 0
+    assert side["seeds"] == {"converter": 0}
     chk = subprocess.run([binary, "--check-voice", str(voice)], capture_output=True, text=True, timeout=120)
     assert chk.returncode == 0 and chk.stdout.strip() == "ok voice-convert"
     missing = subprocess.run([binary, "--voice", str(tmp_path / "nope"), "--midi", str(mid), "--out", str(out)],

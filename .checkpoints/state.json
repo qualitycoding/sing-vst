@@ -149,7 +149,7 @@
     "lessons/L-20261014T203000Z-oracle-had-three-rule-defects-and-no-checks-of-its-own.md": "a884f6cce7cc04876ce1cb350eb99a043988d4e814e27b86a8be31498a7ff8fd",
     "lessons/L-20261014T220000Z-hand-derived-test-expectations-wrong-at-boundaries.md": "7581d2871bc94adb169ef5270e99f3d43611ccb1bda30c7f85cc0a69431930df",
     "lessons/L-20261015T071500Z-checkpoint-not-rewritten-after-phase-2b-commits.md": "4173c90a6b7a52d7057ed71d5ec5fd3c01a49eda7588944b7584d026a3e39496",
-    "plan/DECISIONS.md": "0384b5eecea252d6d9c5e02e511694a9ba3ec05702e7a40a65fd0779cfb12250",
+    "plan/DECISIONS.md": "ce2ccd061d5c9cd0bd2f247ece997fa99aa46cb426a7fa44f2b3240d7429fd11",
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
@@ -167,7 +167,7 @@
     "python/singvst_train/pipeline.py": "e4d3371ba06beb42ebc4373142ffbdae5cba62087f827b761e12c08aa4886be8",
     "python/singvst_train/prepare.py": "2866b5e82ef1330c31118b51eabffa599099f0d1881cb5958f2e5b0432902b44",
     "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
-    "python/singvst_train/rvc_files.py": "f7577889d438a71edc44aef0f321a665adb4a06d1162fb1ec6d0861964431e20",
+    "python/singvst_train/rvc_files.py": "f3223c4efc1ddead1379b99265dcf0d76bd66f2a3b72b59caa8fc35aafd0de1e",
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
     "research/PRIOR_KNOWLEDGE.md": "e25fd0a495664159409c013910f5fe0ab660057bdfc3c179f32f879cb3ef3191",
     "research/QUESTIONS.md": "4046681681db5d134a6615d4ea29d9f19955e88957764d074cdefeb63f115b32",
@@ -268,7 +268,7 @@
     "tests/fixtures/voice-legacy/manifest.json": "2e41a8bae21891b770cf5a9e9fbff4978f637306d4af2d0d6c4a8ced3bdad6ea",
     "tests/python/conftest.py": "b3adf2e5b8781df4146122912c0afb7bdcbe1012ef8ee6beb809e4e9650ce55b",
     "tests/python/test_cli.py": "e4895dea4494031d00cab67ada16756a4f4c3f52b9828195bfc9eb13f52eb0c9",
-    "tests/python/test_cli_binary.py": "fb6d771675d47dda0a05d7d2c6dc62bf996f0456673aa1c0ade10ea3a9710a74",
+    "tests/python/test_cli_binary.py": "8a74637b1a7e269c61fe97a6dd54c749d6c910834b371526fcd20770e9b8f5d8",
     "tests/python/test_evaluate.py": "92dc1993b1bef9a8e322ba50537a1a1e3c51e4e425eb6df55a97523873a3640d",
     "tests/python/test_export_rvc.py": "740c0b370d705ad1611a7a42515c9a3fa124dba5a086470dffb8250f9f5af980",
     "tests/python/test_metrics.py": "71aa99dfd823b22cf635519f76b594cfe7f6cb740f5603cbccf5c76cc1d4a2dd",
@@ -600,5 +600,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:20:54Z"
+  "updated_at": "2026-10-15T07:21:09Z"
 }

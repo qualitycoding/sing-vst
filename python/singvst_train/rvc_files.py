@@ -9,7 +9,8 @@ def write_filelist(exp_dir: Path, rvc_root: Path, speaker_id: int = 0, sr_tag: s
     ``0_gt_wavs/<stem>.wav``, ``3_feature768/<stem>.npy``, ``2a_f0/<stem>.wav.npy``, ``2b-f0nsf/<stem>.wav.npy`` —
     ``gt|feature|f0|f0nsf|speaker_id`` with absolute POSIX paths — plus two mute lines pointing at
     ``rvc_root/logs/mute/`` files for ``sr_tag`` (``0_gt_wavs/mute<sr_tag>.wav``, ``3_feature768/mute.npy``,
-    ``2a_f0/mute.wav.npy``, ``2b-f0nsf/mute.wav.npy``). Lines are shuffled with ``random.Random(seed)``; ``\\n`` endings.
+    ``2a_f0/mute.wav.npy``, ``2b-f0nsf/mute.wav.npy``). The list (stem lines in sorted stem order, then the two mute
+    lines) is shuffled in place with ``random.Random(seed).shuffle`` and written with ``\\n`` after every line.
     No complete stem → ``ValueError``. Returns the path."""
     raise NotImplementedError("write_filelist")
 

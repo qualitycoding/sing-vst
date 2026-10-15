@@ -294,7 +294,7 @@ warning `tempo changes after beat <b> are ignored` (b = its beat, `%g`). Tests: 
 [--no-convert] [--bpm X] [--rate HZ] [--gain-db X] [--raw] [--ort-lib PATH]` and `singvst-render --check-voice DIR`.
 Notes, lyrics and tempo come from the MIDI file as in D-010 unless overridden. Output: mono 32-bit float WAV at `--rate`
 (default 48000), soft-clipped (D-021) unless `--raw`, plus `<out>.provenance.json` with `git_commit` (compile-time),
-`voice_sha256` (of manifest.json), `params`, `seeds`, `utc_timestamp`, `hardware`, `threads`, `ort_version`, `warnings`,
+`voice_sha256` (of manifest.json), `params`, `seeds` (`{"converter": <seed>}`), `utc_timestamp`, `hardware`, `threads`, `ort_version`, `warnings`,
 `unclipped_peak`, `render_seconds`, `audio_seconds`. `--check-voice` prints `ok <name>` (exit 0). Exit codes: 0 success; 2
 usage, missing file or invalid voice (stderr names the cause, containing the word `voice` for voice errors); 3 render
 failure. Tests: T-P13, T-P18.
