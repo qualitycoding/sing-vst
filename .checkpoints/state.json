@@ -267,6 +267,7 @@
     "tests/fixtures/voice-legacy/guide/vocoder.onnx": "85360b9d7d6ac03e70c3d8a1bbe1514637e48bc84a68ef64e4a9500370e3dc0c",
     "tests/fixtures/voice-legacy/manifest.json": "2e41a8bae21891b770cf5a9e9fbff4978f637306d4af2d0d6c4a8ced3bdad6ea",
     "tests/python/conftest.py": "b3adf2e5b8781df4146122912c0afb7bdcbe1012ef8ee6beb809e4e9650ce55b",
+    "tests/python/interfaces.json": "972baedd741f2f696c43f34dd5f5893a05f13bb1609f3d9a16bb27d27bed9f89",
     "tests/python/test_cli.py": "e4895dea4494031d00cab67ada16756a4f4c3f52b9828195bfc9eb13f52eb0c9",
     "tests/python/test_cli_binary.py": "8a74637b1a7e269c61fe97a6dd54c749d6c910834b371526fcd20770e9b8f5d8",
     "tests/python/test_evaluate.py": "92dc1993b1bef9a8e322ba50537a1a1e3c51e4e425eb6df55a97523873a3640d",
@@ -277,6 +278,7 @@
     "tests/python/test_pipeline.py": "eb612daa5b892dc6edbb61af6a9b37793af3094bfa9f77c0a05cc3984b676e46",
     "tests/python/test_prepare.py": "9fa3560966473f43e0da901c55aec70b5d147ab35f9dd407b83242338793aa4b",
     "tests/python/test_provenance.py": "edc17f964f526cd4566b07f4d864ed13012fda1df73293108367e009bed724bd",
+    "tests/python/test_repo.py": "4b4410ae433cc1c065dcc707573eb57ceae465544f9e487510945b3e8a200af8",
     "tests/python/test_rvc_files.py": "d2a0cbc92ad0762dfea3bc72cf4bd9ffe872237d8110d6b3336d7a1758c73175",
     "tests/python/test_security.py": "d01256f660ee513987203bb4337301622303beccf8dff5887330b9017c44fa8c",
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
@@ -286,6 +288,7 @@
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "ada58b6097a6a5317c57ef43605306d7de7ae5c235f5b4199cc345db41776c7f",
     "tools/gen/claims.py": "064594ff97b08be9f5884318ac57448f2b710faff34ce2e93e5dcb2ae6912116",
+    "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "7992499fdeac5e09254504579148c96f8f4274affed126aed32883cf8369d143",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
     "tools/gen/pk_checklist.json": "dfbbf2ab8247558924e2ed2a7f10da28be7bbca344fca11e1b773dca880eb1d0",
@@ -600,5 +603,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:21:09Z"
+  "updated_at": "2026-10-15T07:22:55Z"
 }

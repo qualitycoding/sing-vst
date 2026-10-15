@@ -1,0 +1,268 @@
+{
+ "cli": {
+  "COMMANDS": {
+   "kind": "constant",
+   "value": [
+    "prepare",
+    "split",
+    "rvc-files",
+    "rvc-train-command",
+    "export",
+    "make-test-weights",
+    "pack",
+    "evaluate",
+    "provenance"
+   ]
+  },
+  "build_parser": {
+   "doc_sha256": "6b3cc386e1d4a732f15572b5dbfa28c70be3d0f1dc453474041a0b366f5cb2d5",
+   "kind": "function",
+   "signature": "()"
+  },
+  "main": {
+   "doc_sha256": "2dbf7ef11f45068caa7bf14fdf0c9732b72d4ab90dc71bed042444304c5f7544",
+   "kind": "function",
+   "signature": "(argv: 'list[str] | None' = None) -> 'int'"
+  }
+ },
+ "evaluate": {
+  "REPORT_KEYS": {
+   "kind": "constant",
+   "value": [
+    "speaker_similarity",
+    "guide_similarity",
+    "f0_rms_cents",
+    "octave_fraction",
+    "wer",
+    "guide_wer",
+    "realtime_factor",
+    "phrases",
+    "transpose_semitones",
+    "heldout_files",
+    "status"
+   ]
+  },
+  "evaluate_voice": {
+   "doc_sha256": "44e29808d2919f93e1167be6935a938835b9b258e5661e5ea8ab9cb6f2186958",
+   "kind": "function",
+   "signature": "(voice_dir: 'Path', heldout_dir: 'Path', phrases_dir: 'Path', render_bin: 'Path', out_dir: 'Path', seed: 'int' = 0) -> 'dict'"
+  },
+  "transpose_semitones": {
+   "doc_sha256": "06b8daea8805c7327a7760076ccd9f422eda2c8bff8f87c7e21ebed2150818cb",
+   "kind": "function",
+   "signature": "(phrase_midi: 'list[int]', training_median_hz: 'float') -> 'int'"
+  }
+ },
+ "export_rvc": {
+  "export_content": {
+   "doc_sha256": "d54bd04a576b8c093fe69eae82d6eefedce631a4c2efd77c866abde2a0db2e68",
+   "kind": "function",
+   "signature": "(rvc_root: 'Path', out_path: 'Path', opset: 'int' = 17) -> 'Path'"
+  },
+  "export_synth": {
+   "doc_sha256": "227ecd8afbfa36619e45a519587d6aee9c589e9cc5392201ed5bbb2aafc7409c",
+   "kind": "function",
+   "signature": "(rvc_root: 'Path', weights: 'Path', out_path: 'Path', opset: 'int' = 17) -> 'Path'"
+  },
+  "make_test_weights": {
+   "doc_sha256": "31a46b513bd3727d78fd85dfc03bbd9e1f1a4a702f51e1a376a68dfc27e51801",
+   "kind": "function",
+   "signature": "(rvc_root: 'Path', out_path: 'Path', seed: 'int' = 0) -> 'Path'"
+  },
+  "parity": {
+   "doc_sha256": "784019280ded70aa23941f8dcd63b009ad56b04197b3e9b1664a5126163f5b08",
+   "kind": "function",
+   "signature": "(rvc_root: 'Path', weights: 'Path', onnx_path: 'Path', seed: 'int' = 0, frames: 'int' = 200) -> 'float'"
+  }
+ },
+ "metrics": {
+  "cents": {
+   "doc_sha256": "95c62991b2d0f93e7f3878b8467ad03002eaeda025dcf21abae381effdd1f6bc",
+   "kind": "function",
+   "signature": "(est_hz: 'np.ndarray', ref_hz: 'np.ndarray') -> 'np.ndarray'"
+  },
+  "cosine": {
+   "doc_sha256": "f134d1de3318ebff0d9aaf53d12323cf351b8af11d5f8adcc4cef5e4c5f3dbe5",
+   "kind": "function",
+   "signature": "(a: 'np.ndarray', b: 'np.ndarray') -> 'float'"
+  },
+  "extract_f0": {
+   "doc_sha256": "34ab68317e4e15ce0db427a020d94895c4a27b7fd52482c75b13c00fddf6cc98",
+   "kind": "function",
+   "signature": "(x: 'np.ndarray', sr: 'int', frame_period_ms: 'float' = 10.0) -> 'np.ndarray'"
+  },
+  "judge": {
+   "doc_sha256": "54c2e4efa9d32c78ee8a9c7e016d1ffa747cdc4b8f2ab216a88f33a99c3b8001",
+   "kind": "function",
+   "signature": "(report: 'dict', thresholds: 'dict') -> 'dict'"
+  },
+  "load_pyworld": {
+   "doc_sha256": "07cc29613458dde1377113b7dc97b9a15b9e13cf8d86280c6ff23590df146d3a",
+   "kind": "function",
+   "signature": "() -> 'ModuleType'"
+  },
+  "normalise_text": {
+   "doc_sha256": "2288e63ed5dbc535ca712503cf99674ebd306c402231c2c33a6aecbd9b22240d",
+   "kind": "function",
+   "signature": "(s: 'str') -> 'list[str]'"
+  },
+  "score_f0": {
+   "doc_sha256": "8d50af129e31465d3f6309270ea1b00ecfc973688c5f07d35fe5cd6ab1d96a8a",
+   "kind": "function",
+   "signature": "(f0_hz: 'np.ndarray', frame_period_s: 'float', notes: 'list[tuple[float, float, int]]', edge_s: 'float' = 0.05, octave_cents: 'float' = 600.0) -> 'dict'"
+  },
+  "wer": {
+   "doc_sha256": "7283e31184e6cf7b4b145fc20c6d410ad3896264738e0fe3c98400f4cd1854a1",
+   "kind": "function",
+   "signature": "(reference: 'str', hypothesis: 'str') -> 'float'"
+  }
+ },
+ "pack": {
+  "CONVERTER_ROLES": {
+   "kind": "constant",
+   "value": [
+    "synth",
+    "content"
+   ]
+  },
+  "GUIDE_ROLES_OPTIONAL": {
+   "kind": "constant",
+   "value": [
+    "speaker",
+    "languages"
+   ]
+  },
+  "GUIDE_ROLES_REQUIRED": {
+   "kind": "constant",
+   "value": [
+    "acoustic",
+    "vocoder",
+    "phonemes"
+   ]
+  },
+  "pack_voice": {
+   "doc_sha256": "8578ff2b22868144b6f3fc0d20075c6308d878dd5fee0756db8faa03a5c896f4",
+   "kind": "function",
+   "signature": "(out_dir: 'Path', name: 'str', consent: 'str', guide_licence: 'str', guide_files: 'dict[str, Path]', converter_files: 'dict[str, Path] | None', *, language: 'str' = 'en', steps: 'int' = 20, depth: 'float' = 0.4, converter_sample_rate: 'int' = 48000, speaker_id: 'int' = 0) -> 'dict'"
+  }
+ },
+ "pipeline": {
+  "Stage": {
+   "doc_sha256": "495ade04b3e60ccddf54327ae0705428b46a047bf146371fb9648dc1b1483108",
+   "kind": "class",
+   "signature": [
+    "name: str",
+    "inputs: tuple[Path, ...]",
+    "outputs: tuple[Path, ...]",
+    "run: Callable[[], None]"
+   ]
+  },
+  "atomic_write_text": {
+   "doc_sha256": "19ef28baa3cc4027608b1ff2252d4965cf4b7aeb3a92dcd40b1baf60139e9e25",
+   "kind": "function",
+   "signature": "(path: 'Path', text: 'str') -> 'None'"
+  },
+  "content_hash": {
+   "doc_sha256": "68fb7f9a1051a4dd9c1a28261d7be33fd2f5dc159bc9fcb65d30c01abfcb23f2",
+   "kind": "function",
+   "signature": "(paths: 'tuple[Path, ...]') -> 'str'"
+  },
+  "run_stages": {
+   "doc_sha256": "7c0b18279a74bfdbe9a0003f16bb4f41d9ba920fe5bffbb8fbd2c207898fca8d",
+   "kind": "function",
+   "signature": "(stages: 'list[Stage]', state_dir: 'Path') -> 'list[str]'"
+  }
+ },
+ "prepare": {
+  "build_dataset_manifest": {
+   "doc_sha256": "65491ee79cd90e41511e6d7d158c37a0a39783455402ff87d5d97808d2491d76",
+   "kind": "function",
+   "signature": "(out_dir: 'Path', segments: 'list[dict]', params: 'dict') -> 'dict'"
+  },
+  "dereverb": {
+   "doc_sha256": "fe56e67ee79e8dd696cf040de8e12db4211632801c40df01abc30cf2973bae65",
+   "kind": "function",
+   "signature": "(in_dir: 'Path', out_dir: 'Path') -> 'list[Path]'"
+  },
+  "normalise": {
+   "doc_sha256": "ca4d8cd4939eb9de9ce93e31d0e977d04c586a74707c5d5e3159b8da84795ca3",
+   "kind": "function",
+   "signature": "(x: 'np.ndarray', target_rms_dbfs: 'float' = -20.0, peak_ceiling_dbfs: 'float' = -1.0) -> 'np.ndarray'"
+  },
+  "slice_on_silence": {
+   "doc_sha256": "b6443b346e307a61c5aa79bb3f9ef335d8c8f00c0c96f5294637f0a05e2275d9",
+   "kind": "function",
+   "signature": "(x: 'np.ndarray', sr: 'int', threshold_db: 'float' = -40.0, min_sec: 'float' = 2.0, max_sec: 'float' = 15.0) -> 'list[tuple[int, int]]'"
+  },
+  "split_heldout": {
+   "doc_sha256": "4b00e506e3c3fb183924052784a63b8c4556bd56af4e2e418ae38fb10d498c6e",
+   "kind": "function",
+   "signature": "(files: 'list[str]', seed: 'int', fraction: 'float' = 0.1) -> 'tuple[list[str], list[str]]'"
+  }
+ },
+ "provenance": {
+  "REQUIRED_KEYS": {
+   "kind": "constant",
+   "value": [
+    "git_commit",
+    "lockfile_sha256",
+    "seeds",
+    "params",
+    "utc_timestamp",
+    "hardware",
+    "threads"
+   ]
+  },
+  "collect": {
+   "doc_sha256": "26e5738490b5e79c64b00edb3de4b55bc03e0a709571bb95132044e8adef02e0",
+   "kind": "function",
+   "signature": "(params: 'dict', seeds: 'dict', repo_root: 'Path', lockfile: 'Path') -> 'dict'"
+  },
+  "write_sidecar": {
+   "doc_sha256": "f1192269cac3ef7463bcf7f0f73798157360fe95550ee95d612fc6d1f2bdae85",
+   "kind": "function",
+   "signature": "(result_file: 'Path', record: 'dict') -> 'Path'"
+  }
+ },
+ "rvc_files": {
+  "copy_config": {
+   "doc_sha256": "7fce29d2ac45ccbc1f6a152fd8c398dfd76575f450dfa47724c01d8b7be0a5b6",
+   "kind": "function",
+   "signature": "(exp_dir: 'Path', rvc_root: 'Path', sr_tag: 'str' = '48k') -> 'Path'"
+  },
+  "latest_weights": {
+   "doc_sha256": "078bbe02c17ebbf7e3b4a2d79c52b215283ede5676f0173cbf2b42af9bc329f9",
+   "kind": "function",
+   "signature": "(rvc_root: 'Path', exp_name: 'str') -> 'Path'"
+  },
+  "train_command": {
+   "doc_sha256": "6f88316ffbd111049240c004f4114ff800193520aca437f96a312c356a7de73b",
+   "kind": "function",
+   "signature": "(python: 'str', exp_name: 'str', sr_tag: 'str' = '48k', batch_size: 'int' = 8, total_epochs: 'int' = 200, save_every: 'int' = 10, gpus: 'str' = '0') -> 'list[str]'"
+  },
+  "write_filelist": {
+   "doc_sha256": "f24cba795789e45bdf8dc41ef9d43f20ba4ef551c7b373e0933c096de89f7c01",
+   "kind": "function",
+   "signature": "(exp_dir: 'Path', rvc_root: 'Path', speaker_id: 'int' = 0, sr_tag: 'str' = '48k', seed: 'int' = 0) -> 'Path'"
+  }
+ },
+ "security": {
+  "PATTERNS": {
+   "kind": "constant",
+   "value": [
+    "github_pat_[A-Za-z0-9_]{20,}",
+    "ghp_[A-Za-z0-9]{20,}",
+    "gho_[A-Za-z0-9]{20,}",
+    "AKIA[0-9A-Z]{16}",
+    "-----BEGIN [A-Z ]*PRIVATE KEY-----",
+    "hf_[A-Za-z0-9]{30,}",
+    "KGAT_[A-Za-z0-9]{20,}"
+   ]
+  },
+  "scan_secrets": {
+   "doc_sha256": "da1a61581bd51d5c85c00edf64ce9a0b85bb20e2ae34c5022f6279ad4a3f5cff",
+   "kind": "function",
+   "signature": "(root: 'Path', exclude_dirs: 'tuple[str, ...]' = ('.git',)) -> 'list[str]'"
+  }
+ }
+}
