@@ -21,3 +21,11 @@ Rounds run: 6 (maximum). Claims: 52 — corroborated 3, single-source 2, verifie
 corroborated 3, single-source 2, verified 40. Load-bearing claims below `corroborated`: C-010, C-019 —
 each is in premortem/RISK_REGISTER.md. Round 6 added 3 verified load-bearing claims and no downgrades or contradictions;
 research closes at the maximum, with the residual open questions Q-E7 and Q-E8 assigned to S-001 and S-013.
+
+## Freeze record (2E, PK-23)
+- `find tests -type f` equals `git ls-files tests` (64 files at the first freeze, dd45685); every test file carries the FROZEN header.
+- Fixtures regenerate byte-identical from `tests/fixtures/make_fixtures.py` in a clean copy (2026-10-15).
+- Constants shared by frozen headers and fixtures (44100 Hz, hop 512, 128 mel bins, RVC 48000 Hz / 480-sample hop, speaker id,
+  steps 20, depth 0.4) match the fixture manifests and D-008/D-012 (T-028 reads them back).
+- Re-frozen after cold read pass 1 (T-P22 scope for verbatim protocol excerpts; `eval/PROCEDURE.md` added):
+  89 files.
