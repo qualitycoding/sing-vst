@@ -4,7 +4,7 @@ Usage: python3 tools/freeze.py"""
 import fnmatch, hashlib, pathlib, subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 GLOBS = ("tests/**/*", "core/include/singvst/*.hpp", "plugin/PluginProcessor.h", "eval/phrases/*")
-ALSO = ("eval/thresholds.json",)
+ALSO = ("eval/thresholds.json", "eval/PROCEDURE.md")
 tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split("\n")
 files = sorted({p for p in tracked if p and any(fnmatch.fnmatch(p, g) for g in GLOBS)} | set(ALSO) - {"tests/FROZEN_MANIFEST.sha256"})
 lines = [f"{hashlib.sha256((ROOT / p).read_bytes()).hexdigest()}  {p}" for p in files]
