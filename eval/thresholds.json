@@ -1,0 +1,9 @@
+{
+ "_comment": "Unmeasured defaults (A-012, D-017, PK-29). Gate G-001 decides which values bind; a change is an amendment (2E.4), never an edit by the implementer.",
+ "status": "unmeasured-default",
+ "speaker_similarity_min": 0.75,
+ "similarity_gain_min": 0.15,
+ "f0_rms_cents_max": 25.0,
+ "wer_max": 0.25,
+ "realtime_factor_max": 1.0
+}

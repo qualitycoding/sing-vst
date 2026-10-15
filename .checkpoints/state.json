@@ -63,6 +63,7 @@
     "core/include/singvst/synthesis.hpp": "f759f86dd4494ad3f78ce7f044340da6cc91ca94927c1c78ded9ba06cc7a7a68",
     "core/include/singvst/voice.hpp": "304da299930ead4adeccfb6acefcbf021022d67cba6a23362a3b369c4c290fdb",
     "core/src/stubs.cpp": "f3a292672e38788d03e637befa0353e4e7058896f67081dbcfbe7ae4fb0e8d94",
+    "eval/thresholds.json": "34547481258b7ccb9f80cbdd5a4d478940b4fc1fac24df97541e84839fbadd2c",
     "knowledge/K-20261010T110000Z-c-001-rvc.md": "23360eeb43c7e7296c1169e9210ea4f07b018589b672ff00c81aa90462327c76",
     "knowledge/K-20261010T110001Z-c-002-so-vits-svc.md": "bd1142efef0c7d7f545383e940657b25b9921e6a97b4da9f3238d61687da16bc",
     "knowledge/K-20261010T110002Z-c-003-rvc.md": "f7addb205277376ef4b1fb40332f1dc250446e763c162d65f4e2a7fb58585749",
@@ -256,9 +257,12 @@
     "tests/fixtures/voice-legacy/guide/vocoder.onnx": "85360b9d7d6ac03e70c3d8a1bbe1514637e48bc84a68ef64e4a9500370e3dc0c",
     "tests/fixtures/voice-legacy/manifest.json": "2e41a8bae21891b770cf5a9e9fbff4978f637306d4af2d0d6c4a8ced3bdad6ea",
     "tests/python/conftest.py": "b3adf2e5b8781df4146122912c0afb7bdcbe1012ef8ee6beb809e4e9650ce55b",
+    "tests/python/test_metrics.py": "71aa99dfd823b22cf635519f76b594cfe7f6cb740f5603cbccf5c76cc1d4a2dd",
+    "tests/python/test_pack.py": "4bdc83accf97f91b354ee39f3b9425b6272c793a09ea1aec8efbe65df6642e26",
     "tests/python/test_pipeline.py": "eb612daa5b892dc6edbb61af6a9b37793af3094bfa9f77c0a05cc3984b676e46",
     "tests/python/test_prepare.py": "9fa3560966473f43e0da901c55aec70b5d147ab35f9dd407b83242338793aa4b",
     "tests/python/test_provenance.py": "edc17f964f526cd4566b07f4d864ed13012fda1df73293108367e009bed724bd",
+    "tests/python/test_security.py": "887ef268aa16b8790d6c6d7b1bd2d28c2d7486d0bff34d2085d612276cb22401",
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
     "third_party/cmudict/SOURCE.txt": "9055797f1532cd2199a480009da8e0a566287561e391acb70900cf3817562dc7",
     "third_party/cmudict/cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
@@ -579,5 +583,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:17:57Z"
+  "updated_at": "2026-10-15T07:18:35Z"
 }
