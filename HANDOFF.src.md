@@ -100,6 +100,8 @@ merges the generation branch into the impl branch and resumes.
 - Default rule: choose the most reversible option that does not expand scope, log it in DEVIATIONS.md, and continue.
 
 ## Resume (zero-context, protocol v3.3 1.2.3)
+This procedure applies once S-000 has set `phase` to `impl`. A first implementation session (state.json `phase` is not
+`impl`) starts at S-000 and ignores the planner's `active_step_id` and `in_flight_operation`.
 1. Read `.checkpoints/state.json` (or the highest `.checkpoints/snapshots/*-seq-<N>.json`). 2. Verify every artifact hash;
 re-run the generating step of any mismatch. 3. Rehydrate `active_variables` and `execution_context`. 4. If
 `in_flight_operation` is not null, reconcile its side effects (git log, CI run, files) before repeating anything. 5. Continue

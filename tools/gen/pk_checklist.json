@@ -6,7 +6,7 @@
  ],
  "PK-02": [
   "S-000 clones qualitycoding/Lessons and qualitycoding/knowledge, lists the lessons matching the task tags and records the commits read before any delivery work.",
-  "S-000 action 3; state.json knowledge_store",
+  "S-000 action 4; state.json knowledge_store",
   "both"
  ],
  "PK-03": [
@@ -36,7 +36,7 @@
  ],
  "PK-08": [
   "Stage by explicit file list, read `git diff --cached --stat` before every commit; write .gitignore before the first build; check ignored fixtures with `git check-ignore`.",
-  "S-000 action 6; .gitignore; T-062",
+  ".gitignore; T-062; HANDOFF.md \u00a7Git rules",
   "both"
  ],
  "PK-09": [
@@ -56,12 +56,12 @@
  ],
  "PK-12": [
   "Attach every repository with add_repo (push) before any token; never write a pasted token to disk; check git config and grep for tokens at turn end; tell the owner to revoke pasted tokens.",
-  "S-000 action 2; S-KNOW; T-P15",
+  "S-000 action 1; S-KNOW; T-P15",
   "both"
  ],
  "PK-13": [
   "Probe every external host a step, test or gate names, record results in plan/ENVIRONMENT.md and plan an alternative channel for each unreachable one.",
-  "plan/ENVIRONMENT.md \u00a7Hosts; S-000 action 4; D-018",
+  "plan/ENVIRONMENT.md \u00a7Hosts; S-000 action 5; D-018",
   "both"
  ],
  "PK-14": [
@@ -81,7 +81,7 @@
  ],
  "PK-17": [
   "Probe permissions with read endpoints only; never write to a live object to test access.",
-  "S-000 action 2",
+  "S-000 action 1",
   "both"
  ],
  "PK-18": [
@@ -96,7 +96,7 @@
  ],
  "PK-20": [
   "Commit a bootstrap script that clones pinned dependencies and configures the test targets, and run it first in every session.",
-  "tools/bootstrap_test_env.sh; S-000 action 5",
+  "tools/bootstrap_test_env.sh; S-000 action 6",
   "both"
  ],
  "PK-21": [
@@ -271,7 +271,7 @@
  ],
  "PK-55": [
   "Name the interpreter by its minor version (python3.12) in every venv, script and CI step; never rely on `python3`.",
-  "plan/ENVIRONMENT.md; S-000 action 5; .github/workflows/ci.yml",
+  "plan/ENVIRONMENT.md; S-000 action 6; .github/workflows/ci.yml",
   "both"
  ],
  "PK-56": [
@@ -307,6 +307,16 @@
  "PK-62": [
   "A stage runner that deletes outputs on rerun never lists a job's own checkpoint directory as an output.",
   "D-035 stage table; S-016",
+  "both"
+ ],
+ "PK-63": [
+  "Every function a Done-when test calls is delivered by that step or a step in its Depends on chain.",
+  "PLAN.md step template; S-010; S-012",
+  "both"
+ ],
+ "PK-64": [
+  "Every environmental precondition of a frozen test (locale, display, font, device) is provided by an S-000 action and by each CI job that runs the test.",
+  "S-000 action 3; .github/workflows/ci.yml; D-018",
   "both"
  ]
 }

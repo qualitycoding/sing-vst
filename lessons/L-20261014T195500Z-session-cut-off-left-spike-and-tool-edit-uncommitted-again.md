@@ -4,7 +4,7 @@ title: 'A continuation session wrote a spike, a dependency lock and a bootstrap-
 status: active
 supersedes: []
 recurrence_of: L-20261010T094000Z-continuation-left-work-uncommitted-and-checkpoint-stale
-occurrences: 1
+occurrences: 2
 severity: High
 tags: [applies:all, tech:git, kind:process, phase:planning]
 recorded_by: planner
@@ -23,3 +23,4 @@ Commit and push in the same tool call that writes a file: every command that cre
 `git status --porcelain` is empty after every tool call that wrote into the repository (the call's own output shows `saved <sha> ... unpushed commits: 0`).
 ## Evidence
 state.json hash mismatch on tools/bootstrap_test_env.sh at 2026-10-14T19:40Z; `git status` showed ?? python/requirements*.txt, ?? research/spikes/pyworld-direct/.
+Recurrence 2026-10-15: after a session break the locale-de and eval-apis spikes were found uncommitted and were committed at 2953990; the rule now also requires a turn-end check before any long-running agent launch.
