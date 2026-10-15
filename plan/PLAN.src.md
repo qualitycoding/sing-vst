@@ -13,7 +13,8 @@ Defaults for every step unless the step says otherwise:
   shared code (PK-51); after three failed attempts on the same test write `BLOCKED.md` (test, logs, hypotheses) and halt.
 - **Checkpoint (default):** `python3.12 tools/checkpoint.py --phase impl --subphase <S-###> --active-step <next step> --complete <S-###>
   --done-pending <S-###>`, append one row to `EXECUTION_LOG.md` (HANDOFF §Logs), then Save. Before any high-latency action
-  (long build, CI wait, gate) write `--in-flight '{"op": "…"}'` first and `--in-flight null` after (D-034).
+  (long build, CI wait, gate) set `--in-flight '{"op": "…"}'` and Save, and after it set `--in-flight null` and Save, so
+  the pushed checkpoint always shows what was in flight (D-034).
 - **Exclusive resources (default):** the workspace CPU for builds — one heavy build at a time (PK-43).
 
 ### S-000 Environment & access verification
@@ -22,24 +23,35 @@ Defaults for every step unless the step says otherwise:
 - Depends on: none
 - Inputs: generation branch `gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`; plan/ENVIRONMENT.md; plan/ASSUMPTIONS.md A-014; research/PRIOR_KNOWLEDGE.md (task tags, line 3)
 - Actions: 
-  1. Create `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` from the generation branch and push it. Set
-     `SINGVST_COMMIT_TRAILERS` to your own session's commit trailers for every later save (tools/save.sh).
-  2. Preflight (stop at the first failure with `BLOCKED.md`): `gh api user` succeeds (the session's GitHub connection;
-     attach repositories with the session's repository tool, never a pasted token — PK-12); `gh api repos/qualitycoding/sing-vst
-     --jq .default_branch` prints `main`; `git push --dry-run` succeeds; `cmake --version` ≥ 3.22, `ninja`, `g++` 13,
-     `python3.12`, `curl`, `unzip`, `xvfb-run` exist; the JUCE Linux packages of the `cpp` job in `.github/workflows/ci.yml`
-     are installed or installable with `sudo apt-get install -y …`.
-  3. Clone `qualitycoding/Lessons` to `../store-lessons` and `qualitycoding/knowledge` to `../store-knowledge`; record their
-     HEADs with `python3.12 tools/checkpoint.py --merge 'knowledge_store={"commit_at_impl": {"lessons": "<sha>", "knowledge":
-     "<sha>"}}'`; list lesson files added after `ac028c7` (`git -C ../store-lessons log --name-only --format= ac028c7..HEAD`)
-     whose tags include any task tag of research/PRIOR_KNOWLEDGE.md line 3, and add each one's prevention rule to
-     `DEVIATIONS.md` as a rule to follow (PK-02).
-  4. Re-probe the hosts table of plan/ENVIRONMENT.md and record the results in `EXECUTION_LOG.md` (PK-13).
-  5. `bash tools/bootstrap_test_env.sh "$HOME/deps"`; create the build trees and the Python 3.12 venv exactly as in
-     plan/ENVIRONMENT.md; clone RVC to `../rvc` at 81eed5e for reading (D-036) (PK-20, PK-55).
+  1. Create `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` from the generation branch and push it. Write your
+     own session's commit trailers (newline-separated, e.g. `Co-Authored-By: …`) to `.git/singvst-trailers` — untracked,
+     read by `tools/save.sh` on every save.
+  2. Preflight (stop at the first failure with `BLOCKED.md`, except where noted): attach `qualitycoding/sing-vst`,
+     `qualitycoding/Lessons` and `qualitycoding/knowledge` with push access through the session's repository tool (never a
+     pasted token — PK-12); `gh api repos/qualitycoding/<repo> --jq .permissions.push` prints `true` for all three (push
+     also covers `gh pr create` and `gh run rerun`); `gh api repos/qualitycoding/sing-vst --jq .default_branch` prints
+     `main`; `git push --dry-run` succeeds; `cmake --version` ≥ 3.22, `ninja`, `g++` 13, `python3.12`, `curl`, `unzip`
+     exist. `sudo apt-get install -y` of the JUCE packages of the `cpp` job in `.github/workflows/ci.yml` plus `xvfb`:
+     if sudo or the apt mirrors are unavailable, record it in `DEVIATIONS.md` and run the plugin build, plugin tests and
+     pluginval only in CI (D-036) — not a halt.
+  3. `git clone https://github.com/qualitycoding/Lessons.git ../store-lessons` and
+     `git clone https://github.com/qualitycoding/knowledge.git ../store-knowledge`; record their HEADs with
+     `python3.12 tools/checkpoint.py --merge 'knowledge_store={"commit_at_impl": {"lessons": "<sha>", "knowledge": "<sha>"}}'`;
+     list the lesson files added after `ac028c7` (`git -C ../store-lessons log --name-only --format= ac028c7..HEAD`) and the
+     knowledge files added after `09f3458` (same command in `../store-knowledge`) whose tags include a task tag of
+     research/PRIOR_KNOWLEDGE.md line 3 or `applies:all`; add each lesson's prevention rule and each item's fact to
+     `DEVIATIONS.md` as inputs to follow (PK-02).
+  4. `bash research/spikes/hosts/run.sh > ../hosts-now.txt` and compare every row with plan/ENVIRONMENT.md §Hosts; a row whose
+     result changed is recorded in `DEVIATIONS.md` with the table's alternative channel (PK-13). Unreachable hosts that the
+     table already marks unreachable are expected, not failures.
+  5. `bash tools/bootstrap_test_env.sh "$HOME/deps"`; configure **and build** the trees of plan/ENVIRONMENT.md (core, full,
+     asan, tsan; long builds in the background, PK-18); create `../venv-lock`; clone RVC for reading:
+     `git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git ../rvc && git -C ../rvc checkout 81eed5e8f68b6bed1789f682fe78cdd324495afc` (D-036) (PK-20, PK-55).
   6. `sha256sum -c tests/FROZEN_MANIFEST.sha256`; `git check-ignore` behaves as T-062 expects (PK-08).
-  7. Start `EXECUTION_LOG.md` and `DEVIATIONS.md` with the HANDOFF §Logs templates.
-- Outputs: impl branch; EXECUTION_LOG.md; DEVIATIONS.md; state.json knowledge_store.commit_at_impl; ../store-lessons, ../store-knowledge, ../rvc, ../deps, build trees, ../venv-lock
+  7. Start `EXECUTION_LOG.md` and `DEVIATIONS.md` with the HANDOFF §Logs templates (before the first row is written by
+     actions 2–4), and seed the checkpoint: `python3.12 tools/checkpoint.py --set 'pending=["S-001", …, "S-019", "S-RETRO",
+     "S-KNOW"]' --set 'completed=["S-000"]' --phase impl --subphase S-000 --active-step S-001`.
+- Outputs: impl branch; .git/singvst-trailers (untracked); EXECUTION_LOG.md; DEVIATIONS.md; state.json (knowledge_store.commit_at_impl, pending); ../store-lessons, ../store-knowledge, ../rvc, $HOME/deps, ../build-core, ../build-full, ../build-asan, ../build-tsan, ../venv-lock, ../hosts-now.txt
 - Evidence produced: none
 - Done when: every action succeeded; T-060, T-061, T-062, T-P21, T-P22, T-P27 pass.
 - Checkpoint: default
@@ -259,7 +271,7 @@ Defaults for every step unless the step says otherwise:
   `split`, `prepare`, `pack`, `provenance` exactly as D-035; close every resource with context managers (PK-41).
 - Outputs: those modules
 - Evidence produced: T-P01…T-P15 (T-P13 without its binary part), T-P25
-- Done when: T-P01…T-P15 (except the binary part of T-P13, which belongs to S-010), T-P25 and T-P27 pass; `../venv-lock/bin/python -m singvst_train.cli prepare --help` works.
+- Done when: T-P01…T-P15 (except the binary part of T-P13, which belongs to S-010), T-P25 and T-P27 pass; `(cd python && ../../venv-lock/bin/python -m singvst_train.cli prepare --help)` exits 0.
 - Checkpoint: default
 - On failure: a pip-audit finding → DR-07.
 - Gate: none
@@ -311,13 +323,18 @@ Defaults for every step unless the step says otherwise:
 - Inputs: python/singvst_train/evaluate.py; eval/PROCEDURE.md; eval/phrases; eval/thresholds.json; D-017, D-035
 - Actions: implement `transpose_semitones`, `evaluate_voice` and the CLI command `evaluate` exactly as
   `eval/PROCEDURE.md` (frozen) and D-035 (`verdict.json`); Resemblyzer and Whisper are imported inside `evaluate_voice` only
-  (D-033). The procedure's first full run is the owner's at S-017 (T-P20); no run on fixtures is required here.
-- Outputs: python/singvst_train/evaluate.py, python/singvst_train/cli.py
+  (D-033). Dry run (the real run is the owner's at S-017): put two stand-in modules on `PYTHONPATH` in a temporary directory —
+  `resemblyzer.py` with `preprocess_wav(x)` returning its input and a `VoiceEncoder` whose `embed_utterance` returns a fixed
+  256-value unit vector, and `whisper.py` with `load_model(name)` returning an object whose `transcribe(path, **kw)` returns
+  `{"text": ""}` — then run `evaluate` on `tests/fixtures/voice-convert` with a temporary held-out folder holding two 2-second 220 Hz
+  15-partial harmonic tones (written with soundfile), and check the output files and keys of
+  eval/PROCEDURE.md exist (values are meaningless). Finally write `GATE-G-005.md` (plan/GATES.md), save, and halt.
+- Outputs: python/singvst_train/evaluate.py, python/singvst_train/cli.py, GATE-G-005.md
 - Evidence produced: T-P26
 - Done when: T-P26 and T-P25 pass.
 - Checkpoint: default
 - On failure: default
-- Gate: none
+- Gate: G-005
 - Relevant decisions/claims: D-017, C-028
 - Lessons applied: {{L:PK-29,PK-31,PK-33,PK-35}}
 - Exclusive resources: none
@@ -330,7 +347,9 @@ Defaults for every step unless the step says otherwise:
 - Actions: write `notebooks/train_voice_colab.ipynb` and `notebooks/train_voice_kaggle.ipynb` (nbformat 4, no outputs)
   with exactly the cells of D-035 §Notebook layout (RVC's own `requirments_cu128_py312.txt` from the RVC checkout at 81eed5e,
   official indexes, C-023), and the guide voicebank cells of D-035 §Guide voicebank for the G-005 answer; the voicebank is
-  downloaded by the owner inside the notebook and never stored in the repository.
+  downloaded by the owner inside the notebook and never stored in the repository. GATE-G-004.md (S-017) gives the owner the
+  opening links: Colab `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics/notebooks/train_voice_colab.ipynb`;
+  Kaggle: *File → Import notebook → GitHub* with the same branch and path `notebooks/train_voice_kaggle.ipynb`.
 - Outputs: notebooks/train_voice_colab.ipynb, notebooks/train_voice_kaggle.ipynb
 - Evidence produced: T-P16, T-P17
 - Done when: T-P16, T-P17, T-P22 pass.
@@ -391,12 +410,14 @@ Defaults for every step unless the step says otherwise:
 - Profile: software, computational
 - Depends on: S-018
 - Inputs: everything above
-- Actions: run the full suite locally; read the final CI run of all jobs through the API; map every plan step and
-  pre-mortem control to a delivering file or test in `plan/TRACEABILITY.md` (PK-07); open a pull request impl → `main`
+- Actions: run the full suite locally; read the final CI run of all jobs through the API (D-036); write
+  `plan/IMPLEMENTATION_MAP.md` — a table `| Item | Delivered by (file or test) | Status |` with one row per plan step, per
+  `Mitigation` cell of `premortem/RISK_REGISTER.md` and per control listed in `premortem/round-*.md`, unmapped items listed
+  in `DEVIATIONS.md` (PK-07); open a pull request impl → `main`
   (`gh pr create --base main --head <impl> --title "sing-vst implementation" --body-file <file>`), the body summarising the
   results and ending with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)` and the executing
   session's link if it has one; do **not** merge (G-002).
-- Outputs: pull request URL in EXECUTION_LOG.md
+- Outputs: plan/IMPLEMENTATION_MAP.md; pull request URL in EXECUTION_LOG.md
 - Evidence produced: all tests
 - Done when: every frozen test passes (T-P20 from S-017's record), CI green on both OSes, the pull request exists.
 - Checkpoint: default
@@ -414,10 +435,10 @@ Defaults for every step unless the step says otherwise:
   research/PRIOR_KNOWLEDGE.md, lessons/, knowledge/
 - Actions: a Haiku agent collects the inputs into one digest; a fresh Opus agent answers the four questions of protocol
   3.7.1 and writes `RETROSPECTIVE.md`, a lesson for each unrecorded correction or overlooked step, and a knowledge item for
-  each missing fact; run `python3 tools/check_schema.py`.
+  each missing fact; run `python3.12 tools/check_schema.py`.
 - Outputs: RETROSPECTIVE.md, lessons/L-*.md, knowledge/K-*.md
 - Evidence produced: none
-- Done when: every finding links to an L- or K- file; `tools/check_schema.py` prints "all entries valid".
+- Done when: every finding links to an L- or K- file; `python3.12 tools/check_schema.py` prints "all entries valid".
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -430,11 +451,15 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-RETRO
 - Inputs: lessons/, knowledge/, TAXONOMY.md, plan/ASSUMPTIONS.md A-014
-- Actions: plan/PROTOCOL_EXCERPTS.md §3.7.2 — halt at G-003; on `push-to-proposed` copy lessons into `../store-lessons`
-  and knowledge items into `../store-knowledge` in the Appendix C layout, regenerate each store's `lessons/INDEX.md` /
-  `knowledge/INDEX.md` (tag → IDs, titles/statements, severity; generated, never hand-edited), merge this run's tags into
-  each store's `TAXONOMY.md` (from the repository's `TAXONOMY.md`), push (3 retries with pull-and-regenerate; else
-  `git bundle create knowledge-<run_id>.bundle`).
+- Actions: plan/PROTOCOL_EXCERPTS.md §3.7 (3.7.2) — write `GATE-G-003.md` and halt. On `push-to-proposed`: copy each lesson to
+  `../store-lessons/lessons/<facet>-<value>/` named by its first `tech:` or `domain:` tag (e.g. `tech:git` → `tech-git/`; no
+  such tag → `general/`) and each knowledge item to `../store-knowledge/knowledge/<value>/` named by its first `subject:` tag
+  (the stores' existing layout); append to each store's `TAXONOMY.md` every tag of this repository's `TAXONOMY.md` it lacks;
+  in each store run `python3.12 scripts/check_knowledge_schema.py` (must pass) and `python3.12 scripts/build_index.py`
+  (regenerates `lessons/INDEX.md` and `knowledge/INDEX.md`); commit and push (3 retries with pull + `build_index.py`).
+  On `push-to: <target>`: check `gh api repos/<target> --jq .permissions.push` is `true`, clone it, and do the same.
+  If the push still fails, or the owner's next message does not answer G-003 after it has been asked twice, write
+  `git bundle create ../knowledge-<run_id>.bundle HEAD` (the bundle carries `lessons/` and `knowledge/`) and report its path.
 - Outputs: pushes to the stores, or the bundle path
 - Evidence produced: none
 - Done when: protocol 3.7.2 item 4.
