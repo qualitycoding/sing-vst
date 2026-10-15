@@ -19,7 +19,7 @@ Status: **A** answered (claim at `verified`/`corroborated`), **R** answered but 
   - E3.1 JUCE version, licence, build requirements → C-012 → D-001, D-026. **A**
   - E3.2 Can lyrics arrive from the host? No (C-011) → D-010 (text box + MIDI-file lyric events, C-013), A-005. **A**
   - E3.3 Plugin validation tool and its real CLI → C-015 → T-059, D-018. **A**
-  - E3.4 Does JUCE 9.0.3 build a VST3 on the CI runners (Linux 24.04, Windows 2022)? → S-001 records the CI run; open question Q-E7 in plan/ENVIRONMENT.md. **O**
+  - E3.4 Does JUCE 9.0.3 build a VST3 on the CI runners (Linux 24.04, Windows 2022)? → Windows: **yes** — CI run 38699430452 built the plugin, CLI and tests on `windows-2022` in 9 min 25 s (tests red on stubs, as expected). Linux: the first run was killed by an unbounded `make -j` (C-055); re-verified at S-001 with `--parallel 4`. **A/O**
 - **E4 Native inference runtime**
   - E4.1 ORT version, assets, checksums, C++20 → C-014 → D-002. **A**
   - E4.2 Windows DLL conflicts → C-026 → D-024. **A**
