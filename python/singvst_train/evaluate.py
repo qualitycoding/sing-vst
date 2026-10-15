@@ -19,6 +19,8 @@ def evaluate_voice(voice_dir: Path, heldout_dir: Path, phrases_dir: Path, render
     """Run the D-017 procedure: transpose each phrase in ``phrases_dir`` (``*.mid`` with lyric events), render it with
     ``render_bin`` with and without conversion, and compute Resemblyzer similarity against the mean embedding of the
     held-out recordings, per-note F0 scores (``metrics.score_f0``), Whisper ``small.en`` WER for both renders, and the
-    real-time factor. Writes ``out_dir/report.json`` (keys REPORT_KEYS, ``status`` "measured"), every render, and a
-    provenance sidecar for the report; returns the report. Thresholds are not applied here (``metrics.judge``)."""
+    real-time factor. Writes ``out_dir/renders/<phrase>.converted.wav`` and ``<phrase>.guide.wav`` (phrase = MIDI file
+    stem), ``out_dir/report.json`` (exactly REPORT_KEYS, ``status`` "measured", ``phrases`` the sorted stems,
+    ``heldout_files`` the sorted held-out file names) and its provenance sidecar; returns the report. Each phrase's
+    reference text is ``<phrase>.txt`` beside its MIDI file. Thresholds are not applied here (``metrics.judge``)."""
     raise NotImplementedError("evaluate_voice")

@@ -160,7 +160,7 @@
     "python/singvst_train/__init__.py": "5ecd5f1edeedf95e2afc4f709893f6dd25956ce01b2073a6beeb0037f02bfb6b",
     "python/singvst_train/__main__.py": "ef62c3c62a9940ba12ab445224b29094b7b2a259a02117f1bfe0abb3e88c4b1e",
     "python/singvst_train/cli.py": "bb6e411ccda93535a08075a77764db62400a0631a6aef8bc13ccfbdc8819b148",
-    "python/singvst_train/evaluate.py": "3f6c16e61f518f0c93ba7c8a6d1aa0be936a5d92296d5c4aba379a32aa955d28",
+    "python/singvst_train/evaluate.py": "6641f4b246f2f1d430944faf5224226e3f877ea7cc0a5704be1db36758af8f9d",
     "python/singvst_train/export_rvc.py": "a39bc4d75af5e39682b39c4344300196369014d8e7e8d0b30bc0e27963809d28",
     "python/singvst_train/metrics.py": "3560c702a01a3977e08ad2b7c1ccee57e63253cffbd9dbf555046a6e094d8a52",
     "python/singvst_train/pack.py": "3aba1c15a2fe439cccec8e9b259f3ec54722f5c1ddf535cc5dcba27b2de91d96",
@@ -267,11 +267,17 @@
     "tests/fixtures/voice-legacy/guide/vocoder.onnx": "85360b9d7d6ac03e70c3d8a1bbe1514637e48bc84a68ef64e4a9500370e3dc0c",
     "tests/fixtures/voice-legacy/manifest.json": "2e41a8bae21891b770cf5a9e9fbff4978f637306d4af2d0d6c4a8ced3bdad6ea",
     "tests/python/conftest.py": "b3adf2e5b8781df4146122912c0afb7bdcbe1012ef8ee6beb809e4e9650ce55b",
+    "tests/python/test_cli.py": "e4895dea4494031d00cab67ada16756a4f4c3f52b9828195bfc9eb13f52eb0c9",
+    "tests/python/test_cli_binary.py": "fb6d771675d47dda0a05d7d2c6dc62bf996f0456673aa1c0ade10ea3a9710a74",
+    "tests/python/test_evaluate.py": "92dc1993b1bef9a8e322ba50537a1a1e3c51e4e425eb6df55a97523873a3640d",
+    "tests/python/test_export_rvc.py": "740c0b370d705ad1611a7a42515c9a3fa124dba5a086470dffb8250f9f5af980",
     "tests/python/test_metrics.py": "71aa99dfd823b22cf635519f76b594cfe7f6cb740f5603cbccf5c76cc1d4a2dd",
+    "tests/python/test_notebooks.py": "f3d78e38509e49b257ae57ddbdc281dade058c7161ddbbef059986e4154c6dbe",
     "tests/python/test_pack.py": "4bdc83accf97f91b354ee39f3b9425b6272c793a09ea1aec8efbe65df6642e26",
     "tests/python/test_pipeline.py": "eb612daa5b892dc6edbb61af6a9b37793af3094bfa9f77c0a05cc3984b676e46",
     "tests/python/test_prepare.py": "9fa3560966473f43e0da901c55aec70b5d147ab35f9dd407b83242338793aa4b",
     "tests/python/test_provenance.py": "edc17f964f526cd4566b07f4d864ed13012fda1df73293108367e009bed724bd",
+    "tests/python/test_rvc_files.py": "d2a0cbc92ad0762dfea3bc72cf4bd9ffe872237d8110d6b3336d7a1758c73175",
     "tests/python/test_security.py": "d01256f660ee513987203bb4337301622303beccf8dff5887330b9017c44fa8c",
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
     "third_party/cmudict/SOURCE.txt": "9055797f1532cd2199a480009da8e0a566287561e391acb70900cf3817562dc7",
@@ -594,5 +600,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:19:34Z"
+  "updated_at": "2026-10-15T07:20:54Z"
 }
