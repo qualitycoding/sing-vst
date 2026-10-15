@@ -283,5 +283,20 @@
   "Scripts resolve their own directory to an absolute path before any cd, and helper failures print a FAILED line.",
   "HANDOFF.md \u00a7Sandbox rules",
   "both"
+ ],
+ "PK-58": [
+  "Every interface a later step or a human-run artefact calls (CLI options, notebook cells, third-party command lines, file mappings) is specified in a D-### before the cold read.",
+  "D-035; S-012\u2026S-017",
+  "planner"
+ ],
+ "PK-59": [
+  "In a CI job that gates an early step, each test red by design runs in its own `if: always()` step named in the step's done criterion.",
+  ".github/workflows/ci.yml; S-001",
+  "both"
+ ],
+ "PK-60": [
+  "Ship verbatim, generated excerpts of every external procedure the implementer must follow.",
+  "plan/PROTOCOL_EXCERPTS.md; HANDOFF \u00a7Amendments",
+  "planner"
  ]
 }
