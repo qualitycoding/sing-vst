@@ -127,6 +127,7 @@ round half to even (numpy `rint`; C-021).
 
 The oracle `research/spikes/oracle/oracle.py` implements D-004…D-007, D-009, D-012 (noise) and passes the invariant checks in
 `properties.py` (lesson L-20261014T203000Z). Tests: T-019…T-026.
+`m50 = 1127·ln(1 + 50/700)` and `m1100 = 1127·ln(1 + 1100/700)` (RVC's f0_min/f0_max in mel; C-021).
 
 ### D-021 Gain staging
 Renders are kept **unclipped** in `RenderedTake::samples` and `unclippedPeak` records their peak (PK-30). The only clipping
@@ -148,14 +149,17 @@ A directory with `manifest.json` and the files it references (never committed to
   "converter": null | { "type": "rvc-v2", "sample_rate": 48000 | 32000, "speaker_id": 0, "files": { "synth": "...", "content": "..." } },
   "sha256": { "<relative path>": "<64 lower-case hex>", ... } }
 ```
-Rules (each violation → `ValidationError` naming the field): valid JSON object; exact `format`/`format_version`; non-empty
+Required keys: `format`, `format_version`, `name`, `consent`, `guide_licence`, `guide.type`, `guide.sample_rate`,
+`guide.hop_size`, `guide.steps`, `guide.depth`, `guide.files`, `sha256`, and — when `converter` is an object — `type`,
+`sample_rate`, `files`. Defaults: `guide.language` = `en`, `converter.speaker_id` = 0, `converter` absent = null. A missing
+required key is a violation. Rules (each violation → `ValidationError` naming the field): valid JSON object; exact `format`/`format_version`; non-empty
 strings; `guide.type == "diffsinger"`, `sample_rate == 44100`, `hop_size == 512`, `steps` integer 1…1000, `depth` number in
 (0, 1], `language` non-empty (default `en` when absent); required file roles present, no unknown role; `converter` absent,
 null, or `type == "rvc-v2"`, `sample_rate` ∈ {48000, 32000} (C-005), `speaker_id` integer ≥ 0 (default 0), roles `synth`
 and `content` only; every file path is *safe* — non-empty `/`-separated segments of `[A-Za-z0-9._-]`, no segment `.` or
 `..`, no leading `/`, no `\`, no `:` — and the set of `sha256` keys equals the set of referenced paths, each value 64
 lower-case hex digits. Unknown top-level keys are ignored. `validatePackage` then checks each referenced file is a regular
-file under the directory, at most `maxFileBytes`, with a matching SHA-256 (D-001: `juce::SHA256`). Speaker embedding file:
+file under the directory, at most `maxFileBytes`, with a matching SHA-256 (`sha256Hex`, FIPS 180-4, implemented in the core; D-001). Speaker embedding file:
 raw little-endian float32. Phonemes file: `.json` = object phone → integer id; otherwise text, id = 0-based line index
 (lines split on `\n`, a trailing `\r` removed, a final empty line ignored) (C-033). `pack_voice` (Python) writes this format;
 T-P13 checks the C++ parser accepts what it writes. Tests: T-028…T-031, T-P13, T-P14.
@@ -326,7 +330,7 @@ f0, rmvpe; C-022, C-029, C-030) → export (D-012) → build `singvst-render` (c
 archive to Drive. Budget: ≤ 20 GPU-hours per voice (A-015), each session ≤ 10 h of work.
 
 ### D-017 Evaluation (unknown outcomes)
-Procedure (frozen as code in `evaluate.py` and `eval/PROCEDURE.md`; values recorded at G-001, never typed — PK-05):
+Procedure (frozen as `eval/PROCEDURE.md` and implemented in `evaluate.py`; values recorded at G-001, never typed — PK-05):
 the five original **evaluation phrases** in `eval/phrases/` (MIDI with lyric meta events; written for this project, no
 third-party lyrics) are transposed by whole semitones so their median pitch is nearest the median F0 of the training data,
 then rendered twice with `singvst-render` (seed 0): with and without conversion.
@@ -348,7 +352,8 @@ RTF ≤ 1.0) with `"status": "unmeasured-default"`; `judge` reports verdicts aga
 1. Toolkit (CI, sandbox): `python/requirements-lock.txt` (complete `pip freeze --all`, includes pip/setuptools/wheel;
    pip-audit clean; reproduced exactly in a clean venv on 2026-10-14). 2. RVC training (notebooks): RVC's own
    `requirments_cu128_py312.txt` with the mirror indexes replaced by pypi.org / download.pytorch.org (C-023), plus the toolkit
-   installed `--no-deps` and `onnx==1.17.0` for export, `resemblyzer==0.1.4`, `openai-whisper==20250625` for evaluation.
+   installed `--no-deps` and `onnx==1.23.2` and `onnxruntime==1.31.0` for export (same pins as the lock; the cu128 export is
+   checked in the notebook by running T-P19 before training — D-035), `resemblyzer==0.1.4`, `openai-whisper==20250625` for evaluation.
 3. CI export-parity job: RVC's `requirments_cpu_py312.txt` (torch 2.4.1+cpu) the same way.
 
 ### D-025 De-reverb
@@ -372,7 +377,7 @@ sandbox (C-044, PK-14); failing steps emit `::error::` annotations with the fail
 ### D-023 Red-verification exemptions
 Tests that check repository or environment properties, not stub behaviour, are exempt from "must fail against stubs":
 T-059 (pluginval: the silent stub plugin is a valid VST3), T-060 (freeze manifest), T-061 (workflow lint), T-062 (ignore
-rules), T-P21 (lock reproducible and audit clean), T-P22 (cited IDs exist), T-P23 (README citations; written at S-019),
+rules), T-P21 (lock reproducible and audit clean), T-P22 (cited IDs exist), T-P23 (README citations; red until S-018 writes the README section),
 T-P27 (interface record). Record: research/spikes/red-verification/. Every other test must fail cleanly (PK-25).
 
 ### D-026 Licences
@@ -405,7 +410,11 @@ Each core step adds `core/src/<module>.cpp` for its header and **deletes the mat
 `core/src/stubs.cpp`** in the same commit (`core/CMakeLists.txt` globs `src/*.cpp`, so a duplicate definition is a link
 error, not a silent override). The plugin step replaces `plugin/PluginProcessor.cpp` and adds `plugin/PluginEditor.*`; the
 CLI step replaces `cli/main.cpp`; Python steps replace the bodies in `python/singvst_train/*.py` without touching any
-signature or docstring (T-P27). Private helpers may be added freely in new files.
+signature or docstring (T-P27). Helpers in those modules are named with a leading underscore, no new upper-case module constants
+are added, and heavy optional packages (torch, onnx, onnxruntime in export code, audio_separator, resemblyzer, whisper) are
+imported inside the functions that use them, so the toolkit imports in the lock venv (T-P25, T-P27). Private helpers may be
+added freely in new modules named with a leading underscore. `standardNormal` (declared in engine.hpp) lives in
+`core/src/random.cpp` (S-007).
 
 ### D-034 Protocol version
 The run started under planning protocol v3.2 and adopts **v3.3** (qualitycoding/skills `9636a79`, read 2026-10-15) from
@@ -413,6 +422,68 @@ Phase 3 onward: checkpoints carry `sequence`, `active_step_id`, `execution_conte
 atomically (`state.tmp.json` → `state.json`) with a snapshot in `.checkpoints/snapshots/`, on every save and before every
 high-latency action (subagent, long build, web research, gate wait) — `tools/checkpoint.py`, called by `tools/save.sh`.
 The implementer resumes with the zero-context procedure of v3.3 1.2.3 (HANDOFF.md §Resume).
+
+### D-035 Toolkit CLI and training notebook
+**Exit codes and errors:** as `cli.main` (0 success, 2 usage or input error, 3 run failure; `singvst-train: <command>: <message>`
+on stderr). Paths are absolute or relative to the working directory.
+| Command | Options | Effect |
+|---|---|---|
+| `split` | `--files-dir D --seed N [--fraction 0.1] --out F` | as the `build_parser` docstring |
+| `prepare` | `--in D --out D [--sr 48000] [--threshold-db -40] [--min-sec 2] [--max-sec 15] [--dereverb]` | for each `*.wav` in `--in` (sorted): read with soundfile, average channels, resample to `--sr` (`scipy.signal.resample_poly`), `slice_on_silence`, `normalise` each slice, write `OUT/segments/<stem>_<k:03d>.wav` (PCM_16), then `build_dataset_manifest(OUT, …, params)` and a provenance sidecar for `OUT/dataset.json`; `--dereverb` first runs `prepare.dereverb(IN, OUT/dry)` and uses `OUT/dry`; no input audio → exit 2 |
+| `rvc-files` | `--exp-dir D --rvc-root D [--sr-tag 48k] [--speaker-id 0] [--seed 0]` | `write_filelist` + `copy_config`; prints both paths |
+| `rvc-train-command` | `--exp-name S [--sr-tag 48k] [--batch-size 8] [--epochs 200] [--save-every 10] [--gpus 0] [--python PY]` | prints `train_command(...)` as one JSON list (`--python` default `sys.executable`) |
+| `export` | `--rvc-root D (--weights F \| --exp-name S) --out-dir D` | `export_synth` → `OUT/rvc_synth.onnx`, `export_content` → `OUT/content.onnx`; `--exp-name` uses `latest_weights` |
+| `make-test-weights` | `--rvc-root D --out F [--seed 0]` | `make_test_weights` |
+| `pack` | `--out D --name S --consent S --guide-licence S --acoustic F --vocoder F --phonemes F [--speaker F] [--languages F] [--synth F --content F] [--language en] [--steps 20] [--depth 0.4] [--converter-sample-rate 48000] [--speaker-id 0]` | `pack_voice` (`--synth`/`--content` together or not at all) |
+| `evaluate` | `--voice D --heldout D --phrases D --render-bin F --out D [--seed 0] [--thresholds eval/thresholds.json]` | `evaluate_voice`, then writes `OUT/verdict.json` = `metrics.judge(report, thresholds)` |
+| `provenance` | `--result F --params JSON --seeds JSON [--repo .] [--lockfile python/requirements-lock.txt]` | `collect` + `write_sidecar` |
+
+**Notebook layout** (Colab: Google Drive folder `MyDrive/singvst/<voice>/`; Kaggle: input dataset `singvst-<voice>` and the
+notebook's `/kaggle/working` output): `raw/` the owner's recordings (WAV; FLAC is converted to WAV first with soundfile),
+`state/` stage markers (`pipeline.run_stages`), `logs/<voice>/` the RVC experiment (kept for resume, C-047), `out/` exports,
+voice package and evaluation. Cells, in order: (1) `!nvidia-smi`; (2) consent (`CONSENT_CONFIRMED = False`, `ATTESTATION = ""`,
+then `assert CONSENT_CONFIRMED and ATTESTATION`); (3) mount Drive / set paths; (4) clone sing-vst (the commit named in the
+cell) and RVC 81eed5e; install RVC's `requirments_cu128_py312.txt` from the official indexes (C-023) and the toolkit
+`--no-deps` with the D-019 extras; (5) RVC assets with `hf download` exactly as C-052 (hubert_base, rmvpe.pt, pretrained_v2,
+mute.zip → `logs/`) in a separate venv for huggingface_hub 2.2.0 (C-054); (6) export check: `pytest -m torch` (T-P19) in
+this environment — stop if it fails; (7) `split` the recordings (seed 0) → `heldout/` and `train/`; (8) `prepare --in
+train --out prepared`; (9) in the RVC checkout: `python train/preprocess.py <prepared>/segments 48000 <n_cpu>
+<rvc>/logs/<voice> False 3.0`; `python train/dataset/extract_f0.py cuda 1 0 0 <rvc>/logs/<voice> False`;
+`python train/dataset/extract_hubert_feature.py cuda 1 0 0 <rvc>/logs/<voice> v2 False` (full precision, RVC's fp32
+path, works on every GPU type; C-022, research/spikes/hf-cli); (10) `rvc-files`; (11) run the JSON argv printed by
+`rvc-train-command` (RVC resumes from `logs/<voice>` automatically, C-047; no retrieval index is trained — the converter does
+not use it, D-012); (12) `export --exp-name <voice>`; (13) build `singvst-render` (core only, `-DSINGVST_BUILD_PLUGIN=OFF`);
+(14) the guide voicebank (§Guide voicebank) and `pack`; (15) `evaluate`; (16) `pytest -m voice` (T-P20) with
+`SINGVST_VOICE`, `SINGVST_HELDOUT`, `SINGVST_RENDER_BIN` set to the paths above; (17) `tar` the `out/` folder to Drive /
+Kaggle output. Every stage from (7) runs through `pipeline.run_stages` with markers in `state/`.
+**Upload to the implementer (G-004):** `report.json`, `report.json.provenance.json`, `verdict.json` only. Renders and voice
+packages stay on the owner's Drive or machine (A-011, T-062); `<voice>` is the `--name` given to `pack`.
+
+**Guide voicebank** (when G-005 answers `use-tiger`): the owner downloads
+`https://github.com/spicytigermeat/tiger_diffsinger/releases/download/v102/TIGER_DS_v102_PACK.zip` inside the notebook,
+checks SHA-256 `925ca2ad44287757d26628608b2744381e75748042d0e6fae356ee8cdae19f4e`, unzips it, then unzips
+`Voice Library/TIGER_DS_v102.zip`. Roles: `acoustic` = `dsacoustic/tiger_acou.onnx`, `phonemes` = `dsacoustic/phonemes.txt`,
+`speaker` = `dsacoustic/tiger_fresh.emb`, `vocoder` = `dsvocoder/tgm_hifigan.onnx` (research/spikes/tiger-guide). `steps` 20;
+`depth` = `min(0.4, max_depth)` where `max_depth` is read from `dsacoustic/dsconfig.yaml` (divided by 1000 when it is > 1,
+the legacy integer convention; C-034), 0.4 when the key is absent — the caller clamps, `pack_voice` does not (errata E-3).
+`guide_licence` = "TIGER DiffSinger v102, CC BY-NC-ND 4.0 + Commons Clause, personal non-commercial use (C-037)".
+
+### D-036 CI waiting, attempts and local loops
+CI runs are read with `gh api "repos/qualitycoding/sing-vst/actions/runs?branch=<impl>&head_sha=<sha>&per_page=5"` (quoted;
+the run for the commit just pushed). Poll every 5 minutes, at most 90 minutes; a run cancelled by a newer push is replaced by
+the newer push's run; a run cancelled or failed for infrastructure reasons (runner lost, network) is re-run once with
+`gh run rerun <id>`. A test **passes in CI** when its job step concluded `success`, or — for a step that runs several tests —
+the step's JUnit-derived annotations name no failing case of that test. One **attempt** for a CI-only test (T-059, T-P19, the
+Windows parts of T-041…T-047) is one CI run of a new commit. No torch is installed locally (download.pytorch.org is
+unreachable from the workspace; C-044); RVC is cloned locally to `../rvc` at 81eed5e for reading only.
+
+### D-037 Errata for frozen comments
+Frozen files cannot be edited, so comments that are wrong are corrected here and win over the comment:
+- E-1 `core/include/singvst/params.hpp`: "T-049 checks the plugin exposes exactly these" → the test is **T-053**.
+- E-2 `plugin/PluginProcessor.h`: `publishTakeForTesting` is used by **T-055 and T-057** (not T-050/T-051).
+- E-3 `core/include/singvst/voice.hpp` `GuideSpec::depth`: "clamped … by the packer" → the **caller of `pack`** clamps
+  (D-035 §Guide voicebank); `pack_voice` validates (0, 1] only. The struct default 1.0 is never used: `depth` is required.
+- E-4 test docstrings name sub-tests by function (`test_P13b_…`, `test_P19b_…`); they are parts of **T-P13** and **T-P19**.
 
 ---
 
@@ -432,7 +503,8 @@ The implementer resumes with the zero-context procedure of v3.3 1.2.3 (HANDOFF.m
   LOAD_LIBRARY_SEARCH_DEFAULT_DIRS`; if it still fails, `BLOCKED.md`.
 - DR-07 pip-audit reports a vulnerability in the lock → upgrade that package to the first fixed version, regenerate the lock in
   a clean venv, re-run the whole Python suite; if the fix is incompatible, `BLOCKED.md`.
-- DR-08 Guide RTF on the CI Linux runner > 3 (C-039 measured 1.10 on 2 threads) → record it; reduce `steps` only at G-001.
+- DR-08 The report's `realtime_factor` (measured by `evaluate` in the notebook) or the owner's RTF at G-001 exceeds 3 (C-039
+  measured 1.10 on 2 sandbox threads) → record both; changing `steps`/`depth` is a G-001 `retrain` response, never the implementer's choice.
 - DR-09 A host cannot load the plugin (owner report) → collect the host log at G-001; no speculative fixes.
 
 **Result-pivot rules** `[computational]` (Rule 8)

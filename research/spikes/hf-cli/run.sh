@@ -14,3 +14,5 @@ import json, urllib.request
 d = json.load(urllib.request.urlopen("https://pypi.org/pypi/transformers/4.49.0/json", timeout=30))
 print([r for r in d["info"]["requires_dist"] if r.lower().startswith("huggingface-hub")])
 PY
+echo "== HfApi.model_info(...).sha available in huggingface_hub 2.2.0 (used by CI to print the resolved revision)"
+"$W/hfv/bin/python" -I -c "import dataclasses; from huggingface_hub.hf_api import ModelInfo; print('ModelInfo has field sha:', any(f.name == 'sha' for f in dataclasses.fields(ModelInfo)))"

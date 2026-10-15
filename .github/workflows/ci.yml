@@ -25,13 +25,17 @@ jobs:
         run: sha256sum -c tests/FROZEN_MANIFEST.sha256
       - name: Toolkit environment (D-019)
         run: python -m pip install --no-deps -r python/requirements-lock.txt
-      - name: Repository checks (T-060, T-061, T-062, T-P22, T-P23, T-P27)
-        run: python -m pytest tests/python/test_repo.py -m "not network" -q --junitxml=repo.xml
+      - name: Repository checks (T-060, T-061, T-062, T-P22, T-P27)
+        run: python -m pytest tests/python/test_repo.py -m "not network" -k "not P23" -q --junitxml=repo.xml
+      - name: README claims (T-P23; red until plan step S-018)
+        if: always()
+        run: python -m pytest tests/python/test_repo.py -k P23 -q --junitxml=readme.xml
       - name: Lock reproduction and pip-audit (T-P21)
+        if: always()
         run: python -m pytest tests/python/test_repo.py -m network -q --junitxml=lock.xml
       - name: Annotate failures
         if: failure()
-        run: python tools/ci_annotate.py repo.xml lock.xml
+        run: python tools/ci_annotate.py repo.xml readme.xml lock.xml
   cpp:
     strategy:
       fail-fast: false
@@ -138,7 +142,9 @@ jobs:
         run: |
           python -m venv "$RUNNER_TEMP/hfv"
           "$RUNNER_TEMP/hfv/bin/pip" install -q huggingface_hub==2.2.0
-          "$RUNNER_TEMP/hfv/bin/hf" download lj1995/VoiceConversionWebUI --revision main --include "hubert_base/*" --local-dir rvc/assets
+          REV=$("$RUNNER_TEMP/hfv/bin/python" -c "from huggingface_hub import HfApi; print(HfApi().model_info('lj1995/VoiceConversionWebUI', revision='main').sha)")
+          echo "::notice title=hf-revision::lj1995/VoiceConversionWebUI main = $REV"   # read by S-013 via check-run annotations (Q-E8)
+          "$RUNNER_TEMP/hfv/bin/hf" download lj1995/VoiceConversionWebUI --revision "$REV" --include "hubert_base/*" --local-dir rvc/assets
           ls -l rvc/assets/hubert_base
       - name: Export parity (T-P19)
         run: SINGVST_RVC_ROOT="$PWD/rvc" python -m pytest -q -m torch --junitxml=torch.xml

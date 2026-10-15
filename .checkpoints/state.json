@@ -41,7 +41,7 @@
     "plan/OPERATIONS.md"
   ],
   "artifacts": {
-    ".github/workflows/ci.yml": "2d878482dd2c83d815ac31a6089e3f375cfd23fec99360d9ae8179fb95b98b32",
+    ".github/workflows/ci.yml": "89ac458175737341ec58f7b8642d8e81b4d117ebe88030acea308b83603390d9",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "HANDOFF.md": "b09b1a3ac21cbc2e96e74f1f2f3eca114d093a68ae0d36f544ff0e2fa0f72561",
@@ -164,7 +164,7 @@
     "lessons/L-20261015T073500Z-syllable-split-assumed-instead-of-read-from-the-dictionary.md": "17317a572bc012632684d691b5d865c2d375291327e06da3c32beed55430f934",
     "lessons/L-20261015T090100Z-unbounded-parallel-build-flag-from-memory.md": "b8c6a7c05b51a6fe847def805f2ca97a08e980e5d6df0323b2e299d08ce6f17c",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "6461b078f25d983da19f0cc8a2dac25a957842140e753df3a01f93c41a71a9b6",
+    "plan/DECISIONS.md": "a0845e3ff0814aea959b9fb7fdea37d976e534c3a784e5413057a6adf2c103e0",
     "plan/ENVIRONMENT.md": "a69f20101d2d4a992af377249be807b43dc53c2fcff25e614137d96a3303eff0",
     "plan/GATES.md": "fb177e41a561e2b4bba41cd8bc7f9c3e7e302456fdb64f72b48017e750ea9094",
     "plan/PLAN.md": "44d8e613c8a5506f5a4f41c46439c6dd0ad538b7f7a5e6f55ad14303bdbd286a",
@@ -205,8 +205,8 @@
     "research/spikes/cmake-parallel/run.sh": "1dd175c0e8bc090a40becd14f27f9036c980c707bb77eae52bc6404563a1bf31",
     "research/spikes/deps-pins/output.txt": "a1f6120b1bbcfcd97a95c22a7775bc4ffc62b231d64d40c00fe197a0831d3373",
     "research/spikes/deps-pins/run.sh": "adefd8efb63fc08875cb0d9af2bd1d6343e706138d7c4079eefb7718fc0b8077",
-    "research/spikes/hf-cli/output.txt": "62c38a647205bb4bf12bd07ed4172a36f7a4d50a970cbe5ab4740f42a96e4db2",
-    "research/spikes/hf-cli/run.sh": "43edc7c214bdb5c7e3b46d696dc1823502a380175aed452e0ccc9d4d50b56cee",
+    "research/spikes/hf-cli/output.txt": "b5ab93eac5f6b5d3c5a99f75bbcb8242efc136cd5f15911a87aba504d0afd270",
+    "research/spikes/hf-cli/run.sh": "c397d6a4e0fa676711406daa5bc9df43f5d4dd468b3e7b1a99448ad9b1a57f10",
     "research/spikes/hosts/output.txt": "f8195c6a0834d315ef5f225e0ee6c73da4c49be58f98cd727b97ebbe659bac06",
     "research/spikes/hosts/run.sh": "4d324f7471d59ce67171b1010ac9d32d1537caa868e5b891b2848b8bff24cc03",
     "research/spikes/juce-lyrics/CMakeLists.txt": "f0c4fa0a208bb0245a5e357315f2f4c5c3a052cab3b89ba5786fe18d10090863",
@@ -661,7 +661,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T17:40:45Z",
+  "updated_at": "2026-10-15T17:43:02Z",
   "active_step_id": "3.6",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -708,7 +708,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 16,
+  "sequence": 17,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
