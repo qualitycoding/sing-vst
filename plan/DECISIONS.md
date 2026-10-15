@@ -395,6 +395,18 @@ merging it is the owner's decision.
 Every sentence in README.md or docs/ that states behaviour cites a test ID; statements about how the voice *sounds* appear only
 with a G-001 listening record (PK-04, PK-46). T-P23 checks the citations exist.
 
+### D-032 Figures (2C)
+The `computational` profile applies 2C only to deliverable figures. This plan has none: results are `report.json`, its
+provenance sidecar and audio renders reviewed at G-001. No `figures/SPEC.md` is produced; if the owner later asks for plots
+of the evaluation, that is a new planning amendment.
+
+### D-033 Implementation conventions
+Each core step adds `core/src/<module>.cpp` for its header and **deletes the matching definitions from
+`core/src/stubs.cpp`** in the same commit (`core/CMakeLists.txt` globs `src/*.cpp`, so a duplicate definition is a link
+error, not a silent override). The plugin step replaces `plugin/PluginProcessor.cpp` and adds `plugin/PluginEditor.*`; the
+CLI step replaces `cli/main.cpp`; Python steps replace the bodies in `python/singvst_train/*.py` without touching any
+signature or docstring (T-P27). Private helpers may be added freely in new files.
+
 ---
 
 ## Decision rules (if → then)
