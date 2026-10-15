@@ -142,8 +142,21 @@
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
+    "python/pyproject.toml": "7491b80ae2d7c9e09d60ccf11210c5f87134188baf18c5ea46b6c6a4036e2d58",
     "python/requirements-lock.txt": "a05381edd0780e4d6ed4292236fbc098aa17e0c5940d399732b470f2aa517eaf",
     "python/requirements.in": "d6a1e02f7708f0fdfd0c43f3f67f65c61e16b684dbef86962e45d69620e19215",
+    "python/singvst_train/__init__.py": "5ecd5f1edeedf95e2afc4f709893f6dd25956ce01b2073a6beeb0037f02bfb6b",
+    "python/singvst_train/__main__.py": "ef62c3c62a9940ba12ab445224b29094b7b2a259a02117f1bfe0abb3e88c4b1e",
+    "python/singvst_train/cli.py": "2fc4fcbf604b948a87456d51bc3ecda7e994307502cb45c360f6df46336dfbe8",
+    "python/singvst_train/evaluate.py": "3f6c16e61f518f0c93ba7c8a6d1aa0be936a5d92296d5c4aba379a32aa955d28",
+    "python/singvst_train/export_rvc.py": "68bf249eb8f1bcbdd09473b0727c6472e0a68bab0220f6ed2bdea58547f9aedd",
+    "python/singvst_train/metrics.py": "61fb5baf9f40685be1fe279613d861430ec337f0c6d4d0f79bef5e2f7b054eee",
+    "python/singvst_train/pack.py": "3aba1c15a2fe439cccec8e9b259f3ec54722f5c1ddf535cc5dcba27b2de91d96",
+    "python/singvst_train/pipeline.py": "e4d3371ba06beb42ebc4373142ffbdae5cba62087f827b761e12c08aa4886be8",
+    "python/singvst_train/prepare.py": "2866b5e82ef1330c31118b51eabffa599099f0d1881cb5958f2e5b0432902b44",
+    "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
+    "python/singvst_train/rvc_files.py": "f7577889d438a71edc44aef0f321a665adb4a06d1162fb1ec6d0861964431e20",
+    "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
     "research/PRIOR_KNOWLEDGE.md": "e25fd0a495664159409c013910f5fe0ab660057bdfc3c179f32f879cb3ef3191",
     "research/QUESTIONS.md": "4046681681db5d134a6615d4ea29d9f19955e88957764d074cdefeb63f115b32",
     "research/claims.json": "38fe677c36815d7c427ad994407c22b413c045d3938ebc595df5590ff5a32aff",
@@ -561,5 +574,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:10:53Z"
+  "updated_at": "2026-10-15T07:15:05Z"
 }
