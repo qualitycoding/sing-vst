@@ -262,7 +262,7 @@
     "tests/python/test_pipeline.py": "eb612daa5b892dc6edbb61af6a9b37793af3094bfa9f77c0a05cc3984b676e46",
     "tests/python/test_prepare.py": "9fa3560966473f43e0da901c55aec70b5d147ab35f9dd407b83242338793aa4b",
     "tests/python/test_provenance.py": "edc17f964f526cd4566b07f4d864ed13012fda1df73293108367e009bed724bd",
-    "tests/python/test_security.py": "887ef268aa16b8790d6c6d7b1bd2d28c2d7486d0bff34d2085d612276cb22401",
+    "tests/python/test_security.py": "d01256f660ee513987203bb4337301622303beccf8dff5887330b9017c44fa8c",
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
     "third_party/cmudict/SOURCE.txt": "9055797f1532cd2199a480009da8e0a566287561e391acb70900cf3817562dc7",
     "third_party/cmudict/cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
@@ -583,5 +583,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:18:35Z"
+  "updated_at": "2026-10-15T07:18:55Z"
 }
