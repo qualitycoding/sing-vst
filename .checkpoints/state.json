@@ -41,7 +41,7 @@
     "plan/OPERATIONS.md"
   ],
   "artifacts": {
-    ".github/workflows/ci.yml": "a301ad0629a7b6919c5e08efa2aee06f7bf56856e8c252edb2cc33ad916ea3c2",
+    ".github/workflows/ci.yml": "6930dd17ebce37cab739c879ffdcf04a79f2385d842b3781507658d286c23e26",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -625,5 +625,5 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-15T07:32:05Z"
+  "updated_at": "2026-10-15T07:32:19Z"
 }
