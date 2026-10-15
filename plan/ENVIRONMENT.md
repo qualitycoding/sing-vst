@@ -58,9 +58,25 @@ ran red (research/spikes/red-verification/output.txt); the clean venv reproduced
 | download.pytorch.org | unreachable | CI runners (`python-torch` job) and the owner's notebooks |
 | huggingface.co | unreachable | CI runners (T-P19 content-encoder assets) and notebooks (D-016) |
 | colab.research.google.com, kaggle.com | unreachable | the owner runs the notebooks at G-004 (A-016) |
+| Ubuntu apt mirrors (archive.ubuntu.com, security.ubuntu.com) | not probed at planning time | S-000 probes them; unreachable → the plugin tests and pluginval run only in CI (D-036) |
 | Actions results/log host | unreachable | GitHub REST API: jobs, steps, check-run annotations (D-018, `tools/ci_annotate.py`) |
 
 ## Open environment questions
 - **Q-E7** (QUESTIONS E3.4) — answered: JUCE 9.0.3 builds succeed on `windows-2022` and, with `--parallel 4` (C-055), on
   `ubuntu-24.04`; T-059 passes on the stub on both (CI run 38733038059). S-001 re-checks it on the impl branch.
 - **Q-E8**: the Hugging Face revision of `lj1995/VoiceConversionWebUI` used by T-P19b; S-013 records it in the pins table.
+
+## Owner build (G-001; on the owner's computer)
+Windows (Visual Studio 2022 with "Desktop development with C++", CMake ≥ 3.22, Git):
+```bat
+git clone --branch impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics https://github.com/qualitycoding/sing-vst.git
+cd sing-vst
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_TESTS=OFF -DSINGVST_BUILD_PLUGIN=ON
+cmake --build build --config Release --parallel 4
+```
+Linux (Ubuntu 24.04): install the JUCE packages listed in the `cpp` job of `.github/workflows/ci.yml`, then the same `git
+clone`, `cmake -S . -B build …` and `cmake --build build --config Release --parallel 4`. Pinned dependencies are fetched and
+checked by `cmake/Dependencies.cmake`. Outputs: `build/plugin/SingVst_artefacts/Release/VST3/Sing VST.vst3` (copy the whole
+bundle to a folder your DAW scans for VST3 plug-ins), `build/plugin/SingVst_artefacts/Release/Standalone/`, and
+`build/cli/singvst-render` (`.exe` on Windows; `build/cli/Release/` with the Visual Studio generator).
+
