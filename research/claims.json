@@ -1712,5 +1712,55 @@
    "R-020",
    "R-022"
   ]
+ },
+ {
+  "id": "C-063",
+  "claim": "RVC 81eed5e checkpoints G_*/D_*.pth hold {model, iteration, optimizer, learning_rate}; train/utils.py load_checkpoint calls torch.load(path, map_location=\"cpu\") without a weights_only argument; train.py logs through i18n, so the pretrained-fallback message is \"Loaded generator pretrained model: %s\" under en_US.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/premortem-r2/rvc_checkpoint_i18n.txt",
+    "doi": "",
+    "title": "spike premortem-r2 rvc_checkpoint_i18n (pinned source)",
+    "version": "",
+    "locator": "utils.py 18-26, 156-174; en_US.json",
+    "accessed": "2026-10-16",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "R-057"
+  ]
+ },
+ {
+  "id": "C-064",
+  "claim": "Kaggle notebook outputs are limited to 500 items (Kaggle product-feedback report); whether an errored Save & Run All version keeps /kaggle/working is not documented in a readable source.",
+  "kind": "operational",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "https://www.kaggle.com/product-feedback/420538",
+    "doi": "",
+    "title": "[Bug] Kaggle notebook outputs are limited to 500 items",
+    "version": "",
+    "locator": "meta description",
+    "accessed": "2026-10-16",
+    "tier": 3
+   }
+  ],
+  "confidence": "single-source",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "R-055"
+  ]
  }
 ]

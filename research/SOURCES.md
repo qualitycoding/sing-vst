@@ -35,6 +35,7 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | spike plugin-stub | research/spikes/plugin-stub/output.txt | 1 |  | 2026-10-14 | bundle, pluginval lines; packages, build exit | C-050 (verified), C-051 (verified) |
 | spike premortem-r1 notebook_deps | research/spikes/premortem-r1/notebook_deps.txt | 1 |  | 2026-10-16 | all sections; torch lines | C-023 (verified), C-062 (verified) |
 | spike premortem-r1 rvc_resume (pinned source) | research/spikes/premortem-r1/rvc_resume.txt | 1 |  | 2026-10-16 | train.py 246-270, 293, 646-664 | C-061 (verified) |
+| spike premortem-r2 rvc_checkpoint_i18n (pinned source) | research/spikes/premortem-r2/rvc_checkpoint_i18n.txt | 1 |  | 2026-10-16 | utils.py 18-26, 156-174; en_US.json | C-063 (verified) |
 | spike pyfacts | research/spikes/pyfacts/output.txt | 1 |  | 2026-10-10 | audio-separator wheel inspection; resemblyzer wheel listing | C-028 (verified), C-043 (verified) |
 | spike pyworld | research/spikes/pyworld/output.txt | 1 |  | 2026-10-14 | all '==' lines; pip install lines (wheel downloads) | C-027 (verified), C-044 (verified) |
 | spike pyworld-direct | research/spikes/pyworld-direct/output.txt | 1 |  | 2026-10-14 | all '==' lines | C-046 (verified) |
@@ -51,5 +52,6 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | Hivenet guide | https://www.hivenet.com/post/google-colaboratory-gpu-complete-guide-to-free-cloud-gpu-access-and-limitations | 3 |  | 2026-10-04 | Free tier | C-017 (corroborated) |
 | Notre Dame course notes | https://www3.nd.edu/~dchiang/teaching/nlp/2023/kaggle.html | 3 |  | 2026-10-04 | batch sessions | C-019 (single-source) |
 | OpenUtau voicebank development | https://www.openutau.com/Voicebank-development/ | 3 |  | 2026-10-10 | Machine Learning voicebank development | C-010 (single-source) |
+| [Bug] Kaggle notebook outputs are limited to 500 items | https://www.kaggle.com/product-feedback/420538 | 3 |  | 2026-10-16 | meta description | C-064 (single-source) |
 
-45 sources, 60 claims.
+47 sources, 62 claims.

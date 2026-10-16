@@ -1,0 +1,6 @@
+# Kaggle notebook outputs (2026-10-16)
+Source: https://www.kaggle.com/product-feedback/420538 — "[Bug] Kaggle notebook outputs are limited to 500 items"
+(WebFetch of the page: meta description "When running a notebook that downloads items based on a database query, the
+output limit is 500."). kaggle.com/docs/notebooks is rendered client-side and could not be read from this workspace.
+Not researched (no readable source): whether an errored "Save & Run All" version keeps /kaggle/working. D-035 therefore
+never lets a version error intentionally (STOP flag) and persists through one state.tar.

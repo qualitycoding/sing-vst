@@ -1,0 +1,32 @@
+# RVC 81eed5e (git -C ../rvc rev-parse HEAD = 81eed5e8f68b6bed1789f682fe78cdd324495afc), read 2026-10-16
+## train/utils.py save_checkpoint stores iteration; load_checkpoint uses torch.load(path, map_location="cpu") (no weights_only argument: torch's default applies)
+18:logger = logging
+19:
+20:
+21:def load_checkpoint_d(checkpoint_path, combd, sbd, optimizer=None, load_opt=1):
+22:    assert os.path.isfile(checkpoint_path)
+23:    checkpoint_dict = torch.load(checkpoint_path, map_location="cpu")
+24:
+25:    ##################
+26:    def go(model, bkey):
+156:def save_checkpoint(model, optimizer, learning_rate, iteration, checkpoint_path):
+157:    logger.info(
+158:        "Saving model and optimizer state at epoch {} to {}".format(
+159:            iteration, checkpoint_path
+160:        )
+161:    )
+162:    if hasattr(model, "module"):
+163:        state_dict = model.module.state_dict()
+164:    else:
+165:        state_dict = model.state_dict()
+166:    torch.save(
+167:        {
+168:            "model": state_dict,
+169:            "iteration": iteration,
+170:            "optimizer": optimizer.state_dict(),
+171:            "learning_rate": learning_rate,
+172:        },
+173:        checkpoint_path,
+174:    )
+## i18n: train.py logs i18n("已加载生成器预训练模型：%s"); en_US translation
+135:    "已加载生成器预训练模型：%s": "Loaded generator pretrained model: %s",

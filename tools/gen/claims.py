@@ -187,6 +187,13 @@ claim("C-062", "RVC 81eed5e requirments_cu128_py312.txt lists no torch requireme
       "software", True, [S("research/spikes/premortem-r1/notebook_deps.txt", "spike premortem-r1 notebook_deps", "all sections", 1, "2026-10-16")],
       "verified", ["D-035", "R-020", "R-022"], ["subject:rvc", "tech:python", "subject:resemblyzer"], "RVC 81eed5e; webrtcvad 2.0.10; webrtcvad-wheels 2.0.14; Resemblyzer 0.1.4", kstamp="20261016T030100Z")
 
+claim("C-063", "RVC 81eed5e checkpoints G_*/D_*.pth hold {model, iteration, optimizer, learning_rate}; train/utils.py load_checkpoint calls torch.load(path, map_location=\"cpu\") without a weights_only argument; train.py logs through i18n, so the pretrained-fallback message is \"Loaded generator pretrained model: %s\" under en_US.",
+      "software", True, [S("research/spikes/premortem-r2/rvc_checkpoint_i18n.txt", "spike premortem-r2 rvc_checkpoint_i18n (pinned source)", "utils.py 18-26, 156-174; en_US.json", 1, "2026-10-16")],
+      "verified", ["D-035", "R-057"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e", kstamp="20261016T130000Z")
+claim("C-064", "Kaggle notebook outputs are limited to 500 items (Kaggle product-feedback report); whether an errored Save & Run All version keeps /kaggle/working is not documented in a readable source.",
+      "operational", True, [S("https://www.kaggle.com/product-feedback/420538", "[Bug] Kaggle notebook outputs are limited to 500 items", "meta description", 3, "2026-10-16")],
+      "single-source", ["D-035", "R-055"], ["subject:kaggle", "domain:hosted-gpu"], "2026-10", kstamp="20261016T130100Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)
