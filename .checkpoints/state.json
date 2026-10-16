@@ -41,7 +41,7 @@
     "plan/OPERATIONS.md"
   ],
   "artifacts": {
-    ".github/workflows/ci.yml": "5c6e12b4bebd0fe931e7bb02cc099eacc64863931cb6946b1a59ce5df1d4ad65",
+    ".github/workflows/ci.yml": "b17ff68cc4cc8b7835c94bcc06f79fe4829c61b58e2e4d298b3376595dfe87b4",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "HANDOFF.md": "2a762ca5a605ef3d9a84676a40ea92ae54815d687ccfcaad40aa3b02df0e0590",
@@ -268,6 +268,7 @@
     "research/spikes/plugin-stub/output.txt": "e9580ea187628ba4265311fda699fe642c25f536aa9c8b3545ae2a4e63679f8d",
     "research/spikes/plugin-stub/run.sh": "45a0fdd5e2d9d34261d0379a6dddf4c37c1e802a5d5b7af0b9aa9fadd2d8dff7",
     "research/spikes/premortem-r1/README.md": "989c5f54d357ab3690327eac56eb9057dad8ebf919c8617aab1d7c63721e6b75",
+    "research/spikes/premortem-r1/ci-run.txt": "a80e1eeb8238faf9d66fb3d485bc19c81dd6a05978ed08763b98e106c6b59048",
     "research/spikes/premortem-r1/limits_fixture_check.out.txt": "d0d75fd54a05b42f3944952b88d6b55ef0477bd9c28e1d569e1b6916b688a0cd",
     "research/spikes/premortem-r1/limits_fixture_check.py": "f4210da2216edff5adc42d38f58c72c3fc83dd13d4e002f1f4435d231eef6fbe",
     "research/spikes/premortem-r1/notebook_deps.txt": "f1a78e55e35e5ab3420aa088a5cd756f855ce87913205eecb638afb703de5817",
@@ -732,7 +733,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T08:00:18Z",
+  "updated_at": "2026-10-16T13:12:49Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -782,7 +783,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 75,
+  "sequence": 76,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

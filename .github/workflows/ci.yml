@@ -59,7 +59,7 @@ jobs:
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=ON
       - name: Build
         run: cmake --build build --config Release --parallel 4   # bounded: a bare --parallel is make -j with no limit (C-055)
-      - name: C++ tests (T-001..T-058, T-063..T-066)
+      - name: C++ tests (T-001..T-058, T-063..T-070)
         shell: bash
         run: |
           if [ "$RUNNER_OS" = "Linux" ]; then X="xvfb-run -a"; else X=""; fi   # plugin tests need a display on Linux
