@@ -31,7 +31,7 @@
  ],
  "PK-07": [
   "Before closing implementation, map every plan step and pre-mortem control to a delivering file or test; list unmapped ones in DEVIATIONS.md.",
-  "S-019 (plan/IMPLEMENTATION_MAP.md)",
+  "S-019 (writes the implementation map)",
   "both"
  ],
  "PK-08": [
@@ -246,7 +246,7 @@
  ],
  "PK-50": [
   "List every licence file the plan needs and check its text is obtainable; include a LICENSE in the first push.",
-  "D-026; LICENSE; THIRD_PARTY_NOTICES.md (S-018)",
+  "D-026; LICENSE; S-018 (writes the third-party notices)",
   "both"
  ],
  "PK-51": [
@@ -351,7 +351,7 @@
  ],
  "PK-71": [
   "Every parameter a resumable stage uses is part of its identity.",
-  "D-035 stage table; S-016 tools/notebook_dryrun.py",
+  "D-035 stage table; S-016 (writes and runs the notebook dry run)",
   "both"
  ],
  "PK-72": [

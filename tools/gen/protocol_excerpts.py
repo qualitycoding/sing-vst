@@ -16,6 +16,7 @@ parts = [
     ("1.2.3 — Zero-Context Resumption Protocol", between("#### 1.2.3 Zero-Context Resumption Protocol", "### 1.3 Iterative Research Loop")),
     ("2E.3–2E.4 — Immutability and Test Challenge", between("3. **Immutability Rule:**", "---\n\n## Phase 3")),
     ("3.2 — Default rule", between("* `[All]` **The default rule**", "### 3.3 Human Gates")),
+    ("3.3 — Human gates", between("### 3.3 Human Gates", "### 3.4")),
     ("3.7 — Opening and closing steps", between("### 3.7 Opening and Closing Steps", "---\n\n## Phase 4")),
     ("Appendices A–C — Lesson and knowledge templates, knowledge store", between("## Appendix A: Lesson Template", None)),
 ]

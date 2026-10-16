@@ -193,8 +193,8 @@
     "plan/DECISIONS.md": "1755be0988752a8c13590fe3b9173179390e2b67e8ffa24e6c99cae6bebc0749",
     "plan/ENVIRONMENT.md": "d27de67cf9944a5f5844fc94f8b617295006b8573fc3efac75f581606583001e",
     "plan/GATES.md": "c005181882a8c7b2ed88ec6f91c2353b8ba7d6e6f187aded369f93253c4e6098",
-    "plan/PLAN.md": "ebdbd346449334f8b9ed76fd1be5fc810322204ca27fa593ca70478f00019379",
-    "plan/PLAN.src.md": "9d0ee2922058ee8f02c2e01f2edb21063bd28f274d329338e3d7d33bc6d06f93",
+    "plan/PLAN.md": "0779492c985830c492d908738d227e100b5a4e1b3a813f3a5c6d78a3b5a76de1",
+    "plan/PLAN.src.md": "b23c12ee348726804348e52a21e0a34ca189628b0c45327bd6440fdb5d167f72",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/PROTOCOL_EXCERPTS.md": "ba04f60be6a47564e1aa508ecdd50eb1639e2da1902063d676230f2ec1ad193c",
     "plan/TRACEABILITY.md": "56ee40d8880fd026f80ac316ab56bd2c095cdfb9ea756834e0f83a82f989460f",
@@ -224,7 +224,7 @@
     "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
     "python/singvst_train/rvc_files.py": "f3223c4efc1ddead1379b99265dcf0d76bd66f2a3b72b59caa8fc35aafd0de1e",
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
-    "research/PRIOR_KNOWLEDGE.md": "cf71ddd787bd06715538b99836e02c3354bb1ad48d0a49f4ba48addb85b26201",
+    "research/PRIOR_KNOWLEDGE.md": "5e07049ebc6ceab2f203b0c08f12a93b8bc89d7fea545fc4cfaa879f26e55267",
     "research/QUESTIONS.md": "9e984b411b6e82bb65788b8e1de6d535f277b4a7f0698b31fe4001af40f312f5",
     "research/SOURCES.md": "546b0fd78ec5171b448f85d7eb5467aa883931ee9a47ad10691454e70d8749f9",
     "research/claims.json": "116f8131af5166de616395786a14c22b379258dfb7965e6c7a4ef058eed81f5c",
@@ -380,12 +380,12 @@
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "2f5c152e5ef50cd0115731429ab4ee7486333bbe8aa5affcd5434035fe6fa08f",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
-    "tools/gen/pk_checklist.json": "a84479310636315dc96f9e9f679f578d221847872a5784e81369fc78ed515798",
+    "tools/gen/pk_checklist.json": "8305ab392777a6591bd861de7c1365e08fb260f9c010563292ad3cc1bc75f3fb",
     "tools/gen/pk_knowledge.json": "4e4620e0de56740fa874231e1996c1cb5d558b05a3a5d56e7899122d4dd34526",
     "tools/gen/pk_map.json": "8285841cde305fd3d04b4b6f201d034858a4335b3a771ecab184c93f8d2b0aec",
     "tools/gen/plan.py": "0ab09cb74ce4ab1989eb5a44d2c08ffc30ddbf089c2d3212e0dab717a47e07e7",
     "tools/gen/prior_knowledge.py": "4796b62a539dbb4c9144b228654cb85522de615467f9969a95aff1617d198d37",
-    "tools/gen/protocol_excerpts.py": "6049187144a97f0307394ad94b914f50349bf1eba8bdd647a8a1e107966d556d",
+    "tools/gen/protocol_excerpts.py": "c6e82440d1f339f2d1c0252cfd47a9fdc40a4a3a810ae5897818c40c3589110d",
     "tools/gen/sources.py": "6ed6a5c8fae13400015bdf01214a7f5a93833a2904a52036f9b0342a0395d4f2",
     "tools/gen/status.py": "6c9b6e75415926dbf4a89568ff8b10caa57dac55029d220ccae3133ff8415c78",
     "tools/gen/supersede.py": "f05242a9eec9c280a9631ad3c5fdd501f3ed090b7bde90f6b3b3a23619afa57f",
@@ -733,7 +733,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T13:12:49Z",
+  "updated_at": "2026-10-16T13:16:34Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -783,7 +783,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 76,
+  "sequence": 77,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

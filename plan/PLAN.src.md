@@ -10,7 +10,7 @@ under `xvfb-run -a`, and `../venv-lock/bin/python -I -m pytest -q -m "not torch 
 `EXECUTION_LOG.md` per attempt). On the no-root path of S-000 action 3, "locally" is waived for T-034 and the plugin
 tests T-053…T-059 (the full tree is not built): the CI `test-summary` notice of D-036 is their evidence. Whenever a
 `Done when` names a CI result ("in CI", or a test that is CI-only on the current path), the step's last action is: Save
-(which pushes), then wait for and read that commit's CI run as D-036 says. "Save" means `bash tools/save.sh "<S-### …>" <paths>` (commit + push + state.json, D-029).
+(which pushes), then wait for and read that commit's CI run as D-036 says. "Save" means `bash tools/save.sh "<S-### …>" <paths>` (commit + push + `.checkpoints/state.json`, D-029).
 Defaults for every step unless the step says otherwise:
 - **On failure (default):** fix the implementation, never a frozen test (DR-04); re-run the full suite after any fix to
   shared code (PK-51); after three failed attempts on the same test write `BLOCKED.md` (test, logs, hypotheses) and halt.
@@ -71,7 +71,7 @@ Defaults for every step unless the step says otherwise:
   8. Start `EXECUTION_LOG.md` and `DEVIATIONS.md` with the HANDOFF §Logs templates **before** actions 3–5 write rows (create
      them right after action 2), and seed the checkpoint: `python3.12 tools/checkpoint.py --phase impl --subphase S-000
      --active-step S-001 --set 'completed=["S-000"]' --set 'pending=["S-001", "S-002", "S-003", "S-004", "S-005", "S-006", "S-007", "S-008", "S-009", "S-010", "S-011", "S-012", "S-013", "S-014", "S-015", "S-016", "S-017", "S-018", "S-019", "S-RETRO", "S-KNOW"]' --in-flight null`.
-- Outputs: impl branch; .git/singvst-trailers (untracked); EXECUTION_LOG.md; DEVIATIONS.md; state.json (knowledge_store.commit_at_impl, pending); ../store-lessons, ../store-knowledge, ../rvc, $HOME/deps, ../build-core, ../build-full, ../build-asan, ../build-tsan, ../venv-lock, ../hosts-now.txt
+- Outputs: impl branch; .git/singvst-trailers (untracked); EXECUTION_LOG.md; DEVIATIONS.md; .checkpoints/state.json (knowledge_store.commit_at_impl, pending); ../store-lessons, ../store-knowledge, ../rvc, $HOME/deps, ../build-core, ../build-full, ../build-asan, ../build-tsan, ../venv-lock, ../hosts-now.txt
 - Evidence produced: none
 - Done when: every action succeeded (or recorded its documented fallback); the action 7 commands pass.
 - Checkpoint: default
