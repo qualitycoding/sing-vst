@@ -318,5 +318,15 @@
   "Every environmental precondition of a frozen test (locale, display, font, device) is provided by an S-000 action and by each CI job that runs the test.",
   "S-000 action 3; .github/workflows/ci.yml; D-018",
   "both"
+ ],
+ "PK-65": [
+  "Shared tooling never defaults an identity (trailers, author); a missing identity is an error naming how to provide it.",
+  "tools/save.sh; S-000 preamble",
+  "both"
+ ],
+ "PK-66": [
+  "Every stage-table output has a literal command that creates it from the stage's inputs.",
+  "D-035 stage table; S-016",
+  "both"
  ]
 }
