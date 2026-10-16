@@ -73,7 +73,7 @@ The cold read (3.6) and every pre-mortem round (Phase 4) work from this list. `A
 | PK-60 | Ship verbatim, generated excerpts of every external procedure the implementer must follow. | plan/PROTOCOL_EXCERPTS.md; HANDOFF §Amendments | planner | L-20261015T180400 |
 | PK-61 | A CI pass is a positive record (a summary listing the test as passed), never the absence of a failure annotation. | D-036; tools/ci_annotate.py | both | L-20261015T190000 |
 | PK-62 | A stage runner that deletes outputs on rerun never lists a job's own checkpoint directory as an output. | D-035 stage table; S-016 | both | L-20261015T190100 |
-| PK-63 | Every function a Done-when test calls is delivered by that step or a step in its Depends on chain. | PLAN.md step template; S-010; S-012 | both | L-20261015T200000 |
+| PK-63 | Every function a Done-when test calls is delivered by that step or a step in its Depends on chain. | plan/PLAN.md `Depends on` and `Done when` fields; S-010; S-012 | both | L-20261015T200000 |
 | PK-64 | Every environmental precondition of a frozen test (locale, display, font, device) is provided by an S-000 action and by each CI job that runs the test. | S-000 action 3; .github/workflows/ci.yml; D-018 | both | L-20261015T200100 |
 | PK-65 | Shared tooling never defaults an identity (trailers, author); a missing identity is an error naming how to provide it. | tools/save.sh; S-000 preamble | both | L-20261016T000000 |
 | PK-66 | Every stage-table output has a literal command that creates it from the stage's inputs. | D-035 stage table; S-016 | both | — |

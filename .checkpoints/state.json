@@ -214,7 +214,7 @@
     "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
     "python/singvst_train/rvc_files.py": "f3223c4efc1ddead1379b99265dcf0d76bd66f2a3b72b59caa8fc35aafd0de1e",
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
-    "research/PRIOR_KNOWLEDGE.md": "2850576958c2c4c332bc78251cfdedda6d3de0d086ad298421414ea6335326a2",
+    "research/PRIOR_KNOWLEDGE.md": "267c7fa637f4e08949fbfc21d03909d6ac17a7d0dd042cdbcd5a7c44ecd983ac",
     "research/QUESTIONS.md": "9e984b411b6e82bb65788b8e1de6d535f277b4a7f0698b31fe4001af40f312f5",
     "research/SOURCES.md": "6342fe972459cc38c0af05e0f3e625d558a3b806abf4fbf7d107b578acd8b99f",
     "research/claims.json": "1aa9d046a47f16993a7c54d8d67d789e05cf7174073efa22faafd138b77f2b5b",
@@ -360,7 +360,7 @@
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "2f5c152e5ef50cd0115731429ab4ee7486333bbe8aa5affcd5434035fe6fa08f",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
-    "tools/gen/pk_checklist.json": "902bab3120f23a987d395589ee886236bfd7834d754edc766c67904ead045f64",
+    "tools/gen/pk_checklist.json": "f0be0da9d9ac565be4dfac9fbd421b04865c817128238c0db37adc4fc1f49846",
     "tools/gen/pk_knowledge.json": "4e4620e0de56740fa874231e1996c1cb5d558b05a3a5d56e7899122d4dd34526",
     "tools/gen/pk_map.json": "9c494d58c7d9f817cfd4920b6ad41fd9134a118c173cb1aaa54b76df9e9d5c31",
     "tools/gen/plan.py": "0ab09cb74ce4ab1989eb5a44d2c08ffc30ddbf089c2d3212e0dab717a47e07e7",
@@ -706,7 +706,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T07:03:57Z",
+  "updated_at": "2026-10-16T07:10:31Z",
   "active_step_id": "3.6",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -756,7 +756,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 47,
+  "sequence": 48,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

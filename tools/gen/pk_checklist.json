@@ -311,7 +311,7 @@
  ],
  "PK-63": [
   "Every function a Done-when test calls is delivered by that step or a step in its Depends on chain.",
-  "PLAN.md step template; S-010; S-012",
+  "plan/PLAN.md `Depends on` and `Done when` fields; S-010; S-012",
   "both"
  ],
  "PK-64": [
