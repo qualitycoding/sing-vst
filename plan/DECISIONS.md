@@ -23,7 +23,8 @@ ONNX Runtime 1.31.0 CPU prebuilt packages from GitHub Releases (C-014), SHA-256 
 `onnxruntime-linux-x64-1.31.0.tgz` `cc5c72baf5ae5c8238a6841f0897227be2d02826b9cf98eaf02fdefaeeb03a57`,
 `onnxruntime-win-x64-1.31.0.zip` `3958d8a44984160692c1b4ffd0de3cb48f8c39f9d34bb31e433db06e30b82195`.
 Only the headers are used at compile time; nothing links `onnxruntime` (D-024). One process-wide `Ort::Env`; every session uses
-`ORT_ENABLE_ALL`, inter-op threads 1, intra-op threads `min(4, max(1, hardware_concurrency / 2))`.
+`ORT_ENABLE_ALL`, inter-op threads 1, intra-op threads `min(4, max(1, hardware_concurrency / 2))`, and the session config
+entry `session.set_denormal_as_zero` = `1` (R-045).
 
 ### D-003 Interfaces and stubs
 The public interfaces are the headers `core/include/singvst/*.hpp`, `plugin/PluginProcessor.h` and the Python signatures in
@@ -194,7 +195,11 @@ earlier frame); no voiced frame at all → `ValidationError`. The take is split 
 `SP` frames before and after (C-038; padded f0 = the phrase's first/last value; per-frame inputs cover the padded length).
 Acoustic output `mel` float[1,T+16,128] goes to the vocoder with the padded f0 (inputs `mel`, `f0`; output `waveform`
 float[1,(T+16)·512]); 8·512 samples are trimmed from each end. Output length is exactly `sum(durations)·512`. `cancel` is
-checked before every model run → `Cancelled`. The acoustic model draws its own noise (C-040): the guide is not reproducible.
+checked before every model run → `Cancelled`; while a model run is in flight a watcher polls `cancel` every 10 ms and calls
+`Ort::RunOptions::SetTerminate()` on that run's `RunOptions`, and the resulting ONNX Runtime error is reported as
+`Cancelled` (R-025). The acoustic model draws its own noise (C-040): the guide is not reproducible — the plugin recalls
+takes from the take cache (D-038), never by re-rendering. Both engines reject at load, with `ValidationError`, a model
+whose initializers use external data (R-027).
 
 **Converter (`ConverterEngine`).** `content` model: input `source` float[1,N] at 16 kHz → output `units` float[1,Tc,768]
 (RVC v2: hubert final layer, 320-sample hop; C-020). `synth` model: inputs `phone` float[1,T,768], `phone_lengths`
@@ -231,7 +236,12 @@ phraseHash(request.notes, request.tokens, request.params)` (the request as submi
 queued request is kept). A request whose hash equals the current Ready take's `contentHash` is not rendered (status stays
 Ready). On success the take replaces `latest()` and status is Ready; on an exception status is Failed, `lastError()` holds
 `what()`, and `latest()` keeps the previous take; a `Cancelled` job is discarded silently. `renderCount()` counts completed,
-non-discarded renders. The destructor cancels and joins within 5 s. Tests: T-048…T-052.
+non-discarded renders. The destructor cancels and joins (never detaches); with the D-012 terminate watcher a real
+engine stops within one graph node, and T-051 bounds the fake at 5 s. Engines are owned through `std::shared_ptr`: the
+`RenderFn` a job runs holds its own references, so loading another voice or destroying the plugin never frees an engine a
+running job uses (R-025). Before `align`, `renderTake` rejects a monophonic take of more than 5000 notes or ending more
+than 900 s after its first note at `params.bpm`, with a `ValidationError` naming the limit (D-038, T-070; R-027).
+Tests: T-048…T-052, T-070.
 
 ---
 
@@ -250,8 +260,17 @@ then `p:<voiceId>:<bpm %.9f>:<outputSampleRate>:<0|1 conversion>:<portamento %.9
 `processBlock` never locks, allocates, frees or waits (PK-38). The current take is handed over through `TakeSlot`
 (single writer = message thread, single reader = audio thread): `publish` stores the new take as current and retires the old
 one; `acquire` marks the current take in use and returns it; `release` clears the mark; `collect` (writer side, timer) frees
-retired takes not in use. `renderBlock` (header) produces the mono signal; the plugin copies it to every output channel.
-Incoming MIDI is ignored except while capturing (D-010). Tests: T-033, T-037, T-038, T-055.
+retired takes not in use. **Protocol** (R-024; all atomics `seq_cst`; `BUSY` = the address of a private static sentinel):
+`acquire`: `inUse.store(BUSY)`; `p = current.load()`; `inUse.store(p)`; return `p`. `release`: `inUse.store(nullptr)`.
+`publish` (writer mutex): `old = current.exchange(new)`; a non-null `old` goes to `retired`. `collect` (writer mutex): `u =
+inUse.load()`; `u == BUSY` → free nothing; else free every retired take `!= u`. S-005 implements exactly this sequence.
+`renderBlock` (header) produces the mono signal; the plugin renders into channel 0 and copies it to the other channels (no
+scratch buffer). Incoming MIDI is ignored except while capturing (D-010). **Plugin threading** (R-026): the capture buffer
+is a single-producer/single-consumer FIFO (`juce::AbstractFifo` over 4096 preallocated events) allocated once in the
+constructor — `arm(true)` only resets its indices; host bpm, sample rate and transport state reach the message thread
+through `std::atomic` values written by `processBlock`; every other piece of state (lyrics, stored notes, voice, engines,
+render parameters) is guarded by one message-side mutex that `processBlock` never takes, and `get/setStateInformation`
+take it too. `processBlock` runs under `juce::ScopedNoDenormals` (R-045). Tests: T-033, T-037, T-038, T-055.
 
 ### D-010 Plugin behaviour and parameters
 Parameters are exactly `kParams` (`params.hpp`), in that order, JUCE `ParameterID{id, 1}` (PK-40); `docs/PARAMETERS.md` is
@@ -266,7 +285,11 @@ the last keystroke), changes of `convert`/`portamento`/`vibrato`/`seed`, a host 
 bpm, or a host sample rate differing from the take's. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
 no voice, lyrics that fail to parse, no stored notes. No voice loaded → no render and
 `lastError()` = `Load a voice`. Lyrics that fail `parseLyrics` → no render, `lastError()` = `Lyrics: <ParseError message>`.
-No stored notes → no render and no error (status stays as it was). `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
+No stored notes → no render and no error (status stays as it was). The renderer's function is
+`cachedRender(fn, <user application data>/sing-vst/takes)` (`juce::File::userApplicationDataDirectory`; D-038), so a
+restored project, a voice reload or an undo plays the stored take bit-for-bit instead of a new performance (R-017); the
+cache is never pruned automatically (README says where it is). The status line shows the loaded voice's manifest name
+and the first 8 hex digits of its `voice_sha256` (R-015). `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
 last. Capture never allocates on the audio thread (D-022): `arm(true)` preallocates a buffer of 4096 raw note events; the
 audio thread appends `(ppq, note, on/off)` without allocating (events beyond 4096 are dropped and counted); the message-thread
 timer feeds them to `CaptureRecorder`, and after the stop it stores the notes (a dropped-event count > 0 adds the warning
@@ -278,11 +301,13 @@ submits a render; malformed state → defaults kept and `lastError` set. Tests: 
 ### D-027 Editor
 One resizable window: lyrics text editor (multi-line), buttons *Load voice…*, *Import MIDI…*, *Arm capture* (toggle),
 a status line (render status, last error) and a warnings list, and the five parameters as sliders/toggle (generated from
-`kParams`). Behaviour that cannot be exercised headless (layout, focus, file dialogs, keystroke debounce feel) is
+`kParams`). File dialogs use `juce::FileChooser::launchAsync`; the editor runs no modal loop (R-048). Behaviour that cannot be exercised headless (layout, focus, file dialogs, keystroke debounce feel) is
 **implemented, unverified** and listed in the G-001 checklist (PK-39).
 
 ### D-031 Standard MIDI File import (`importMidi`)
-The bytes are untrusted (PK-42): every read is bounds-checked and any violation → `ValidationError` naming it.
+The bytes are untrusted (PK-42): every read is bounds-checked and any violation → `ValidationError` naming it. Limits
+(R-027, T-069): more than 5000 notes, or a note ending more than 900 s after time 0 at the file's `bpm`, → `ValidationError`
+naming the limit. Running status persists across meta (`FF`) and sysex (`F0`/`F7`) events, as common readers do (R-046).
 Header `MThd`, length ≥ 6, format 0 or 1 (2 → error), track count, division: bit 15 set (SMPTE) → error; PPQ must be > 0.
 Chunks follow; `MTrk` chunks are parsed, other chunk types are skipped by their length; a length past the end → error.
 Events: delta time as a variable-length quantity of at most 4 bytes; running status for channel messages (a data byte with
@@ -302,7 +327,8 @@ warning `tempo changes after beat <b> are ignored` (b = its beat, `%g`). Tests: 
 Notes, lyrics and tempo come from the MIDI file as in D-010 unless overridden. Output: mono 32-bit float WAV at `--rate`
 (default 48000), soft-clipped (D-021) unless `--raw`, plus `<out>.provenance.json` with `git_commit` (compile-time),
 `voice_sha256` (of manifest.json), `params`, `seeds` (`{"converter": <seed>}`), `utc_timestamp`, `hardware`, `threads`, `ort_version`, `warnings`,
-`unclipped_peak`, `render_seconds`, `audio_seconds`. Shapes: `params` = the effective options after defaults, `{"bpm",
+`unclipped_peak`, `render_seconds`, `audio_seconds`. `git_commit` is written into a generated header by a build-time custom
+command that runs on every build, so an incremental rebuild never stamps an old commit (R-047). Shapes: `params` = the effective options after defaults, `{"bpm",
 "rate", "gain_db", "raw", "convert", "dict", "lyrics_source": "midi"|"text"|"file"}`; `hardware` = `{"os": <uname
 sysname + release, or the Windows version>, "cpu": <CPU model string, or "unknown">, "logical_cores":
 std::thread::hardware_concurrency()}`; `threads` = the ONNX Runtime intra-op thread count used (integer);
@@ -338,7 +364,7 @@ Training runs where the owner has a free GPU (A-009): **Google Colab** free tier
 implementer cannot reach these hosts; C-044). Rules (C-017, C-018, C-019): the first code cell runs `nvidia-smi`; a consent
 cell requires `CONSENT_CONFIRMED = True` plus a one-line attestation (A-011); every training action is a notebook cell that
 calls `python -m singvst_train.cli <command>` — no web UI, no tunnels, no `--share`; data moves to and from Drive (or Kaggle
-datasets) as single `tar` archives. Stages are resumable (`pipeline.run_stages`, markers on Drive) and RVC resumes from the
+datasets) as single `tar` archives, except the RVC experiment and weights, which D-035 keeps on Drive through symlinks (R-033). Stages are resumable (`pipeline.run_stages`, markers on Drive) and RVC resumes from the
 newest checkpoint in `logs/<exp>` (C-047), which is kept on Drive (Colab) or in the output dataset (Kaggle); checkpoints every
 10 epochs with `-l 1 -sw 1` (C-022). The notebooks pin RVC 81eed5e, install its CUDA requirements from the official indexes
 (D-019), download the RVC assets from Hugging Face (C-032), and run: prepare → RVC preprocess/f0/features/train (48 kHz, v2,
@@ -350,7 +376,11 @@ Procedure (frozen as `eval/PROCEDURE.md` and implemented in `evaluate.py`; value
 the five original **evaluation phrases** in `eval/phrases/` (MIDI with lyric meta events; written for this project, no
 third-party lyrics) are transposed by one whole-semitone shift so their pooled median pitch is nearest the median F0 of the
 **held-out** recordings (eval/PROCEDURE.md wins over any other wording),
-then rendered twice with `singvst-render` (seed 0): with and without conversion.
+then rendered with `singvst-render` (seed 0) with and without conversion, `evaluate.REPEATS` = 5 times each because the
+guide's noise is unseeded (C-040); every metric is the mean over the repeats and `spread.json` holds the per-repeat values
+(R-018). At G-001 a threshold that lies within a metric's [min, max] spread is reported as **indeterminate** for that
+metric. `ceiling.json` (held-out against training-file embeddings) is shown beside the similarity as its same-singer
+ceiling (R-032); similarity is a proxy that only the G-001 listening record confirms.
 - **Speaker similarity**: cosine between the Resemblyzer 0.1.4 embedding (C-028) of each converted render and the mean
   embedding of the held-out source recordings (10 % by file, `split_heldout`, never trained on); the guide-only render gives
   the **baseline** (PK-35); gain = converted − baseline.
@@ -593,6 +623,23 @@ checks SHA-256 `925ca2ad44287757d26628608b2744381e75748042d0e6fae356ee8cdae19f4e
 `depth` = `min(0.4, max_depth)` where `max_depth` is read from `dsacoustic/dsconfig.yaml` (divided by 1000 when it is > 1,
 the legacy integer convention; C-034), 0.4 when the key is absent — the caller clamps, `pack_voice` does not (errata E-3).
 `guide_licence` = "TIGER DiffSinger v102, CC BY-NC-ND 4.0 + Commons Clause, personal non-commercial use (C-037)".
+
+### D-038 Pre-mortem round 1 hardening (premortem/round-1.md)
+**Take cache** (R-017; `core/include/singvst/take_cache.hpp`, T-067, T-068). File `<16 lower-case hex digits of
+contentHash>.take`, little-endian: `"SVTAKE01"` (8 bytes), `contentHash` u64, `startBeat` f64, `bpm` f64, `sampleRate` i32,
+`unclippedPeak` f32, sample count `n` u64 (48-byte header), `n` × f32 samples, then FNV-1a-64 (D-009 constants) of all
+preceding bytes (u64): size = 56 + 4n. `storeTake` writes `<name>.tmp` then renames; `loadTake` checks the size before
+allocating, then magic, stored hash = requested hash, `sampleRate` > 0, `n` ≤ 900 × `sampleRate`, and the checksum; any
+failure is a miss. `cachedRender` keys by `phraseHash(request)` and stores only a take whose `contentHash` equals it.
+Implemented by S-009 (planning sketch: research/spikes/premortem-r1/take_cache_sketch.cpp passes T-067/T-068).
+**Limits** (R-027): 5000 notes and 900 s per take, in `importMidi` (D-031, T-069, S-006) and `renderTake` (D-013, T-070,
+S-009); external-data ONNX models rejected at engine load (D-012, S-008).
+**Index of round-1 mitigations:** R-013/R-014/R-015/R-016/R-019/R-020/R-021/R-022/R-023/R-029/R-031/R-033/R-034/R-035/
+R-042/R-044/R-050 → D-035 (notebook); R-017 → D-010, D-012, take cache; R-018/R-032 → D-017, eval/PROCEDURE.md,
+`evaluate.REPEATS`; R-024/R-026/R-045 → D-022, D-002; R-025 → D-012, D-013; R-027 → limits; R-030/R-036/R-037 →
+plan/GATES.md and S-017; R-038 → S-019 and research/PRIOR_KNOWLEDGE.md; R-039/R-040 → ci.yml, tools/ci_annotate.py;
+R-041 → S-018 README; R-046 → D-031; R-047 → D-014; R-048 → D-027. R-028 and R-043 are recorded as accepted Medium/Low
+risks with the partial controls listed in premortem/RISK_REGISTER.md.
 
 ### D-036 CI waiting, attempts and local loops
 CI runs are read with `gh api "repos/qualitycoding/sing-vst/actions/runs?branch=<impl>&head_sha=<sha>&per_page=5"` (quoted;
