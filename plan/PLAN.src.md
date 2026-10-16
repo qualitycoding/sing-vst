@@ -8,7 +8,9 @@ when every step in its `Depends on` has passed. "Full suite" means: `ctest` in t
 under `xvfb-run -a`, and `../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice and not network"` with
 `SINGVST_RENDER_BIN` set once S-010 is done — all green except tests whose step has not been reached (listed in
 `EXECUTION_LOG.md` per attempt). On the no-root path of S-000 action 3, "locally" is waived for T-034 and the plugin
-tests T-053…T-059 (the full tree is not built): the CI `test-summary` notice of D-036 is their evidence. "Save" means `bash tools/save.sh "<S-### …>" <paths>` (commit + push + state.json, D-029).
+tests T-053…T-059 (the full tree is not built): the CI `test-summary` notice of D-036 is their evidence. Whenever a
+`Done when` names a CI result ("in CI", or a test that is CI-only on the current path), the step's last action is: Save
+(which pushes), then wait for and read that commit's CI run as D-036 says. "Save" means `bash tools/save.sh "<S-### …>" <paths>` (commit + push + state.json, D-029).
 Defaults for every step unless the step says otherwise:
 - **On failure (default):** fix the implementation, never a frozen test (DR-04); re-run the full suite after any fix to
   shared code (PK-51); after three failed attempts on the same test write `BLOCKED.md` (test, logs, hypotheses) and halt.
@@ -25,21 +27,28 @@ Defaults for every step unless the step says otherwise:
 - Inputs: generation branch `gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`; plan/ENVIRONMENT.md; plan/ASSUMPTIONS.md A-014; research/PRIOR_KNOWLEDGE.md (task tags, line 3)
 - Actions: (every session first: if `origin/impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` exists, check it
   out instead of creating it, keep the existing logs, and re-run only the actions whose out-of-tree results are missing —
-  `.git/singvst-trailers`, `../build-*`, `../venv-lock`, `../rvc`, `../store-*`, `$HOME/deps` — then follow HANDOFF §Resume)
+  `.git/singvst-trailers`, `../build-*`, `../venv-lock`, `../rvc`, `../store-*`, `$HOME/deps` — then follow HANDOFF §Resume).
+  The parent directory of the repository must be writable (all `../` paths live there); if it is not, write `BLOCKED.md`.
   1. Attach `qualitycoding/sing-vst`, `qualitycoding/Lessons` and `qualitycoding/knowledge` with push access through the
-     session's repository tool and clone the stores with the clone command it returns (never a pasted token — PK-12).
-     `gh` uses the session's preconfigured GitHub credential (never a pasted token). Read-only probes (PK-17), each must
-     succeed except the advisory `gh api user` (an installation token may get 403 there; record it and go on): `gh api repos/qualitycoding/<repo> --jq .permissions.push`
+     session's repository tool and clone the stores with the clone command it returns, into `../store-lessons` and
+     `../store-knowledge` (never a pasted token — PK-12). `gh` uses the session's preconfigured GitHub credential. Read-only
+     probes (PK-17), each must succeed: `gh api repos/qualitycoding/<repo> --jq .permissions.push`
      prints `true` for all three; `gh api repos/qualitycoding/sing-vst --jq .default_branch` prints `main`;
      `gh api "repos/qualitycoding/sing-vst/actions/runs?per_page=1"` (Actions readable); `gh api
      "repos/qualitycoding/sing-vst/pulls?per_page=1"` (pull requests readable). Write access for `gh run rerun` and
      `gh pr create` cannot be probed read-only: if either fails later, record it and use the fallback of D-036 (re-run) or S-019 (pull request).
-  2. Create `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` from the generation branch;
-     `git config --add remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'`; `git push -u origin <impl>`;
-     `git fetch origin` and check `git rev-parse origin/<impl>` succeeds. Write your own session's commit trailers
-     (newline-separated) to `.git/singvst-trailers` — untracked, read by `tools/save.sh`.
-  3. Tools: `cmake --version` ≥ 3.22, `ninja`, `g++` 13, `python3.12`, `curl`, `unzip` exist (else `BLOCKED.md`). With root
-     or sudo: install the JUCE packages of the `cpp` job in `.github/workflows/ci.yml` plus `xvfb`, and generate the German
+  2. Branch (`<impl>` = `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`): `git config --add remote.origin.fetch
+     '+refs/heads/*:refs/remotes/origin/*'`; `git fetch origin` (`git fetch --unshallow origin` first if `git rev-parse
+     --is-shallow-repository` prints `true`); `git switch -c <impl> origin/gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`;
+     `git push -u origin <impl>`; check `git rev-parse origin/<impl>` succeeds. Git identity: keep the environment's
+     `user.name`/`user.email`; if either is empty, set `git config user.name "sing-vst implementer"` and `git config
+     user.email noreply@anthropic.com`. Trailers: write to `.git/singvst-trailers` (untracked, read by `tools/save.sh`) the
+     commit-message trailer lines your session's instructions prescribe, one per line; if they prescribe none, write
+     `Co-Authored-By: <your model name> <noreply@anthropic.com>`.
+  3. Tools: `cmake --version` ≥ 3.22, `ninja`, `g++ --version` major version 13 (13.x accepted; CI uses 13.3), `python3.12`,
+     `curl`, `unzip` exist (else `BLOCKED.md`). With root or sudo: `sudo apt-get update && sudo apt-get install -y` the
+     package list of the `cpp` job's apt step in `.github/workflows/ci.yml` (it includes `xvfb`) plus `python3.12-venv
+     locales` (an install failure is the no-root path below), and generate the German
      locale T-034 needs (`localedef -i de_DE -f UTF-8 de_DE.UTF-8` as root, else `sudo locale-gen de_DE.UTF-8`; C-056).
      Without root/sudo or apt mirrors: record it in `DEVIATIONS.md`; the plugin build, plugin tests, pluginval and T-034 are
      then checked in CI only (D-036) — not a halt.
@@ -47,7 +56,8 @@ Defaults for every step unless the step says otherwise:
      {"lessons": "<sha>", "knowledge": "<sha>"}}'`; list files **added** after the R0 commits
      (first `git -C <clone> fetch --unshallow` when `git -C <clone> rev-parse --is-shallow-repository` prints `true`; then
      `git -C ../store-lessons log --diff-filter=A --name-only --format= ac028c7..HEAD`, and in `../store-knowledge` from
-     `09f3458`) whose tags include a task tag of research/PRIOR_KNOWLEDGE.md line 3 or `applies:all`. Record each in
+     `09f3458`) that are active (lessons `status: active`, knowledge items `status: current`) and whose tags include a task
+     tag of research/PRIOR_KNOWLEDGE.md line 3 or `applies:all` (protocol Appendix C). Record each in
      `DEVIATIONS.md` (`Plan says` = the store rule or fact, `Done instead` = "followed" or "not followed: conflicts with
      <plan item or frozen file>"); the plan and frozen files win over a new store rule (PK-02).
   5. `bash research/spikes/hosts/run.sh > ../hosts-now.txt`; compare every row with plan/ENVIRONMENT.md §Hosts (its "run.sh roles" column maps the rows; 000 = unreachable, any
@@ -65,7 +75,10 @@ Defaults for every step unless the step says otherwise:
 - Evidence produced: none
 - Done when: every action succeeded (or recorded its documented fallback); the action 7 commands pass.
 - Checkpoint: default
-- On failure: halt and write `BLOCKED.md` naming what is missing (credential, host, package) before any delivery work.
+- On failure: halt and write `BLOCKED.md` naming what is missing (credential, host, package) before any delivery work —
+  except a T-P21 (pip-audit) finding: apply DR-07 once (regenerate the lock, update the Toolkit lock row of
+  plan/ENVIRONMENT.md with the new line count, record it in `DEVIATIONS.md`); a second finding or an incompatible fix →
+  `BLOCKED.md`.
 - Gate: none
 - Relevant decisions/claims: D-018, D-019, D-029, C-044
 - Lessons applied: {{L:PK-01,PK-02,PK-08,PK-12,PK-13,PK-20,PK-55}}
@@ -295,7 +308,8 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-012
 - Inputs: python/singvst_train/export_rvc.py; RVC 81eed5e; D-012
 - Actions: implement `export_synth`, `export_content`, `make_test_weights`, `parity` and the CLI commands `export`,
-  `make-test-weights` (D-035); push and read the CI `python-torch` job (D-036: one attempt = one CI run of a new commit; no
+  `make-test-weights` (D-035); `export --exp-name` delegates to `rvc_files.latest_weights`, which S-014 implements (no
+  test before S-014 uses `--exp-name`); push and read the CI `python-torch` job (D-036: one attempt = one CI run of a new commit; no
   local torch); read the `hf-revision` notice annotation of that job and replace "`--revision main` (S-013 records the
   resolved revision here)" in the plan/ENVIRONMENT.md pins table with the printed SHA (the job's RVC checkout and its
   `rvc/assets/hubert_base` exist only on the CI runner).
@@ -383,15 +397,16 @@ Defaults for every step unless the step says otherwise:
 - Inputs: G-004 response; notebooks
 - Actions: 
   1. Halt at G-004: write `GATE-G-004.md` (plan/GATES.md) and end the turn with the gate message.
-  1a. `GATE-G-004.md` gives the notebook URLs and the Parameters-cell values (`VOICE` = `myvoice` unless the owner names
+  1a. `GATE-G-004.md` gives the notebook URLs, the attestation sentence of D-035 and the Parameters-cell values (`VOICE` = `myvoice` unless the owner names
      one, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach (or paste) `report.json`, `report.json.provenance.json`, `verdict.json`
      and `budget.json` (D-035); a `failed: …` response is handled as plan/GATES.md G-004 says;
      the notebook's last test cell is T-P20.
-  3. Commit those four files to `results/<voice>/` (`<voice>` = the `--name` given to `pack`; check it in `report.json`'s
-     provenance `params`); never commit audio, recordings or voice packages (T-062).
+  3. Commit those four files to `results/<voice>/run<N>/` (`<voice>` = the `--name` given to `pack`, checked in
+     `report.json`'s provenance `params`; `<N>` = 1 for the first returned results, +1 for each later G-004 issue);
+     before re-issuing G-004 or G-001, `git mv` the previous gate file to `GATE-G-00<k>.run<N>.md` (history kept, Rule 9); never commit audio, recordings or voice packages (T-062).
   4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`) and halt.
-- Outputs: results/<voice>/report.json, results/<voice>/report.json.provenance.json, results/<voice>/verdict.json, results/<voice>/budget.json, GATE-G-004.md, GATE-G-001.md
+- Outputs: results/<voice>/run<N>/report.json, results/<voice>/run<N>/report.json.provenance.json, results/<voice>/run<N>/verdict.json, results/<voice>/run<N>/budget.json, GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<N>.md)
 - Evidence produced: T-P20 (run by the owner); G-001 record
 - Done when: the G-001 response is recorded in `GATE-G-001.md`.
 - Checkpoint: default
