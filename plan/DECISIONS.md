@@ -458,7 +458,7 @@ on stderr). Paths are absolute or relative to the working directory.
 
 **Notebook environment.** Every Python command of the notebook runs in a uv-managed Python 3.12 venv, whatever the runtime's
 Python (C-060): `pip install uv==0.13.1`; `uv venv --python 3.12 --python-preference only-managed /content/py312`
-(Kaggle: `/kaggle/working/py312`); `os.environ["PATH"] = f"{VENV}/bin:" + os.environ["PATH"]`, so every later
+(Kaggle: `/tmp/py312`); `os.environ["PATH"] = f"{VENV}/bin:" + os.environ["PATH"]`, so every later
 `!python …` — spelled exactly `python -m singvst_train.cli <cmd>` for toolkit calls (T-P17) — and RVC's scripts run in the
 venv; then with `uv pip install --python $VENV/bin/python`: RVC's `requirments_cu128_py312.txt` without its index lines
 (`grep -vE -- '--(extra-)?index-url|torch-directml'`, as ci.yml) with `--index-url https://pypi.org/simple
@@ -472,7 +472,7 @@ applies to `prepare` and `evaluate` sidecars). `ffmpeg` must be on PATH for Whis
 -y ffmpeg`.
 **Paths.** Colab: `<root>` = `/content/drive/MyDrive/singvst/<VOICE>`, `<rvc>` = `/content/rvc`, `<sing-vst>` =
 `/content/sing-vst`, `VENV` = `/content/py312`, recordings in `<root>/raw/`. Kaggle: `<root>` = `/kaggle/working`, `<rvc>` =
-`/tmp/rvc`, `<sing-vst>` = `/tmp/sing-vst`, `VENV` = `/kaggle/working/py312`, recordings in the input dataset
+`/tmp/rvc`, `<sing-vst>` = `/tmp/sing-vst`, `VENV` = `/tmp/py312`, recordings in the input dataset
 `/kaggle/input/singvst-<VOICE>/` (read-only; `raw/` below means that folder). `<rvc>` and `<sing-vst>` are re-cloned every
 session; the RVC experiment and weights live on persistent storage: `<rvc>/logs/<VOICE>` and `<rvc>/assets/weights` are
 symlinks to `<root>/logs/<VOICE>` and `<root>/weights`. Stage-table paths starting `logs/` or `assets/` are under `<rvc>`

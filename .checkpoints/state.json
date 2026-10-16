@@ -182,8 +182,8 @@
     "lessons/L-20261016T000000Z-save-tool-silently-used-another-sessions-identity.md": "0c943909a17d0c56045557171fbc94c9519c4ac0009f46984fb91367d8e80b49",
     "lessons/L-20261016T000100Z-notebook-stage-table-without-the-copy-steps-between-stages.md": "6f69d7a8c8e1d42e7a149ff4fdc77ce18fa8b86497b93256f4ec6c2dbd755e6a",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "ed7379c18cce97119ce936f43269c227b1496498888e7fd1c0e1d499061174a1",
-    "plan/ENVIRONMENT.md": "a03887f816216e87c78c418dee97f1c2a548905e28b3a02d015b225edd4ca814",
+    "plan/DECISIONS.md": "6601418a6cc2f3a98dfc899284e8c5bf774cb9b4005f66f2366671a1be67ca78",
+    "plan/ENVIRONMENT.md": "d27de67cf9944a5f5844fc94f8b617295006b8573fc3efac75f581606583001e",
     "plan/GATES.md": "d82478be6a4c42d431d04eb5b101d5e04b4065908f5adb2fff5e29deabe8cb1e",
     "plan/PLAN.md": "81e00c404741e9565225edb7a9cf1b81765c359407551c12b7840931da1f4828",
     "plan/PLAN.src.md": "d4125fe99a2fcadf904fa3b9bb4f4f7b66dff25e4882399bf395d54a15b370d1",
@@ -350,7 +350,7 @@
     "third_party/cmudict/LICENSE": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
     "third_party/cmudict/SOURCE.txt": "9055797f1532cd2199a480009da8e0a566287561e391acb70900cf3817562dc7",
     "third_party/cmudict/cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
-    "tools/bootstrap_test_env.sh": "640fb0c198c2b9d43e6fe16a6a6933264c4a326a1f54b6845cfe82115f0f3304",
+    "tools/bootstrap_test_env.sh": "7cf8f9436357f3420b8572c9ebd19096edfbdc5c3fa9b75254a4938be450676f",
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "e567b53f1671429cb1f221961877b4090e0e24798cf00bd49ad2a36b6753243d",
     "tools/ci_annotate.py": "a5dcdb0e178e71c824bb655e9ce0d32620add31fb93467cf12ba498ac197a7f9",
@@ -706,7 +706,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T07:21:55Z",
+  "updated_at": "2026-10-16T07:22:17Z",
   "active_step_id": "3.6",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -756,7 +756,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 50,
+  "sequence": 51,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

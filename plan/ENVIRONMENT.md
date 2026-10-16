@@ -18,8 +18,10 @@
 | huggingface_hub (download venv only) | 2.2.0 (`hf download` flags checked 2026-10-15) | | C-032 |
 | GitHub Actions | checkout v7, setup-python v7, upload-artifact v7, download-artifact v8 | | C-045 |
 
-Full hashes are in `cmake/Dependencies.cmake`, `tools/bootstrap_test_env.sh` and `.github/workflows/ci.yml`; they are
-checked at configure or download time (DR-02).
+`tools/bootstrap_test_env.sh` holds the JUCE and Catch2 commits above and the ONNX Runtime archive SHA-256, and exits 4 when
+a tag no longer resolves to its pinned commit (DR-02) and 3 when a clone sits elsewhere; it prints `ok JUCE @ 9.0.3 (be29c81…)`,
+`ok Catch2 @ v3.16.1 (0809213…)`. CMake FetchContent and CI fetch by tag; S-000 runs the bootstrap in every session, so a
+moved tag is caught there.
 
 ## Setup commands (verified in the planning sandbox, 2026-10-15)
 ```bash
