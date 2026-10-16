@@ -4,7 +4,7 @@ title: "A notebook spec listed stage outputs that no command produced (split fol
 status: active
 supersedes: []
 recurrence_of: null
-occurrences: 1
+occurrences: 2
 severity: High
 tags: [domain:ml-training, tech:colab, kind:missing-spec, phase:planning]
 recorded_by: planner
@@ -23,3 +23,4 @@ For every row of a stage table, name the literal command that creates each outpu
 For each stage-table output, grep D-035 for the command that writes it.
 ## Evidence
 premortem/coldread-pass-4.md S1, S2; plan/DECISIONS.md D-035.
+Recurrence 2026-10-16 (cold read pass 5 S1, S2): owner-edited cells, absolute paths per platform and each command's cwd were unstated; resolved in D-035 §Paths.
