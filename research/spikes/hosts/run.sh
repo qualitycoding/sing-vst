@@ -21,4 +21,6 @@ pytorch-index             https://download.pytorch.org/whl/cpu/
 colab                     https://colab.research.google.com/
 kaggle                    https://www.kaggle.com/
 actions-results           https://results-receiver.actions.githubusercontent.com/
+apt-archive               http://archive.ubuntu.com/ubuntu/dists/noble/Release
+apt-security              http://security.ubuntu.com/ubuntu/dists/noble-security/Release
 HOSTS

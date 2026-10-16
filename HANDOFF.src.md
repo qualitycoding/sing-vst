@@ -100,6 +100,9 @@ merges the generation branch into the impl branch and resumes.
 - Default rule: choose the most reversible option that does not expand scope, log it in DEVIATIONS.md, and continue.
 
 ## Resume (zero-context, protocol v3.3 1.2.3)
+Every session begins with the S-000 preamble (recreate missing out-of-tree artefacts, including `.git/singvst-trailers`,
+before the first save — `tools/save.sh` refuses to commit without trailers). `*.src.md` files are generator inputs
+(`tools/gen/`); do not read or edit them.
 This procedure applies once S-000 has set `phase` to `impl`. A first implementation session (state.json `phase` is not
 `impl`) starts at S-000 and ignores the planner's `active_step_id` and `in_flight_operation`.
 1. Read `.checkpoints/state.json` (or the highest `.checkpoints/snapshots/*-seq-<N>.json`). 2. Verify every artifact hash;

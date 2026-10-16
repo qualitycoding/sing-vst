@@ -239,8 +239,8 @@
   "contradicted_by": [],
   "informs": [
    "D-012",
-   "T-037",
-   "T-038"
+   "T-042",
+   "T-043"
   ]
  },
  {
@@ -596,7 +596,7 @@
   "independent_publishers": 1,
   "contradicted_by": [],
   "informs": [
-   "T-021",
+   "T-025",
    "D-012"
   ]
  },
@@ -937,7 +937,7 @@
   "contradicted_by": [],
   "informs": [
    "D-012",
-   "T-037"
+   "T-043"
   ]
  },
  {
@@ -1067,7 +1067,8 @@
   "contradicted_by": [],
   "informs": [
    "D-012",
-   "T-037"
+   "T-043",
+   "T-044"
   ]
  },
  {

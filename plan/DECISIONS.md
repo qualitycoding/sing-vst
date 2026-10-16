@@ -231,7 +231,7 @@ phraseHash(request.notes, request.tokens, request.params)` (the request as submi
 queued request is kept). A request whose hash equals the current Ready take's `contentHash` is not rendered (status stays
 Ready). On success the take replaces `latest()` and status is Ready; on an exception status is Failed, `lastError()` holds
 `what()`, and `latest()` keeps the previous take; a `Cancelled` job is discarded silently. `renderCount()` counts completed,
-non-discarded renders. The destructor cancels and joins within 5 s. Tests: T-048…T-051.
+non-discarded renders. The destructor cancels and joins within 5 s. Tests: T-048…T-052.
 
 ---
 
@@ -300,7 +300,12 @@ warning `tempo changes after beat <b> are ignored` (b = its beat, `%g`). Tests: 
 Notes, lyrics and tempo come from the MIDI file as in D-010 unless overridden. Output: mono 32-bit float WAV at `--rate`
 (default 48000), soft-clipped (D-021) unless `--raw`, plus `<out>.provenance.json` with `git_commit` (compile-time),
 `voice_sha256` (of manifest.json), `params`, `seeds` (`{"converter": <seed>}`), `utc_timestamp`, `hardware`, `threads`, `ort_version`, `warnings`,
-`unclipped_peak`, `render_seconds`, `audio_seconds`. `--check-voice` prints `ok <name>` (exit 0). Exit codes: 0 success; 2
+`unclipped_peak`, `render_seconds`, `audio_seconds`. Shapes: `params` = the effective options after defaults, `{"bpm",
+"rate", "gain_db", "raw", "convert", "dict", "lyrics_source": "midi"|"text"|"file"}`; `hardware` = `{"os": <uname
+sysname + release, or the Windows version>, "cpu": <CPU model string, or "unknown">, "logical_cores":
+std::thread::hardware_concurrency()}`; `threads` = the ONNX Runtime intra-op thread count used (integer);
+`render_seconds` = wall-clock seconds of the `renderTake` call only (model, dictionary and runtime loading excluded);
+`audio_seconds` = output samples / `--rate`. `--seed` defaults to 0. `--check-voice` prints `ok <name>` (exit 0). Exit codes: 0 success; 2
 usage, missing file or invalid voice (stderr names the cause, containing the word `voice` for voice errors); 3 render
 failure. Mechanical rule: the CLI itself calls, in order, argument parsing, `parseManifest` + `validatePackage`, engine loading,
 `importMidi`, `parseLyrics`, dictionary loading and `toMonophonic` (empty result → "no notes"); any exception from these
@@ -449,8 +454,12 @@ on stderr). Paths are absolute or relative to the working directory.
 
 **Notebook environment.** Every Python command of the notebook runs in a uv-managed Python 3.12 venv, whatever the runtime's
 Python (C-060): `pip install uv==0.13.1`; `uv venv --python 3.12 --python-preference only-managed /content/py312`
-(Kaggle: `/kaggle/working/py312`); then with `uv pip install --python <venv>/bin/python`: RVC's
-`requirments_cu128_py312.txt` (official indexes, C-023), `uv pip uninstall onnxruntime-gpu onnxruntime`, then
+(Kaggle: `/kaggle/working/py312`); `os.environ["PATH"] = f"{VENV}/bin:" + os.environ["PATH"]`, so every later
+`!python …` — spelled exactly `python -m singvst_train.cli <cmd>` for toolkit calls (T-P17) — and RVC's scripts run in the
+venv; then with `uv pip install --python $VENV/bin/python`: RVC's `requirments_cu128_py312.txt` without its index lines
+(`grep -vE -- '--(extra-)?index-url|torch-directml'`, as ci.yml) with `--index-url https://pypi.org/simple
+--extra-index-url https://download.pytorch.org/whl/cu128 --index-strategy unsafe-best-match` (official indexes, C-023;
+the `+cu128` torch wheel exists only on the second index), `uv pip uninstall onnxruntime-gpu onnxruntime`, then
 `onnx==1.23.2 onnxruntime==1.31.0 pyworld==0.3.5 mido==1.3.3 pytest==9.1.1 nbformat==5.10.4 PyYAML==6.0.3
 resemblyzer==0.1.4 openai-whisper==20250625` (+ `audio-separator==0.47.0` only when `DEREVERB`), and the toolkit with
 `-e <sing-vst>/python --no-deps` (editable, so `provenance.collect` finds the repository root as
@@ -458,39 +467,46 @@ resemblyzer==0.1.4 openai-whisper==20250625` (+ `audio-separator==0.47.0` only w
 applies to `prepare` and `evaluate` sidecars). `ffmpeg` must be on PATH for Whisper (C-059): `which ffmpeg || apt-get install
 -y ffmpeg`. The RVC experiment and weights live on persistent storage: `<rvc>/logs/<voice>` and `<rvc>/assets/weights` are
 symlinks to `<root>/logs/<voice>` and `<root>/weights` (Drive on Colab, `/kaggle/working` on Kaggle).
-**Parameters cell** (the only cell the owner edits, after the consent cell): `VOICE = "myvoice"` (lower-case letters,
+**Parameters cell** (cell (2a), the only cell the owner edits, after the consent cell; GATE-G-004.md states the values to enter): `VOICE = "myvoice"` (lower-case letters,
 digits and `-`; used for `--name`, the Drive folder and the RVC experiment), `DEREVERB = False`, `EPOCHS = 200`,
 `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). `--consent` = the attestation text; `--guide-licence` =
-the D-035 §Guide voicebank string. **Memory check** (PK-43) before training: print GPU name, GPU memory and RAM; batch size
+the D-035 §Guide voicebank string. **Memory check** (cell (10a), PK-43) before training: print GPU name, GPU memory and RAM; batch size
 8 when GPU memory ≥ 14 GiB, else 4; RAM < 10 GiB → stop with a message to choose a High-RAM runtime.
 **GPU time** = the wall-clock time of the stages rvc-f0, rvc-features, train, export and evaluate. Kaggle's weekly quota
 cannot be read from code: the notebook prints a reminder to check it in Kaggle's settings before the train stage.
 **Notebook layout** (Colab: Google Drive folder `MyDrive/singvst/<voice>/`; Kaggle: input dataset `singvst-<voice>` and the
-notebook's `/kaggle/working` output): `raw/` the owner's recordings (WAV; FLAC is converted to WAV first with soundfile),
+notebook's `/kaggle/working` output): `raw/` the owner's recordings (WAV or FLAC; the split stage first writes every one as WAV to `raw_wav/<stem>.wav` with
+soundfile, same sample rate, subtype PCM_24),
 `state/` stage markers (`pipeline.run_stages`), `logs/<voice>/` the RVC experiment (kept for resume, C-047), `out/` exports,
-voice package and evaluation. Cells, in order: (1) `!nvidia-smi`; (2) consent (`CONSENT_CONFIRMED = False`, `ATTESTATION = ""`,
-then `assert CONSENT_CONFIRMED and ATTESTATION`); (3) mount Drive / set paths (Kaggle: copy `state/`, `logs/<voice>/` and `out/budget.json` from the previous run's output,
+voice package and evaluation; relative paths below are under `<root>` (the Drive folder or `/kaggle/working`). Cells, in order
+(19 code cells): (1) `!nvidia-smi`; (2) consent (`CONSENT_CONFIRMED = False`, `ATTESTATION = ""`,
+then `assert CONSENT_CONFIRMED and ATTESTATION`); (2a) the Parameters cell; (3) mount Drive / set paths (Kaggle: copy `state/`, `logs/<voice>/` and `out/budget.json` from the previous run's output,
 attached as an input dataset, into `/kaggle/working` before anything else); (4) clone sing-vst at the impl branch
-(`impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`, recording `git rev-parse HEAD` in `out/budget.json`) and RVC 81eed5e; install RVC's `requirments_cu128_py312.txt` from the official indexes (C-023) and the toolkit
-`--no-deps` with the D-019 extras, after `pip uninstall -y onnxruntime-gpu onnxruntime` (RVC's file pins onnxruntime-gpu < 1.20,
-which provides the same `onnxruntime` package; C-023) and then `pip install onnxruntime==1.31.0`; (5) RVC assets with `hf download` exactly as C-052 but with `--revision <the SHA recorded in plan/ENVIRONMENT.md by S-013>` (hubert_base, rmvpe.pt, pretrained_v2,
-mute.zip → `logs/`) in a separate venv for huggingface_hub 2.2.0 (C-054); (6) export check: `pytest -m torch` (T-P19) in
-this environment — stop if it fails; (7) `split` the recordings (seed 0) → `heldout/` and `train/`; (8) `prepare --in
-train --out prepared`; (9) in the RVC checkout: `python train/preprocess.py <prepared>/segments 48000 <n_cpu>
+(`impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`, recording `git rev-parse HEAD` in `out/budget.json`) and RVC 81eed5e; create the venv and install exactly as §Notebook environment (RVC's file pins onnxruntime-gpu < 1.20, which provides the
+same `onnxruntime` package, hence the uninstall before `onnxruntime==1.31.0`; C-023); (5) RVC assets with `hf download` exactly as C-052 but with `--revision <the SHA recorded in plan/ENVIRONMENT.md by S-013>` (hubert_base, rmvpe.pt, pretrained_v2,
+mute.zip → `logs/`) in a separate venv for huggingface_hub 2.2.0 (C-054); (6) export check: `SINGVST_RVC_ROOT=<rvc> python -m pytest -q -m torch` (T-P19) from the sing-vst checkout in
+this environment — stop if it fails; (7) the split stage: write `raw_wav/` (above), `python -m singvst_train.cli split --files-dir raw_wav --seed 0 --out
+split.json`, then copy each name of `split.json` `train` into `train/` and of `heldout` into `heldout/`; (8) `prepare --in
+train --out prepared`; (9) in the RVC checkout: `python train/preprocess.py <prepared>/segments 48000 <n_cpu = os.cpu_count()>
 <rvc>/logs/<voice> False 3.0`; `python train/dataset/extract_f0.py cuda 1 0 0 <rvc>/logs/<voice> False`;
 `python train/dataset/extract_hubert_feature.py cuda 1 0 0 <rvc>/logs/<voice> v2 False` (full precision, RVC's fp32
-path, works on every GPU type; rmvpe is RVC's fixed f0 method in cuda mode; argv verified in C-057); (10) `rvc-files`; (11) run the JSON argv printed by
+path, works on every GPU type; rmvpe is RVC's fixed f0 method in cuda mode; argv verified in C-057); (10) `rvc-files`; (10a) the Memory check; (11) run the JSON argv printed by
 `rvc-train-command` (RVC resumes from `logs/<voice>` automatically, C-047; no retrieval index is trained — the converter does
 not use it, D-012); (12) `export --exp-name <voice>`; (13) build `singvst-render`: `cmake -S <sing-vst> -B <root>/build-render -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_PLUGIN=OFF
--DSINGVST_BUILD_TESTS=OFF && cmake --build <root>/build-render --target singvst-render --parallel 4` (C-055);
-(14) the guide voicebank (§Guide voicebank) and `pack`; (15) `evaluate`; (16) `pytest -m voice` (T-P20) with
+-DSINGVST_BUILD_TESTS=OFF && cmake --build <root>/build-render --target singvst-render --parallel 4` (C-055), then
+`mkdir -p out/bin && cp <root>/build-render/cli/singvst-render <root>/build-render/cli/cmudict.dict
+<root>/build-render/cli/onnxruntime-LICENSE.txt <root>/build-render/cli/libonnxruntime.so* out/bin/` (the build copies the
+runtime files beside the binary; D-024, D-005);
+(14) the guide voicebank (§Guide voicebank, into `<root>/voicebank/`) and `pack --out out/voice --name <VOICE> …`;
+(15) `evaluate --voice out/voice --heldout heldout --phrases <sing-vst>/eval/phrases --render-bin out/bin/singvst-render
+--out out/eval --thresholds <sing-vst>/eval/thresholds.json`; (16) `pytest -m voice` (T-P20) with
 `SINGVST_VOICE`, `SINGVST_HELDOUT`, `SINGVST_RENDER_BIN` set to the paths above; (17) `tar` the `out/` folder to Drive /
 Kaggle output. Every stage from (7) runs through `pipeline.run_stages` with markers in `state/` and these inputs → outputs (the RVC
 experiment directory `logs/<voice>/` and its `G_*.pth`/`D_*.pth` checkpoints are **never** a stage output, so a rerun never
 deletes them; C-047):
 | Stage | Inputs | Outputs |
 |---|---|---|
-| split | `raw/` | `split.json`, `train/`, `heldout/` |
+| split | `raw/` | `raw_wav/`, `split.json`, `train/`, `heldout/` |
 | prepare | `train/` | `prepared/` |
 | rvc-preprocess | `prepared/segments` | `logs/<voice>/0_gt_wavs`, `logs/<voice>/1_16k_wavs` |
 | rvc-f0 | `logs/<voice>/1_16k_wavs` | `logs/<voice>/2a_f0`, `logs/<voice>/2b-f0nsf` |
@@ -499,24 +515,24 @@ deletes them; C-047):
 | train | `logs/<voice>/filelist.txt`, `logs/<voice>/config.json` | `assets/weights/<voice>.pth` |
 | export | `assets/weights/<voice>.pth` | `out/conv/` |
 | render-bin | the sing-vst checkout | `out/bin/` |
-| pack | `out/conv/`, the guide voicebank folder | `out/voice/` |
+| pack | `out/conv/`, `voicebank/` | `out/voice/` |
 | evaluate | `out/voice/`, `heldout/`, `out/bin/` | `out/eval/` |
 **Time and budget.** `out/budget.json` holds `{"commit", "gpu_hours", "sessions": [{"start", "end", "gpu_hours"}]}`; every
 stage adds its GPU time when it ends (or is interrupted). Before each stage the notebook prints the session's elapsed time,
-the cumulative `gpu_hours` and (Kaggle) the remaining weekly quota shown by the platform, and stops with "start a new session"
+the cumulative `gpu_hours` and (Kaggle) the reminder to check the weekly quota, and stops with "start a new session"
 when the session has run ≥ 9.5 h. The train stage runs `train.py` with a timeout of min(10 h − elapsed − 0.5 h, 20 h −
 `gpu_hours`); on timeout the next session resumes it (C-047). When `gpu_hours` reaches 20 (A-015) the train stage copies the
 newest `assets/weights/<voice>_e<N>_s<M>.pth` (`latest_weights`) to `assets/weights/<voice>.pth`, records
-`"stopped_by_budget": <N>` in `budget.json` and completes (DR-13). **Epochs:** `--epochs` is 200 unless the G-004 response
-gives `epochs: <N>`; `--save-every` 10.
+`"stopped_by_budget": <N>` in `budget.json` and completes (DR-13). **Epochs:** `--epochs` = `EPOCHS` of the Parameters cell (200 unless GATE-G-004.md, or a G-001 `retrain` re-issue of it,
+states another value); the owner reports the value used in the G-004 response; `--save-every` 10.
 **Upload to the implementer (G-004):** `report.json`, `report.json.provenance.json`, `verdict.json` and `budget.json` only,
 attached to the conversation (or pasted as text, which the implementer writes byte-for-byte to the same file names). Renders and voice
 packages stay on the owner's Drive or machine (A-011, T-062); `<voice>` is the `--name` given to `pack`.
 
 **Guide voicebank** (when G-005 answers `use-tiger`): the owner downloads
 `https://github.com/spicytigermeat/tiger_diffsinger/releases/download/v102/TIGER_DS_v102_PACK.zip` inside the notebook,
-checks SHA-256 `925ca2ad44287757d26628608b2744381e75748042d0e6fae356ee8cdae19f4e`, unzips it, then unzips
-`Voice Library/TIGER_DS_v102.zip`. Roles: `acoustic` = `dsacoustic/tiger_acou.onnx`, `phonemes` = `dsacoustic/phonemes.txt`,
+checks SHA-256 `925ca2ad44287757d26628608b2744381e75748042d0e6fae356ee8cdae19f4e`, unzips it to `<root>/voicebank/pack/`, then unzips
+`<root>/voicebank/pack/Voice Library/TIGER_DS_v102.zip` to `<root>/voicebank/tiger/`. Roles (relative to `voicebank/tiger/`): `acoustic` = `dsacoustic/tiger_acou.onnx`, `phonemes` = `dsacoustic/phonemes.txt`,
 `speaker` = `dsacoustic/tiger_fresh.emb`, `vocoder` = `dsvocoder/tgm_hifigan.onnx` (research/spikes/tiger-guide). `steps` 20;
 `depth` = `min(0.4, max_depth)` where `max_depth` is read from `dsacoustic/dsconfig.yaml` (divided by 1000 when it is > 1,
 the legacy integer convention; C-034), 0.4 when the key is absent — the caller clamps, `pack_voice` does not (errata E-3).
@@ -529,8 +545,9 @@ the newer push's run; a run cancelled or failed for infrastructure reasons (runn
 `gh run rerun <id>`. A test **passes in CI** when its job step concluded `success`, or — for a step that runs several tests —
 the step's `test-summary` notice annotation (written by `tools/ci_annotate.py` on every run, `if: always()`) lists its ID
 under `passed:`. Missing summary notice → the run is unreadable: re-run once, then `BLOCKED.md`. The per-case `::error::`
-annotations are diagnostics only (GitHub caps their number per step). One **attempt** for a CI-only test (T-059, T-P19, the
-Windows parts of T-041…T-047) is one CI run of a new commit. No torch is installed locally (download.pytorch.org is
+annotations are diagnostics only (GitHub caps their number per step). If `gh run rerun` is refused (permission), trigger a
+new run instead by appending a row to `EXECUTION_LOG.md` and saving (a new commit). One **attempt** for a CI-only test (T-059, T-P19, the
+Windows parts of T-041…T-047; and, on the no-root path of S-000 action 3, T-034 and T-053…T-059) is one CI run of a new commit. No torch is installed locally (download.pytorch.org is
 unreachable from the workspace; C-044); RVC is cloned locally to `../rvc` at 81eed5e for reading only.
 
 ### D-037 Errata for frozen comments

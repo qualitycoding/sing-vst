@@ -7,7 +7,8 @@ one branch, `.checkpoints/state.json`, `core/src/stubs.cpp` and `python/singvst_
 when every step in its `Depends on` has passed. "Full suite" means: `ctest` in the core and full build trees, plugin tests
 under `xvfb-run -a`, and `../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice and not network"` with
 `SINGVST_RENDER_BIN` set once S-010 is done — all green except tests whose step has not been reached (listed in
-`EXECUTION_LOG.md` per attempt). "Save" means `bash tools/save.sh "<S-### …>" <paths>` (commit + push + state.json, D-029).
+`EXECUTION_LOG.md` per attempt). On the no-root path of S-000 action 3, "locally" is waived for T-034 and the plugin
+tests T-053…T-059 (the full tree is not built): the CI `test-summary` notice of D-036 is their evidence. "Save" means `bash tools/save.sh "<S-### …>" <paths>` (commit + push + state.json, D-029).
 Defaults for every step unless the step says otherwise:
 - **On failure (default):** fix the implementation, never a frozen test (DR-04); re-run the full suite after any fix to
   shared code (PK-51); after three failed attempts on the same test write `BLOCKED.md` (test, logs, hypotheses) and halt.
@@ -22,14 +23,17 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: none
 - Inputs: generation branch `gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`; plan/ENVIRONMENT.md; plan/ASSUMPTIONS.md A-014; research/PRIOR_KNOWLEDGE.md (task tags, line 3)
-- Actions: 
+- Actions: (every session first: if `origin/impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` exists, check it
+  out instead of creating it, keep the existing logs, and re-run only the actions whose out-of-tree results are missing —
+  `.git/singvst-trailers`, `../build-*`, `../venv-lock`, `../rvc`, `../store-*`, `$HOME/deps` — then follow HANDOFF §Resume)
   1. Attach `qualitycoding/sing-vst`, `qualitycoding/Lessons` and `qualitycoding/knowledge` with push access through the
      session's repository tool and clone the stores with the clone command it returns (never a pasted token — PK-12).
-     Read-only probes (PK-17), each must succeed: `gh api user`; `gh api repos/qualitycoding/<repo> --jq .permissions.push`
+     `gh` uses the session's preconfigured GitHub credential (never a pasted token). Read-only probes (PK-17), each must
+     succeed except the advisory `gh api user` (an installation token may get 403 there; record it and go on): `gh api repos/qualitycoding/<repo> --jq .permissions.push`
      prints `true` for all three; `gh api repos/qualitycoding/sing-vst --jq .default_branch` prints `main`;
      `gh api "repos/qualitycoding/sing-vst/actions/runs?per_page=1"` (Actions readable); `gh api
      "repos/qualitycoding/sing-vst/pulls?per_page=1"` (pull requests readable). Write access for `gh run rerun` and
-     `gh pr create` cannot be probed read-only: if either fails later, record it and use the fallback of that step.
+     `gh pr create` cannot be probed read-only: if either fails later, record it and use the fallback of D-036 (re-run) or S-019 (pull request).
   2. Create `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` from the generation branch;
      `git config --add remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'`; `git push -u origin <impl>`;
      `git fetch origin` and check `git rev-parse origin/<impl>` succeeds. Write your own session's commit trailers
@@ -41,11 +45,13 @@ Defaults for every step unless the step says otherwise:
      then checked in CI only (D-036) — not a halt.
   4. Stores: record their HEADs with `python3.12 tools/checkpoint.py --merge 'knowledge_store={"commit_at_impl":
      {"lessons": "<sha>", "knowledge": "<sha>"}}'`; list files **added** after the R0 commits
-     (`git -C ../store-lessons log --diff-filter=A --name-only --format= ac028c7..HEAD`, and in `../store-knowledge` from
+     (first `git -C <clone> fetch --unshallow` when `git -C <clone> rev-parse --is-shallow-repository` prints `true`; then
+     `git -C ../store-lessons log --diff-filter=A --name-only --format= ac028c7..HEAD`, and in `../store-knowledge` from
      `09f3458`) whose tags include a task tag of research/PRIOR_KNOWLEDGE.md line 3 or `applies:all`. Record each in
      `DEVIATIONS.md` (`Plan says` = the store rule or fact, `Done instead` = "followed" or "not followed: conflicts with
      <plan item or frozen file>"); the plan and frozen files win over a new store rule (PK-02).
-  5. `bash research/spikes/hosts/run.sh > ../hosts-now.txt`; compare every row with plan/ENVIRONMENT.md §Hosts; a changed row
+  5. `bash research/spikes/hosts/run.sh > ../hosts-now.txt`; compare every row with plan/ENVIRONMENT.md §Hosts (its "run.sh roles" column maps the rows; 000 = unreachable, any
+     HTTP status = reachable); a changed row
      is recorded in `DEVIATIONS.md` with the table's alternative channel; rows already marked unreachable are expected (PK-13).
   6. `bash tools/bootstrap_test_env.sh "$HOME/deps"`; configure **and build** the trees of plan/ENVIRONMENT.md (core, full,
      asan, tsan; long builds in the background, PK-18); create `../venv-lock`; clone RVC for reading:
@@ -180,8 +186,8 @@ Defaults for every step unless the step says otherwise:
 - Profile: software, computational
 - Depends on: S-001
 - Inputs: core/include/singvst/{ort_runtime,engine}.hpp; D-011, D-024
-- Actions: implement `standardNormal` (golden values of D-012) in `core/src/random.cpp`, `loadOrtRuntime` and
-  `bundledOrtFileName` in `core/src/ort_runtime.cpp`, and `resample` in `core/src/resample.cpp`; push; read the CI `cpp` job
+- Actions: implement `standardNormal` (golden values of D-012) in `core/src/random.cpp`, `loadOrtRuntime`,
+  `ortRuntimeLoaded` (moved out of `core/src/stubs.cpp`) and `bundledOrtFileName` in `core/src/ort_runtime.cpp`, and `resample` in `core/src/resample.cpp`; push; read the CI `cpp` job
   on **both** OSes through the API (D-036).
 - Outputs: core/src/random.cpp, core/src/ort_runtime.cpp, core/src/resample.cpp, core/src/stubs.cpp
 - Evidence produced: T-039…T-041
@@ -330,8 +336,12 @@ Defaults for every step unless the step says otherwise:
   (D-033). Dry run (the real run is the owner's at S-017): put two stand-in modules on `PYTHONPATH` in a temporary directory —
   `resemblyzer.py` with `preprocess_wav(fpath_or_wav, source_sr=None)` returning a 1-second zero array and a `VoiceEncoder`
   whose `embed_utterance` returns a fixed 256-value unit vector (the real API, C-058), and `whisper.py` with `load_model(name)` returning an object whose `transcribe(path, **kw)` returns
-  `{"text": ""}` (the real `load_model`/`transcribe` names, C-059) — then run `evaluate` on `tests/fixtures/voice-convert` with a temporary held-out folder holding two 2-second 220 Hz
-  15-partial harmonic tones (written with soundfile), and check the output files and keys of
+  `{"text": ""}` (the real `load_model`/`transcribe` names, C-059); the stand-in `VoiceEncoder.__init__(self, *a, **k)`
+  accepts any arguments. Write a temporary held-out folder `<tmp>/heldout` holding two 2-second 220 Hz 15-partial harmonic
+  tones (soundfile), then run, from `python/` without `-I` (so `PYTHONPATH` applies): `PYTHONPATH=<tmp>/stubs
+  ../../venv-lock/bin/python -m singvst_train.cli evaluate --voice ../tests/fixtures/voice-convert --heldout <tmp>/heldout
+  --phrases ../eval/phrases --render-bin ../../build-core/cli/singvst-render --out <tmp>/eval --thresholds
+  ../eval/thresholds.json`, and check the output files and keys of
   eval/PROCEDURE.md exist (values are meaningless; a `status` of "invalid: …" is acceptable for the dry run). Finally write `GATE-G-005.md` (plan/GATES.md), save, and halt.
 - Outputs: python/singvst_train/evaluate.py, python/singvst_train/cli.py, GATE-G-005.md
 - Evidence produced: T-P26
@@ -373,6 +383,8 @@ Defaults for every step unless the step says otherwise:
 - Inputs: G-004 response; notebooks
 - Actions: 
   1. Halt at G-004: write `GATE-G-004.md` (plan/GATES.md) and end the turn with the gate message.
+  1a. `GATE-G-004.md` gives the notebook URLs and the Parameters-cell values (`VOICE` = `myvoice` unless the owner names
+     one, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach (or paste) `report.json`, `report.json.provenance.json`, `verdict.json`
      and `budget.json` (D-035); a `failed: …` response is handled as plan/GATES.md G-004 says;
      the notebook's last test cell is T-P20.
@@ -400,7 +412,7 @@ Defaults for every step unless the step says otherwise:
   with the regex `\{\s*"(\w+)",\s*"([^"]+)",\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*"([^"]*)"\s*\}`
   and writes a table `| ID | Name | Minimum | Maximum | Default | Step | Unit |` under a line naming the source file
   (5 rows; fail if the count differs from `kParams`' declared size); `THIRD_PARTY_NOTICES.md` (JUCE, ONNX Runtime,
-  nlohmann/json, CMUdict, RVC, TIGER/other voicebank terms, openvpi vocoder if used); sound descriptions only with the G-001
+  nlohmann/json, CMUdict, RVC, TIGER/other voicebank terms, openvpi vocoder only if the G-005 answer or the packed voice uses one); sound descriptions only with the G-001
   record (PK-46).
 - Outputs: README.md, docs/PARAMETERS.md, THIRD_PARTY_NOTICES.md, tools/gen/parameters.py
 - Evidence produced: T-P23
@@ -422,7 +434,9 @@ Defaults for every step unless the step says otherwise:
   `Mitigation` cell of `premortem/RISK_REGISTER.md` and per control listed in `premortem/round-*.md` (the planning
   pre-mortem rounds), unmapped items listed
   in `DEVIATIONS.md` (PK-07); open a pull request impl → `main`
-  (`gh pr create --base main --head <impl> --title "sing-vst implementation" --body-file ../PR_BODY.md`, the body written outside the repository), the body summarising the
+  (`gh pr create --base main --head <impl> --title "sing-vst implementation" --body-file ../PR_BODY.md`, the body written outside the repository; if `gh pr create` is refused, put the body and the compare URL
+  `https://github.com/qualitycoding/sing-vst/compare/main...<impl>` in `EXECUTION_LOG.md` and ask the owner to open the pull
+  request from that URL in the final message — not a halt), the body summarising the
   results and ending with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)` and the executing
   session's link if it has one; do **not** merge (G-002).
 - Outputs: plan/IMPLEMENTATION_MAP.md; pull request URL in EXECUTION_LOG.md

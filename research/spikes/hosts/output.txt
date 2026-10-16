@@ -1,4 +1,4 @@
-== probed 2026-10-14T14:37:32Z from the planning sandbox (egress via agent proxy)
+== probed 2026-10-15T22:35:59Z from the planning sandbox (egress via agent proxy)
 pypi-index                         https://pypi.org/simple/pyworld/                                                 200
 pypi-files                         https://files.pythonhosted.org/                                                  404
 github-web                         https://github.com/qualitycoding/sing-vst                                        200
@@ -12,3 +12,5 @@ pytorch-index                      https://download.pytorch.org/whl/cpu/        
 colab                              https://colab.research.google.com/                                               000
 kaggle                             https://www.kaggle.com/                                                          000
 actions-results                    https://results-receiver.actions.githubusercontent.com/                          000
+apt-archive                        http://archive.ubuntu.com/ubuntu/dists/noble/Release                             200
+apt-security                       http://security.ubuntu.com/ubuntu/dists/noble-security/Release                   200

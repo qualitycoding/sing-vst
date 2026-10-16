@@ -40,7 +40,7 @@ claim("C-007", "openvpi community NSF-HiFiGAN / PC-NSF-HiFiGAN vocoder weights a
       "policy", False, [spike("vocoder-onnx", "licence line, inputs, outputs"), spike(UF, "PASS C-007a")], "verified", ["D-026"],
       ["subject:openvpi-vocoders", "tech:diffsinger"], "pc-nsf-hifigan 2025.02")
 claim("C-009", "DiffSinger acoustic ONNX inputs are tokens[1,n] int64, durations[1,n] int64, f0[1,T] float plus optional embeds (gender, velocity, spk_embed, languages, energy, breathiness, voicing, tension) and sampling controls; output mel[1,T,bins]. The vocoder takes mel and f0. OpenUtau defaults: 44100 Hz, hop 512, 128 mel bins.",
-      "software", True, [spike(UF, "PASS C-009a..e"), spike("tiger-guide", "acoustic inputs")], "verified", ["D-012", "T-037", "T-038"],
+      "software", True, [spike(UF, "PASS C-009a..e"), spike("tiger-guide", "acoustic inputs")], "verified", ["D-012", "T-042", "T-043"],
       ["subject:diffsinger", "tech:diffsinger", "tech:onnx", "subject:openutau"], "DiffSinger ba031f6 / OpenUtau a06ab28")
 claim("C-010", "No OSI- or CC-BY-licensed English DiffSinger voicebank was found; the English voicebank found (TIGER v102, C-036) is free for personal non-commercial use only.",
       "policy", True, [S("https://github.com/spicytigermeat/tiger_diffsinger", "TIGER repository README and LICENSE.md", "License section", 1),
@@ -74,7 +74,7 @@ claim("C-019", "Kaggle Notebooks: 12-hour CPU/GPU sessions, a floating weekly GP
 claim("C-020", "RVC v2 content features: hubert_base final (12th) encoder layer on 16 kHz input, 320-sample hop (50 fps), repeated x2 to the 100 fps f0 frame rate (window 160 at 16 kHz).",
       "software", True, [spike(UF, "PASS C-020a/b/c")], "verified", ["D-012", "T-039"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e")
 claim("C-021", "RVC coarse pitch = rint(clip((1127 ln(1+f/700) - mel_min) * 254 / (mel_max - mel_min) + 1, 1, 255)) with f0_min 50 Hz, f0_max 1100 Hz (numpy rint: half to even).",
-      "numerical", True, [spike(UF, "PASS C-021a/b"), S("research/spikes/oracle/oracle.py", "oracle rvc_coarse", "function rvc_coarse", 1)], "verified", ["T-021", "D-012"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e")
+      "numerical", True, [spike(UF, "PASS C-021a/b"), S("research/spikes/oracle/oracle.py", "oracle rvc_coarse", "function rvc_coarse", 1)], "verified", ["T-025", "D-012"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e")
 claim("C-022", "RVC training runs train/preprocess.py (inp_root sr n_p exp_dir noparallel per [manifest]), train/dataset/extract_f0.py, train/dataset/extract_hubert_feature.py, train/train.py (-e -sr -f0 -bs [-g] -te -se -pg -pd -l -c -sw -v) and train/train_index.py.",
       "software", True, [spike(UF, "PASS C-022a/b/c")], "verified", ["D-016", "S-014"], ["subject:rvc", "tech:rvc", "domain:ml-training"], "RVC 81eed5e")
 claim("C-023", "RVC's py3.12 requirement files pin torch 2.4.1+cpu / 2.7.1+cu128, numpy <2, transformers <4.50 and onnxruntime-gpu <1.20, and default to Chinese mirror indexes whose official equivalents are pypi.org and download.pytorch.org.",
@@ -102,7 +102,7 @@ claim("C-033", "DiffSinger phoneme vocabularies: the exporter writes <name>.phon
       "software", True, [spike(UF, "PASS C-033")], "verified", ["D-012", "D-008"], ["subject:diffsinger", "tech:diffsinger", "subject:openutau"], "DiffSinger ba031f6 / OpenUtau a06ab28")
 claim("C-034", "Continuous-acceleration acoustic models take steps int64[1] and, with variable depth, depth float[1]; legacy models take speedup int64 and, with shallow diffusion, depth int64 (OpenUtau: depth64 = round(min(depth, max_depth/1000) * 1000), speedup = max(1, depth64 / steps), depth64 = depth64 / speedup * speedup; without shallow diffusion speedup = largest divisor of 1000 <= 1000/steps).",
       "software", True, [spike(UF, "PASS C-034"), S(GH + "openutau/OpenUtau/blob/a06ab28b0ae011bd0b85926f3044572be46a7a63/OpenUtau.Core/DiffSinger/DiffSingerRenderer.cs", "DiffSingerRenderer.cs", "lines 288-313", 1),
-                         spike("tiger-guide", "rank0/rank1 scalars accepted; render")], "verified", ["D-012", "T-037"], ["subject:diffsinger", "tech:diffsinger", "subject:openutau"], "OpenUtau a06ab28")
+                         spike("tiger-guide", "rank0/rank1 scalars accepted; render")], "verified", ["D-012", "T-043"], ["subject:diffsinger", "tech:diffsinger", "subject:openutau"], "OpenUtau a06ab28")
 claim("C-035", "Language ids: a phoneme 'lang/ph' prefix selects the languages.json id; unprefixed phonemes get id 0.",
       "software", False, [spike(UF, "PASS C-035")], "verified", ["D-012"], ["subject:diffsinger", "tech:diffsinger"], "OpenUtau a06ab28")
 claim("C-036", "TIGER DiffSinger v102 (GitHub release v102, TIGER_DS_v102_PACK.zip, sha256 925ca2ad...) is an English DiffSinger voicebank whose acoustic model takes tokens, durations, f0, gender, velocity, spk_embed[1,T,256], depth int64 and speedup int64; it bundles its own vocoder (tgm_hifigan.onnx, 44100 Hz, hop 512, 128 mel bins), 7 speaker embeddings (raw float32, 256 values), and a 68-entry phonemes.txt that contains all 39 CMUdict ARPAbet phones.",
@@ -114,7 +114,7 @@ claim("C-037", "TIGER licence: the repository LICENSE.md is CC BY-NC-ND 4.0 plus
       contra=["The two licence texts disagree on modification; the stricter (ND) one governs this plan."])
 claim("C-038", "OpenUtau pads every DiffSinger phrase with 8 'SP' frames at the head and tail, feeds gender = 0 and velocity = 1 when no curve is set, and builds spk_embed per frame from the selected speaker's embedding.",
       "software", True, [S(GH + "openutau/OpenUtau/blob/a06ab28b0ae011bd0b85926f3044572be46a7a63/OpenUtau.Core/DiffSinger/DiffSingerUtils.cs", "DiffSingerUtils.cs", "lines 15-83", 1),
-                         spike("tiger-guide", "frames 188 (incl. 8+8 pad), waveform 188.0 frames")], "verified", ["D-012", "T-037"], ["subject:openutau", "subject:diffsinger", "tech:diffsinger"], "OpenUtau a06ab28")
+                         spike("tiger-guide", "frames 188 (incl. 8+8 pad), waveform 188.0 frames")], "verified", ["D-012", "T-043", "T-044"], ["subject:openutau", "subject:diffsinger", "tech:diffsinger"], "OpenUtau a06ab28")
 claim("C-039", "Measured: TIGER acoustic (depth 400, speedup 20) + tgm_hifigan render 2.00 s of audio in 2.18 s on the 2-core planning sandbox with ORT 1.31.0 (guide RTF 1.10); load time 0.88 s; unclipped peak 0.540.",
       "numerical", False, [spike("tiger-guide", "acoustic/vocoder timing line")], "verified", ["D-017", "A-012"], ["subject:tiger-diffsinger", "tech:onnxruntime"], "TIGER v102; ORT 1.31.0")
 claim("C-040", "TIGER's acoustic graph contains 2 RandomNormalLike nodes without a seed attribute; two identical runs differ (max |mel1-mel2| = 1.86); the ONNX Runtime 1.31.0 C/C++ API exposes no seed function (only Python has onnxruntime.set_seed).",

@@ -10,15 +10,12 @@ python3.12 tools/checkpoint.py >/dev/null   # interpreter by minor version (PK-5
 git add -- "$@" .checkpoints/state.json .checkpoints/snapshots
 git diff --cached --stat
 if git diff --cached --quiet; then echo "save.sh: nothing staged"; else
-  # Commit trailers: SINGVST_COMMIT_TRAILERS (newline-separated) set by the executing agent's session; the planning
-  # session's trailers are the default (cold read S17).
-  # Order: $SINGVST_COMMIT_TRAILERS, else the untracked file .git/singvst-trailers (written once by S-000), else the planning
-  # session's trailers.
+  # Commit trailers (newline-separated) of the session that commits: $SINGVST_COMMIT_TRAILERS, else the untracked file
+  # .git/singvst-trailers (written by S-000 in every session). None → refuse, so no commit carries another session's trailers.
   tf="$(git rev-parse --git-dir)/singvst-trailers"
   if [ -n "${SINGVST_COMMIT_TRAILERS:-}" ]; then trailers=$SINGVST_COMMIT_TRAILERS
   elif [ -s "$tf" ]; then trailers=$(cat "$tf")
-  else trailers="Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_016Ltp4MhMKiaYAbZSCVGTy8"; fi
+  else echo "save.sh: no commit trailers; write .git/singvst-trailers (S-000)" >&2; exit 2; fi
   git commit -q -m "$msg" -m "$trailers"
 fi
 b=$(git branch --show-current)
