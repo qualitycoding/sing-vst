@@ -166,7 +166,7 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-003
 - Inputs: core/include/singvst/playback.hpp; D-009, D-010, D-022
 - Actions: implement playback.hpp in `core/src/playback.cpp` (lock-free `TakeSlot` hand-off with no allocation on the reader
-  side, D-022); run the full suite; run T-038 in `../build-tsan` with the plan/ENVIRONMENT.md sanitizer lines.
+  side, implementing exactly the D-022 **Protocol** sequence for `acquire`/`release`/`publish`/`collect`; R-024); run the full suite; run T-038 in `../build-tsan` with the plan/ENVIRONMENT.md sanitizer lines.
 - Outputs: core/src/playback.cpp, core/src/stubs.cpp
 - Evidence produced: T-032…T-038
 - Done when: T-032…T-038 pass, and T-038 is clean under TSan.
@@ -182,11 +182,11 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-002
 - Inputs: core/include/singvst/midifile.hpp; D-031
-- Actions: implement `importMidi` in `core/src/midifile.cpp` with bounds-checked reads; run the full suite, then
-  T-064…T-066 in `../build-asan` with the plan/ENVIRONMENT.md sanitizer lines.
+- Actions: implement `importMidi` in `core/src/midifile.cpp` with bounds-checked reads, the D-031 limits and running-status rule;
+  run the full suite, then T-064…T-066 and T-069 in `../build-asan` with the plan/ENVIRONMENT.md sanitizer lines.
 - Outputs: core/src/midifile.cpp, core/src/stubs.cpp
-- Evidence produced: T-064…T-066
-- Done when: T-064…T-066 pass, clean under ASan+UBSan.
+- Evidence produced: T-064…T-066, T-069
+- Done when: T-064…T-066 and T-069 pass, clean under ASan+UBSan.
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -219,7 +219,8 @@ Defaults for every step unless the step says otherwise:
 - Inputs: core/include/singvst/engine.hpp; D-012; tests/fixtures/onnx; research/spikes/oracle/engines.py
 - Actions: implement `GuideEngine` and `ConverterEngine` in `core/src/guide_engine.cpp` and `core/src/converter_engine.cpp`
   exactly as D-012 (input discovery, phrase splitting at SP ≥ 22 frames with 8-frame padding, chunked conversion with
-  100-frame context, `standardNormal` noise); run the full suite. `research/spikes/oracle/engines.py` (an independent
+  100-frame context, `standardNormal` noise, the 10-ms `SetTerminate` cancel watcher, rejection of external-data models);
+  run the full suite. `research/spikes/oracle/engines.py` (an independent
   Python implementation that derived the frozen expected values) is a debugging reference only; the pass criterion is the
   frozen tests.
 - Outputs: core/src/guide_engine.cpp, core/src/converter_engine.cpp, core/src/stubs.cpp
@@ -237,10 +238,12 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-005, S-006, S-008
 - Inputs: core/include/singvst/render.hpp; D-013
-- Actions: implement render.hpp in `core/src/render.cpp`; run the full suite; T-050 and T-051 in `../build-tsan` (plan/ENVIRONMENT.md).
-- Outputs: core/src/render.cpp, core/src/stubs.cpp (now empty of definitions; delete it if nothing remains)
-- Evidence produced: T-048…T-052
-- Done when: all core tests T-001…T-052, T-063…T-066 pass; T-050/T-051 clean under TSan; CI `sanitizers` green.
+- Actions: implement render.hpp in `core/src/render.cpp` (with the D-013 limits and engine ownership) and take_cache.hpp in
+  `core/src/take_cache.cpp` exactly as D-038 (research/spikes/premortem-r1/take_cache_sketch.cpp is a debugging reference
+  only); run the full suite; T-050, T-051 and T-068 in `../build-tsan`, T-067 and T-070 in `../build-asan` (plan/ENVIRONMENT.md).
+- Outputs: core/src/render.cpp, core/src/take_cache.cpp, core/src/stubs.cpp (now empty of definitions; delete it if nothing remains)
+- Evidence produced: T-048…T-052, T-067, T-068, T-070
+- Done when: all core tests T-001…T-052, T-063…T-070 pass; T-050/T-051 clean under TSan; CI `sanitizers` green.
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -254,8 +257,9 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-009
 - Inputs: cli/main.cpp (stub); D-014, D-021
 - Actions: implement D-014 in `cli/main.cpp` (options, exit codes, float32 WAV writer, provenance sidecar with
-  `seeds = {"converter": <seed>}`); set `SINGVST_RENDER_BIN` to the built binary for every later run of the suite.
-- Outputs: cli/main.cpp
+  `seeds = {"converter": <seed>}` and the D-014 shapes; `git_commit` from a header generated at build time by a custom
+  command in `cli/CMakeLists.txt` that runs on every build, R-047); set `SINGVST_RENDER_BIN` to the built binary for every later run of the suite.
+- Outputs: cli/main.cpp, cli/CMakeLists.txt
 - Evidence produced: T-P18
 - Done when: T-P18 passes locally and in CI job `python`. (The binary part of T-P13 needs `pack_voice` and is checked at S-012.)
 - Checkpoint: default
@@ -271,7 +275,8 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-009
 - Inputs: plugin/PluginProcessor.h; D-010, D-022, D-027; core/include/singvst/params.hpp
 - Actions: implement `plugin/PluginProcessor.cpp` and `plugin/PluginEditor.{h,cpp}` (D-033); grep the JUCE 9.0.3 headers for
-  every API used before using it (PK-37); build `build-full`; run plugin tests under `xvfb-run -a`; run pluginval 1.0.4
+  every API used before using it (PK-37); follow D-022 **Plugin threading**, D-010's take cache and status line and D-027's
+  `launchAsync` dialogs (no modal loop; R-048); build `build-full`; run plugin tests under `xvfb-run -a`; run pluginval 1.0.4
   locally as in the CI step; list editor behaviour that cannot be run headless as "implemented, unverified" in
   `docs/UNVERIFIED.md` (one bullet per behaviour, with the D-027 item it belongs to); S-017 copies it into GATE-G-001.md (PK-39).
 - Outputs: plugin/PluginProcessor.cpp, plugin/PluginEditor.h, plugin/PluginEditor.cpp, docs/UNVERIFIED.md
