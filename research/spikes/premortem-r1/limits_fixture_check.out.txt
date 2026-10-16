@@ -1,0 +1,4 @@
+many(5000): notes 5000, last end 500 beats = 250 s at 120 bpm
+many(5001): notes 5001, last end 500.1 beats = 250.05 s at 120 bpm
+late(1799): notes 1, last end 1799 beats = 899.5 s at 120 bpm
+late(1801): notes 1, last end 1801 beats = 900.5 s at 120 bpm

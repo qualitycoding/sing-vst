@@ -260,6 +260,9 @@
     "research/spikes/pip-audit-setuptools/run.sh": "f0f4caf98a80422ba2feb66b7ae46c4c48bcf8c52c7792cc28061ebf5aa95c33",
     "research/spikes/plugin-stub/output.txt": "e9580ea187628ba4265311fda699fe642c25f536aa9c8b3545ae2a4e63679f8d",
     "research/spikes/plugin-stub/run.sh": "45a0fdd5e2d9d34261d0379a6dddf4c37c1e802a5d5b7af0b9aa9fadd2d8dff7",
+    "research/spikes/premortem-r1/limits_fixture_check.out.txt": "d0d75fd54a05b42f3944952b88d6b55ef0477bd9c28e1d569e1b6916b688a0cd",
+    "research/spikes/premortem-r1/limits_fixture_check.py": "f4210da2216edff5adc42d38f58c72c3fc83dd13d4e002f1f4435d231eef6fbe",
+    "research/spikes/premortem-r1/take_cache_sketch.cpp": "51b9743eae0a94f5f07c7dee9fcfaab2d3030791549abc4e802b7d52270df40f",
     "research/spikes/pyfacts/output.txt": "fc07663c360cf291d13c125223594da820cc505b0228c7566d2d844cccbdd2b0",
     "research/spikes/pyfacts/run.sh": "b2e3c5c6014cb3246957a9cb986c32c92694652b14960d31de43887b85918cc9",
     "research/spikes/pyworld-direct/output.txt": "c411de1ad51dd3813a4c2f3df59af6186c13bd27d85da7e46ae0b1f375a10323",
@@ -711,7 +714,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T07:51:20Z",
+  "updated_at": "2026-10-16T07:51:33Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -759,7 +762,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 60,
+  "sequence": 61,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
