@@ -360,7 +360,7 @@ Defaults for every step unless the step says otherwise:
   tones (soundfile), then run, from `python/` without `-I` (so `PYTHONPATH` applies): `PYTHONPATH=<tmp>/stubs
   ../../venv-lock/bin/python -m singvst_train.cli evaluate --voice ../tests/fixtures/voice-convert --heldout <tmp>/heldout
   --phrases ../eval/phrases --render-bin ../../build-core/cli/singvst-render --out <tmp>/eval --thresholds
-  ../eval/thresholds.json`, and check the output files and keys of
+  ../eval/thresholds.json`, and check the output files (all `evaluate.REPEATS` renders per phrase, `spread.json`) and keys of
   eval/PROCEDURE.md exist (values are meaningless; a `status` of "invalid: …" is acceptable for the dry run). Finally write `GATE-G-005.md` (plan/GATES.md), save, and halt.
 - Outputs: python/singvst_train/evaluate.py, python/singvst_train/cli.py, GATE-G-005.md
 - Evidence produced: T-P26
@@ -378,16 +378,21 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-013, S-014, S-015, G-005 answered
 - Inputs: D-016, D-019, D-025, D-035; plan/GATES.md G-004; the G-005 answer; ../rvc (RVC 81eed5e checkout)
 - Actions: write `notebooks/train_voice_colab.ipynb` and `notebooks/train_voice_kaggle.ipynb` (nbformat 4, no outputs)
-  with exactly the cells of D-035 §Notebook layout (RVC's own `requirments_cu128_py312.txt` from the RVC checkout at 81eed5e,
-  official indexes, C-023), and the guide voicebank cells of D-035 §Guide voicebank for the G-005 answer. Before writing
+  with exactly the cells of D-035 §Notebook layout and §Notebook environment (installs split by index, C-062; RVC's own
+  `requirments_cu128_py312.txt` from the RVC checkout at 81eed5e), and the guide voicebank cells of D-035 §Guide voicebank for the G-005 answer. Before writing
   the RVC cells, `grep -n sys.argv ../rvc/train/preprocess.py ../rvc/train/dataset/extract_f0.py
   ../rvc/train/dataset/extract_hubert_feature.py` and check the D-035 command lines against it (C-057); the voicebank is
-  downloaded by the owner inside the notebook and never stored in the repository. GATE-G-004.md (S-017) gives the owner the
-  opening links: Colab `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics/notebooks/train_voice_colab.ipynb`;
-  Kaggle: *File → Import notebook → GitHub* with the same branch and path `notebooks/train_voice_kaggle.ipynb`.
-- Outputs: notebooks/train_voice_colab.ipynb, notebooks/train_voice_kaggle.ipynb
-- Evidence produced: T-P16, T-P17
-- Done when: T-P16, T-P17, T-P22 pass.
+  downloaded by the owner inside the notebook and never stored in the repository. The stage table is built by one code
+  cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py`, which loads
+  each notebook with nbformat, execs that cell with a fake `sh` that creates each stage's declared outputs, runs the stages
+  in `<tmp>/a`, copies `<tmp>/a` to `<tmp>/b` by the cell-(3) Kaggle restore rule, runs them again (no stage may run),
+  then edits `params.json` and runs again (every stage must run); it must exit 0 for both notebooks (R-016, R-013).
+  GATE-G-004.md (S-017) gives the owner opening links pinned to a commit (R-029): Colab
+  `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<EXPECTED_COMMIT>/notebooks/train_voice_colab.ipynb`;
+  Kaggle: *File → Import notebook → GitHub* with that commit and path `notebooks/train_voice_kaggle.ipynb`.
+- Outputs: notebooks/train_voice_colab.ipynb, notebooks/train_voice_kaggle.ipynb, tools/notebook_dryrun.py
+- Evidence produced: T-P16, T-P17; `tools/notebook_dryrun.py` output in EXECUTION_LOG.md
+- Done when: T-P16, T-P17, T-P22 pass; `python3.12 tools/notebook_dryrun.py` exits 0.
 - Checkpoint: default
 - On failure: default
 - Gate: G-005 must be answered before this step starts.
@@ -402,16 +407,22 @@ Defaults for every step unless the step says otherwise:
 - Inputs: G-004 response; notebooks
 - Actions: 
   1. Halt at G-004: write `GATE-G-004.md` (plan/GATES.md) and end the turn with the gate message.
-  1a. `GATE-G-004.md` gives the notebook URLs, the attestation sentence of D-035 and the Parameters-cell values (`VOICE` = `myvoice` unless the owner names
-     one, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
-  2. After the owner runs the notebook, they attach (or paste) `report.json`, `report.json.provenance.json`, `verdict.json`
-     and `budget.json` (D-035); a `failed: …` response is handled as plan/GATES.md G-004 says;
-     the notebook's last test cell is T-P20.
-  3. Commit those four files to `results/<voice>/run<N>/` (`<voice>` = the `--name` given to `pack`, checked in
+  1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
+     values (`VOICE` = `myvoice` unless the owner names one, `RUN` = the issue number, `EXPECTED_COMMIT` = `git rev-parse
+     HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
+  2. After the owner runs the notebook, they attach (or paste) the nine upload files of D-035 and the `sha256sum` lines; a
+     `failed: …` response is handled as plan/GATES.md G-004 says; the notebook's last test cell is T-P20.
+  2a. Verify before committing (R-036; log every check in EXECUTION_LOG.md): every file's SHA-256 equals its printed line;
+     `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json`; the report provenance
+     `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
+     on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set). A failed check →
+     ask the owner for the files again; files are never edited.
+  3. Commit those nine files to `results/<voice>/run<N>/` (`<voice>` = the `--name` given to `pack`, checked in
      `report.json`'s provenance `params`; `<N>` = 1 for the first returned results, +1 for each later G-004 issue);
      before re-issuing G-004 or G-001, `git mv` the previous gate file to `GATE-G-00<k>.run<N>.md` (history kept, Rule 9); never commit audio, recordings or voice packages (T-062).
-  4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`) and halt.
-- Outputs: results/<voice>/run<N>/report.json, results/<voice>/run<N>/report.json.provenance.json, results/<voice>/run<N>/verdict.json, results/<voice>/run<N>/budget.json, GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<N>.md)
+  4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`; per threshold metric the verdict and
+     "indeterminate" when the threshold lies within `spread.json` [min, max], D-017) and halt.
+- Outputs: results/<voice>/run<N>/ (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, budget.json, training.json, env-freeze.txt, env.json), GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<N>.md)
 - Evidence produced: T-P20 (run by the owner); G-001 record
 - Done when: the G-001 response is recorded in `GATE-G-001.md`.
 - Checkpoint: default
@@ -428,7 +439,10 @@ Defaults for every step unless the step says otherwise:
 - Inputs: G-001 record; D-026, D-030
 - Actions: write `README.md` with a `## What it does` section whose every bullet cites a test ID; install instructions
   (copy the VST3 bundle to the user VST3 folder; COPY_PLUGIN_AFTER_BUILD is FALSE); training instructions pointing to the
-  notebooks; `docs/PARAMETERS.md` generated by `tools/gen/parameters.py`, which reads `core/include/singvst/params.hpp`
+  notebooks on `main` (R-029) with the privacy rule of D-035 (R-021); a `## Limits and care` section: where the take cache
+  lives and that deleting it forfeits exact recall (R-017), short sections at constant tempo and one render per edit per
+  instance (R-028), what a red T-P21 means and the owner's DR-07 procedure (R-041), and — when G-001 set thresholds — both
+  verdicts and the statement that the thresholds were set after the measurement (R-037); `docs/PARAMETERS.md` generated by `tools/gen/parameters.py`, which reads `core/include/singvst/params.hpp`
   with the regex `\{\s*"(\w+)",\s*"([^"]+)",\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*"([^"]*)"\s*\}`
   and writes a table `| ID | Name | Minimum | Maximum | Default | Step | Unit |` under a line naming the source file
   (5 rows; fail if the count differs from `kParams`' declared size); `THIRD_PARTY_NOTICES.md` (JUCE, ONNX Runtime,
@@ -454,7 +468,9 @@ Defaults for every step unless the step says otherwise:
 - Profile: software, computational
 - Depends on: S-018
 - Inputs: everything above
-- Actions: run the full suite locally; read the final CI run of all jobs through the API (D-036); write
+- Actions: run the full suite locally; read the final CI run of all jobs through the API (D-036); check `git diff --stat
+  <report git_commit>..HEAD -- core cli python/singvst_train eval` for the committed results: when it is not empty, list the
+  changes in `DEVIATIONS.md` and the pull request body and ask the owner there whether to re-run `evaluate` (R-038, PK-67); write
   `plan/IMPLEMENTATION_MAP.md` — a table `| Item | Delivered by (file or test) | Status |` with one row per plan step, per
   `Mitigation` cell of `premortem/RISK_REGISTER.md` and per control listed in `premortem/round-*.md` (the planning
   pre-mortem rounds), unmapped items listed
@@ -463,7 +479,8 @@ Defaults for every step unless the step says otherwise:
   `https://github.com/qualitycoding/sing-vst/compare/main...<impl>` in `EXECUTION_LOG.md` and ask the owner to open the pull
   request from that URL in the final message — not a halt), the body summarising the
   results and ending with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)` and the executing
-  session's link if it has one; do **not** merge (G-002).
+  session's link if it has one; after creating it, check `gh pr view <n> --json isDraft --jq .isDraft` prints `false`
+  (PK-68); do **not** merge (G-002).
 - Outputs: plan/IMPLEMENTATION_MAP.md; pull request URL in EXECUTION_LOG.md
 - Evidence produced: all tests
 - Done when: every frozen test passes (T-P20 from S-017's record), CI green on both OSes, the pull request exists.
