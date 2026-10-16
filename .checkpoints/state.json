@@ -191,6 +191,8 @@
     "lessons/L-20261016T040200Z-resumable-stages-ignored-their-parameters.md": "400216dd246c5bd54ef500c0cf3977e7bc7e3bb8815dd1fa569c42ce8910156a",
     "lessons/L-20261016T040300Z-non-reproducible-render-in-a-recall-path.md": "8630ac7c7b13fffaa552a5197054349e88edf8b2a9c0d0ea34b8813fe9fd9547",
     "lessons/L-20261016T040400Z-provenance-named-a-lock-the-run-never-installed.md": "7c65ed66463b5d8ed7f19be56387f8e1897c2a16ce082d43e28b93db505593b4",
+    "lessons/L-20261016T140000Z-hardening-changes-not-checked-against-each-other.md": "dd3c3f284782540893a824c43a8b6655c617e67d7e4760ef7ac93deb6296b79b",
+    "lessons/L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value.md": "9d450b8165bf60e23ced422f0556cc3dfa1f514fc754659b1e06c42f85530fe0",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "076052c64234e4e5864b879192010fe692c269369957dcd44d239893e88c3fcc",
     "plan/ENVIRONMENT.md": "3a5cf1aa8d5965cc6ecd9063740c9280e366a7aa5727e48767ebbbcb7cdb3275",
@@ -203,7 +205,7 @@
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
-    "premortem/RISK_REGISTER.md": "bb6d932eaba1b6db38629ef4067d721fa9687d210bf64d365ecf90958f8cd660",
+    "premortem/RISK_REGISTER.md": "4803a143bb60b855afb110f6c939dc87c7a8f5c4b2d9a8ef4595325cdb6b9381",
     "premortem/coldread-pass-1.md": "94bfdca50c1f0b7ee5d4f429df0196eb34225a29b8189dc5b204d729a534cc76",
     "premortem/coldread-pass-2.md": "1229c3da0b81a812c5bd5cb47903045ca288b9b19a03fb3b509f5cc9576f69e0",
     "premortem/coldread-pass-3.md": "b9c2309a3adef033d42237de5c4ec1eddddaff9b1afad52f15eb8d970821d396",
@@ -228,7 +230,7 @@
     "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
     "python/singvst_train/rvc_files.py": "f3223c4efc1ddead1379b99265dcf0d76bd66f2a3b72b59caa8fc35aafd0de1e",
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
-    "research/PRIOR_KNOWLEDGE.md": "5e07049ebc6ceab2f203b0c08f12a93b8bc89d7fea545fc4cfaa879f26e55267",
+    "research/PRIOR_KNOWLEDGE.md": "84f32c4e3379975fc354323fd0a9b7e4b3e65ac7a29fbb87a72c8f30fe210d20",
     "research/QUESTIONS.md": "9e984b411b6e82bb65788b8e1de6d535f277b4a7f0698b31fe4001af40f312f5",
     "research/SOURCES.md": "a58fc7ab9ef71028ed8d790cf8b3886be4622efa1f6f4be12eaf3ee3126df627",
     "research/claims.json": "d9d73bb7cc5100c63545c7a3e6b02c38f57763e485504c23f729b19ef5399f6c",
@@ -386,9 +388,9 @@
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "2f5c152e5ef50cd0115731429ab4ee7486333bbe8aa5affcd5434035fe6fa08f",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
-    "tools/gen/pk_checklist.json": "8305ab392777a6591bd861de7c1365e08fb260f9c010563292ad3cc1bc75f3fb",
+    "tools/gen/pk_checklist.json": "832e9f5a56905c4a02a2b15059fdc6f11a14e482f3c5db1d6c372fe93f579136",
     "tools/gen/pk_knowledge.json": "4e4620e0de56740fa874231e1996c1cb5d558b05a3a5d56e7899122d4dd34526",
-    "tools/gen/pk_map.json": "8285841cde305fd3d04b4b6f201d034858a4335b3a771ecab184c93f8d2b0aec",
+    "tools/gen/pk_map.json": "0dc46c2bc5c5e35267113dcc733420d62d35661b8853e4123281d07e241aad86",
     "tools/gen/plan.py": "0ab09cb74ce4ab1989eb5a44d2c08ffc30ddbf089c2d3212e0dab717a47e07e7",
     "tools/gen/prior_knowledge.py": "4796b62a539dbb4c9144b228654cb85522de615467f9969a95aff1617d198d37",
     "tools/gen/protocol_excerpts.py": "c6e82440d1f339f2d1c0252cfd47a9fdc40a4a3a810ae5897818c40c3589110d",
@@ -663,7 +665,9 @@
     "L-20261016T040100Z-single-draw-of-a-stochastic-evaluation",
     "L-20261016T040200Z-resumable-stages-ignored-their-parameters",
     "L-20261016T040300Z-non-reproducible-render-in-a-recall-path",
-    "L-20261016T040400Z-provenance-named-a-lock-the-run-never-installed"
+    "L-20261016T040400Z-provenance-named-a-lock-the-run-never-installed",
+    "L-20261016T140000Z-hardening-changes-not-checked-against-each-other",
+    "L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -741,7 +745,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T13:31:52Z",
+  "updated_at": "2026-10-16T13:32:29Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -791,7 +795,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 84,
+  "sequence": 85,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

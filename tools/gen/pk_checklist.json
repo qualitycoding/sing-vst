@@ -363,5 +363,15 @@
   "Provenance records the environment that produced the result, captured there.",
   "D-035; S-017",
   "both"
+ ],
+ "PK-74": [
+  "After a hardening pass, re-derive the ordered sequence of each changed procedure and check every write, mount and execution against it.",
+  "D-035 cell (4) order; premortem rounds",
+  "both"
+ ],
+ "PK-75": [
+  "Check values, not messages; when matching text, verify the emitted string, not the source literal.",
+  "D-035 checkpoint guard; C-063",
+  "both"
  ]
 }
