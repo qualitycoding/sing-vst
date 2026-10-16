@@ -51,15 +51,15 @@ Evidence: `tools/bootstrap_test_env.sh` printed the pinned commits and ORT 1.31.
 ran red (research/spikes/red-verification/output.txt); the clean venv reproduced the lock exactly and pip-audit was clean
 (T-P21 passed live, same file).
 
-## Hosts (PK-13; research/spikes/hosts, probed 2026-10-14)
-| Host | From the cloud workspace | Alternative channel |
-|---|---|---|
-| pypi.org, GitHub (web, git, raw, releases, REST API) | reachable | — |
-| download.pytorch.org | unreachable | CI runners (`python-torch` job) and the owner's notebooks |
-| huggingface.co | unreachable | CI runners (T-P19 content-encoder assets) and notebooks (D-016) |
-| colab.research.google.com, kaggle.com | unreachable | the owner runs the notebooks at G-004 (A-016) |
-| Ubuntu apt mirrors (archive.ubuntu.com, security.ubuntu.com) | not probed at planning time | S-000 probes them; unreachable → the plugin tests and pluginval run only in CI (D-036) |
-| Actions results/log host | unreachable | GitHub REST API: jobs, steps, check-run annotations (D-018, `tools/ci_annotate.py`) |
+## Hosts (PK-13; research/spikes/hosts, probed 2026-10-15)
+| Host | run.sh roles | From the cloud workspace | Alternative channel |
+|---|---|---|---|
+| pypi.org, GitHub (web, git, raw, releases, REST API) | pypi-index, pypi-files, github-web, github-git, github-releases-ort, github-releases-pluginval, github-raw, github-api | reachable | — |
+| download.pytorch.org | pytorch-index | unreachable | CI runners (`python-torch` job) and the owner's notebooks |
+| huggingface.co | huggingface-rvc-assets | unreachable | CI runners (T-P19 content-encoder assets) and notebooks (D-016) |
+| colab.research.google.com, kaggle.com | colab, kaggle | unreachable | the owner runs the notebooks at G-004 (A-016) |
+| Ubuntu apt mirrors (archive.ubuntu.com, security.ubuntu.com) | apt-archive, apt-security | reachable | unreachable → the plugin tests, pluginval and T-034 run only in CI (D-036) |
+| Actions results/log host | actions-results | unreachable | GitHub REST API: jobs, steps, check-run annotations (D-018, `tools/ci_annotate.py`) |
 
 ## Open environment questions
 - **Q-E7** (QUESTIONS E3.4) — answered: JUCE 9.0.3 builds succeed on `windows-2022` and, with `--parallel 4` (C-055), on
