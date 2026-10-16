@@ -38,7 +38,7 @@ TEST_CASE ("T-067 take cache: bit-exact round trip; absent, truncated, corrupted
     REQUIRE (storeTake (dir, t));
     const auto file = dir / takeFileName (t.contentHash);
     REQUIRE (fs::exists (file));
-    CHECK (fs::file_size (file) == 52u + 4u * 1000u);                               // D-038 layout
+    CHECK (fs::file_size (file) == 56u + 4u * 1000u);                               // D-038 layout: 48-byte header, samples, 8-byte checksum
     const auto back = loadTake (dir, t.contentHash);
     REQUIRE (back.has_value());
     CHECK (sameTake (*back, t));
