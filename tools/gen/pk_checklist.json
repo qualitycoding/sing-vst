@@ -338,5 +338,30 @@
   "After any pull-request state change, read the state back (e.g. `isDraft`) instead of trusting the request.",
   "S-019",
   "both"
+ ],
+ "PK-69": [
+  "Verify every 'file installs/pins X' claim against non-comment lines and quote the line in the spike.",
+  "C-023; C-062; research/spikes/premortem-r1/notebook_deps.txt",
+  "both"
+ ],
+ "PK-70": [
+  "Measure stochastic outputs over repeats and report the spread; thresholds inside the spread are indeterminate.",
+  "eval/PROCEDURE.md; D-017; S-017",
+  "both"
+ ],
+ "PK-71": [
+  "Every parameter a resumable stage uses is part of its identity.",
+  "D-035 stage table; S-016 tools/notebook_dryrun.py",
+  "both"
+ ],
+ "PK-72": [
+  "Store what the user approves; never regenerate it from a non-deterministic model.",
+  "D-038; T-067; T-068; S-009; S-011",
+  "both"
+ ],
+ "PK-73": [
+  "Provenance records the environment that produced the result, captured there.",
+  "D-035; S-017",
+  "both"
  ]
 }
