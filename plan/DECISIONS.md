@@ -239,7 +239,8 @@ non-discarded renders. The destructor cancels and joins within 5 s. Tests: T-048
 
 ### D-009 Host time mapping and phrase hash
 Take sample for host PPQ `q`: stale when `|hostBpm − take.bpm| > tol` → none; else `k = floor((q − startBeat)·60/bpm·sr + 0.5)`,
-valid when `0 ≤ k < size`. `phraseHash`: FNV-1a 64 (offset 14695981039346656037, prime 1099511628211) over the UTF-8 string
+valid when `0 ≤ k < size`, where `bpm` = `take.bpm` (the take's own tempo, set when it was rendered) and `sr` =
+`take.sampleRate`; `hostBpm` only decides staleness (T-032). `phraseHash`: FNV-1a 64 (offset 14695981039346656037, prime 1099511628211) over the UTF-8 string
 made of, per note, `n:<start %.9f>:<end %.9f>:<midi>;`, per token `t:<kind 0|1|2>:<text>:<phonemes joined by ' '>:<0|1>;`,
 then `p:<voiceId>:<bpm %.9f>:<outputSampleRate>:<0|1 conversion>:<portamento %.9f>:<vibrato %.9f>:<seed>;`
 (`%.9f` = C `printf`, '.' decimal point regardless of locale). Golden: one note (0, 1, 60), token `la`, params
@@ -262,7 +263,8 @@ while armed; event positions = block PPQ + sample offset · bpm / (60 · sample 
 stored notes replaced, bpm taken from the host, render submitted, back to `Idle`; disarm returns to `Idle` and keeps stored
 notes. Renders are submitted (message thread, 4 Hz timer) after: capture end, import, voice load, lyric edits (500 ms after
 the last keystroke), changes of `convert`/`portamento`/`vibrato`/`seed`, a host tempo differing from the take's by > 0.1
-bpm, or a host sample rate differing from the take's. `gain` never triggers a render. No voice loaded → no render and
+bpm, or a host sample rate differing from the take's. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
+no voice, lyrics that fail to parse, no stored notes. No voice loaded → no render and
 `lastError()` = `Load a voice`. Lyrics that fail `parseLyrics` → no render, `lastError()` = `Lyrics: <ParseError message>`.
 No stored notes → no render and no error (status stays as it was). `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
 last. Capture never allocates on the audio thread (D-022): `arm(true)` preallocates a buffer of 4096 raw note events; the
@@ -321,7 +323,9 @@ different voice always changes the phrase hash. Tests: T-P13, T-P18.
 
 ### D-015 Python toolkit
 Package `python/singvst_train` (Python 3.12): `prepare`, `pipeline`, `provenance`, `metrics`, `pack`, `security`,
-`rvc_files`, `export_rvc`, `evaluate`, `cli`. Signatures are frozen in the stubs. Every result file gets a provenance sidecar
+`rvc_files`, `export_rvc`, `evaluate`, `cli`. Signatures are frozen in the stubs. The result files — `dataset.json`
+(`prepare`) and `report.json` (`evaluate`) — get a provenance sidecar (renders get the D-014 one; intermediate files —
+`split.json`, ONNX exports, the voice package, `verdict.json` (derived from `report.json`), `budget.json` — get none)
 `<file>.provenance.json` with `git_commit`, `lockfile_sha256`, `seeds`, `params`, `utc_timestamp` (ISO-8601 `Z`),
 `hardware` (platform, CPU, GPU name or `none`), `threads` (protocol 2B.2). pyworld is loaded through its compiled extension
 (`metrics.load_pyworld`) because `import pyworld` fails with setuptools 84 (C-046). The frozen interface record
@@ -465,9 +469,18 @@ resemblyzer==0.1.4 openai-whisper==20250625` (+ `audio-separator==0.47.0` only w
 `-e <sing-vst>/python --no-deps` (editable, so `provenance.collect` finds the repository root as
 `Path(singvst_train.__file__).resolve().parents[2]` and the lockfile `python/requirements-lock.txt` there; the same rule
 applies to `prepare` and `evaluate` sidecars). `ffmpeg` must be on PATH for Whisper (C-059): `which ffmpeg || apt-get install
--y ffmpeg`. The RVC experiment and weights live on persistent storage: `<rvc>/logs/<voice>` and `<rvc>/assets/weights` are
-symlinks to `<root>/logs/<voice>` and `<root>/weights` (Drive on Colab, `/kaggle/working` on Kaggle).
-**Parameters cell** (cell (2a), the only cell the owner edits, after the consent cell; GATE-G-004.md states the values to enter): `VOICE = "myvoice"` (lower-case letters,
+-y ffmpeg`.
+**Paths.** Colab: `<root>` = `/content/drive/MyDrive/singvst/<VOICE>`, `<rvc>` = `/content/rvc`, `<sing-vst>` =
+`/content/sing-vst`, `VENV` = `/content/py312`, recordings in `<root>/raw/`. Kaggle: `<root>` = `/kaggle/working`, `<rvc>` =
+`/tmp/rvc`, `<sing-vst>` = `/tmp/sing-vst`, `VENV` = `/kaggle/working/py312`, recordings in the input dataset
+`/kaggle/input/singvst-<VOICE>/` (read-only; `raw/` below means that folder). `<rvc>` and `<sing-vst>` are re-cloned every
+session; the RVC experiment and weights live on persistent storage: `<rvc>/logs/<VOICE>` and `<rvc>/assets/weights` are
+symlinks to `<root>/logs/<VOICE>` and `<root>/weights`. Stage-table paths starting `logs/` or `assets/` are under `<rvc>`
+(so `assets/weights/<voice>.pth` is the file `<root>/weights/<voice>.pth`); all other relative paths are under `<root>`.
+RVC commands (cells (9), (11)) run with cwd `<rvc>`; every other command runs with cwd `<root>`.
+**Owner-edited cells:** (2) consent and (2a) parameters only; GATE-G-004.md states what to enter. In (2) the owner sets
+`CONSENT_CONFIRMED = True` and `ATTESTATION` = "I confirm these recordings are my own voice, or are used with the
+singer's consent, and that this use is within the platform's terms." (A-011). **Parameters cell** (2a): `VOICE = "myvoice"` (lower-case letters,
 digits and `-`; used for `--name`, the Drive folder and the RVC experiment), `DEREVERB = False`, `EPOCHS = 200`,
 `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). `--consent` = the attestation text; `--guide-licence` =
 the D-035 §Guide voicebank string. **Memory check** (cell (10a), PK-43) before training: print GPU name, GPU memory and RAM; batch size
@@ -559,6 +572,10 @@ Frozen files cannot be edited, so comments that are wrong are corrected here and
 - E-4 test docstrings name sub-tests by function (`test_P13b_…`, `test_P19b_…`); they are parts of **T-P13** and **T-P19**.
 - E-5 `tests/python/test_evaluate.py` T-P26 docstring "toward the training data's median pitch" → the **held-out**
   recordings' median F0 (D-017, eval/PROCEDURE.md).
+- E-7 `core/include/singvst/synthesis.hpp` `f0Curve`: "i in [0, ceil(totalSec * frameRateHz))" → `ceil(total·fr − 1e-9)`
+  frames (D-007, T-024).
+- E-8 `core/include/singvst/g2p.hpp` `hasPhone`: "occurs in any entry" → in any **kept** entry (the first entry of a word;
+  ignored duplicate lines do not count; D-005, T-007).
 - E-6 `tests/cpp/test_playback.cpp` T-034 comment "CI installs de_DE.UTF-8 (D-018)" — true from this amendment on (D-018).
 
 ---

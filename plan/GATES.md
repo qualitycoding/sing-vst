@@ -45,9 +45,11 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 - **Questions:** (1) Are the recordings your own voice or used with the singer's consent, and is this use within the
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
   (3) Colab or Kaggle?
-- **Responses:** `run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the values the owner used; the owner runs the notebook per D-035 and attaches `report.json`,
+- **Responses:** `consent: yes, run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the values the owner used; without
+  `consent: yes` the response is `stop`; the owner runs the notebook per D-035 and attaches `report.json`,
   `report.json.provenance.json`, `verdict.json` and `budget.json` to the conversation, or pastes them) ·
-  `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three, then
+  `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
+  issue (a `retrain` re-issue starts a new count), then
   `BLOCKED.md`; GPU hours already used stay in `budget.json` — and re-issues G-004) · `stop`. Recordings, renders and voice packages are
   never uploaded to the repository (A-011, T-062).
 
