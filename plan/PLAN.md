@@ -427,7 +427,12 @@ Defaults for every step unless the step says otherwise:
   with the regex `\{\s*"(\w+)",\s*"([^"]+)",\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*([-0-9.]+)f,\s*"([^"]*)"\s*\}`
   and writes a table `| ID | Name | Minimum | Maximum | Default | Step | Unit |` under a line naming the source file
   (5 rows; fail if the count differs from `kParams`' declared size); `THIRD_PARTY_NOTICES.md` (JUCE, ONNX Runtime,
-  nlohmann/json, CMUdict, RVC, TIGER/other voicebank terms, openvpi vocoder only if the G-005 answer or the packed voice uses one); sound descriptions only with the G-001
+  nlohmann/json, CMUdict, RVC, TIGER/other voicebank terms, openvpi vocoder only if the G-005 answer or the packed voice uses one:
+  one `## <component> <version or commit>` section each, with licence name, source URL at the pin and the full licence text
+  copied from `$HOME/deps/JUCE/LICENSE.md`, `$HOME/deps/ort/LICENSE`, `../build-core/_deps/json-src/LICENSE.MIT`,
+  `third_party/cmudict/LICENSE`, `../rvc/LICENSE`; the voicebank section gives licence name, URL and the personal
+  non-commercial restriction only (C-037; never redistributed); check `grep -c '^## ' THIRD_PARTY_NOTICES.md` equals the
+  number of components); sound descriptions only with the G-001
   record (PK-46).
 - Outputs: README.md, docs/PARAMETERS.md, THIRD_PARTY_NOTICES.md, tools/gen/parameters.py
 - Evidence produced: T-P23
