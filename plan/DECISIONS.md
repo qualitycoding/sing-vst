@@ -560,7 +560,9 @@ naming earlier runs' `logs/<exp>/` as the largest deletable items (R-033, R-063)
 session also records `session_hours` = wall-clock from cell (1) to its end, which is what platform quotas charge (R-062).
 **Ending a session** (R-055): a stop condition (9.5 h, budget, train timeout) sets `STOP = True`; every later cell
 starts with `if STOP:` printing "skipped — start a new session", so a Kaggle version always completes without an error
-and keeps its output (outputs are limited to 500 items, C-064 — hence `state.tar`); cell (17) still writes `state.tar`.
+and keeps its output (outputs are limited to 500 items, C-064 — hence `state.tar`). This applies on both platforms; with
+`STOP` set, cell (17) only stops the heartbeat, writes `budget.json` and `budget-voice.json` a final time and (Kaggle) writes
+`state.tar` — no upload tar.
 Kaggle's weekly quota cannot be read from code: the notebook prints a reminder to check it in Kaggle's settings before the
 train stage.
 **Notebook layout** (Colab: Google Drive folder `MyDrive/singvst/<VOICE>/`; Kaggle: input dataset `singvst-<VOICE>` and the
