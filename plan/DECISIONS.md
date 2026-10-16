@@ -508,16 +508,20 @@ onnxruntime==1.31.0 pyworld==0.3.5 mido==1.3.3 pytest==9.1.1 nbformat==5.10.4 Py
 webrtcvad-wheels==2.0.14` (+ `audio-separator==0.47.0` only when `DEREVERB`), then `resemblyzer==0.1.4 --no-deps` (its
 `webrtcvad` dependency imports `pkg_resources` unconditionally; `webrtcvad-wheels` provides the same module through
 `importlib.metadata`, and librosa, numpy, scipy and torch are already installed; C-062); (v) the toolkit with
-`-e <sing-vst>/python --no-deps`. Then `uv pip freeze --python $VENV/bin/python > <run>/out/env-freeze.txt` and
-`<run>/out/env.json` = `{"python", "torch", "cuda", "gpu", "driver", "image"}` (`torch.__version__`,
+`-e <sing-vst>/python --no-deps`. Every session (step (4e), after the Colab mount) writes `uv pip freeze --python
+$VENV/bin/python` to `<run>/out/env/<session>.freeze.txt` and `<run>/out/env/<session>.json` = `{"python", "torch",
+"cuda", "gpu", "driver", "image"}` (`<session>` = the session's UTC start, `YYYYmmddTHHMMSSZ`; files of earlier
+sessions are kept, R-054; `--lockfile` arguments name the current session's freeze file) (`torch.__version__`,
 `torch.version.cuda`, `torch.cuda.get_device_name(0)`, `nvidia-smi --query-gpu=driver_version`, the platform name)
 (R-019). `ffmpeg` must be on PATH for Whisper (C-059): `which ffmpeg || apt-get install -y ffmpeg`. The Colab Drive is
-mounted **after** these installs (R-020).
+mounted **after** these installs (R-020), at step (4d).
 **Paths.** Colab: `<root>` = `/content/drive/MyDrive/singvst/<VOICE>`, `<rvc>` = `/content/rvc`, `<sing-vst>` =
 `/content/sing-vst`, `VENV` = `/content/py312`, recordings in `<root>/raw/`. Kaggle: `<root>` = `/kaggle/working`, `<rvc>` =
 `/tmp/rvc`, `<sing-vst>` = `/tmp/sing-vst`, `VENV` = `/tmp/py312`, recordings in the input dataset
-`/kaggle/input/singvst-<VOICE>/` (read-only; `raw/` below means that folder). **Runs** (R-013, R-014, R-015): every G-004
-issue has a run number `RUN` (1, 2, …) and its own run root `<run>` = `<root>/run<RUN>/`, holding `params.json`, `state/`,
+`/kaggle/input/singvst-<VOICE>/` (read-only; `raw/` below means that folder). `<LOCAL>` = `/content/local` (Colab) or
+`/tmp/local` (Kaggle): local disk for the build tree and the binary — no executable or build tree is ever placed on Drive
+(R-052). **Runs** (R-013, R-014, R-015, R-053): the first G-004 issue and each G-001 `retrain` start a new run number `RUN`
+(1, 2, …); a `failed:` re-issue keeps `RUN` and its experiment and changes only `EXPECTED_COMMIT`. Each run has its own run root `<run>` = `<root>/run<RUN>/`, holding `params.json`, `state/`,
 `raw_wav/`, `split.json`, `train/`, `heldout/`, `prepared/` and `out/`; the RVC experiment name is `<exp>` =
 `<VOICE>-run<RUN>`, and `pack --name <exp>`. Nothing of one run is read, overwritten or deleted by another; earlier runs'
 voice packages stay where they are. `<rvc>` and `<sing-vst>` are re-cloned every session; the RVC experiment and weights
@@ -538,8 +542,13 @@ run writes `<run>/params.json` = these values except `EXPECTED_COMMIT` (each ses
 `--consent` = the attestation text; `--guide-licence` = the D-035 §Guide voicebank string. **Memory and disk check**
 (cell (10a), PK-43): print GPU name, GPU memory, RAM and free space on `<root>`'s file system; batch size 8 when GPU memory ≥
 14 GiB, else 4; RAM < 10 GiB → stop with a message to choose a High-RAM runtime; free space < 3 × the size of `raw/` +
-2 GiB → stop with a message to free Drive space (R-033).
-**GPU time** = the wall-clock time of the stages rvc-f0, rvc-features, train, export and evaluate, plus cell (16).
+8 GiB (features, G/D checkpoints and their `.bak`, 20 weight snapshots) → stop with a message to free Drive space,
+naming earlier runs' `logs/<exp>/` as the largest deletable items (R-033, R-063).
+**GPU time** = the wall-clock time of the stages rvc-f0, rvc-features, train, export and evaluate, plus cell (16); each
+session also records `session_hours` = wall-clock from cell (1) to its end, which is what platform quotas charge (R-062).
+**Ending a session** (R-055): a stop condition (9.5 h, budget, train timeout) sets `STOP = True`; every later cell
+starts with `if STOP:` printing "skipped — start a new session", so a Kaggle version always completes without an error
+and keeps its output (outputs are limited to 500 items, C-064 — hence `state.tar`); cell (17) still writes `state.tar`.
 Kaggle's weekly quota cannot be read from code: the notebook prints a reminder to check it in Kaggle's settings before the
 train stage.
 **Notebook layout** (Colab: Google Drive folder `MyDrive/singvst/<VOICE>/`; Kaggle: input dataset `singvst-<VOICE>` and the
@@ -550,15 +559,19 @@ evaluation. Cells, in order (19 code cells): (1) `!nvidia-smi` (Kaggle: also the
 (2) consent (`CONSENT_CONFIRMED = False`, `ATTESTATION = ""`, then `assert CONSENT_CONFIRMED and ATTESTATION`); (2a) the
 Parameters cell; (3) set paths and define `make_stages(run, rvc, sh)` (the cell containing `def make_stages`; it returns
 the eleven `pipeline.Stage` objects of the stage table, each stage's `run` calling `sh(<command>)`, using the globals
-`VOICE`, `RUN`, `EPOCHS`, `DEREVERB`, `SPEAKER_ID`, `GUIDE`; cells (7)–(15) call `run_stages` on its slices); Kaggle only: restore the previous session — `prev = glob("/kaggle/input/*/run<RUN>/params.json")`;
-none → first session of the run; more than one → stop naming them; one → copy that input's `run<RUN>/`, `logs/<exp>/`,
-`weights/` and `assets-archive/` into `/kaggle/working` (`cp -a`) before anything else (R-016); (4) clone sing-vst and check
-out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal it, else stop; R-029) and RVC 81eed5e; create the venv and install
-exactly as §Notebook environment; the GPU's compute capability must be in `torch.cuda.get_arch_list()`, else stop naming
-both (R-044); then (Colab) mount Drive; then write or check `<run>/params.json` (above), start the budget heartbeat
-(§Time and budget) and record this session's commit in `budget.json` `sessions[].commit`; build `singvst-render` here, before any GPU stage (R-023): `g++ --version`; `cmake -S <sing-vst> -B
-<run>/build-render -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_PLUGIN=OFF -DSINGVST_BUILD_TESTS=OFF && cmake --build
-<run>/build-render --target singvst-render --parallel 4` (C-055) — a failure stops the run before GPU time is spent;
+`VOICE`, `RUN`, `EPOCHS`, `DEREVERB`, `SPEAKER_ID`, `GUIDE`; cells (7)–(15) call `run_stages` on its slices); Kaggle only: restore the previous session (R-016, R-055) — `prev = glob("/kaggle/input/*/state.tar")`; none → first
+session; more than one → stop naming them; one → its `state.tar.sha256` must match, then extract it into `/kaggle/working`
+(it holds `run<RUN>/`, `logs/`, `weights/`, `assets-archive/`, `budget-voice.json`); (4) in exactly this order (R-051): (a) clone sing-vst and check out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal
+it, else stop; R-029) and RVC 81eed5e; (b) create the venv and install exactly as §Notebook environment; (c) the GPU's
+compute capability must be in `torch.cuda.get_arch_list()`, else stop naming both (R-044); (d) Colab only:
+`drive.mount('/content/drive')` — no cell writes under `/content/drive` before this point; (e) create the `<run>/`
+directories and the RVC symlinks, write or check `<run>/params.json` (above), write this session's freeze and env files,
+append this session to `budget.json` `sessions[]` (with its commit) and start the budget heartbeat (§Time and budget);
+(f) build `singvst-render` on local disk, never on Drive (R-052): `g++ --version`; `cmake -S <sing-vst> -B
+<LOCAL>/build-render -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_PLUGIN=OFF -DSINGVST_BUILD_TESTS=OFF && cmake --build
+<LOCAL>/build-render --target singvst-render --parallel 4` (C-055), then run `<LOCAL>/build-render/cli/singvst-render
+--check-voice <sing-vst>/tests/fixtures/voice-convert`, which must print `ok …` — a failure stops the run before GPU time
+is spent (R-023);
 (5) RVC assets with `hf download` exactly as C-052 but with `--revision <the SHA recorded in plan/ENVIRONMENT.md by S-013>`
 (hubert_base, rmvpe.pt, pretrained_v2, mute.zip → `logs/`) in a separate venv for huggingface_hub 2.2.0 (C-054), taken from
 `<root>/assets-archive/` when present there with matching SHA-256, else downloaded and then copied there with their SHA-256
@@ -567,32 +580,41 @@ checkout, and `python -c "import resemblyzer, whisper; whisper.load_model('small
 archived like (5)) — stop if either fails; (7) the split stage: write `raw_wav/`, `python -m singvst_train.cli split
 --files-dir raw_wav --seed 0 --out split.json`, then copy each name of `split.json` `train` into `train/` and of `heldout`
 into `heldout/`; stop before training when `heldout/` is empty or holds < 30 s, or `train/` holds < 10 min, with a message to
-supply at least 10 recordings (R-031); (8) `prepare --in train --out prepared --lockfile out/env-freeze.txt`; (9) in the RVC
+supply at least 10 recordings (R-031); (8) `prepare --in train --out prepared --lockfile out/env/<session>.freeze.txt`; (9) in the RVC
 checkout: `python train/preprocess.py <run>/prepared/segments 48000 <n_cpu = os.cpu_count()> <rvc>/logs/<exp> False 3.0`;
 `python train/dataset/extract_f0.py cuda 1 0 0 <rvc>/logs/<exp> False`; `python train/dataset/extract_hubert_feature.py
 cuda 1 0 0 <rvc>/logs/<exp> v2 False` (full precision, RVC's fp32 path, works on every GPU type; rmvpe is RVC's fixed f0
 method in cuda mode; argv verified in C-057); (10) `rvc-files`; (10a) the Memory and disk check; (11) the train stage:
-**checkpoint guard** (R-035) — when `logs/<exp>/G_2333333.pth` or `D_2333333.pth` exists, each must load with
-`torch.load(path, map_location="cpu", weights_only=False)`; a file that fails is replaced by its `.bak` when that loads,
+**checkpoint guard** (R-035, R-057) — when `logs/<exp>/G_2333333.pth` or `D_2333333.pth` exists, each must load with
+`torch.load(path, map_location="cpu")` (exactly as RVC loads it, C-063) and `e0` = the G checkpoint's `"iteration"`; a file that fails is replaced by its `.bak` when that loads,
 else the cell stops ("checkpoint unreadable; delete logs/<exp> to restart this run"); after the check both are copied to
 `.bak`; then run the JSON argv printed by `rvc-train-command` (RVC resumes from `logs/<exp>` automatically, C-047, C-061;
 no retrieval index is trained — the converter does not use it, D-012); after it exits, in a session that started with a
-checkpoint, `logs/<exp>/train.log` lines written in this session must not contain RVC's pretrained-fallback message
-"已加载生成器预训练模型" (C-061), else stop ("training restarted from the pretrained model"); **completion**: the stage is
+checkpoint: the G checkpoint's `"iteration"` must be ≥ `e0` (a restart from the pretrained model saves lower epochs),
+and the `logs/<exp>/train.log` lines written in this session must contain neither RVC's pretrained-fallback message
+"已加载生成器预训练模型" nor its en_US translation "Loaded generator pretrained model" (RVC logs through `i18n`, C-063);
+else stop ("training restarted from the pretrained model"); **completion**: the stage is
 complete when `assets/weights/<exp>.pth` exists (RVC writes it at `total_epoch` and exits, C-061); (12) `export --exp-name
 <exp>`, then `python -c` calling `export_rvc.parity(<rvc>, assets/weights/<exp>.pth, out/conv/rvc_synth.onnx)` — above
-1e-3 → stop (DR-14, R-050); (13) `mkdir -p out/bin && cp <run>/build-render/cli/singvst-render
-<run>/build-render/cli/cmudict.dict <run>/build-render/cli/onnxruntime-LICENSE.txt <run>/build-render/cli/libonnxruntime.so*
-out/bin/` (the build copies the runtime files beside the binary; D-024, D-005); (14) the guide voicebank (§Guide voicebank,
+1e-3 → stop (DR-14, R-050); (13) the render-bin stage: `mkdir -p <LOCAL>/bin && cp <LOCAL>/build-render/cli/singvst-render
+<LOCAL>/build-render/cli/cmudict.dict <LOCAL>/build-render/cli/onnxruntime-LICENSE.txt
+<LOCAL>/build-render/cli/libonnxruntime.so* <LOCAL>/bin/` (the build copies the runtime files beside the binary; D-024,
+D-005; `<LOCAL>` is rebuilt every session, so a resumed session re-runs render-bin and, because the binary's bytes differ,
+evaluate); (14) the guide voicebank (§Guide voicebank,
 into `<root>/voicebank/`, the zip archived like (5)) and `python -m singvst_train.cli pack --out out/voice --name <exp> …`,
 then `out/training.json` = `{"voice_name": <exp>, "epochs_requested": EPOCHS, "epochs_trained": <N of the newest
-<exp>_e<N>_s<M>.pth, or EPOCHS>, "stopped_by_budget": <bool>, "weights_sha256", "env_freeze_sha256", "commit"}` (R-019);
+<exp>_e<N>_s<M>.pth, or EPOCHS>, "stopped_by_budget": <bool>, "weights_sha256", "env_files": [the session freeze/env files], "stage_commits":
+{stage: commit it last ran under}, "commit"}` (R-019, R-054; `make_stages` records `stage_commits` in
+`<run>/state/commits.json` whenever a stage runs);
 (15) `python -m singvst_train.cli evaluate --voice out/voice --heldout heldout --phrases <sing-vst>/eval/phrases
---render-bin out/bin/singvst-render --out out/eval --thresholds <sing-vst>/eval/thresholds.json --lockfile
-out/env-freeze.txt`; then `out/eval/ceiling.json` = `{"heldout_vs_train": mean over held-out files of cosine(embedding of
+--render-bin <LOCAL>/bin/singvst-render --out out/eval --thresholds <sing-vst>/eval/thresholds.json --lockfile
+out/env/<session>.freeze.txt`; then `out/eval/ceiling.json` = `{"heldout_vs_train": mean over held-out files of cosine(embedding of
 the file, mean embedding of the `train/` files)}` with the PROCEDURE step 4 Resemblyzer settings (R-032); (16) `pytest -m
-voice` (T-P20) with `SINGVST_VOICE`, `SINGVST_HELDOUT`, `SINGVST_RENDER_BIN` set to the paths above; (17) `tar` the
-`out/` folder to Drive / Kaggle output, then print `sha256sum` of the upload files (R-036).
+voice` (T-P20) with `SINGVST_VOICE`, `SINGVST_HELDOUT`, `SINGVST_RENDER_BIN` set to the paths above; (17) stop the budget
+heartbeat and write `budget.json` a final time; `tar` the `out/` folder to Drive / Kaggle output; write
+`<root>/upload-run<RUN>.tar` holding the upload files (§Upload) and print its `sha256sum` line (R-036, R-056); Kaggle: then
+write `/kaggle/working/state.tar` (+ `state.tar.sha256`) of `run<RUN>/`, `logs/`, `weights/`, `assets-archive/` and
+`budget-voice.json`, and delete those untarred copies from `/kaggle/working` (R-055).
 Every stage from (7) runs through `pipeline.run_stages` with markers in `<run>/state/` and these inputs → outputs; every
 stage also has `params.json` as an input (R-013); the notebook prints the list `run_stages` returns and appends it to
 `budget.json` `sessions[].stages_run` (the RVC experiment directory `logs/<exp>/` and its `G_*.pth`/`D_*.pth` checkpoints are
@@ -607,23 +629,27 @@ stage also has `params.json` as an input (R-013); the notebook prints the list `
 | rvc-files | `logs/<exp>/0_gt_wavs`, `…/3_feature768`, `…/2a_f0`, `…/2b-f0nsf` | `logs/<exp>/filelist.txt`, `logs/<exp>/config.json` |
 | train | `logs/<exp>/filelist.txt`, `logs/<exp>/config.json` | `assets/weights/<exp>.pth` |
 | export | `assets/weights/<exp>.pth` | `out/conv/` |
-| render-bin | `build-render/cli/singvst-render` | `out/bin/` |
+| render-bin | `<LOCAL>/build-render/cli/singvst-render` | `<LOCAL>/bin/` |
 | pack | `out/conv/`, `<root>/voicebank/` | `out/voice/`, `out/training.json` |
-| evaluate | `out/voice/`, `heldout/`, `out/bin/` | `out/eval/` |
+| evaluate | `out/voice/`, `heldout/`, `<LOCAL>/bin/` | `out/eval/` |
 **Time and budget.** `out/budget.json` holds `{"gpu_hours", "sessions": [{"commit", "start", "end", "gpu_hours",
-"stages_run"}]}`. A background thread started at the end of cell (4) rewrites it with `pipeline.atomic_write_text` every 5 minutes with
-the running session's GPU time, so a killed session loses at most 5 minutes of accounting; `gpu_hours` is therefore a
-lower bound and GATE-G-001.md says so (R-034). Before each stage the notebook prints the session's elapsed time, the
+"session_hours", "stages_run"}]}`, and `<root>/budget-voice.json` holds `{"gpu_hours", "runs": {RUN: gpu_hours}}` summed
+over every run of the voice (A-015 is per voice; R-062). A background thread started at step (4e) rewrites both with
+`pipeline.atomic_write_text` every 5 minutes with the running session's GPU time, so a killed session loses at most 5
+minutes of accounting; `gpu_hours` is therefore a lower bound and GATE-G-001.md says so (R-034). The thread stores any
+exception instead of dying silently; before every stage and in cell (17) the notebook checks the thread is alive and has
+stored no exception, else stops naming it (R-051). Before each stage the notebook prints the session's elapsed time, the
 cumulative `gpu_hours` and (Kaggle) the reminder to check the weekly quota, and stops with "start a new session" when the
-session has run ≥ 9.5 h. The train stage runs `train.py` with a timeout of min(10 h − elapsed − 0.5 h, 20 h − `gpu_hours`);
-on timeout the next session resumes it (C-047; the checkpoint guard covers a save cut by the timeout). When `gpu_hours`
+session has run ≥ 9.5 h. The train stage runs `train.py` with a timeout of min(10 h − elapsed − 0.5 h, 20 h − `budget-voice.json` `gpu_hours`);
+on timeout the next session resumes it (C-047; the checkpoint guard covers a save cut by the timeout). When the voice's `gpu_hours`
 reaches 20 (A-015) the train stage copies the newest `assets/weights/<exp>_e<N>_s<M>.pth` (`latest_weights`) to
 `assets/weights/<exp>.pth`, records `"stopped_by_budget": <N>` in `budget.json` and completes (DR-13). **Epochs:**
 `--epochs` = `EPOCHS` (200 unless GATE-G-004.md states another value); the owner reports the value used in the G-004
 response; `--save-every` 10.
-**Upload to the implementer (G-004):** `report.json`, `report.json.provenance.json`, `verdict.json`, `spread.json`,
-`ceiling.json`, `budget.json`, `training.json`, `env-freeze.txt` and `env.json`, attached to the conversation (or pasted as
-text, which the implementer writes byte-for-byte to the same file names), plus the `sha256sum` lines cell (17) printed.
+**Upload to the implementer (G-004):** `upload-run<RUN>.tar` holding `report.json`, `report.json.provenance.json`,
+`verdict.json`, `spread.json`, `ceiling.json`, `budget.json`, `budget-voice.json`, `training.json` and `out/env/` (every
+session's freeze and env file), attached to the conversation, plus the `sha256sum` line cell (17) printed (the only part
+that may be pasted as text; R-056).
 Renders and voice packages stay on the owner's Drive or machine (A-011, T-062).
 **Visibility (R-021):** the Kaggle dataset `singvst-<VOICE>` and the Kaggle notebook are **Private** and no version is
 published; the Drive folder is not shared. Cell (1) of the Kaggle notebook prints this reminder; GATE-G-004.md requires it.
