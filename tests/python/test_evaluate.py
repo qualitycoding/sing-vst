@@ -46,6 +46,13 @@ def test_P20_evaluation_procedure_produces_a_complete_measured_report(tmp_path, 
     assert rep["phrases"] == ["p1", "p2", "p3", "p4", "p5"] and rep["heldout_files"]
     for s in rep["phrases"]:
         assert (tmp_path / "renders" / f"{s}.converted.wav").exists() and (tmp_path / "renders" / f"{s}.guide.wav").exists()
+        for r in range(1, evaluate.REPEATS):
+            assert (tmp_path / "renders" / f"{s}.r{r}.converted.wav").exists() and (tmp_path / "renders" / f"{s}.r{r}.guide.wav").exists()
+    spread = json.loads((tmp_path / "spread.json").read_text(encoding="utf-8"))   # R-018: repeats of the unseeded guide
+    for k in ("speaker_similarity", "guide_similarity", "f0_rms_cents", "octave_fraction", "wer", "guide_wer", "realtime_factor"):
+        v = spread[k]["values"]
+        assert len(v) == evaluate.REPEATS and spread[k]["min"] == min(v) and spread[k]["max"] == max(v)
+        assert math.isclose(rep[k], sum(v) / len(v), rel_tol=1e-9)
     for k in ("speaker_similarity", "guide_similarity", "f0_rms_cents", "wer", "guide_wer", "realtime_factor"):
         assert math.isfinite(rep[k])
     assert 0.0 <= rep["octave_fraction"] <= 1.0 and isinstance(rep["transpose_semitones"], int)

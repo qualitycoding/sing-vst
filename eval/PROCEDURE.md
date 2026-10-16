@@ -16,8 +16,13 @@ in the owner's notebook at S-017; values are judged at gate G-001.
    of every phrase is shifted by `k`; the report's `transpose_semitones` is that integer (T-P20). The transposed phrases
    are written with mido 1.3.3 to `<out>/phrases/<p>.mid` (every `note_on`/`note_off` note number + `k`; all other events,
    including lyric and tempo meta events, unchanged); a shifted note outside 0…127 is a validity failure.
-3. **Render.** `singvst-render --voice V --midi <transposed phrase> --out renders/<p>.converted.wav --seed 0` and the same
-   with `--no-convert` → `renders/<p>.guide.wav`. Render time and audio length come from each render's provenance sidecar.
+3. **Render.** The guide draws unseeded noise (C-040), so every phrase is rendered `evaluate.REPEATS` = 5 times (repeat
+   `r` = 0…4; the converter seed stays 0): `singvst-render --voice V --midi <transposed phrase> --out
+   renders/<p>.converted.wav --seed 0` for `r` = 0 and `renders/<p>.r<r>.converted.wav` for `r` ≥ 1, and the same with
+   `--no-convert` → `renders/<p>.guide.wav` / `renders/<p>.r<r>.guide.wav`. Render time and audio length come from each
+   render's provenance sidecar. Steps 4–7 compute every metric once per repeat over that repeat's renders, exactly as
+   written; the report holds the **mean over the 5 repeats**, and `spread.json` holds, per numeric report key,
+   `{"values": [5 per-repeat values], "min": …, "max": …}` (R-018).
 4. **Speaker similarity.** Resemblyzer 0.1.4 `VoiceEncoder` on CPU; every waveform is passed to `preprocess_wav` **as a file
    path** (so Resemblyzer resamples it to 16 kHz itself, C-058); reference = mean of the embeddings of every held-out file; `speaker_similarity` = mean over phrases of `cosine(embed(converted), reference)`;
    `guide_similarity` = the same for the guide renders (baseline, PK-35).
@@ -31,12 +36,12 @@ in the owner's notebook at S-017; values are judged at gate G-001.
 
 ## Validity checks (a report failing one is still written, with `status` "invalid: <reason>" and `null` for every metric
 that could not be computed; T-P20 then fails, which is the intended outcome)
-- Every render exists and its provenance sidecar has `unclipped_peak` > 0.
+- Every render of every repeat exists and its provenance sidecar has `unclipped_peak` > 0.
 - At least 20 scored F0 frames per phrase.
 - Every held-out file yields an embedding.
 
 ## Output
-`report.json` with exactly the keys of `evaluate.REPORT_KEYS`, `status` "measured" (or "invalid: …"); its provenance sidecar;
-`renders/`; and, from the CLI, `verdict.json` = `metrics.judge(report, thresholds)`. The provenance sidecar's `params` are
+`report.json` with exactly the keys of `evaluate.REPORT_KEYS`, `status` "measured" (or "invalid: …"); its provenance sidecar
+(`lockfile_sha256` of the producing environment's lock or freeze file, the `lockfile` argument); `spread.json`; `renders/`; and, from the CLI, `verdict.json` = `metrics.judge(report, thresholds)`. The provenance sidecar's `params` are
 `{"voice_name": <manifest name>, "voice_sha256": <SHA-256 of manifest.json>, "phrases": <phrases dir>, "heldout_files": <count>}`
 and its `seeds` `{"converter": <seed>}`. Values are never edited by hand (Rule 9).

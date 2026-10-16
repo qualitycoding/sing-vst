@@ -26,6 +26,10 @@
   }
  },
  "evaluate": {
+  "REPEATS": {
+   "kind": "constant",
+   "value": 5
+  },
   "REPORT_KEYS": {
    "kind": "constant",
    "value": [
@@ -43,9 +47,9 @@
    ]
   },
   "evaluate_voice": {
-   "doc_sha256": "44e29808d2919f93e1167be6935a938835b9b258e5661e5ea8ab9cb6f2186958",
+   "doc_sha256": "11a9aeb71ccbafdb964b42b96193c171f6cec79fa5a520c0f94d6a4955c701f8",
    "kind": "function",
-   "signature": "(voice_dir: 'Path', heldout_dir: 'Path', phrases_dir: 'Path', render_bin: 'Path', out_dir: 'Path', seed: 'int' = 0) -> 'dict'"
+   "signature": "(voice_dir: 'Path', heldout_dir: 'Path', phrases_dir: 'Path', render_bin: 'Path', out_dir: 'Path', seed: 'int' = 0, lockfile: 'Path | None' = None) -> 'dict'"
   },
   "transpose_semitones": {
    "doc_sha256": "06b8daea8805c7327a7760076ccd9f422eda2c8bff8f87c7e21ebed2150818cb",
