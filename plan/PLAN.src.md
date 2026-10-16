@@ -28,7 +28,8 @@ Defaults for every step unless the step says otherwise:
 - Actions: (every session first: if `origin/impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics` exists, check it
   out instead of creating it, keep the existing logs, and re-run only the actions whose out-of-tree results are missing —
   `.git/singvst-trailers`, `../build-*`, `../venv-lock`, `../rvc`, `../store-*`, `$HOME/deps` — then follow HANDOFF §Resume).
-  The parent directory of the repository must be writable (all `../` paths live there); if it is not, write `BLOCKED.md`.
+  The repository root is this session's checkout of `qualitycoding/sing-vst` (every relative path in this plan starts
+  there); its parent directory must be writable (all `../` paths live there); if it is not, write `BLOCKED.md`.
   1. Attach `qualitycoding/sing-vst`, `qualitycoding/Lessons` and `qualitycoding/knowledge` with push access through the
      session's repository tool and clone the stores with the clone command it returns, into `../store-lessons` and
      `../store-knowledge` (never a pasted token — PK-12). `gh` uses the session's preconfigured GitHub credential. Read-only
@@ -45,7 +46,8 @@ Defaults for every step unless the step says otherwise:
      user.email noreply@anthropic.com`. Trailers: write to `.git/singvst-trailers` (untracked, read by `tools/save.sh`) the
      commit-message trailer lines your session's instructions prescribe, one per line; if they prescribe none, write
      `Co-Authored-By: <your model name> <noreply@anthropic.com>`.
-  3. Tools: `cmake --version` ≥ 3.22, `ninja`, `g++ --version` major version 13 (13.x accepted; CI uses 13.3), `python3.12`,
+  3. Tools: `cmake --version` ≥ 3.22, `ninja`, `g++ --version` major version ≥ 13 (CI uses 13.3; another major ≥ 13 is recorded in `DEVIATIONS.md`, < 13 →
+     `BLOCKED.md`), `python3.12`,
      `curl`, `unzip` exist (else `BLOCKED.md`). With root or sudo: `sudo apt-get update && sudo apt-get install -y` the
      package list of the `cpp` job's apt step in `.github/workflows/ci.yml` (it includes `xvfb`) plus `python3.12-venv
      locales` (an install failure is the no-root path below), and generate the German
@@ -240,7 +242,7 @@ Defaults for every step unless the step says otherwise:
 - Inputs: core/include/singvst/render.hpp; D-013
 - Actions: implement render.hpp in `core/src/render.cpp` (with the D-013 limits and engine ownership) and take_cache.hpp in
   `core/src/take_cache.cpp` exactly as D-038 (research/spikes/premortem-r1/take_cache_sketch.cpp is a debugging reference
-  only); run the full suite; T-050, T-051 and T-068 in `../build-tsan`, T-067 and T-070 in `../build-asan` (plan/ENVIRONMENT.md).
+  only); run the full suite; T-050, T-051 and T-068 in `../build-tsan` (`ctest -R "T-050|T-051|T-068"`; CI's TSan step runs the same set), T-067 and T-070 in `../build-asan` (plan/ENVIRONMENT.md).
 - Outputs: core/src/render.cpp, core/src/take_cache.cpp, core/src/stubs.cpp (now empty of definitions; delete it if nothing remains)
 - Evidence produced: T-048…T-052, T-067, T-068, T-070
 - Done when: all core tests T-001…T-052, T-063…T-070 pass; T-050/T-051 clean under TSan; CI `sanitizers` green.
@@ -357,7 +359,7 @@ Defaults for every step unless the step says otherwise:
   whose `embed_utterance` returns a fixed 256-value unit vector (the real API, C-058), and `whisper.py` with `load_model(name)` returning an object whose `transcribe(path, **kw)` returns
   `{"text": ""}` (the real `load_model`/`transcribe` names, C-059); the stand-in `VoiceEncoder.__init__(self, *a, **k)`
   accepts any arguments. Write a temporary held-out folder `<tmp>/heldout` holding two 2-second 220 Hz 15-partial harmonic
-  tones (soundfile), then run, from `python/` without `-I` (so `PYTHONPATH` applies): `PYTHONPATH=<tmp>/stubs
+  tones as `<tmp>/heldout/h1.wav` and `h2.wav` (48000 Hz, soundfile), then run, from `python/` without `-I` (so `PYTHONPATH` applies): `PYTHONPATH=<tmp>/stubs
   ../../venv-lock/bin/python -m singvst_train.cli evaluate --voice ../tests/fixtures/voice-convert --heldout <tmp>/heldout
   --phrases ../eval/phrases --render-bin ../../build-core/cli/singvst-render --out <tmp>/eval --thresholds
   ../eval/thresholds.json`, and check the output files (all `evaluate.REPEATS` renders per phrase, `spread.json`) and keys of
@@ -383,8 +385,9 @@ Defaults for every step unless the step says otherwise:
   the RVC cells, `grep -n sys.argv ../rvc/train/preprocess.py ../rvc/train/dataset/extract_f0.py
   ../rvc/train/dataset/extract_hubert_feature.py` and check the D-035 command lines against it (C-057); the voicebank is
   downloaded by the owner inside the notebook and never stored in the repository. The stage table is built by one code
-  cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py`, which loads
-  each notebook with nbformat, execs that cell with a fake `sh` that creates each stage's declared outputs, runs the stages
+  cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself), which
+  loads each notebook with nbformat, finds the cell containing `def make_stages` (D-035 cell (3)), execs it with the
+  globals `VOICE="dry"`, `RUN=1`, `EPOCHS=10`, `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"` and with a fake `sh` that creates each stage's declared outputs, runs the stages
   in `<tmp>/a`, copies `<tmp>/a` to `<tmp>/b` by the cell-(3) Kaggle restore rule, runs them again (no stage may run),
   then edits `params.json` and runs again (every stage must run); it must exit 0 for both notebooks (R-016, R-013).
   GATE-G-004.md (S-017) gives the owner opening links pinned to a commit (R-029): Colab
@@ -392,7 +395,7 @@ Defaults for every step unless the step says otherwise:
   Kaggle: *File → Import notebook → GitHub* with that commit and path `notebooks/train_voice_kaggle.ipynb`.
 - Outputs: notebooks/train_voice_colab.ipynb, notebooks/train_voice_kaggle.ipynb, tools/notebook_dryrun.py
 - Evidence produced: T-P16, T-P17; `tools/notebook_dryrun.py` output in EXECUTION_LOG.md
-- Done when: T-P16, T-P17, T-P22 pass; `python3.12 tools/notebook_dryrun.py` exits 0.
+- Done when: T-P16, T-P17, T-P22 pass; `../venv-lock/bin/python -I tools/notebook_dryrun.py` exits 0.
 - Checkpoint: default
 - On failure: default
 - Gate: G-005 must be answered before this step starts.
@@ -417,12 +420,14 @@ Defaults for every step unless the step says otherwise:
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
      on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set). A failed check →
      ask the owner for the files again; files are never edited.
-  3. Commit those nine files to `results/<voice>/run<N>/` (`<voice>` = the `--name` given to `pack`, checked in
-     `report.json`'s provenance `params`; `<N>` = 1 for the first returned results, +1 for each later G-004 issue);
-     before re-issuing G-004 or G-001, `git mv` the previous gate file to `GATE-G-00<k>.run<N>.md` (history kept, Rule 9); never commit audio, recordings or voice packages (T-062).
+  3. Commit those nine files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the
+     package name `<VOICE>-run<RUN>` is checked in action 2a); before re-issuing a gate, `git mv` the previous gate file:
+     after `failed:` to `GATE-G-004.run<RUN>.fail<k>.md` (k = 1, 2, 3), after `retrain` to `GATE-G-004.run<RUN>.md` and
+     `GATE-G-001.run<RUN>.md` (history kept, Rule 9); never commit audio, recordings or voice packages (T-062).
   4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`; per threshold metric the verdict and
-     "indeterminate" when the threshold lies within `spread.json` [min, max], D-017) and halt.
-- Outputs: results/<voice>/run<N>/ (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, budget.json, training.json, env-freeze.txt, env.json), GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<N>.md)
+     "indeterminate" when min ≤ threshold ≤ max of `spread.json`, the `similarity_gain` spread being the per-repeat
+     differences, D-017) and halt.
+- Outputs: results/<VOICE>/run<RUN>/ (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, budget.json, training.json, env-freeze.txt, env.json), GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<RUN>[.fail<k>].md)
 - Evidence produced: T-P20 (run by the owner); G-001 record
 - Done when: the G-001 response is recorded in `GATE-G-001.md`.
 - Checkpoint: default
@@ -472,8 +477,8 @@ Defaults for every step unless the step says otherwise:
   <report git_commit>..HEAD -- core cli python/singvst_train eval` for the committed results: when it is not empty, list the
   changes in `DEVIATIONS.md` and the pull request body and ask the owner there whether to re-run `evaluate` (R-038, PK-67); write
   `plan/IMPLEMENTATION_MAP.md` — a table `| Item | Delivered by (file or test) | Status |` with one row per plan step, per
-  `Mitigation` cell of `premortem/RISK_REGISTER.md` and per control listed in `premortem/round-*.md` (the planning
-  pre-mortem rounds), unmapped items listed
+  `Mitigation` cell of `premortem/RISK_REGISTER.md` (which holds every R-### of the planning pre-mortem rounds
+  `premortem/round-*.md`), unmapped items listed
   in `DEVIATIONS.md` (PK-07); open a pull request impl → `main`
   (`gh pr create --base main --head <impl> --title "sing-vst implementation" --body-file ../PR_BODY.md`, the body written outside the repository; if `gh pr create` is refused, put the body and the compare URL
   `https://github.com/qualitycoding/sing-vst/compare/main...<impl>` in `EXECUTION_LOG.md` and ask the owner to open the pull

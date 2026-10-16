@@ -24,7 +24,7 @@ may be dash: wrap brace expansion, arrays and `[[ ]]` in `bash -c` (PK-19). Reso
 
 ## Running the frozen suites
 ```bash
-cmake --build ../build-core --parallel 2 && ctest --test-dir ../build-core --output-on-failure            # T-001…T-052, T-063…T-066
+cmake --build ../build-core --parallel 2 && ctest --test-dir ../build-core --output-on-failure            # T-001…T-052, T-063…T-070
 cmake --build ../build-full --parallel 2 --target singvst_plugin_tests && (cd ../build-full/tests/cpp && xvfb-run -a ./singvst_plugin_tests)  # T-053…T-058
 export SINGVST_RENDER_BIN=$PWD/../build-core/cli/singvst-render                               # after S-010
 ../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice and not network"         # T-P01…T-P27, T-060…T-062

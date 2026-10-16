@@ -41,21 +41,22 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 
 ### G-004 Owner's hosted-GPU training run (S-017)
 - **Trigger:** S-016 is done and G-005 has been answered.
-- **Evidence:** the notebook to open (Colab or Kaggle: its `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<impl>/notebooks/train_voice_colab.ipynb`
-  URL, or the raw GitHub URL of the Kaggle notebook to import), the Drive/dataset layout it expects, the values to enter in
+- **Evidence:** the notebook to open, pinned to `EXPECTED_COMMIT` (R-029): Colab
+  `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<EXPECTED_COMMIT>/notebooks/train_voice_colab.ipynb`;
+  Kaggle: *File → Import notebook → GitHub* with that commit and path `notebooks/train_voice_kaggle.ipynb`; the Drive/dataset layout it expects, the values to enter in
   the Parameters cell (`VOICE`, `RUN`, `EXPECTED_COMMIT` = the full SHA of the impl branch head after S-016's last save,
-  `DEREVERB`, `EPOCHS`, `SPEAKER_ID`, `GUIDE`; D-035), privacy: the Kaggle dataset and notebook stay **Private**, no version
+  `DEREVERB`, `EPOCHS` (a multiple of 10), `SPEAKER_ID`, `GUIDE`; D-035), privacy: the Kaggle dataset and notebook stay **Private**, no version
   is published, the Drive folder is not shared (R-021); Kaggle: run as "Save & Run All" (background, no idle timeout) on a
   T4 GPU, which needs a phone-verified Kaggle account (R-044); the budget (A-015), and the consent and
   platform-terms statements (A-011, C-018).
 - **Questions:** (1) Are the recordings your own voice or used with the singer's consent, and is this use within the
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
   (3) Colab or Kaggle?
-- **Responses:** `consent: yes, visibility: private, run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the values the
-  owner used; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
+- **Responses:** `consent: yes, visibility: private, voice: <VOICE>, run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the
+  values the owner used; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
   D-035 and attaches the nine upload files of D-035 and the `sha256sum` lines cell (17) printed, or pastes them) ·
   `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
-  issue (a `retrain` re-issue starts a new count), then
+  issue (a `retrain` re-issue starts a new count; a `failed:` re-issue keeps `RUN`), then
   `BLOCKED.md`; GPU hours already used stay in `budget.json` — and re-issues G-004) · `stop`. Recordings, renders and voice packages are
   never uploaded to the repository (A-011, T-062).
 

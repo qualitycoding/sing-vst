@@ -199,7 +199,10 @@ checked before every model run → `Cancelled`; while a model run is in flight a
 `Ort::RunOptions::SetTerminate()` on that run's `RunOptions`, and the resulting ONNX Runtime error is reported as
 `Cancelled` (R-025). The acoustic model draws its own noise (C-040): the guide is not reproducible — the plugin recalls
 takes from the take cache (D-038), never by re-rendering. Both engines reject at load, with `ValidationError`, a model
-whose initializers use external data (R-027).
+whose initializers use external data (R-027), detected by a bounded protobuf walk of the model bytes: ModelProto field 7
+(graph) → GraphProto field 5 (initializer) → TensorProto field 14 (`data_location`) = 1 (EXTERNAL) or any field 13
+(`external_data`); malformed bytes → `ValidationError`. S-008 adds its own unit test with an external-data fixture made
+by `onnx.save(..., save_as_external_data=True)`.
 
 **Converter (`ConverterEngine`).** `content` model: input `source` float[1,N] at 16 kHz → output `units` float[1,Tc,768]
 (RVC v2: hubert final layer, 320-sample hop; C-020). `synth` model: inputs `phone` float[1,T,768], `phone_lengths`
@@ -290,7 +293,8 @@ No stored notes → no render and no error (status stays as it was). The rendere
 restored project, a voice reload or an undo plays the stored take bit-for-bit instead of a new performance (R-017); the
 cache is never pruned automatically (README says where it is). The status line shows the loaded voice's manifest name
 and the first 8 hex digits of its `voice_sha256` (R-015). `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
-last. Capture never allocates on the audio thread (D-022): `arm(true)` preallocates a buffer of 4096 raw note events; the
+last. Capture never allocates on the audio thread (D-022, whose **Plugin threading** rule wins: the 4096-event FIFO is
+allocated once in the constructor and `arm(true)` only resets its indices); the
 audio thread appends `(ppq, note, on/off)` without allocating (events beyond 4096 are dropped and counted); the message-thread
 timer feeds them to `CaptureRecorder`, and after the stop it stores the notes (a dropped-event count > 0 adds the warning
 `capture buffer full: <n> events dropped`). The plugin finds `cmudict.dict` and the ONNX Runtime library beside its own
@@ -379,7 +383,7 @@ third-party lyrics) are transposed by one whole-semitone shift so their pooled m
 then rendered with `singvst-render` (seed 0) with and without conversion, `evaluate.REPEATS` = 5 times each because the
 guide's noise is unseeded (C-040); every metric is the mean over the repeats and `spread.json` holds the per-repeat values
 (R-018). At G-001 a threshold that lies within a metric's [min, max] spread is reported as **indeterminate** for that
-metric. `ceiling.json` (held-out against training-file embeddings) is shown beside the similarity as its same-singer
+metric (inclusive bounds; for `similarity_gain` the per-repeat values are `speaker_similarity[i] − guide_similarity[i]`). `ceiling.json` (held-out against training-file embeddings) is shown beside the similarity as its same-singer
 ceiling (R-032); similarity is a proxy that only the G-001 listening record confirms.
 - **Speaker similarity**: cosine between the Resemblyzer 0.1.4 embedding (C-028) of each converted render and the mean
   embedding of the held-out source recordings (10 % by file, `split_heldout`, never trained on); the guide-only render gives
@@ -454,7 +458,8 @@ provenance sidecar and audio renders reviewed at G-001. No `figures/SPEC.md` is 
 of the evaluation, that is a new planning amendment.
 
 ### D-033 Implementation conventions
-Each core step adds `core/src/<module>.cpp` for its header and **deletes the matching definitions from
+Private helpers and private headers live in `core/src/` (never `core/include/singvst/`, whose files are all frozen;
+T-060). Each core step adds `core/src/<module>.cpp` for its header and **deletes the matching definitions from
 `core/src/stubs.cpp`** in the same commit (`core/CMakeLists.txt` globs `src/*.cpp`, so a duplicate definition is a link
 error, not a silent override). The plugin step replaces `plugin/PluginProcessor.cpp` and adds `plugin/PluginEditor.*`; the
 CLI step replaces `cli/main.cpp`; Python steps replace the bodies in `python/singvst_train/*.py` without touching any
@@ -483,7 +488,10 @@ on stderr). Paths are absolute or relative to the working directory.
 | `export` | `--rvc-root D (--weights F \| --exp-name S) --out-dir D` | `export_synth` → `OUT/rvc_synth.onnx`, `export_content` → `OUT/content.onnx`; `--exp-name` uses `latest_weights` |
 | `make-test-weights` | `--rvc-root D --out F [--seed 0]` | `make_test_weights` |
 | `pack` | `--out D --name S --consent S --guide-licence S --acoustic F --vocoder F --phonemes F [--speaker F] [--languages F] [--synth F --content F] [--language en] [--steps 20] [--depth 0.4] [--converter-sample-rate 48000] [--speaker-id 0]` | `pack_voice` (`--synth`/`--content` together or not at all) |
-| `evaluate` | `--voice D --heldout D --phrases D --render-bin F --out D [--seed 0] [--thresholds eval/thresholds.json] [--lockfile F]` | `evaluate_voice` (`lockfile` = `--lockfile`), then writes `OUT/verdict.json` = `metrics.judge(report, thresholds)`; the report's provenance `params` = `{"voice_name": <manifest name>, "voice_sha256", "phrases": <dir>, "heldout_files": <count>}`, `seeds` = `{"converter": <seed>}` (eval/PROCEDURE.md) |
+| `evaluate` | `--voice D --heldout D --phrases D --render-bin F --out D [--seed 0] [--thresholds eval/thresholds.json] [--lockfile F]` | `evaluate_voice` (`lockfile` = `--lockfile`; held-out files = the sorted `*.wav` directly in `--heldout`; a `ValueError` from
+a metric or a failed render makes the report "invalid: <reason>" with `null` metrics instead of propagating), then writes
+`OUT/verdict.json` = `metrics.judge(report, thresholds)` for a measured report, or `{"all": false, "status": <the report's
+status>}` for an invalid one (judge is not called); exit 0 whenever `report.json` was written, 3 otherwise; the report's provenance `params` = `{"voice_name": <manifest name>, "voice_sha256", "phrases": <dir>, "heldout_files": <count>}`, `seeds` = `{"converter": <seed>}` (eval/PROCEDURE.md) |
 | `provenance` | `--result F --params JSON --seeds JSON [--repo .] [--lockfile python/requirements-lock.txt]` | `collect` + `write_sidecar` |
 
 **Notebook environment.** Every Python command of the notebook runs in a uv-managed Python 3.12 venv, whatever the runtime's
@@ -521,7 +529,9 @@ cwd `<rvc>`; every other command runs with cwd `<run>`.
 `CONSENT_CONFIRMED = True` and `ATTESTATION` = "I confirm these recordings are my own voice, or are used with the
 singer's consent, and that this use is within the platform's terms." (A-011). **Parameters cell** (2a): `VOICE = "myvoice"`
 (lower-case letters, digits and `-`), `RUN = 1`, `EXPECTED_COMMIT = "<40-hex commit named in GATE-G-004.md>"`,
-`DEREVERB = False`, `EPOCHS = 200`, `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). The first session of a
+`DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
+it), `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). At the end of cell (4) — after the Colab mount, so
+nothing is written under the Drive path before it is mounted — the first session of a
 run writes `<run>/params.json` = these values except `EXPECTED_COMMIT` (each session's commit goes to
 `budget.json` `sessions[].commit`); every later session asserts its values equal the file's, else stops with
 "parameters changed within run <RUN>: set RUN = <RUN+1> for a new run" (R-013). `params.json` is an input of every stage.
@@ -538,13 +548,15 @@ WAV to `raw_wav/<stem>.wav` with soundfile, same sample rate, subtype PCM_24), `
 (`pipeline.run_stages`), `logs/<exp>/` the RVC experiment (kept for resume, C-047), `<run>/out/` exports, voice package and
 evaluation. Cells, in order (19 code cells): (1) `!nvidia-smi` (Kaggle: also the visibility reminder);
 (2) consent (`CONSENT_CONFIRMED = False`, `ATTESTATION = ""`, then `assert CONSENT_CONFIRMED and ATTESTATION`); (2a) the
-Parameters cell; (3) set paths; Kaggle only: restore the previous session — `prev = glob("/kaggle/input/*/run<RUN>/params.json")`;
+Parameters cell; (3) set paths and define `make_stages(run, rvc, sh)` (the cell containing `def make_stages`; it returns
+the eleven `pipeline.Stage` objects of the stage table, each stage's `run` calling `sh(<command>)`, using the globals
+`VOICE`, `RUN`, `EPOCHS`, `DEREVERB`, `SPEAKER_ID`, `GUIDE`; cells (7)–(15) call `run_stages` on its slices); Kaggle only: restore the previous session — `prev = glob("/kaggle/input/*/run<RUN>/params.json")`;
 none → first session of the run; more than one → stop naming them; one → copy that input's `run<RUN>/`, `logs/<exp>/`,
 `weights/` and `assets-archive/` into `/kaggle/working` (`cp -a`) before anything else (R-016); (4) clone sing-vst and check
 out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal it, else stop; R-029) and RVC 81eed5e; create the venv and install
 exactly as §Notebook environment; the GPU's compute capability must be in `torch.cuda.get_arch_list()`, else stop naming
-both (R-044); then (Colab) mount Drive; record this session's commit in `budget.json`
-`sessions[].commit`; build `singvst-render` here, before any GPU stage (R-023): `g++ --version`; `cmake -S <sing-vst> -B
+both (R-044); then (Colab) mount Drive; then write or check `<run>/params.json` (above), start the budget heartbeat
+(§Time and budget) and record this session's commit in `budget.json` `sessions[].commit`; build `singvst-render` here, before any GPU stage (R-023): `g++ --version`; `cmake -S <sing-vst> -B
 <run>/build-render -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_PLUGIN=OFF -DSINGVST_BUILD_TESTS=OFF && cmake --build
 <run>/build-render --target singvst-render --parallel 4` (C-055) — a failure stops the run before GPU time is spent;
 (5) RVC assets with `hf download` exactly as C-052 but with `--revision <the SHA recorded in plan/ENVIRONMENT.md by S-013>`
@@ -599,7 +611,7 @@ stage also has `params.json` as an input (R-013); the notebook prints the list `
 | pack | `out/conv/`, `<root>/voicebank/` | `out/voice/`, `out/training.json` |
 | evaluate | `out/voice/`, `heldout/`, `out/bin/` | `out/eval/` |
 **Time and budget.** `out/budget.json` holds `{"gpu_hours", "sessions": [{"commit", "start", "end", "gpu_hours",
-"stages_run"}]}`. A background thread started in cell (3) rewrites it with `pipeline.atomic_write_text` every 5 minutes with
+"stages_run"}]}`. A background thread started at the end of cell (4) rewrites it with `pipeline.atomic_write_text` every 5 minutes with
 the running session's GPU time, so a killed session loses at most 5 minutes of accounting; `gpu_hours` is therefore a
 lower bound and GATE-G-001.md says so (R-034). Before each stage the notebook prints the session's elapsed time, the
 cumulative `gpu_hours` and (Kaggle) the reminder to check the weekly quota, and stops with "start a new session" when the

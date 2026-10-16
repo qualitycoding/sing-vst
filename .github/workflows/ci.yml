@@ -109,11 +109,11 @@ jobs:
         run: |
           cmake -S . -B tsan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST_BUILD_TESTS=ON -DSINGVST_BUILD_PLUGIN=OFF -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer"
           cmake --build tsan --parallel 4
-      - name: TSan, threaded tests (T-038, T-050, T-051)
+      - name: TSan, threaded tests (T-038, T-050, T-051, T-068)
         if: always()
         env:
           TSAN_OPTIONS: suppressions=${{ github.workspace }}/tools/tsan.supp halt_on_error=1
-        run: ctest --test-dir tsan -R "T-038|T-050|T-051" --output-on-failure --output-junit ${{ github.workspace }}/tsan.xml
+        run: ctest --test-dir tsan -R "T-038|T-050|T-051|T-068" --output-on-failure --output-junit ${{ github.workspace }}/tsan.xml
       - name: Annotate results (test-summary notice + failures)
         if: always()
         run: python tools/ci_annotate.py asan.xml tsan.xml
