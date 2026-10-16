@@ -50,17 +50,17 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | S-003 | Timing, pitch, gain and noise | T-019…T-027 | none |
 | S-004 | Voice package and SHA-256 | T-028…T-031, T-063 | none |
 | S-005 | Playback, phrase hash, capture and plugin state | T-032…T-038 | none |
-| S-006 | Standard MIDI File import | T-064…T-066 | none |
+| S-006 | Standard MIDI File import | T-064…T-066, T-069 | none |
 | S-007 | Resampler and runtime loading | T-039…T-041 | none |
 | S-008 | Guide and converter engines | T-042…T-047 | none |
-| S-009 | Render pipeline and background renderer | T-048…T-052 | none |
+| S-009 | Render pipeline and background renderer | T-048…T-052, T-067, T-068, T-070 | none |
 | S-010 | CLI `singvst-render` | T-P18 | none |
 | S-011 | Plugin processor and editor | T-053…T-058, T-059 | none |
 | S-012 | Python toolkit core | T-P01…T-P15 (T-P13 including its binary part `test_P13b_…`), T-P25 | none |
 | S-013 | RVC → ONNX export | T-P19 (both functions, incl. the content-encoder part `test_P19b_…`) | none |
 | S-014 | RVC training files | T-P24 | none |
 | S-015 | Evaluation procedure | T-P26 | G-005 |
-| S-016 | Training notebooks | T-P16, T-P17 | G-005 must be answered before this step starts. |
+| S-016 | Training notebooks | T-P16, T-P17; `tools/notebook_dryrun.py` output in EXECUTION_LOG.md | G-005 must be answered before this step starts. |
 | S-017 | Owner's training run and evaluation | T-P20 (run by the owner); G-001 record | G-004, then G-001 |
 | S-018 | Documentation and notices | T-P23 | none |
 | S-019 | Final verification and pull request | all tests | none (merging is the owner's action, G-002) |
