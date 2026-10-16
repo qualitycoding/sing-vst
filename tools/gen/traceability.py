@@ -18,7 +18,7 @@ def rng(a, b, p="T-"):
 STEP = {}
 for f, s in {"test_lyrics": "S-002", "test_g2p": "S-002", "test_align": "S-002", "test_synthesis": "S-003", "test_voice": "S-004",
              "test_playback": "S-005", "test_midifile": "S-006", "test_runtime": "S-007", "test_engine": "S-008",
-             "test_render": "S-009", "test_plugin": "S-011", "test_prepare": "S-012", "test_pipeline": "S-012",
+             "test_render": "S-009", "test_take_cache": "S-009", "test_limits": "S-009", "test_plugin": "S-011", "test_prepare": "S-012", "test_pipeline": "S-012",
              "test_provenance": "S-012", "test_metrics": "S-012", "test_pack": "S-012", "test_security": "S-012",
              "test_cli": "S-012", "test_export_rvc": "S-013", "test_rvc_files": "S-014", "test_evaluate": "S-015",
              "test_notebooks": "S-016", "test_cli_binary": "S-010", "test_repo": "S-000"}.items():
@@ -26,11 +26,11 @@ for f, s in {"test_lyrics": "S-002", "test_g2p": "S-002", "test_align": "S-002",
         if pathlib.Path(file).stem == f:
             STEP[t] = s
 STEP.update({"T-059": "S-001, S-011", "T-P13": "S-012 (binary part needs the S-010 binary)", "T-P20": "S-017 (owner, G-004)", "T-P23": "S-018",
-             "T-P26": "S-015"})
+             "T-P26": "S-015", "T-069": "S-006"})
 REQ = {
     "SC-1 builds on Windows x64 and Linux x64": {"T-059"} | rng(39, 41),
     "SC-2 typed/imported lyrics sung on the notes": rng(1, 31) | rng(42, 52) | rng(58, 58) | rng(63, 66) | {"T-P18", "T-P13"},
-    "SC-3 host sync, tempo, state": rng(32, 38) | rng(53, 57),
+    "SC-3 host sync, tempo, state (incl. exact take recall, R-017)": rng(32, 38) | rng(53, 57) | rng(67, 68),
     "SC-4 speaker similarity (unmeasured default)": {"T-P20", "T-P12"},
     "SC-5 F0 accuracy": {"T-P09", "T-P10", "T-P20"},
     "SC-6 intelligibility (WER)": {"T-P11", "T-P20", "T-P26"},
@@ -40,7 +40,7 @@ REQ = {
                                                       "T-P17", "T-P19", "T-P24", "T-P25"},
     "SC-10 owner's listening sign-off": set(),  # gate G-001
     "PR-1 provenance and integrity (Rule 9, 2B.2)": {"T-P08", "T-P13", "T-P14", "T-060", "T-P22", "T-P27"},
-    "PR-2 security (secrets, untrusted input, dependencies)": {"T-P15", "T-062", "T-P21", "T-005", "T-028", "T-066"},
+    "PR-2 security (secrets, untrusted input, dependencies)": {"T-P15", "T-062", "T-P21", "T-005", "T-028", "T-066", "T-069", "T-070"},
     "PR-3 CI keeps running every frozen suite (D-018)": {"T-061"},
     "PR-4 documentation states only tested behaviour (D-030)": {"T-P23"},
 }

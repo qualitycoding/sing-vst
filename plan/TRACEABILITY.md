@@ -9,7 +9,7 @@ SC-1…SC-10 are the success criteria of plan/ASSUMPTIONS.md A-012; PR-1…PR-4 
 |---|---|---|
 | SC-1 builds on Windows x64 and Linux x64 | T-039, T-040, T-041, T-059 |  |
 | SC-2 typed/imported lyrics sung on the notes | T-001, T-002, T-003, T-004, T-005, T-006, T-007, T-008, T-009, T-010, T-011, T-012, T-013, T-014, T-015, T-016, T-017, T-018, T-019, T-020, T-021, T-022, T-023, T-024, T-025, T-026, T-027, T-028, T-029, T-030, T-031, T-042, T-043, T-044, T-045, T-046, T-047, T-048, T-049, T-050, T-051, T-052, T-058, T-063, T-064, T-065, T-066, T-P13, T-P18 |  |
-| SC-3 host sync, tempo, state | T-032, T-033, T-034, T-035, T-036, T-037, T-038, T-053, T-054, T-055, T-056, T-057 |  |
+| SC-3 host sync, tempo, state (incl. exact take recall, R-017) | T-032, T-033, T-034, T-035, T-036, T-037, T-038, T-053, T-054, T-055, T-056, T-057, T-067, T-068 |  |
 | SC-4 speaker similarity (unmeasured default) | T-P12, T-P20 | G-001 |
 | SC-5 F0 accuracy | T-P09, T-P10, T-P20 |  |
 | SC-6 intelligibility (WER) | T-P11, T-P20, T-P26 |  |
@@ -18,7 +18,7 @@ SC-1…SC-10 are the success criteria of plan/ASSUMPTIONS.md A-012; PR-1…PR-4 
 | SC-9 training on a free hosted GPU, resumable | T-P01, T-P02, T-P03, T-P04, T-P05, T-P06, T-P07, T-P16, T-P17, T-P19, T-P24, T-P25 |  |
 | SC-10 owner's listening sign-off | — | G-001 |
 | PR-1 provenance and integrity (Rule 9, 2B.2) | T-060, T-P08, T-P13, T-P14, T-P22, T-P27 |  |
-| PR-2 security (secrets, untrusted input, dependencies) | T-005, T-028, T-062, T-066, T-P15, T-P21 |  |
+| PR-2 security (secrets, untrusted input, dependencies) | T-005, T-028, T-062, T-066, T-069, T-070, T-P15, T-P21 |  |
 | PR-3 CI keeps running every frozen suite (D-018) | T-061 |  |
 | PR-4 documentation states only tested behaviour (D-030) | T-P23 |  |
 
@@ -92,6 +92,10 @@ SC-1…SC-10 are the success criteria of plan/ASSUMPTIONS.md A-012; PR-1…PR-4 
 | T-064 | tests/cpp/test_midifile.cpp | D-031 | SC-2 | S-006 |
 | T-065 | tests/cpp/test_midifile.cpp | D-031 | SC-2 | S-006 |
 | T-066 | tests/cpp/test_midifile.cpp | D-031, PK-42 | SC-2, PR-2 | S-006 |
+| T-067 | tests/cpp/test_take_cache.cpp | D-038 | SC-3 | S-009 |
+| T-068 | tests/cpp/test_take_cache.cpp | D-038 | SC-3 | S-009 |
+| T-069 | tests/cpp/test_limits.cpp | D-038 | PR-2 | S-006 |
+| T-070 | tests/cpp/test_limits.cpp | D-038 | PR-2 | S-009 |
 | T-P01 | tests/python/test_prepare.py | D-015, D-017 | SC-9 | S-012 |
 | T-P02 | tests/python/test_prepare.py | D-015 | SC-9 | S-012 |
 | T-P03 | tests/python/test_prepare.py | D-015 | SC-9 | S-012 |
@@ -120,4 +124,4 @@ SC-1…SC-10 are the success criteria of plan/ASSUMPTIONS.md A-012; PR-1…PR-4 
 | T-P26 | tests/python/test_evaluate.py | D-017 | SC-6 | S-015 |
 | T-P27 | tests/python/test_repo.py | D-003, PK-22 | PR-1 | S-000 |
 
-Totals: 93 tests, 14 requirements.
+Totals: 97 tests, 14 requirements.

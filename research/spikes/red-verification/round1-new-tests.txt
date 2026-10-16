@@ -1,0 +1,9 @@
+# Red verification of the round-1 tests (2026-10-16, build-core on the stubs)
+/home/claude/sing-vst/tests/cpp/test_limits.cpp:50: failed: unexpected exception with message: 'not implemented: loadOrtRuntime'
+/home/claude/sing-vst/tests/cpp/test_take_cache.cpp:33: failed: unexpected exception with message: 'not implemented: phraseHash'
+/home/claude/sing-vst/tests/cpp/test_take_cache.cpp:67: failed: unexpected exception with message: 'not implemented: cachedRender'
+/home/claude/sing-vst/tests/cpp/test_limits.cpp:42: failed: unexpected exception with message: 'not implemented: importMidi'; expression was: importMidi (manyNotes (5000)).notes.size() == 5000
+/home/claude/sing-vst/tests/cpp/test_limits.cpp:42: failed: unexpected exception with message: 'not implemented: importMidi'; expression was: {Unknown expression after the reported line}
+test cases: 4 | 4 failed
+assertions: 5 | 5 failed
+test cases: 4 | 4 failed
