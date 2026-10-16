@@ -74,3 +74,12 @@ std::string Renderer::lastError() const { throw NotImplemented ("Renderer::lastE
 int Renderer::renderCount() const { throw NotImplemented ("Renderer::renderCount"); }
 bool Renderer::waitIdle (std::chrono::milliseconds) const { throw NotImplemented ("Renderer::waitIdle"); }
 } // namespace singvst
+
+// Pre-mortem round 1 additions (D-038); implemented by S-009.
+#include "singvst/take_cache.hpp"
+namespace singvst {
+std::filesystem::path takeFileName (std::uint64_t) { throw NotImplemented ("takeFileName"); }
+bool storeTake (const std::filesystem::path&, const RenderedTake&) noexcept { return false; }
+std::optional<RenderedTake> loadTake (const std::filesystem::path&, std::uint64_t) noexcept { return std::nullopt; }
+RenderFn cachedRender (RenderFn, std::filesystem::path) { throw NotImplemented ("cachedRender"); }
+} // namespace singvst
