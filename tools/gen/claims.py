@@ -77,8 +77,8 @@ claim("C-021", "RVC coarse pitch = rint(clip((1127 ln(1+f/700) - mel_min) * 254 
       "numerical", True, [spike(UF, "PASS C-021a/b"), S("research/spikes/oracle/oracle.py", "oracle rvc_coarse", "function rvc_coarse", 1)], "verified", ["T-025", "D-012"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e")
 claim("C-022", "RVC training runs train/preprocess.py (inp_root sr n_p exp_dir noparallel per [manifest]), train/dataset/extract_f0.py, train/dataset/extract_hubert_feature.py, train/train.py (-e -sr -f0 -bs [-g] -te -se -pg -pd -l -c -sw -v) and train/train_index.py.",
       "software", True, [spike(UF, "PASS C-022a/b/c")], "verified", ["D-016", "S-014"], ["subject:rvc", "tech:rvc", "domain:ml-training"], "RVC 81eed5e")
-claim("C-023", "RVC's py3.12 requirement files pin torch 2.4.1+cpu / 2.7.1+cu128, numpy <2, transformers <4.50 and onnxruntime-gpu <1.20, and default to Chinese mirror indexes whose official equivalents are pypi.org and download.pytorch.org.",
-      "software", True, [spike(UF, "PASS C-023a/b/c")], "verified", ["D-019"], ["subject:rvc", "tech:rvc", "tech:pytorch"], "RVC 81eed5e")
+claim("C-023", "RVC's py3.12 CPU requirement file pins torch 2.4.1+cpu (its cu128 file names torch 2.7.1+cu128 only in a comment as a separate first install stage, C-062); both pin numpy <2, transformers <4.50 and onnxruntime-gpu <1.20, and default to Chinese mirror indexes whose official equivalents are pypi.org and download.pytorch.org.",
+      "software", True, [spike(UF, "PASS C-023a/b/c"), S("research/spikes/premortem-r1/notebook_deps.txt", "spike premortem-r1 notebook_deps", "torch lines", 1, "2026-10-16")], "verified", ["D-019"], ["subject:rvc", "tech:rvc", "tech:pytorch"], "RVC 81eed5e")
 claim("C-024", "The RVC repository contains RVCRealtimeVST, a Windows-only iPlug2 VST2/VST3 that runs RVC in a separate Python worker (prior art, not reused).",
       "software", False, [spike(UF, "PASS C-024")], "verified", ["D-020"], ["subject:rvc", "tech:vst3"], "RVC 81eed5e")
 claim("C-026", "Some Windows installations carry C:\\Windows\\System32\\onnxruntime.dll (placed by Windows), and programs that load onnxruntime.dll by name can bind to it instead of their own copy; ONNX Runtime collaborators advise loading by explicit path and resolving OrtGetApiBase.",
@@ -179,6 +179,13 @@ claim("C-059", "openai-whisper 20250625: `whisper.load_model(name)`; `model.tran
 claim("C-060", "uv 0.13.1 (`pip install uv==0.13.1`) creates a Python 3.12 venv with `uv venv --python 3.12 --python-preference only-managed`, downloading its own CPython (3.12.15) regardless of the host Python, and installs wheels into it with `uv pip install --python <venv>/bin/python`.",
       "software", True, [S("research/spikes/uv-python/output.txt", "spike uv-python (host Python 3.13)", "all lines", 1, "2026-10-15")],
       "verified", ["D-035", "S-016"], ["subject:uv", "tech:python"], "uv 0.13.1", kstamp="20261015T222000Z")
+
+claim("C-061", "RVC 81eed5e train.py resumes from the newest D_*/G_* checkpoint in the experiment directory and restarts at the saved epoch; if loading raises, it silently starts at epoch 1 from the pretrained models (logging \"已加载生成器预训练模型\"); at total_epoch it writes the final weights <name>.pth and exits with os._exit(0).",
+      "software", True, [S("research/spikes/premortem-r1/rvc_resume.txt", "spike premortem-r1 rvc_resume (pinned source)", "train.py 246-270, 293, 646-664", 1, "2026-10-16")],
+      "verified", ["D-035", "R-014", "R-035"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e", kstamp="20261016T030000Z")
+claim("C-062", "RVC 81eed5e requirments_cu128_py312.txt lists no torch requirement (torch 2.7.1+cu128 is a separate first stage in its comment) and pins setuptools <81; webrtcvad 2.0.10 imports pkg_resources unconditionally while webrtcvad-wheels 2.0.14 uses importlib.metadata on Python >= 3.8; Resemblyzer 0.1.4 requires webrtcvad.",
+      "software", True, [S("research/spikes/premortem-r1/notebook_deps.txt", "spike premortem-r1 notebook_deps", "all sections", 1, "2026-10-16")],
+      "verified", ["D-035", "R-020", "R-022"], ["subject:rvc", "tech:python", "subject:resemblyzer"], "RVC 81eed5e; webrtcvad 2.0.10; webrtcvad-wheels 2.0.14; Resemblyzer 0.1.4", kstamp="20261016T030100Z")
 
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")

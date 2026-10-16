@@ -1,0 +1,30 @@
+# RVC 81eed5e requirments_cu128_py312.txt: torch lines (none outside comments)
+7:#   python -m pip install torch==2.7.1+cu128 torchaudio==2.7.1+cu128 --index-url https://mirrors.nju.edu.cn/pytorch/whl/cu128 --extra-index-url https://mirrors.pku.edu.cn/pypi/simple
+52:torchfcpe>=0.0.4,<0.1
+# setuptools pin
+17:setuptools>=75.0,<81
+# webrtcvad 2.0.10 (sdist) webrtcvad.py
+1:import pkg_resources
+8:__version__ = pkg_resources.get_distribution('webrtcvad').version
+# webrtcvad-wheels 2.0.14 (cp312 manylinux wheel) webrtcvad.py
+# Get the version from the package: in Python 3.8+ use importlib.metadata (when it was added), otherwise use pkg_resources (which doesn't work in 3.12+)
+if sys.version_info >= (3, 8):
+    try:
+        from importlib.metadata import version, PackageNotFoundError
+        __version__ = version('webrtcvad-wheels')
+    except PackageNotFoundError:
+        __version__ = "unknown"
+else:
+    import pkg_resources
+    __version__ = pkg_resources.get_distribution('webrtcvad-wheels').version
+
+# Resemblyzer 0.1.4 METADATA Requires-Dist
+Requires-Dist: librosa >=0.9.1
+Requires-Dist: numpy >=1.20.0
+Requires-Dist: webrtcvad >=2.0.10
+Requires-Dist: torch >=1.0.1
+Requires-Dist: scipy >=1.2.1
+Requires-Dist: typing
+# resemblyzer imports webrtcvad
+6:import webrtcvad
+76:    vad = webrtcvad.Vad(mode=3)

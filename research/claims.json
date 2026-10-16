@@ -627,7 +627,7 @@
  },
  {
   "id": "C-023",
-  "claim": "RVC's py3.12 requirement files pin torch 2.4.1+cpu / 2.7.1+cu128, numpy <2, transformers <4.50 and onnxruntime-gpu <1.20, and default to Chinese mirror indexes whose official equivalents are pypi.org and download.pytorch.org.",
+  "claim": "RVC's py3.12 CPU requirement file pins torch 2.4.1+cpu (its cu128 file names torch 2.7.1+cu128 only in a comment as a separate first install stage, C-062); both pin numpy <2, transformers <4.50 and onnxruntime-gpu <1.20, and default to Chinese mirror indexes whose official equivalents are pypi.org and download.pytorch.org.",
   "kind": "software",
   "load_bearing": true,
   "sources": [
@@ -638,6 +638,15 @@
     "version": "",
     "locator": "PASS C-023a/b/c",
     "accessed": "2026-10-10",
+    "tier": 1
+   },
+   {
+    "url": "research/spikes/premortem-r1/notebook_deps.txt",
+    "doi": "",
+    "title": "spike premortem-r1 notebook_deps",
+    "version": "",
+    "locator": "torch lines",
+    "accessed": "2026-10-16",
     "tier": 1
    }
   ],
@@ -1650,6 +1659,58 @@
   "informs": [
    "D-035",
    "S-016"
+  ]
+ },
+ {
+  "id": "C-061",
+  "claim": "RVC 81eed5e train.py resumes from the newest D_*/G_* checkpoint in the experiment directory and restarts at the saved epoch; if loading raises, it silently starts at epoch 1 from the pretrained models (logging \"\u5df2\u52a0\u8f7d\u751f\u6210\u5668\u9884\u8bad\u7ec3\u6a21\u578b\"); at total_epoch it writes the final weights <name>.pth and exits with os._exit(0).",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/premortem-r1/rvc_resume.txt",
+    "doi": "",
+    "title": "spike premortem-r1 rvc_resume (pinned source)",
+    "version": "",
+    "locator": "train.py 246-270, 293, 646-664",
+    "accessed": "2026-10-16",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "R-014",
+   "R-035"
+  ]
+ },
+ {
+  "id": "C-062",
+  "claim": "RVC 81eed5e requirments_cu128_py312.txt lists no torch requirement (torch 2.7.1+cu128 is a separate first stage in its comment) and pins setuptools <81; webrtcvad 2.0.10 imports pkg_resources unconditionally while webrtcvad-wheels 2.0.14 uses importlib.metadata on Python >= 3.8; Resemblyzer 0.1.4 requires webrtcvad.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/premortem-r1/notebook_deps.txt",
+    "doi": "",
+    "title": "spike premortem-r1 notebook_deps",
+    "version": "",
+    "locator": "all sections",
+    "accessed": "2026-10-16",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "R-020",
+   "R-022"
   ]
  }
 ]

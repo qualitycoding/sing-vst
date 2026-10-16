@@ -139,6 +139,8 @@
     "knowledge/K-20261015T221002Z-c-058-resemblyzer.md": "76f9a43570d68f7ecb779d500557cdac2de5c5345113346b5b3b36e322e1eeef",
     "knowledge/K-20261015T221003Z-c-059-openai-whisper.md": "d2cbb2424e0bd318e778c620a8f9017004411cc1b8348dea89103c15e7f8e73f",
     "knowledge/K-20261015T222000Z-c-060-uv.md": "32dd9f2876d6441694d446760275a21dce8510fedce38bffbcc35640fb5425e6",
+    "knowledge/K-20261016T030000Z-c-061-rvc.md": "3fa76276fb00b4745210fba17b91275cb61290015afebbb1446b8e0ec407b142",
+    "knowledge/K-20261016T030100Z-c-062-rvc.md": "591d793502b9043617102781ef0a060b5f75febe89bb7992eab321d2be64c34f",
     "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
     "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
     "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
@@ -219,8 +221,8 @@
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
     "research/PRIOR_KNOWLEDGE.md": "6058d789b7def20f950f6050193686e2861b12f0991d622b02fcb4e11efc15b1",
     "research/QUESTIONS.md": "9e984b411b6e82bb65788b8e1de6d535f277b4a7f0698b31fe4001af40f312f5",
-    "research/SOURCES.md": "6342fe972459cc38c0af05e0f3e625d558a3b806abf4fbf7d107b578acd8b99f",
-    "research/claims.json": "1aa9d046a47f16993a7c54d8d67d789e05cf7174073efa22faafd138b77f2b5b",
+    "research/SOURCES.md": "546b0fd78ec5171b448f85d7eb5467aa883931ee9a47ad10691454e70d8749f9",
+    "research/claims.json": "116f8131af5166de616395786a14c22b379258dfb7965e6c7a4ef058eed81f5c",
     "research/rounds/round-1-3.md": "755204e39b43b7aa003c74ab6dc20db63166475dbc9b7a53ac843d1fd0b07edd",
     "research/rounds/round-4.md": "62f714adf96b51b314ef58cfa272c2cd4a04d68209675f29e5d5536d4894a93e",
     "research/rounds/round-5.md": "87aac3ff6c3bce73e22817f34129063fcc64e8e29bdf117a1548936e7bce81f4",
@@ -260,8 +262,11 @@
     "research/spikes/pip-audit-setuptools/run.sh": "f0f4caf98a80422ba2feb66b7ae46c4c48bcf8c52c7792cc28061ebf5aa95c33",
     "research/spikes/plugin-stub/output.txt": "e9580ea187628ba4265311fda699fe642c25f536aa9c8b3545ae2a4e63679f8d",
     "research/spikes/plugin-stub/run.sh": "45a0fdd5e2d9d34261d0379a6dddf4c37c1e802a5d5b7af0b9aa9fadd2d8dff7",
+    "research/spikes/premortem-r1/README.md": "989c5f54d357ab3690327eac56eb9057dad8ebf919c8617aab1d7c63721e6b75",
     "research/spikes/premortem-r1/limits_fixture_check.out.txt": "d0d75fd54a05b42f3944952b88d6b55ef0477bd9c28e1d569e1b6916b688a0cd",
     "research/spikes/premortem-r1/limits_fixture_check.py": "f4210da2216edff5adc42d38f58c72c3fc83dd13d4e002f1f4435d231eef6fbe",
+    "research/spikes/premortem-r1/notebook_deps.txt": "f1a78e55e35e5ab3420aa088a5cd756f855ce87913205eecb638afb703de5817",
+    "research/spikes/premortem-r1/rvc_resume.txt": "89139603d537beceea5a5c4c96abb8d7550ae94124cb0cdc2335f5a50726397c",
     "research/spikes/premortem-r1/take_cache_sketch.cpp": "51b9743eae0a94f5f07c7dee9fcfaab2d3030791549abc4e802b7d52270df40f",
     "research/spikes/pyfacts/output.txt": "fc07663c360cf291d13c125223594da820cc505b0228c7566d2d844cccbdd2b0",
     "research/spikes/pyfacts/run.sh": "b2e3c5c6014cb3246957a9cb986c32c92694652b14960d31de43887b85918cc9",
@@ -363,7 +368,7 @@
     "tools/checkpoint.py": "e567b53f1671429cb1f221961877b4090e0e24798cf00bd49ad2a36b6753243d",
     "tools/ci_annotate.py": "67e0696cbe35945fffc94255351ef3bd3c184d03165b43103815c61f6dd939e0",
     "tools/freeze.py": "1a6487d85f6f2ca67b964b28ba6cbe625571d3de7e5093512545d559042a4e57",
-    "tools/gen/claims.py": "c423b7ba5e1a7efe9493ccf84f26c34dbf99455e7611ed2517f834c09d4b5f9f",
+    "tools/gen/claims.py": "20fb0c804a219915c7e8cbfa320af1190543227d80b79f9c12a126edcdf923b7",
     "tools/gen/handoff.py": "85ac65f746bfedecdce1033d4c0e72cea88733bc706d7ed101735f73430aa201",
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "2f5c152e5ef50cd0115731429ab4ee7486333bbe8aa5affcd5434035fe6fa08f",
@@ -702,7 +707,9 @@
     "K-20261015T221001Z-c-057-rvc",
     "K-20261015T221002Z-c-058-resemblyzer",
     "K-20261015T221003Z-c-059-openai-whisper",
-    "K-20261015T222000Z-c-060-uv"
+    "K-20261015T222000Z-c-060-uv",
+    "K-20261016T030000Z-c-061-rvc",
+    "K-20261016T030100Z-c-062-rvc"
   ],
   "environment": {},
   "notes": [
@@ -714,7 +721,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T07:57:29Z",
+  "updated_at": "2026-10-16T07:58:07Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -762,7 +769,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 68,
+  "sequence": 69,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
