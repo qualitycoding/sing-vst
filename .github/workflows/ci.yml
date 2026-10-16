@@ -44,6 +44,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
       - name: JUCE Linux packages (C-050)
         if: runner.os == 'Linux'
         run: |
@@ -85,11 +88,14 @@ jobs:
       - name: Annotate results (test-summary notice + failures)
         if: always()
         shell: bash
-        run: python3 tools/ci_annotate.py ctest.xml || python tools/ci_annotate.py ctest.xml
+        run: python tools/ci_annotate.py ctest.xml
   sanitizers:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
       - name: German locale for T-034 (C-056)
         run: sudo locale-gen de_DE.UTF-8
       - name: ASan + UBSan build
@@ -110,7 +116,7 @@ jobs:
         run: ctest --test-dir tsan -R "T-038|T-050|T-051" --output-on-failure --output-junit ${{ github.workspace }}/tsan.xml
       - name: Annotate results (test-summary notice + failures)
         if: always()
-        run: python3 tools/ci_annotate.py asan.xml tsan.xml
+        run: python tools/ci_annotate.py asan.xml tsan.xml
   python:
     needs: cpp
     if: always()
@@ -141,12 +147,14 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - name: RVC at the pinned commit, CPU requirements from the official indexes (D-019, C-023)
+      - name: RVC at the pinned commit; torch family from the PyTorch index only, everything else from PyPI only (D-019, C-023, R-020)
         run: |
           git clone -q https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git rvc
           git -C rvc checkout -q "$RVC_COMMIT"
-          grep -vE -- '--(extra-)?index-url|torch-directml' rvc/requirments_cpu_py312.txt > rvc-req.txt
-          python -m pip install -r rvc-req.txt --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cpu
+          grep -E '^torch(audio|vision)?==' rvc/requirments_cpu_py312.txt > torch-req.txt
+          grep -vE -- '--(extra-)?index-url|torch-directml|^torch(audio|vision)?==' rvc/requirments_cpu_py312.txt > rvc-req.txt
+          python -m pip install -r torch-req.txt --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r rvc-req.txt --index-url https://pypi.org/simple
           python -m pip install --no-deps -e python
           python -m pip install onnx==1.23.2 onnxruntime==1.31.0 pytest==9.1.1 nbformat==5.10.4 PyYAML==6.0.3
       - name: hubert_base from Hugging Face (C-032; separate venv, transformers<4.50 needs huggingface_hub<1)

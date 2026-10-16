@@ -41,7 +41,7 @@
     "plan/OPERATIONS.md"
   ],
   "artifacts": {
-    ".github/workflows/ci.yml": "41f6f4c5cfbd2ffdbb699dd3c1f5ab57f82f20717fecf79eb1c5bc9a5d3c609f",
+    ".github/workflows/ci.yml": "5c6e12b4bebd0fe931e7bb02cc099eacc64863931cb6946b1a59ce5df1d4ad65",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "HANDOFF.md": "40c33ddeeb013228d7923f50472bdc931c4ea59b1ee0c58027644b09ae25ce49",
@@ -361,7 +361,7 @@
     "tools/bootstrap_test_env.sh": "7cf8f9436357f3420b8572c9ebd19096edfbdc5c3fa9b75254a4938be450676f",
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "e567b53f1671429cb1f221961877b4090e0e24798cf00bd49ad2a36b6753243d",
-    "tools/ci_annotate.py": "a5dcdb0e178e71c824bb655e9ce0d32620add31fb93467cf12ba498ac197a7f9",
+    "tools/ci_annotate.py": "67e0696cbe35945fffc94255351ef3bd3c184d03165b43103815c61f6dd939e0",
     "tools/freeze.py": "1a6487d85f6f2ca67b964b28ba6cbe625571d3de7e5093512545d559042a4e57",
     "tools/gen/claims.py": "c423b7ba5e1a7efe9493ccf84f26c34dbf99455e7611ed2517f834c09d4b5f9f",
     "tools/gen/handoff.py": "85ac65f746bfedecdce1033d4c0e72cea88733bc706d7ed101735f73430aa201",
@@ -714,7 +714,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T07:57:06Z",
+  "updated_at": "2026-10-16T07:57:29Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -762,7 +762,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 67,
+  "sequence": 68,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
