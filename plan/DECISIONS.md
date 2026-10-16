@@ -522,7 +522,8 @@ cwd `<rvc>`; every other command runs with cwd `<run>`.
 singer's consent, and that this use is within the platform's terms." (A-011). **Parameters cell** (2a): `VOICE = "myvoice"`
 (lower-case letters, digits and `-`), `RUN = 1`, `EXPECTED_COMMIT = "<40-hex commit named in GATE-G-004.md>"`,
 `DEREVERB = False`, `EPOCHS = 200`, `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). The first session of a
-run writes `<run>/params.json` = these values; every later session asserts its values equal the file's, else stops with
+run writes `<run>/params.json` = these values except `EXPECTED_COMMIT` (each session's commit goes to
+`budget.json` `sessions[].commit`); every later session asserts its values equal the file's, else stops with
 "parameters changed within run <RUN>: set RUN = <RUN+1> for a new run" (R-013). `params.json` is an input of every stage.
 `--consent` = the attestation text; `--guide-licence` = the D-035 §Guide voicebank string. **Memory and disk check**
 (cell (10a), PK-43): print GPU name, GPU memory, RAM and free space on `<root>`'s file system; batch size 8 when GPU memory ≥
@@ -638,8 +639,8 @@ S-009); external-data ONNX models rejected at engine load (D-012, S-008).
 R-042/R-044/R-050 → D-035 (notebook); R-017 → D-010, D-012, take cache; R-018/R-032 → D-017, eval/PROCEDURE.md,
 `evaluate.REPEATS`; R-024/R-026/R-045 → D-022, D-002; R-025 → D-012, D-013; R-027 → limits; R-030/R-036/R-037 →
 plan/GATES.md and S-017; R-038 → S-019 and research/PRIOR_KNOWLEDGE.md; R-039/R-040 → ci.yml, tools/ci_annotate.py;
-R-041 → S-018 README; R-046 → D-031; R-047 → D-014; R-048 → D-027. R-028 and R-043 are recorded as accepted Medium/Low
-risks with the partial controls listed in premortem/RISK_REGISTER.md.
+R-041 → S-018 README; R-046 → D-031; R-047 → D-014; R-048 → D-027. R-028 (Medium) and R-043 (Low) stay open with the
+partial controls listed in premortem/RISK_REGISTER.md.
 
 ### D-036 CI waiting, attempts and local loops
 CI runs are read with `gh api "repos/qualitycoding/sing-vst/actions/runs?branch=<impl>&head_sha=<sha>&per_page=5"` (quoted;

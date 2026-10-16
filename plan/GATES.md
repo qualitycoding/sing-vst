@@ -9,19 +9,22 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 
 ### G-001 Result gate (after S-017)
 - **Trigger:** S-017 has produced `report.json` and the renders for the owner's first voice.
-- **Evidence:** report.json and its provenance; `metrics.judge` verdicts against the unmeasured defaults; guide-only baseline
-  (similarity, WER); octave-error fraction; RTF on the hosted CPU; `budget.json` (GPU-hours used); the five converted and five
-  guide renders, which stay on the owner's Drive (`out/eval/renders/`, D-035) and are listened to there; the
+- **Evidence:** report.json and its provenance; `metrics.judge` verdicts against the unmeasured defaults, with each metric's
+  `spread.json` [min, max] over the 5 repeats and **indeterminate** wherever a threshold lies inside it (D-017, R-018);
+  guide-only baseline (similarity, WER); `ceiling.json` (same-singer similarity ceiling, R-032); octave-error fraction; RTF
+  on the hosted CPU; `budget.json` GPU-hours, labelled "lower bound (5-minute heartbeat)" (R-034); `training.json`
+  (epochs trained); the converted and guide renders, which stay on the owner's Drive (`out/eval/renders/`, D-035) and are listened to there; the
   "implemented, unverified" checklist (`docs/UNVERIFIED.md` from S-011: editor behaviour, file dialogs, host compatibility);
   instructions to **build the plugin from source** on the owner's computer (plan/ENVIRONMENT.md §Owner build, for their OS; no plugin binaries are published — A-013, D-026), copy the VST3 bundle to the user VST3 folder, load the
   voice package from their Drive, and render the five phrases with `singvst-render` (RTF there): for k in 1…5,
-  `singvst-render --voice <voice folder> --midi eval/phrases/p<k>.mid --lyrics-file eval/phrases/p<k>.txt --out p<k>.wav`
-  (seed 0, defaults of D-014); RTF = Σ `render_seconds` / Σ `audio_seconds` of the five `p<k>.wav.provenance.json`.
+  `singvst-render --voice <voice folder> --midi out/eval/phrases/p<k>.mid --out p<k>.wav` — the transposed phrases that
+  `evaluate` wrote, lyrics from their MIDI lyric events (R-030) — (seed 0, defaults of D-014); RTF = Σ `render_seconds` / Σ `audio_seconds` of the five `p<k>.wav.provenance.json`.
 - **Questions:** (1) Do the converted renders sound like the target singer, and are the lyrics understandable? (2) Which
   thresholds should bind (keep defaults / set values)? (3) Does the plugin load and play in your DAW?
 - **Responses:** `proceed` (defaults bind; continue to S-018) · `proceed-with-thresholds: <json>` (planning amendment updates
-  eval/thresholds.json via 2E.4, then continue) · `retrain: <data/epochs/de-reverb change>` (repeat S-017 — a new GATE-G-004.md, all its questions, with the changed
-  Parameters-cell values — while `budget.json` `gpu_hours` < 20, A-015; otherwise ask again) ·
+  eval/thresholds.json via 2E.4, then continue; the verdict against the defaults stays committed beside the new one, and
+  README and the pull request quote both and say the thresholds were set after the measurement — R-037) · `retrain: <data/epochs/de-reverb change>` (repeat S-017 — a new GATE-G-004.md, all its questions, with `RUN` + 1 and
+  the changed Parameters-cell values — while `budget.json` `gpu_hours` < 20, A-015; otherwise ask again) ·
   `stop`.
 
 ### G-002 External or irreversible actions
@@ -40,14 +43,17 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 - **Trigger:** S-016 is done and G-005 has been answered.
 - **Evidence:** the notebook to open (Colab or Kaggle: its `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<impl>/notebooks/train_voice_colab.ipynb`
   URL, or the raw GitHub URL of the Kaggle notebook to import), the Drive/dataset layout it expects, the values to enter in
-  the Parameters cell (`VOICE`, `DEREVERB`, `EPOCHS`, `SPEAKER_ID`, `GUIDE`; D-035), the budget (A-015), and the consent and
+  the Parameters cell (`VOICE`, `RUN`, `EXPECTED_COMMIT` = the full SHA of the impl branch head after S-016's last save,
+  `DEREVERB`, `EPOCHS`, `SPEAKER_ID`, `GUIDE`; D-035), privacy: the Kaggle dataset and notebook stay **Private**, no version
+  is published, the Drive folder is not shared (R-021); Kaggle: run as "Save & Run All" (background, no idle timeout) on a
+  T4 GPU, which needs a phone-verified Kaggle account (R-044); the budget (A-015), and the consent and
   platform-terms statements (A-011, C-018).
 - **Questions:** (1) Are the recordings your own voice or used with the singer's consent, and is this use within the
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
   (3) Colab or Kaggle?
-- **Responses:** `consent: yes, run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the values the owner used; without
-  `consent: yes` the response is `stop`; the owner runs the notebook per D-035 and attaches `report.json`,
-  `report.json.provenance.json`, `verdict.json` and `budget.json` to the conversation, or pastes them) ·
+- **Responses:** `consent: yes, visibility: private, run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the values the
+  owner used; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
+  D-035 and attaches the nine upload files of D-035 and the `sha256sum` lines cell (17) printed, or pastes them) ·
   `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
   issue (a `retrain` re-issue starts a new count), then
   `BLOCKED.md`; GPU hours already used stay in `budget.json` — and re-issues G-004) · `stop`. Recordings, renders and voice packages are
