@@ -23,8 +23,9 @@ ONNX Runtime 1.31.0 CPU prebuilt packages from GitHub Releases (C-014), SHA-256 
 `onnxruntime-linux-x64-1.31.0.tgz` `cc5c72baf5ae5c8238a6841f0897227be2d02826b9cf98eaf02fdefaeeb03a57`,
 `onnxruntime-win-x64-1.31.0.zip` `3958d8a44984160692c1b4ffd0de3cb48f8c39f9d34bb31e433db06e30b82195`.
 Only the headers are used at compile time; nothing links `onnxruntime` (D-024). One process-wide `Ort::Env`; every session uses
-`ORT_ENABLE_ALL`, inter-op threads 1, intra-op threads `min(4, max(1, hardware_concurrency / 2))`, and the session config
-entry `session.set_denormal_as_zero` = `1` (R-045).
+`ORT_ENABLE_ALL`, inter-op threads 1, intra-op threads `min(4, max(1, hardware_concurrency / 2))`, the session config
+entry `session.set_denormal_as_zero` = `1` (R-045), and the CPU memory arena disabled (`DisableCpuMemArena`) so a long
+phrase's peak is not retained (R-060).
 
 ### D-003 Interfaces and stubs
 The public interfaces are the headers `core/include/singvst/*.hpp`, `plugin/PluginProcessor.h` and the Python signatures in
@@ -192,7 +193,8 @@ Rendering (`render(spans, f0)`): `durations = spansToFrameDurations(spans, 44100
 else `ValidationError`. Unvoiced frames (0) take the value of the nearest voiced frame over the whole take (ties → the
 earlier frame); no voiced frame at all → `ValidationError`. The take is split into **phrases** at `SP` spans of ≥ 22 frames
 (≈ 0.25 s): those frames are output as exact zeros; every other maximal run of spans is a phrase rendered on its own with 8
-`SP` frames before and after (C-038; padded f0 = the phrase's first/last value; per-frame inputs cover the padded length).
+`SP` frames before and after; a phrase longer than 2584 frames (30 s) is split further, recursively, at its longest
+internal `SP` span, else at the note boundary nearest its middle, so memory per model run is bounded (R-060) (C-038; padded f0 = the phrase's first/last value; per-frame inputs cover the padded length).
 Acoustic output `mel` float[1,T+16,128] goes to the vocoder with the padded f0 (inputs `mel`, `f0`; output `waveform`
 float[1,(T+16)·512]); 8·512 samples are trimmed from each end. Output length is exactly `sum(durations)·512`. `cancel` is
 checked before every model run → `Cancelled`; while a model run is in flight a watcher polls `cancel` every 10 ms and calls
@@ -270,7 +272,11 @@ inUse.load()`; `u == BUSY` → free nothing; else free every retired take `!= u`
 `renderBlock` (header) produces the mono signal; the plugin renders into channel 0 and copies it to the other channels (no
 scratch buffer). Incoming MIDI is ignored except while capturing (D-010). **Plugin threading** (R-026): the capture buffer
 is a single-producer/single-consumer FIFO (`juce::AbstractFifo` over 4096 preallocated events) allocated once in the
-constructor — `arm(true)` only resets its indices; host bpm, sample rate and transport state reach the message thread
+constructor. The capture state is one `std::atomic<int>` with an internal fourth value `Stopping` (reported as `Capturing`):
+the message thread moves `Idle`→`Armed` and `Armed`→`Idle` with compare-and-swap; `processBlock` moves `Armed`→`Capturing`
+and `Capturing`→`Stopping` and writes FIFO events only while `Capturing`; the timer, after draining the FIFO in
+`Stopping`, finishes the capture, resets the FIFO indices and stores `Idle` — the indices are never reset while the audio
+thread may write (R-064). Host bpm, sample rate and transport state reach the message thread
 through `std::atomic` values written by `processBlock`; every other piece of state (lyrics, stored notes, voice, engines,
 render parameters) is guarded by one message-side mutex that `processBlock` never takes, and `get/setStateInformation`
 take it too. `processBlock` runs under `juce::ScopedNoDenormals` (R-045). Tests: T-033, T-037, T-038, T-055.
@@ -285,14 +291,20 @@ while armed; event positions = block PPQ + sample offset · bpm / (60 · sample 
 stored notes replaced, bpm taken from the host, render submitted, back to `Idle`; disarm returns to `Idle` and keeps stored
 notes. Renders are submitted (message thread, 4 Hz timer) after: capture end, import, voice load, lyric edits (500 ms after
 the last keystroke), changes of `convert`/`portamento`/`vibrato`/`seed`, a host tempo differing from the take's by > 0.1
-bpm, or a host sample rate differing from the take's. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
+bpm. A host sample rate differing from the take's never re-renders: the worker resamples the stored take to the host
+rate (`resample`, D-011) and publishes that copy, while the request — and so the cache key — keeps the state's
+`outputSampleRate` (R-059). `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
 no voice, lyrics that fail to parse, no stored notes. No voice loaded → no render and
 `lastError()` = `Load a voice`. Lyrics that fail `parseLyrics` → no render, `lastError()` = `Lyrics: <ParseError message>`.
 No stored notes → no render and no error (status stays as it was). The renderer's function is
 `cachedRender(fn, <user application data>/sing-vst/takes)` (`juce::File::userApplicationDataDirectory`; D-038), so a
 restored project, a voice reload or an undo plays the stored take bit-for-bit instead of a new performance (R-017); the
 cache is never pruned automatically (README says where it is). The status line shows the loaded voice's manifest name
-and the first 8 hex digits of its `voice_sha256` (R-015). `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
+and the first 8 hex digits of its `voice_sha256` (R-015). On restore the plugin first looks the restored request up
+in the take cache (`phraseHash` of the stored notes, `parseLyrics` of the stored lyrics and the stored params, whose
+`voiceId` is the voice's SHA) and publishes a hit even when the voice folder cannot be found (status "voice not found —
+playing the stored take"); a miss on a restored project with notes adds the warning `approved take not found in the take
+cache; a new performance was rendered` (R-059). The status line also shows the cache's total size (R-058). `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
 last. Capture never allocates on the audio thread (D-022, whose **Plugin threading** rule wins: the 4096-event FIFO is
 allocated once in the constructor and `arm(true)` only resets its indices); the
 audio thread appends `(ppq, note, on/off)` without allocating (events beyond 4096 are dropped and counted); the message-thread
@@ -668,7 +680,7 @@ the legacy integer convention; C-034), 0.4 when the key is absent — the caller
 contentHash>.take`, little-endian: `"SVTAKE01"` (8 bytes), `contentHash` u64, `startBeat` f64, `bpm` f64, `sampleRate` i32,
 `unclippedPeak` f32, sample count `n` u64 (48-byte header), `n` × f32 samples, then FNV-1a-64 (D-009 constants) of all
 preceding bytes (u64): size = 56 + 4n. `storeTake` writes `<name>.tmp` then renames; `loadTake` checks the size before
-allocating, then magic, stored hash = requested hash, `sampleRate` > 0, `n` ≤ 900 × `sampleRate`, and the checksum; any
+allocating, then magic, stored hash = requested hash, `sampleRate` > 0, `n` ≤ 901 × `sampleRate` (900 s plus frame-rounding slack, R-067), and the checksum; any
 failure is a miss. `cachedRender` keys by `phraseHash(request)` and stores only a take whose `contentHash` equals it.
 Implemented by S-009 (planning sketch: research/spikes/premortem-r1/take_cache_sketch.cpp passes T-067/T-068).
 **Limits** (R-027): 5000 notes and 900 s per take, in `importMidi` (D-031, T-069, S-006) and `renderTake` (D-013, T-070,

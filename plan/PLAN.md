@@ -388,7 +388,9 @@ Defaults for every step unless the step says otherwise:
   cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself), which
   loads each notebook with nbformat, finds the cell containing `def make_stages` (D-035 cell (3)), execs it with the
   globals `VOICE="dry"`, `RUN=1`, `EPOCHS=10`, `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"` and with a fake `sh` that creates each stage's declared outputs, runs the stages
-  in `<tmp>/a`, copies `<tmp>/a` to `<tmp>/b` by the cell-(3) Kaggle restore rule, runs them again (no stage may run),
+  in `<tmp>/a`, packs `<tmp>/a` with the notebook's own cell-(17) `state.tar` code and restores it into `<tmp>/b` by
+  executing the notebook's own cell-(3) restore code with `/kaggle/input` and `/kaggle/working` remapped to `<tmp>/in` and
+  `<tmp>/b` (R-066), runs them again (no stage may run),
   then edits `params.json` and runs again (every stage must run); it must exit 0 for both notebooks (R-016, R-013).
   GATE-G-004.md (S-017) gives the owner opening links pinned to a commit (R-029): Colab
   `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<EXPECTED_COMMIT>/notebooks/train_voice_colab.ipynb`;
@@ -413,21 +415,24 @@ Defaults for every step unless the step says otherwise:
   1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
      values (`VOICE` = `myvoice` unless the owner names one, `RUN` = the issue number, `EXPECTED_COMMIT` = `git rev-parse
      HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
-  2. After the owner runs the notebook, they attach (or paste) the nine upload files of D-035 and the `sha256sum` lines; a
+  2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); a
      `failed: …` response is handled as plan/GATES.md G-004 says; the notebook's last test cell is T-P20.
-  2a. Verify before committing (R-036; log every check in EXECUTION_LOG.md): every file's SHA-256 equals its printed line;
+  2a. Verify before committing (R-036, R-056; log every check in EXECUTION_LOG.md): the tar's SHA-256 equals the pasted
+     line (two mismatches → `BLOCKED.md`), then extract it outside the repository;
+     `budget.json` `gpu_hours` equals the sum of its `sessions[].gpu_hours` and is > 0 when `train` ran (R-051);
      `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json`; the report provenance
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
      on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set). A failed check →
-     ask the owner for the files again; files are never edited.
-  3. Commit those nine files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the
+     ask the owner for the files again (at most twice, then `BLOCKED.md`); files are never edited. GATE-G-001.md gets the
+     `training.json` `stage_commits` table (which stage ran under which commit, R-054).
+  3. Commit the extracted files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the
      package name `<VOICE>-run<RUN>` is checked in action 2a); before re-issuing a gate, `git mv` the previous gate file:
      after `failed:` to `GATE-G-004.run<RUN>.fail<k>.md` (k = 1, 2, 3), after `retrain` to `GATE-G-004.run<RUN>.md` and
      `GATE-G-001.run<RUN>.md` (history kept, Rule 9); never commit audio, recordings or voice packages (T-062).
   4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`; per threshold metric the verdict and
      "indeterminate" when min ≤ threshold ≤ max of `spread.json`, the `similarity_gain` spread being the per-repeat
      differences, D-017) and halt.
-- Outputs: results/<VOICE>/run<RUN>/ (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, budget.json, training.json, env-freeze.txt, env.json), GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<RUN>[.fail<k>].md)
+- Outputs: results/<VOICE>/run<RUN>/ (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, budget.json, budget-voice.json, training.json, env/), GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<RUN>[.fail<k>].md)
 - Evidence produced: T-P20 (run by the owner); G-001 record
 - Done when: the G-001 response is recorded in `GATE-G-001.md`.
 - Checkpoint: default

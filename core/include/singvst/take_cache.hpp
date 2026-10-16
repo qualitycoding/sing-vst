@@ -15,7 +15,7 @@ std::filesystem::path takeFileName (std::uint64_t contentHash);
 bool storeTake (const std::filesystem::path& dir, const RenderedTake& take) noexcept;
 
 /** The take stored for contentHash, or nullopt when the file is absent, has the wrong size, magic, hash or checksum, or
-    holds more than 900 s at its sample rate. Validates the size before allocating; never throws. */
+    holds more than 901 s at its sample rate (900 s plus frame-rounding slack). Validates the size before allocating; never throws. */
 std::optional<RenderedTake> loadTake (const std::filesystem::path& dir, std::uint64_t contentHash) noexcept;
 
 /** A RenderFn that returns loadTake(dir, phraseHash(request)) when present; otherwise calls fn and, when the result's

@@ -13,7 +13,7 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   `spread.json` [min, max] over the 5 repeats and **indeterminate** wherever a threshold lies inside it (D-017, R-018);
   guide-only baseline (similarity, WER); `ceiling.json` (same-singer similarity ceiling, R-032); octave-error fraction; RTF
   on the hosted CPU; `budget.json` GPU-hours, labelled "lower bound (5-minute heartbeat)" (R-034); `training.json`
-  (epochs trained); the converted and guide renders, which stay on the owner's Drive (`out/eval/renders/`, D-035) and are listened to there; the
+  (epochs trained); the converted and guide renders, which stay on the owner's Drive (`<root>/run<RUN>/out/eval/renders/`, D-035) and are listened to there; the
   "implemented, unverified" checklist (`docs/UNVERIFIED.md` from S-011: editor behaviour, file dialogs, host compatibility);
   instructions to **build the plugin from source** on the owner's computer (plan/ENVIRONMENT.md §Owner build, for their OS; no plugin binaries are published — A-013, D-026), copy the VST3 bundle to the user VST3 folder, load the
   voice package from their Drive, and render the five phrases with `singvst-render` (RTF there): for k in 1…5,
@@ -24,7 +24,7 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 - **Responses:** `proceed` (defaults bind; continue to S-018) · `proceed-with-thresholds: <json>` (planning amendment updates
   eval/thresholds.json via 2E.4, then continue; the verdict against the defaults stays committed beside the new one, and
   README and the pull request quote both and say the thresholds were set after the measurement — R-037) · `retrain: <data/epochs/de-reverb change>` (repeat S-017 — a new GATE-G-004.md, all its questions, with `RUN` + 1 and
-  the changed Parameters-cell values — while `budget.json` `gpu_hours` < 20, A-015; otherwise ask again) ·
+  the changed Parameters-cell values — while `budget-voice.json` `gpu_hours` < 20, A-015 per voice; otherwise ask again) ·
   `stop`.
 
 ### G-002 External or irreversible actions
@@ -54,7 +54,7 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   (3) Colab or Kaggle?
 - **Responses:** `consent: yes, visibility: private, voice: <VOICE>, run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the
   values the owner used; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
-  D-035 and attaches the nine upload files of D-035 and the `sha256sum` lines cell (17) printed, or pastes them) ·
+  D-035 and attaches `upload-run<RUN>.tar` and pastes the `sha256sum` line cell (17) printed) ·
   `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
   issue (a `retrain` re-issue starts a new count; a `failed:` re-issue keeps `RUN`), then
   `BLOCKED.md`; GPU hours already used stay in `budget.json` — and re-issues G-004) · `stop`. Recordings, renders and voice packages are

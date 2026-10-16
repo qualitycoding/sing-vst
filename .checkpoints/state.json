@@ -64,7 +64,7 @@
     "core/include/singvst/playback.hpp": "168c83296951599cb8fc3cb8b385e283c75c1f83a0ea989d25823aeaf30cbe89",
     "core/include/singvst/render.hpp": "b3324182101665486a5f562a6faaadb7575ce8ca8f7393d13493d29cb8962dc8",
     "core/include/singvst/synthesis.hpp": "f759f86dd4494ad3f78ce7f044340da6cc91ca94927c1c78ded9ba06cc7a7a68",
-    "core/include/singvst/take_cache.hpp": "d8afb33b7da08da945340036ca5a12cf432d5b7709c3406b456447bb7eb21937",
+    "core/include/singvst/take_cache.hpp": "b342e2e8469d0f427ea255e9e973bff8620ba0aefbf6177740e29942b4530e90",
     "core/include/singvst/voice.hpp": "304da299930ead4adeccfb6acefcbf021022d67cba6a23362a3b369c4c290fdb",
     "core/src/stubs.cpp": "1db3c950fbf935a74a53c5db608aca92570c0b4d9e52fbfea9c7588477003dd5",
     "eval/PROCEDURE.md": "b3f4f713684a8f799934e7b8af8df078ebd86ea0ab35ef86c6ae9d8fd4cc9cbc",
@@ -190,11 +190,11 @@
     "lessons/L-20261016T040300Z-non-reproducible-render-in-a-recall-path.md": "8630ac7c7b13fffaa552a5197054349e88edf8b2a9c0d0ea34b8813fe9fd9547",
     "lessons/L-20261016T040400Z-provenance-named-a-lock-the-run-never-installed.md": "7c65ed66463b5d8ed7f19be56387f8e1897c2a16ce082d43e28b93db505593b4",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "dd25bda8b571189c9217b32ca793bb461c69d0903567a50fe75b6cea99a30962",
+    "plan/DECISIONS.md": "076052c64234e4e5864b879192010fe692c269369957dcd44d239893e88c3fcc",
     "plan/ENVIRONMENT.md": "3a5cf1aa8d5965cc6ecd9063740c9280e366a7aa5727e48767ebbbcb7cdb3275",
-    "plan/GATES.md": "1ac6889b8733590524a36a3a2fe12f9442cc09882452edea690cc3baf463321a",
-    "plan/PLAN.md": "adb2ab2551f40861378849fe576739267fedd1b673d4d431f030393c234c67e4",
-    "plan/PLAN.src.md": "9aa75f35212214bfade6afc12a521b89dbd4812bc7e21f6d86398b8c09177f26",
+    "plan/GATES.md": "e688458bcb38cbc3ee69f3d6f614367bc717f0a6c5cf3e6f522999e53183e8d2",
+    "plan/PLAN.md": "7b2a44fd158d51da7d81469d7e0ba9a63bffbde99b68c83db7c7cfeeacc5c675",
+    "plan/PLAN.src.md": "1fa251ebed42aeb96a46b29c1983d61fa893fe60e7ce22154610855c86af2dc2",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
     "plan/TRACEABILITY.md": "56ee40d8880fd026f80ac316ab56bd2c095cdfb9ea756834e0f83a82f989460f",
@@ -302,7 +302,7 @@
     "research/spikes/uv-python/run.sh": "621e38b1eb11d84f04243166617ca25d011cfefd532fddd4f0e2348b0aee8c64",
     "research/spikes/vocoder-onnx/output.txt": "1a0365c79a367bce16a75432c2c692110c833540422131d8ec2a1fc55f5bb95c",
     "research/spikes/vocoder-onnx/run.sh": "f59a59ba67edd37ce9696fc952c8323bdf3256dedb9dc2826d6e8da68bbc0c5f",
-    "tests/FROZEN_MANIFEST.sha256": "4aa04064376736a992e9dd6ef4b43912ed583fe5153952d7af38d9189a2e0f3b",
+    "tests/FROZEN_MANIFEST.sha256": "7dfc5b68645fb817e13822e0074599d5a9b601ec613aaf49f7e33c6d7ed5d8b0",
     "tests/cpp/CMakeLists.txt": "6d846659b5db59a1510097edf4f8692fd676dd89a202d0c0dea2efe1fda0f0fd",
     "tests/cpp/helpers.hpp": "7bfaadcbbbde4ca1dbc9dcf98259fcadf238256061100c31adb157dbed4538e2",
     "tests/cpp/test_align.cpp": "3dcca21830aca19421aee7e0520c45d46e94966054d2d0486ee92c9d8ec17a86",
@@ -735,7 +735,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-16T13:30:41Z",
+  "updated_at": "2026-10-16T13:31:29Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -785,7 +785,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 82,
+  "sequence": 83,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
