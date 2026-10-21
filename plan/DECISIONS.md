@@ -901,6 +901,14 @@ Frozen files cannot be edited, so comments that are wrong are corrected here and
   ignored duplicate lines do not count; D-005, T-007).
 - E-6 `tests/cpp/test_playback.cpp` T-034 comment "CI installs de_DE.UTF-8 (D-018)" — true from this amendment on (D-018).
 
+
+### D-039 Owner's Phase 5 decision on the residual risks (premortem/RESIDUAL.md)
+The owner answered the Phase 5 escalation on 2026-10-21 with "Review", i.e. option 2 `review`: before implementation, one
+extra pre-mortem round (premortem/round-6.md) and a cold read restricted to the GPU-hour accounting — D-035 §Time and
+budget and §Voice ledger, plan/GATES.md G-001 `retrain` and G-004, plan/PLAN.md S-016 and S-017 and the HANDOFF
+`raise-budget` path — run as a planning amendment. The status stays BLOCKED until that round ends with no Critical or High
+finding; R-082, R-095 and R-097 are then re-rated from the round's audit.
+
 ---
 
 ## Decision rules (if → then)
