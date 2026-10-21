@@ -594,11 +594,13 @@ as `failed:`). On restart detection the notebook first copies `G_2333333.pth.bak
 back over the restarted files and writes `logs/<exp>/RESTART_DETECTED`; while that file exists the guard never
 overwrites a `.bak` (R-076). `.bak` files are named `<file>.pth.bak`, which RVC's `G_*.pth` glob does not match. Every cell that calls `run_stages` catches `SessionEnd` only,
 printing "start a new session". The 9.5-h check before each stage also raises `SessionEnd`.
-**Guarded cells** (R-069): from cell (5) on, each cell's body runs inside `guarded(<cell number>, body)`, which does
+**Guarded cells** (R-069): from cell (5) through (16), each cell's body runs inside `guarded(<cell number>, body)`, which does
 nothing when `STOP` is set and otherwise catches every exception: `SessionEnd` → `STOP_REASON` = "start a new
 session"; any other exception (including every "stop" this decision names after cell (4)) → its traceback is printed,
 `STOP = True` and `STOP_REASON` = `failed: <cell number> <first line of the error>` — the line the owner pastes as the G-004
-response. So no cell from (5) on raises, every version reaches cell (17), and (17) always persists state. Cells (1)–(4)
+response. So no cell from (5) on raises and every version reaches cell (17), which is not guarded: it runs its `STOP` or normal
+branch inside its own `try`/`finally`, whose `finally` always stops the heartbeat, writes the budget files and (Kaggle)
+runs `pack_state`. Cells (1)–(4)
 may raise: nothing has been written yet.
 **Ending a session** (R-055): a stop condition (9.5 h, train timeout, or a guarded failure) sets `STOP = True`; every later cell
 starts with `if STOP:` printing "skipped — start a new session", so a Kaggle version always completes without an error

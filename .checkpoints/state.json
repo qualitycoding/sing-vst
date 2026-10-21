@@ -195,7 +195,7 @@
     "lessons/L-20261016T140000Z-hardening-changes-not-checked-against-each-other.md": "dd3c3f284782540893a824c43a8b6655c617e67d7e4760ef7ac93deb6296b79b",
     "lessons/L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value.md": "9d450b8165bf60e23ced422f0556cc3dfa1f514fc754659b1e06c42f85530fe0",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "5c26d092e08268a3dfa87c7baf31c54a13913e3fe35708f6d813434ec0e22774",
+    "plan/DECISIONS.md": "3c5e3deee7480bf5c38e277633a6cfb670fcf45e7b531d804d20bda989237bd8",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
     "plan/GATES.md": "07b2bc849050bef98bc5c9e006fd6405d89eac7235d69326aa1589c87e5cddd2",
     "plan/PLAN.md": "9e22b70f047c8d6f0b13c9346b7dd953a4a556100f651c70e2a651d1ad239f99",
@@ -752,7 +752,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T14:10:10Z",
+  "updated_at": "2026-10-21T14:10:21Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -802,7 +802,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 95,
+  "sequence": 96,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
