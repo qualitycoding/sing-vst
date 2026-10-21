@@ -586,7 +586,8 @@ mounted **after** these installs (R-020), at step (4d).
 (R-052). **Runs** (R-013, R-014, R-015, R-053): the first G-004 issue (`RUN` 1), each G-001 `retrain` and each
 `switch-platform` response start a new run number `RUN` = the previous `RUN` + 1 (a number is never reused, so a switch
 before any session leaves an unused number); `failed:`, `owner-fixed:`, `prune:` and post-`raise-budget-to` re-issues keep
-`RUN` and its experiment and change only `EXPECTED_COMMIT`, `PRUNE` or `PRIOR_VOICE_GPU_HOURS`. Every absolute path in
+`RUN` and its experiment; `owner-fixed:` and `prune:` re-issues keep `EXPECTED_COMMIT` (no notebook change) and change
+only `PRUNE`, `PRIOR_VOICE_GPU_HOURS` and `KILLED_HOURS`, while `failed:` and `raise-budget-to` re-issues also take the new head. Every absolute path in
 this decision is written through `PATH_ROOTS` (below): `/content/…` = `PATH_ROOTS["content"]`, `/kaggle/…` =
 `PATH_ROOTS["kaggle"]`, `/tmp/…` = `PATH_ROOTS["tmp"]`. Each run has its own run root `<run>` = `<root>/run<RUN>/`, holding `params.json`, `state/`,
 `raw_wav/`, `split.json`, `train/`, `heldout/`, `prepared/` and `out/`; the RVC experiment name is `<exp>` =
@@ -785,7 +786,9 @@ method in cuda mode; argv verified in C-057); (10) `rvc-files`; (10a) the Memory
 **checkpoint guard** (R-035, R-057) — when `logs/<exp>/G_2333333.pth` or `D_2333333.pth` exists, each must load with
 `torch.load(path, map_location="cpu")` (exactly as RVC loads it, C-063) and `e0` = the G checkpoint's `"iteration"`; a file that fails is replaced by its `.bak` when that loads,
 else the cell stops (`owner:` "checkpoint unreadable; delete logs/<exp> to restart this run" — on Kaggle "answer `prune:
-<exp>`", which the next GATE-G-004.md turns into `PRUNE = "<exp>"`, the one-shot skip of the Parameters cell; R-102, R-112); after the check both are copied to
+<exp>`", which the next GATE-G-004.md turns into `PRUNE = "<exp>"`, the one-shot skip of the Parameters cell; a RUN is
+pruned at most once, so when `WORKING/pruned-<exp>` already exists the Kaggle line says instead "answer `switch-platform:
+colab`"; R-102, R-112); after the check both are copied to
 `.bak`; then run the JSON argv printed by `rvc-train-command` (RVC resumes from `logs/<exp>` automatically, C-047, C-061;
 no retrieval index is trained — the converter does not use it, D-012); after it exits, in a session that started with a
 checkpoint: the G checkpoint's `"iteration"` must be ≥ `e0` (a restart from the pretrained model saves lower epochs),
@@ -855,7 +858,8 @@ a missing file means all four 0 and no issues. S-017 **sets** the answered issue
 replaces the record in place, never adds a second one — then recomputes the four totals and commits the file: for a
 `consent:` response after its action 2a checks pass (until then 2a uses the issued values in GATE-G-004.md), for every
 other response at once; when the files are re-asked twice and S-017 ends in `BLOCKED.md`, the record is written from
-the response as given with `"unverified": true`. A `stop` with no figure changes nothing (S-RETRO notes that the ledger
+the response as given with `"unverified": true`. With `hours-used: none` or `budget-voice: none` the record's
+`platform_hours` is the platform's ledger value before this record (0.0 when there is none). A `stop` with no figure changes nothing (S-RETRO notes that the ledger
 omits that issue); a `stop` that carries figures is recorded like any other response (R-113).
 Record: `{"issue": "run<RUN>.<k>"` (the name its gate file gets when archived, S-017 action 3), `"run"`: the issue's `RUN`, `"platform"`:
 the issue's `PLATFORM_EXPECTED` — the platform whose notebook produced the figure, never a `switch-platform` target —
@@ -884,7 +888,9 @@ platform (the figure already sums all of the platform's runs, so it is set, neve
 and the totals are held as integer ten-thousandths of an hour: a measured or converted value `x` becomes
 `math.ceil(round(x·10⁴, 6))` once (rounded **up**, the `round` removing float noise so an exact 4-decimal value is not
 raised), and sums, differences and comparisons are done on those integers; the S-017 `prior` and `killed_hours` checks
-compare them exactly (`killed_hours` = Σ of the per-version values). So hours on another platform or in a killed version are never dropped. A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
+compare them exactly (`killed_hours` = Σ of the per-version values). The integers exist only in memory: every JSON
+file (`budget.json`, `budget-voice.json`, `ledger.json`) and every printed figure holds decimal hours with at most 4
+decimals (integer ÷ 10⁴, e.g. 3.3334). So hours on another platform or in a killed version are never dropped. A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
 earlier run of the cells in the same runtime before starting a new one, and each write re-reads the files and updates only
 its own `<session>` entry (R-074) — rewrites both with
 `pipeline.atomic_write_text` every 5 minutes with the running session's GPU time, so a killed session loses at most 5

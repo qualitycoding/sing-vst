@@ -441,7 +441,8 @@ Defaults for every step unless the step says otherwise:
   R-109); (8) budget stop: with `PRIOR_VOICE_GPU_HOURS` = `BUDGET_HOURS` − 1, the train stage's `t_budget` ≤ 0 → with a
   fake loadable `<exp>_e10_s100.pth` the stage completes with `stopped_by_budget` 10; without one `STOP_REASON` is exactly
   `budget: no checkpoint` (R-086); (9) prune (Kaggle): a restore with `PRUNE` set skips `logs/<PRUNE>/` and writes the
-  marker; that session then runs the train fake (re-creating `logs/<PRUNE>/`) and `end_session`; a second restore of the
+  marker; that session then runs cells (7)–(11) in order through `run_cell` (`stages_run` contains `rvc-preprocess` and
+  `train`; the train fake re-creates `logs/<PRUNE>/`) and `end_session`; a second restore of the
   new `state.tar` with the same `PRUNE` keeps `logs/<PRUNE>/` (R-112);
   (10) a `PLATFORM_EXPECTED` mismatch (cell (3)'s check) and a changed `params.json` value (`write_params()`) each raise
   `OwnerAction` and print a line starting `owner: 3 ` or `owner: 4e ` (R-082). Scenarios (1),
@@ -480,7 +481,8 @@ Defaults for every step unless the step says otherwise:
      minus the ledger's `colab` or `kaggle` value for `PLATFORM_EXPECTED` (D-035 §Voice ledger; 4 decimals; 0.0 with no
      ledger), `KILLED_HOURS = 0.0` with the rule for adding killed versions, the ledger's current figure for
      `PLATFORM_EXPECTED`, `PRUNE` = the `<exp>` of a `prune:` response for its re-issue, else `""`; `EXPECTED_COMMIT` = `git rev-parse
-     HEAD` of the impl branch when GATE-G-004.md is written (after S-016's last save and every later notebook fix), `DEREVERB`, `EPOCHS`, `SPEAKER_ID` and `GUIDE` — for a new RUN the D-035 defaults (`GUIDE`
+     HEAD` of the impl branch when GATE-G-004.md is written (after S-016's last save and every later notebook fix) — except
+     that `owner-fixed:` and `prune:` re-issues repeat the previous issue's `EXPECTED_COMMIT` unchanged, `DEREVERB`, `EPOCHS`, `SPEAKER_ID` and `GUIDE` — for a new RUN the D-035 defaults (`GUIDE`
      per the G-005 answer) or the values a `retrain` response names, and for every re-issue that keeps `RUN` (`failed:`,
      `owner-fixed:` including `params`, `prune:`, `raise-budget-to`) exactly the values of that RUN's first GATE-G-004.md,
      so `params.json` still matches); the response reports the values used.

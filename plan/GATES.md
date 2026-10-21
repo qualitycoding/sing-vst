@@ -98,14 +98,14 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   the owner fixed the stated condition (recordings, disk, RAM, the notebook to open); `params` answers "parameters changed
   within run", and the re-issue repeats this RUN's original `VOICE`, `RUN`, `DEREVERB`, `EPOCHS`, `SPEAKER_ID`, `GUIDE`
   and platform, while `PRIOR_VOICE_GPU_HOURS`, `KILLED_HOURS`, `RESUME`, `PRUNE` and `EXPECTED_COMMIT` follow S-017 action 1a · `prune: <exp>` + `<hours>` (Kaggle,
-  after the unreadable-checkpoint `owner:` line). For both the implementer re-issues with the same commit, not counted as
+  after the unreadable-checkpoint `owner:` line; at most once per RUN). For both the implementer re-issues with the same `EXPECTED_COMMIT`, not counted as
   a `failed:` attempt; at most two `owner-fixed:` and `prune:` re-issues together per RUN, then `BLOCKED.md` (R-087, R-102) ·
   `budget-exhausted` + `<hours>` (answered when cell (17) printed `budget: no checkpoint`: the voice reached its budget
   before a loadable snapshot; no upload exists; S-017 writes GATE-G-001.md with only this evidence — the voice ledger,
   the notebook's `budget: no checkpoint` line, the response's `<hours>` part and version lines, and the run's
   `EPOCHS` — and the responses `stop`,
   `raise-budget-to: <new BUDGET_HOURS total>` — valid only here, at least the ledger `total` + 2 (1 h reserve plus at
-  least 1 h of training; else asked again), a
+  least 1 h of training; a lower value is asked for again at most twice, then treated as `stop`), a
   planning amendment to A-015 run as HANDOFF §Amendments says — and, when an earlier run of this voice was evaluated, also
   `proceed` and `proceed-with-thresholds` for the newest such run with its evidence and a note that run <RUN> was cut by the
   budget; R-086, R-110, R-114) ·
