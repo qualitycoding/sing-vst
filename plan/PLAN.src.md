@@ -479,7 +479,10 @@ Defaults for every step unless the step says otherwise:
      minus the ledger's `colab` or `kaggle` value for `PLATFORM_EXPECTED` (D-035 §Voice ledger; 4 decimals; 0.0 with no
      ledger), `KILLED_HOURS = 0.0` with the rule for adding killed versions, the ledger's current figure for
      `PLATFORM_EXPECTED`, `PRUNE` = the `<exp>` of a `prune:` response for its re-issue, else `""`; `EXPECTED_COMMIT` = `git rev-parse
-     HEAD` of the impl branch when GATE-G-004.md is written (after S-016's last save and every later notebook fix), `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
+     HEAD` of the impl branch when GATE-G-004.md is written (after S-016's last save and every later notebook fix), `DEREVERB`, `EPOCHS`, `SPEAKER_ID` and `GUIDE` — for a new RUN the D-035 defaults (`GUIDE`
+     per the G-005 answer) or the values a `retrain` response names, and for every re-issue that keeps `RUN` (`failed:`,
+     `owner-fixed:` including `params`, `prune:`, `raise-budget-to`) exactly the values of that RUN's first GATE-G-004.md,
+     so `params.json` still matches); the response reports the values used.
   2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
      implementer finds the attachment by name — `find / \( -path /proc -o -path /sys \) -prune -o -name
      'upload-run<RUN>.tar' -type f -print 2>/dev/null`, taking the hit whose SHA-256 equals the pasted line — and copies it
