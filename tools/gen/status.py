@@ -19,7 +19,8 @@ header = (f"<!-- STATUS: {status} -->\n**Status: {status}** · profiles `softwar
           f"claims {len(C)} ({', '.join(f'{k} {v}' for k, v in sorted(conf.items()))}) · tests: C++ core {cpp - plugin}, "
           f"C++ plugin {plugin}, Python {len(py)} IDs, CI-only {ci} (T-059) · steps {steps} · gates {gates} · risks "
           f"{sum(sev.values())} ({', '.join(f'{k} {v}' for k, v in sorted(sev.items()))}) · pre-mortem rounds {rounds} · "
-          "figures 0 (D-032)\n")
+          "figures 0 (D-032)"
+          + (" · **decision needed: premortem/RESIDUAL.md — no step may start**" if status != "READY" else "") + "\n")
 lines = plan.split("\n", 1)
 assert lines[0].startswith("<!--"), "PLAN.md must start with the status comment line"
 (ROOT / "plan" / "PLAN.md").write_text(header + lines[1], encoding="utf-8")
