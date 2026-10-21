@@ -241,7 +241,7 @@ Defaults for every step unless the step says otherwise:
 ### S-009 Render pipeline and background renderer
 - Tier: Opus
 - Profile: software
-- Depends on: S-005, S-006, S-008
+- Depends on: S-005, S-006, S-007, S-008
 - Inputs: core/include/singvst/render.hpp; D-013
 - Actions: implement render.hpp in `core/src/render.cpp` (with the D-013 limits and engine ownership) and take_cache.hpp
   (including `resampleTake`) in
