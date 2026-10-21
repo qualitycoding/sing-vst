@@ -66,7 +66,7 @@ Defaults for every step unless the step says otherwise:
      HTTP status = reachable); a changed row
      is recorded in `DEVIATIONS.md` with the table's alternative channel; rows already marked unreachable are expected (PK-13).
   6. `bash tools/bootstrap_test_env.sh "$HOME/deps"`; configure **and build** the trees of plan/ENVIRONMENT.md (core, full,
-     asan, tsan; long builds in the background, PK-18); create `../venv-lock`; clone RVC for reading:
+     asan, tsan — on the no-root path of action 3 the full tree is skipped and recorded in `DEVIATIONS.md`; long builds in the background, PK-18); create `../venv-lock`; clone RVC for reading:
      `git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git ../rvc && git -C ../rvc checkout 81eed5e8f68b6bed1789f682fe78cdd324495afc` (D-036) (PK-20, PK-55).
   7. `sha256sum -c tests/FROZEN_MANIFEST.sha256`; `../venv-lock/bin/python -I -m pytest -q tests/python/test_repo.py -m "not network" -k "not P23"`
      (T-060, T-061, T-062, T-P22, T-P27) and `../venv-lock/bin/python -I -m pytest -q tests/python/test_repo.py -m network` (T-P21).
@@ -101,7 +101,7 @@ Defaults for every step unless the step says otherwise:
      tests red; `python` red only on stub-caused tests; `python-torch` red on T-P19, with an `hf-revision` notice annotation.
   3. If the Linux build fails, compare with C-055 (bounded `--parallel`) before anything else.
 - Outputs: EXECUTION_LOG.md line with run id and per-job conclusions
-- Evidence produced: T-059 (stub), Q-E7 answer
+- Evidence produced: T-059 (stub); the Q-E7 (research/QUESTIONS.md E3.4) re-check result as a note in the EXECUTION_LOG.md row (no other file changes)
 - Done when: both `cpp` builds succeed and T-059 passes on both OSes; every `repo` step except "README claims (T-P23)" is green.
 - Checkpoint: default
 - On failure: a Windows-only build failure → fix the build files (not tests) and re-run; if the cause is a JUCE 9.0.3 or
@@ -225,9 +225,10 @@ Defaults for every step unless the step says otherwise:
   run the full suite. `research/spikes/oracle/engines.py` (an independent
   Python implementation that derived the frozen expected values) is a debugging reference only; the pass criterion is the
   frozen tests.
-- Outputs: core/src/guide_engine.cpp, core/src/converter_engine.cpp, core/src/stubs.cpp
-- Evidence produced: T-042…T-047
-- Done when: T-042…T-047 pass on Linux and in CI on Windows.
+- Outputs: core/src/guide_engine.cpp, core/src/converter_engine.cpp, core/src/stubs.cpp, research/spikes/s008-external-data/ (check program, run.sh, output.txt)
+- Evidence produced: T-042…T-047; the external-data check output (D-012)
+- Done when: T-042…T-047 pass on Linux and in CI on Windows; `research/spikes/s008-external-data/output.txt` shows the
+  external-data model rejected with `ValidationError` and the original fixture accepted.
 - Checkpoint: default
 - On failure: an input name/shape mismatch → DR-01.
 - Gate: none
@@ -378,7 +379,8 @@ Defaults for every step unless the step says otherwise:
 - Tier: Sonnet
 - Profile: software
 - Depends on: S-013, S-014, S-015, G-005 answered
-- Inputs: D-016, D-019, D-025, D-035; plan/GATES.md G-004; the G-005 answer; ../rvc (RVC 81eed5e checkout)
+- Inputs: D-016, D-019, D-025, D-035; plan/GATES.md G-004; the G-005 answer; ../rvc (RVC 81eed5e checkout);
+  research/spikes/hf-cli/output.txt (exact `hf download` flags, C-052); claims C-052, C-054, C-055, C-057, C-060…C-064
 - Actions: write `notebooks/train_voice_colab.ipynb` and `notebooks/train_voice_kaggle.ipynb` (nbformat 4, no outputs)
   with exactly the cells of D-035 §Notebook layout and §Notebook environment (installs split by index, C-062; RVC's own
   `requirments_cu128_py312.txt` from the RVC checkout at 81eed5e), and the guide voicebank cells of D-035 §Guide voicebank for the G-005 answer. Before writing
@@ -386,7 +388,8 @@ Defaults for every step unless the step says otherwise:
   ../rvc/train/dataset/extract_hubert_feature.py` and check the D-035 command lines against it (C-057); the voicebank is
   downloaded by the owner inside the notebook and never stored in the repository. The stage table is built by one code
   cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself), which
-  loads each notebook with nbformat, finds the cell containing `def make_stages` (D-035 cell (3)), execs it with the
+  wraps each `Stage.run` with a fake that creates that stage's declared outputs (a second scenario makes the train fake
+  raise `SessionEnd` once and checks the next session resumes at train), loads each notebook with nbformat, finds the cell containing `def make_stages` (D-035 cell (3)), execs it with the
   globals `VOICE="dry"`, `RUN=1`, `EPOCHS=10`, `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"` and with a fake `sh` that creates each stage's declared outputs, runs the stages
   in `<tmp>/a`, packs `<tmp>/a` with the notebook's own cell-(17) `state.tar` code and restores it into `<tmp>/b` by
   executing the notebook's own cell-(3) restore code with `/kaggle/input` and `/kaggle/working` remapped to `<tmp>/in` and
@@ -415,7 +418,9 @@ Defaults for every step unless the step says otherwise:
   1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
      values (`VOICE` = `myvoice` unless the owner names one, `RUN` = the issue number, `EXPECTED_COMMIT` = `git rev-parse
      HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
-  2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); a
+  2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
+     implementer reads the attachment where the session exposes attached files (its uploads folder) and copies it to
+     `../uploads/`; if the session cannot read attachments, record that in `DEVIATIONS.md` and write `BLOCKED.md`; a
      `failed: …` response is handled as plan/GATES.md G-004 says; the notebook's last test cell is T-P20.
   2a. Verify before committing (R-036, R-056; log every check in EXECUTION_LOG.md): the tar's SHA-256 equals the pasted
      line (two mismatches → `BLOCKED.md`), then extract it outside the repository;
@@ -424,7 +429,7 @@ Defaults for every step unless the step says otherwise:
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
      on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set). A failed check →
      ask the owner for the files again (at most twice, then `BLOCKED.md`); files are never edited. GATE-G-001.md gets the
-     `training.json` `stage_commits` table (which stage ran under which commit, R-054).
+     stage→commit table from the uploaded `state/commits.json` (written whenever a stage runs, so it includes evaluate; R-054).
   3. Commit the extracted files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the
      package name `<VOICE>-run<RUN>` is checked in action 2a); before re-issuing a gate, `git mv` the previous gate file:
      after `failed:` to `GATE-G-004.run<RUN>.fail<k>.md` (k = 1, 2, 3), after `retrain` to `GATE-G-004.run<RUN>.md` and
@@ -479,7 +484,8 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-018
 - Inputs: everything above
 - Actions: run the full suite locally; read the final CI run of all jobs through the API (D-036); check `git diff --stat
-  <report git_commit>..HEAD -- core cli python/singvst_train eval` for the committed results: when it is not empty, list the
+  <report git_commit>..HEAD -- core cli python/singvst_train eval`, the report being the highest `results/<VOICE>/run<RUN>/`
+  (the run G-001 accepted): when it is not empty, list the
   changes in `DEVIATIONS.md` and the pull request body and ask the owner there whether to re-run `evaluate` (R-038, PK-67); write
   `plan/IMPLEMENTATION_MAP.md` — a table `| Item | Delivered by (file or test) | Status |` with one row per plan step, per
   `Mitigation` cell of `premortem/RISK_REGISTER.md` (which holds every R-### of the planning pre-mortem rounds

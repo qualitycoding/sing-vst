@@ -203,7 +203,8 @@ checked before every model run → `Cancelled`; while a model run is in flight a
 takes from the take cache (D-038), never by re-rendering. Both engines reject at load, with `ValidationError`, a model
 whose initializers use external data (R-027), detected by a bounded protobuf walk of the model bytes: ModelProto field 7
 (graph) → GraphProto field 5 (initializer) → TensorProto field 14 (`data_location`) = 1 (EXTERNAL) or any field 13
-(`external_data`); malformed bytes → `ValidationError`. S-008 adds its own unit test with an external-data fixture made
+(`external_data`); malformed bytes → `ValidationError`. S-008 verifies it with a throw-away check (not a committed test: `tests/` is frozen) — a program under
+`research/spikes/s008-external-data/` linked against `../build-core/core/libsingvst_core.a`, loading a copy of a fixture model saved
 by `onnx.save(..., save_as_external_data=True)`.
 
 **Converter (`ConverterEngine`).** `content` model: input `source` float[1,N] at 16 kHz → output `units` float[1,Tc,768]
@@ -395,7 +396,8 @@ third-party lyrics) are transposed by one whole-semitone shift so their pooled m
 then rendered with `singvst-render` (seed 0) with and without conversion, `evaluate.REPEATS` = 5 times each because the
 guide's noise is unseeded (C-040); every metric is the mean over the repeats and `spread.json` holds the per-repeat values
 (R-018). At G-001 a threshold that lies within a metric's [min, max] spread is reported as **indeterminate** for that
-metric (inclusive bounds; for `similarity_gain` the per-repeat values are `speaker_similarity[i] − guide_similarity[i]`). `ceiling.json` (held-out against training-file embeddings) is shown beside the similarity as its same-singer
+metric (`spread.json`'s "numeric report keys" are exactly the seven metrics `speaker_similarity`, `guide_similarity`,
+`f0_rms_cents`, `octave_fraction`, `wer`, `guide_wer`, `realtime_factor`; inclusive bounds; for `similarity_gain` the per-repeat values are `speaker_similarity[i] − guide_similarity[i]`). `ceiling.json` (held-out against training-file embeddings) is shown beside the similarity as its same-singer
 ceiling (R-032); similarity is a proxy that only the G-001 listening record confirms.
 - **Speaker similarity**: cosine between the Resemblyzer 0.1.4 embedding (C-028) of each converted render and the mean
   embedding of the held-out source recordings (10 % by file, `split_heldout`, never trained on); the guide-only render gives
@@ -461,7 +463,8 @@ of every turn is `bash tools/turn_end_check.sh` (PK-01, PK-03). At the end a pul
 merging it is the owner's decision.
 
 ### D-030 Claims about behaviour
-Every sentence in README.md or docs/ that states behaviour cites a test ID; statements about how the voice *sounds* appear only
+Every sentence in README.md or docs/ that states behaviour cites a test ID — except `docs/UNVERIFIED.md`, whose bullets are
+explicitly labelled implemented-but-unverified behaviour (PK-04, PK-39); statements about how the voice *sounds* appear only
 with a G-001 listening record (PK-04, PK-46). T-P23 checks the citations exist.
 
 ### D-032 Figures (2C)
@@ -494,7 +497,7 @@ on stderr). Paths are absolute or relative to the working directory.
 | Command | Options | Effect |
 |---|---|---|
 | `split` | `--files-dir D --seed N [--fraction 0.1] --out F` | as the `build_parser` docstring |
-| `prepare` | `--in D --out D [--sr 48000] [--threshold-db -40] [--min-sec 2] [--max-sec 15] [--dereverb] [--lockfile F]` | for each `*.wav` in `--in` (sorted): read with soundfile, average channels, resample to `--sr` (`scipy.signal.resample_poly`), `slice_on_silence`, `normalise` each slice, write `OUT/segments/<stem>_<k:03d>.wav` (PCM_16), then `build_dataset_manifest(OUT, segments, params)` with segment `file` = `segments/<stem>_<k:03d>.wav`, `source` = the input file name, `start`/`end` = sample indices of the resampled signal, `params` = the CLI options as a dict, and a provenance sidecar for `OUT/dataset.json` (`params` the same dict, `seeds` `{}`, `lockfile` = `--lockfile`, default the repository's `python/requirements-lock.txt`); `--dereverb` first runs `prepare.dereverb(IN, OUT/dry)` and uses `OUT/dry`; no input audio → exit 2 |
+| `prepare` | `--in D --out D [--sr 48000] [--threshold-db -40] [--min-sec 2] [--max-sec 15] [--dereverb] [--lockfile F]` | for each `*.wav` in `--in` (sorted): read with soundfile, average channels, resample to `--sr` (`scipy.signal.resample_poly`), `slice_on_silence`, `normalise` each slice, write `OUT/segments/<stem>_<k:03d>.wav` (PCM_16; `k` 0-based, in the order `slice_on_silence` returns the slices), then `build_dataset_manifest(OUT, segments, params)` with segment `file` = `segments/<stem>_<k:03d>.wav`, `source` = the input file name, `start`/`end` = sample indices of the resampled signal, `params` = the CLI options as a dict, and a provenance sidecar for `OUT/dataset.json` (`params` the same dict, `seeds` `{}`, `lockfile` = `--lockfile`, default the repository's `python/requirements-lock.txt`); `--dereverb` first runs `prepare.dereverb(IN, OUT/dry)` and uses `OUT/dry`; no input audio → exit 2 |
 | `rvc-files` | `--exp-dir D --rvc-root D [--sr-tag 48k] [--speaker-id 0] [--seed 0]` | `write_filelist` + `copy_config`; prints both paths |
 | `rvc-train-command` | `--exp-name S [--sr-tag 48k] [--batch-size 8] [--epochs 200] [--save-every 10] [--gpus 0] [--python PY]` | prints `train_command(...)` as one JSON list (`--python` default `sys.executable`) |
 | `export` | `--rvc-root D (--weights F \| --exp-name S) --out-dir D` | `export_synth` → `OUT/rvc_synth.onnx`, `export_content` → `OUT/content.onnx`; `--exp-name` uses `latest_weights` |
@@ -558,6 +561,20 @@ run writes `<run>/params.json` = these values except `EXPECTED_COMMIT` (each ses
 naming earlier runs' `logs/<exp>/` as the largest deletable items (R-033, R-063).
 **GPU time** = the wall-clock time of the stages rvc-f0, rvc-features, train, export and evaluate, plus cell (16); each
 session also records `session_hours` = wall-clock from cell (1) to its end, which is what platform quotas charge (R-062).
+**Kernel and helpers** (shared by all cells; names fixed): the notebook kernel (not the venv) runs the orchestration; after
+step (4a) it does `sys.path.insert(0, f"{SINGVST}/python")` and imports `pipeline` lazily inside `make_stages` and later
+cells (`pipeline.py` is standard-library only). Globals: `PLATFORM` ("colab"|"kaggle"), `ROOT`, `RUNDIR`, `LOCAL`, `RVC`,
+`SINGVST`, `VENV`, `SESSION`, `STOP`, `HEARTBEAT`, `HEARTBEAT_ERROR`, and `class SessionEnd(Exception)`; cell (3) derives
+every path from `PATH_ROOTS = globals().get("PATH_ROOTS", {"content": "/content", "kaggle": "/kaggle", "tmp": "/tmp"})`,
+so the S-016 dry run remaps them by pre-setting `PATH_ROOTS`. `sh(cmd, cwd, timeout=None) -> (rc, output)` runs `bash -c
+cmd` in `cwd` with `VENV/bin` first on PATH, streams and captures stdout+stderr, and on timeout sends SIGINT to the process
+group, then SIGKILL after 60 s, returning rc 124; venv-side Python checks (the checkpoint guard's `torch.load`) run
+through `sh` and print their result. A non-train stage whose command returns rc ≠ 0 raises `RuntimeError` (command and
+last 50 output lines). **Train-stage outcomes:** `train.py` exits 0 and `<exp>.pth` exists → complete; the stage timeout
+is ≤ 0 before launch, or `sh` returns 124 → `STOP = True` and `raise SessionEnd` (no marker; the next session resumes);
+the voice reaches 20 GPU-hours → DR-13 copy → complete; checkpoint guard or restart detection fails, or any other rc ≠ 0
+→ `RuntimeError` (a real failure, reported as `failed:`). Every cell that calls `run_stages` catches `SessionEnd` only,
+printing "start a new session". The 9.5-h check before each stage also raises `SessionEnd`.
 **Ending a session** (R-055): a stop condition (9.5 h, budget, train timeout) sets `STOP = True`; every later cell
 starts with `if STOP:` printing "skipped — start a new session", so a Kaggle version always completes without an error
 and keeps its output (outputs are limited to 500 items, C-064 — hence `state.tar`). This applies on both platforms; with
@@ -625,7 +642,7 @@ then `out/training.json` = `{"voice_name": <exp>, "epochs_requested": EPOCHS, "e
 out/env/<session>.freeze.txt`; then `out/eval/ceiling.json` = `{"heldout_vs_train": mean over held-out files of cosine(embedding of
 the file, mean embedding of the `train/` files)}` with the PROCEDURE step 4 Resemblyzer settings (R-032); (16) `pytest -m
 voice` (T-P20) with `SINGVST_VOICE`, `SINGVST_HELDOUT`, `SINGVST_RENDER_BIN` set to the paths above; (17) stop the budget
-heartbeat and write `budget.json` a final time; `tar` the `out/` folder to Drive / Kaggle output; write
+heartbeat and write `budget.json` a final time; `tar` the `out/` folder to `<root>/out-run<RUN>.tar` (Drive / Kaggle output); write
 `<root>/upload-run<RUN>.tar` holding the upload files (§Upload) and print its `sha256sum` line (R-036, R-056); Kaggle: then
 write `/kaggle/working/state.tar` (+ `state.tar.sha256`) of `run<RUN>/`, `logs/`, `weights/`, `assets-archive/` and
 `budget-voice.json`, and delete those untarred copies from `/kaggle/working` (R-055).
@@ -661,8 +678,8 @@ reaches 20 (A-015) the train stage copies the newest `assets/weights/<exp>_e<N>_
 `--epochs` = `EPOCHS` (200 unless GATE-G-004.md states another value); the owner reports the value used in the G-004
 response; `--save-every` 10.
 **Upload to the implementer (G-004):** `upload-run<RUN>.tar` holding `report.json`, `report.json.provenance.json`,
-`verdict.json`, `spread.json`, `ceiling.json`, `budget.json`, `budget-voice.json`, `training.json` and `out/env/` (every
-session's freeze and env file), attached to the conversation, plus the `sha256sum` line cell (17) printed (the only part
+`verdict.json`, `spread.json`, `ceiling.json`, `budget.json`, `budget-voice.json`, `training.json`, `state/commits.json`
+(the final stage→commit table, R-054) and `out/env/` (every session's freeze and env file), attached to the conversation, plus the `sha256sum` line cell (17) printed (the only part
 that may be pasted as text; R-056).
 Renders and voice packages stay on the owner's Drive or machine (A-011, T-062).
 **Visibility (R-021):** the Kaggle dataset `singvst-<VOICE>` and the Kaggle notebook are **Private** and no version is

@@ -45,14 +45,14 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | Step | What | Tests | Gate |
 |---|---|---|---|
 | S-000 | Environment & access verification | none | none |
-| S-001 | CI baseline on both platforms | T-059 (stub), Q-E7 answer | none |
+| S-001 | CI baseline on both platforms | T-059 (stub); the Q-E7 (research/QUESTIONS.md E3.4) re-check result as a note in the EXECUTION_LOG.md row (no other file changes) | none |
 | S-002 | Lyrics, pronunciation and alignment | T-001…T-018 | none |
 | S-003 | Timing, pitch, gain and noise | T-019…T-027 | none |
 | S-004 | Voice package and SHA-256 | T-028…T-031, T-063 | none |
 | S-005 | Playback, phrase hash, capture and plugin state | T-032…T-038 | none |
 | S-006 | Standard MIDI File import | T-064…T-066, T-069 | none |
 | S-007 | Resampler and runtime loading | T-039…T-041 | none |
-| S-008 | Guide and converter engines | T-042…T-047 | none |
+| S-008 | Guide and converter engines | T-042…T-047; the external-data check output (D-012) | none |
 | S-009 | Render pipeline and background renderer | T-048…T-052, T-067, T-068, T-070 | none |
 | S-010 | CLI `singvst-render` | T-P18 | none |
 | S-011 | Plugin processor and editor | T-053…T-058, T-059 | none |

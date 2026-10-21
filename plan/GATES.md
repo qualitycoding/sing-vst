@@ -13,7 +13,8 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   `spread.json` [min, max] over the 5 repeats and **indeterminate** wherever a threshold lies inside it (D-017, R-018);
   guide-only baseline (similarity, WER); `ceiling.json` (same-singer similarity ceiling, R-032); octave-error fraction; RTF
   on the hosted CPU; `budget.json` GPU-hours, labelled "lower bound (5-minute heartbeat)" (R-034); `training.json`
-  (epochs trained); the converted and guide renders, which stay on the owner's Drive (`<root>/run<RUN>/out/eval/renders/`, D-035) and are listened to there; the
+  (epochs trained); the converted and guide renders, which stay with the owner — Colab: `<root>/run<RUN>/out/eval/renders/` on Drive; Kaggle: inside `out-run<RUN>.tar` in the
+  notebook version's output (`tar -xf out-run<RUN>.tar eval/renders`) — D-035 and are listened to there; the
   "implemented, unverified" checklist (`docs/UNVERIFIED.md` from S-011: editor behaviour, file dialogs, host compatibility);
   instructions to **build the plugin from source** on the owner's computer (plan/ENVIRONMENT.md §Owner build, for their OS; no plugin binaries are published — A-013, D-026), copy the VST3 bundle to the user VST3 folder, load the
   voice package from their Drive, and render the five phrases with `singvst-render` (RTF there): for k in 1…5,
@@ -47,13 +48,15 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   the Parameters cell (`VOICE`, `RUN`, `EXPECTED_COMMIT` = the full SHA of the impl branch head after S-016's last save,
   `DEREVERB`, `EPOCHS` (a multiple of 10), `SPEAKER_ID`, `GUIDE`; D-035), privacy: the Kaggle dataset and notebook stay **Private**, no version
   is published, the Drive folder is not shared (R-021); Kaggle: run as "Save & Run All" (background, no idle timeout) on a
-  T4 GPU, which needs a phone-verified Kaggle account (R-044); the budget (A-015), and the consent and
-  platform-terms statements (A-011, C-018).
+  T4 GPU with **Internet: On** (clone, installs, Hugging Face), which needs a phone-verified Kaggle account (R-044);
+  **resuming** after "start a new session": Colab — reopen the same notebook and *Run all*; Kaggle — in the next version add
+  the previous version's output as an input (*Add Input → Your Work → this notebook*), then *Save & Run All* (cell (3)
+  finds its `state.tar`); the budget (A-015), and the consent and platform-terms statements (A-011, C-018).
 - **Questions:** (1) Are the recordings your own voice or used with the singer's consent, and is this use within the
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
   (3) Colab or Kaggle?
-- **Responses:** `consent: yes, visibility: private, voice: <VOICE>, run: colab|kaggle, dereverb: yes|no, epochs: <N>` (the
-  values the owner used; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
+- **Responses:** `consent: yes, visibility: private, voice: <VOICE>, platform: colab|kaggle, dereverb: yes|no, epochs: <N>`
+  (the values the owner used; `RUN` is always the number GATE-G-004.md states; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
   D-035 and attaches `upload-run<RUN>.tar` and pastes the `sha256sum` line cell (17) printed) ·
   `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
   issue (a `retrain` re-issue starts a new count; a `failed:` re-issue keeps `RUN`), then

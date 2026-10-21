@@ -45,7 +45,7 @@ cmake -S . -B ../build-tsan -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSINGVST
   -DCMAKE_CXX_FLAGS="-fsanitize=thread -fno-omit-frame-pointer"
 cmake --build ../build-asan --parallel 2 && ctest --test-dir ../build-asan --output-on-failure -R "<tests of the step>"
 cmake --build ../build-tsan --parallel 2 && TSAN_OPTIONS="suppressions=$PWD/tools/tsan.supp halt_on_error=1" \
-  ctest --test-dir ../build-tsan --output-on-failure -R "T-038|T-050|T-051|T-068"
+  ctest --test-dir ../build-tsan --output-on-failure -R "T-038"                  # S-005; from S-009: -R "T-038|T-050|T-051|T-068"
 ```
 Interpreters: tools under `tools/` run with `python3.12` (standard library only); tests and toolkit commands run with
 `../venv-lock/bin/python` (the lock). Bare `python3` is never used (PK-55).
