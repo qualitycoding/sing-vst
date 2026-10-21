@@ -830,7 +830,7 @@ stage also has `params.json` as an input (R-013); the notebook prints the list `
 | pack | `out/conv/`, `<root>/voicebank/` | `out/voice/`, `out/training.json` |
 | evaluate | `out/voice/`, `heldout/`, `<LOCAL>/bin/` | `out/eval/` |
 **Time and budget.** `out/budget.json` holds `{"gpu_hours", "stopped_by_budget": <epoch N of the copied weights, or null>, "sessions": [{"seq", "restored_from", "prior", "commit", "start",
-"end", "gpu_hours", "session_hours", "stage_hours", "stages_run"}]}` (`end` is set by the final budget write — before the upload tar in
+"end", "gpu_hours", "session_hours", "stage_hours", "killed_hours", "stages_run"}]}` (`end` is set by the final budget write — before the upload tar in
 the normal branch, by `end_session` otherwise; `prior` = the `PRIOR_VOICE_GPU_HOURS` the session ran with;
 `killed_hours` = its `KILLED_HOURS`; `stage_hours` = `{<stage>: h}`, the wall-clock hours of each GPU-time stage —
 prepare (with `DEREVERB`), rvc-f0, rvc-features, train, export, evaluate, and `t-p20` for cell (16) — in this session,
@@ -847,15 +847,15 @@ replaces the record in place, never adds a second one — then recomputes the fo
 other response at once; when the files are re-asked twice and S-017 ends in `BLOCKED.md`, the record is written from
 the response as given with `"unverified": true`. A `stop` with no figure changes nothing (S-RETRO notes that the ledger
 omits that issue); a `stop` that carries figures is recorded like any other response (R-113).
-Record: `{"issue": "run<RUN>.<k>"` (the name its gate file gets when archived, S-017 action 3), `"run"`, `"platform"`:
+Record: `{"issue": "run<RUN>.<k>"` (the name its gate file gets when archived, S-017 action 3), `"run"`: the issue's `RUN`, `"platform"`:
 the issue's `PLATFORM_EXPECTED` — the platform whose notebook produced the figure, never a `switch-platform` target —
 `"switch_to"`: the target of a `switch-platform` response (else absent), `"prior"`: the issued `PRIOR_VOICE_GPU_HOURS`,
 `"platform_hours"`, `"versions"`: the response's Kaggle lines, oldest first, each `{"seq", "sha256"}`,
-`{"killed_hours"}` or `{"no_gpu": true}`}` (R-111).
+`{"killed_hours": h}` or `{"no_gpu": true}`}` (R-111).
 `platform_hours` comes from a file or a notebook line, never from memory (R-082, R-095): **Colab** — Σ `runs` of the
 `budget-voice.json` attached with the response (the uploaded one for `consent:`; for every other Colab response the
 owner downloads `MyDrive/singvst/<VOICE>/budget-voice.json` from Google Drive, which needs no runtime and includes every
-heartbeat of a killed session); when that file does not exist because no Colab session of this voice ever reached step
+heartbeat of a killed session, and writes `hours-used: drive`); when that file does not exist because no Colab session of this voice ever reached step
 (4e), the owner answers `budget-voice: none` and the platform's previous ledger value is kept. **Kaggle** — the `p` of the
 `hours:` line that cell (17) printed immediately before the newest `seq` line among this issue's versions (equal to
 Σ `runs` inside the `state.tar` that version packed); a version reported `killed` is never a source; with no `seq` line in

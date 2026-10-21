@@ -202,7 +202,7 @@
     "lessons/L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject.md": "11cbfd3a6df84b3f05e5237f08a0a3e48d67cbadaaf8a6cb0883c99f4582d6e9",
     "lessons/L-20261021T200500Z-package-added-to-pinned-install-without-resolving.md": "d7115414a93c3dac6f5787fe1028fba7ea19d41924475aae10f302eb380c5999",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "425c27eb650c4f41e7fadc6b83ae8a485f4967958531dd1f584d4d9dfcaaad7a",
+    "plan/DECISIONS.md": "b53ed41cd8196ecaeb8c97084a34347b1aa6c385b29b307cdf693deca2158150",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
     "plan/GATES.md": "514cd5633ec1c81567d6288eabd061b196f4107bf8b38aa018d94ea9994ff71e",
     "plan/PLAN.md": "4cf6fd9407a5b3752bf9ca13b60aa69f2ab6f22ae397a1c596a3e672b165657b",
@@ -778,7 +778,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T20:37:16Z",
+  "updated_at": "2026-10-21T20:40:11Z",
   "active_step_id": "S-000",
   "execution_context": {
     "current_objective": "Owner chose review (D-039): pre-mortem round 6 + cold read on GPU-hour accounting, then Phase 5 again",
@@ -825,7 +825,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 127,
+  "sequence": 128,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
