@@ -82,4 +82,5 @@ std::filesystem::path takeFileName (std::uint64_t) { throw NotImplemented ("take
 bool storeTake (const std::filesystem::path&, const RenderedTake&) noexcept { return false; }
 std::optional<RenderedTake> loadTake (const std::filesystem::path&, std::uint64_t) noexcept { return std::nullopt; }
 RenderFn cachedRender (RenderFn, std::filesystem::path) { throw NotImplemented ("cachedRender"); }
+RenderedTake resampleTake (const RenderedTake&, int) { throw NotImplemented ("resampleTake"); }
 } // namespace singvst
