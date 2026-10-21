@@ -408,22 +408,36 @@ Defaults for every step unless the step says otherwise:
   `PATH_ROOTS` mapped into a temporary directory and every global of cell (2) and the Parameters cell (2a) preset (`CONSENT_CONFIRMED=True`,
   `ATTESTATION="dry"`, `VOICE="dry"`, `RUN=1`, `EXPECTED_COMMIT="0"*40`, `RESUME`, `PLATFORM_EXPECTED` = the notebook's
   own platform (`"colab"` or `"kaggle"`), `PRIOR_VOICE_GPU_HOURS=0.0`, `PRUNE=""`, `DEREVERB=False`, `EPOCHS=10`,
-  `SPEAKER_ID=0`, `GUIDE="tiger"`; `PLATFORM` comes from the notebook's cell (3)), pre-creates the four non-stage inputs
+  `SPEAKER_ID=0`, `GUIDE="tiger"`, `KILLED_HOURS=0.0`, and `SESSION_T0`, `CLOCK` (a fake clock the script advances) and
+  `HEARTBEAT_INTERVAL=10**9` (no background beats; the script calls `heartbeat_write()` itself); `PLATFORM` comes from the
+  notebook's cell (3)), pre-creates the four non-stage inputs
   with fixed bytes, identical in every root and `<LOCAL>` it creates (`raw/` with two WAV files, `<root>/voicebank/` with one
   file, `<LOCAL>/build-render/cli/singvst-render`; cell (4) is not exec'd, so it calls the notebook's `write_params()` and
-  `start_session()` itself, which write `<run>/params.json` and the `sessions[]` entry), wraps each `Stage.run` with a fake
-  that creates that stage's declared outputs (an output whose `Path.suffix` is empty is a directory — every directory of
+  `start_session()` itself, which write `<run>/params.json` and the `sessions[]` entry), replaces the notebook's global
+  `sh` with a fake (so every stage still runs through the notebook's own `timed`) that advances the fake clock by the
+  scenario's hours for `CURRENT_STAGE`, returns the scenario's rc, and creates that stage's declared outputs (an output whose `Path.suffix` is empty is a directory — every directory of
   the D-035 stage table has none and every file has one — created holding one file `fake.bin`; any other output is a
   file; every later stage's input path under a created directory is created too, e.g. `prepared/segments/`; every file a
-  fake writes gets bytes unique to that invocation), runs each cell's slice through the notebook's `run_cell`, and checks
+  fake writes gets bytes unique to that stage invocation; repeated `sh` calls within one stage create them once), runs each cell's slice through the notebook's `run_cell`, and checks
   these scenarios, using the notebook's own `guarded`, `pack_state`, `restore_state` and `end_session`
   (R-066, R-079): (1) a full session runs every stage; (2) `end_session` then `restore_state` into a fresh root with
   `RESUME=True` and a fresh `<LOCAL>` → `stages_run` is exactly `["render-bin", "evaluate"]` (D-035 cell (13); R-089); (3) editing `params.json` → every stage runs; (4) the train fake raises `SessionEnd` →
   `STOP` set, `end_session` still writes `state.tar` and the `sessions[]` entry with `end` and `seq`, and the next session resumes at train; (5) a stage fake raises
   `RuntimeError` inside `guarded` → no exception escapes, `STOP` is set, `STOP_REASON` starts `failed:`, and `end_session`
   writes the budget files with `end` set (Colab) or also `state.tar` (Kaggle) (R-069), and an `OwnerAction` gives `STOP_REASON` starting `owner:` (R-087);
-  (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068). Scenarios (1),
-  (3) and (5) run for both notebooks; (2), (4) and (6) for the Kaggle notebook; for the Colab notebook (4) instead re-runs
+  (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068);
+  (7) accounting: with 1 h per GPU-time stage on the fake clock, `PRIOR_VOICE_GPU_HOURS=2.5` and `KILLED_HOURS=0.5`, the
+  session's `gpu_hours` = Σ `stage_hours` = Σ `runs` of `budget-voice.json`, `prior` = 2.5 and `killed_hours` = 0.5 are
+  recorded, every printed `hours:` line matches `^hours: platform \d+\.\d{4} voice \d+\.\d{4}$` with `voice` = `platform`
+  + 3.0, and a `heartbeat_write()` during the train fake records the elapsed train time in `stage_hours["train"]`; a
+  session left without `end_session` and followed by a new session is still summed with its heartbeat hours (R-095,
+  R-109); (8) budget stop: with `PRIOR_VOICE_GPU_HOURS` = `BUDGET_HOURS` − 1, the train stage's `t_budget` ≤ 0 → with a
+  fake loadable `<exp>_e10_s100.pth` the stage completes with `stopped_by_budget` 10; without one `STOP_REASON` is exactly
+  `budget: no checkpoint` (R-086); (9) prune (Kaggle): a restore with `PRUNE` set skips `logs/<PRUNE>/` and writes the
+  marker, and a second restore of that version's `state.tar` with the same `PRUNE` keeps `logs/<PRUNE>/` (R-112);
+  (10) a `PLATFORM_EXPECTED` mismatch and a changed `params.json` value each raise `OwnerAction` and print a line
+  starting `owner: 3 ` or `owner: 4e ` (R-082). Scenarios (1),
+  (3), (5), (7), (8) and (10) run for both notebooks; (2), (4), (6) and (9) for the Kaggle notebook; for the Colab notebook (4) instead re-runs
   in the same root and checks the session resumes at train from its markers (no `state.tar` on Colab). It must exit 0
   for both notebooks (R-016, R-013).
   GATE-G-004.md (S-017) gives the owner opening links pinned to a commit (R-029): Colab
@@ -451,26 +465,29 @@ Defaults for every step unless the step says otherwise:
   1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
      values (`VOICE` = `myvoice` unless the owner names one, `RUN` = 1 for the first G-004 issue and the previous `RUN` + 1
      after each G-001 `retrain` and each `switch-platform` response — `failed:`, `owner-fixed:`, `prune:` and
-     post-`raise-budget` re-issues keep `RUN` (D-035, R-053), the `RESUME` rule of D-035 (True exactly when an earlier Kaggle version of this voice has a `state.tar` in its output;
+     post-`raise-budget-to` re-issues keep `RUN` (D-035, R-053), the `RESUME` rule of D-035 (True exactly when an earlier Kaggle version of this voice has a `state.tar` in its output;
      the owner applies it), `PLATFORM_EXPECTED` (`"colab"` for the voice's first issue — the owner asked for a Google GPU, A-016; the owner
-     who wants Kaggle answers `switch-platform: kaggle, hours-used: 0` before running — then the platform of the previous
+     who wants Kaggle answers `switch-platform: kaggle` with `budget-voice: none` before running — then the platform of the previous
      issue, or the other one after `switch-platform`), `PRIOR_VOICE_GPU_HOURS` = `results/<VOICE>/ledger.json` `total`
-     minus the ledger's `colab` or `kaggle` value for `PLATFORM_EXPECTED` (D-035 §Voice ledger; 0.0 with no ledger),
-     `PRUNE` = the `<exp>` of a `prune:` response for its re-issue, else `""`; `EXPECTED_COMMIT` = `git rev-parse
+     minus the ledger's `colab` or `kaggle` value for `PLATFORM_EXPECTED` (D-035 §Voice ledger; 4 decimals; 0.0 with no
+     ledger), `KILLED_HOURS = 0.0` with the rule for adding killed versions, the ledger's current figure for
+     `PLATFORM_EXPECTED`, `PRUNE` = the `<exp>` of a `prune:` response for its re-issue, else `""`; `EXPECTED_COMMIT` = `git rev-parse
      HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
      implementer finds the attachment by name — `find / \( -path /proc -o -path /sys \) -prune -o -name
      'upload-run<RUN>.tar' -type f -print 2>/dev/null`, taking the hit whose SHA-256 equals the pasted line — and copies it
-     to `../uploads/`; with no such hit it asks the owner to upload the tar to a new branch `upload-<VOICE>-run<RUN>`
-     through GitHub's web interface (plan/GATES.md G-004) and reads it with `git fetch origin upload-<VOICE>-run<RUN> &&
-     git show FETCH_HEAD:upload-run<RUN>.tar > ../uploads/upload-run<RUN>.tar` (that branch is never merged or deleted by
+     to `../uploads/`; with no such hit it asks the owner to upload the tar to a new branch `upload-<VOICE>-run<RUN>-<n>`
+     (`n` = 1 + the number of such branches already on `origin`) through GitHub's web interface (plan/GATES.md G-004) and
+     reads it with `git fetch origin upload-<VOICE>-run<RUN>-<n> && git show FETCH_HEAD:upload-run<RUN>.tar >
+     ../uploads/upload-run<RUN>.tar` (those branches are never merged or deleted by
      the implementer, G-002); only when both channels fail, record that in `DEVIATIONS.md` and write `BLOCKED.md`; a
      `failed: …` response is handled as plan/GATES.md G-004 says; the notebook's last test cell is T-P20.
   2a. Verify before committing (R-036, R-056; log every check in EXECUTION_LOG.md): the tar's SHA-256 equals the pasted
      line (two mismatches → `BLOCKED.md`), then extract it outside the repository;
-     `budget.json` `gpu_hours` equals the sum of its `sessions[].gpu_hours` and is > 0 when `train` ran (R-051);
+     these equalities, each with tolerance 1e-6: `budget.json` `gpu_hours` = Σ `sessions[].gpu_hours` = `budget-voice.json`
+     `runs[RUN]`, and per session `gpu_hours` = Σ `stage_hours` (R-109); `gpu_hours` > 0 when `train` ran (R-051);
      `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json` (for an invalid report:
-     `verdict.json` = `{"all": false, "status": <the report's status>}`); budget sums compared with tolerance 1e-6; the report provenance
+     `verdict.json` = `{"all": false, "status": <the report's status>}`); the report provenance
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
      on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `t-p20.xml`
      exists and its outcome (pass, or a failure that D-035 §Evaluation outcome's junit rule classifies as a result) is
@@ -479,19 +496,20 @@ Defaults for every step unless the step says otherwise:
      §Voice ledger): every Kaggle session of the uploaded `budget.json` has a `seq` line with its `seq`, the `seq` lines
      increase by 1 in version order (killed lines skipped), and each session's `restored_from` equals the `sha256` of the
      line whose `seq` is one less (null when its `seq` is 1) (R-068, R-083), `killed` versions counted as unlogged hours
-     (R-095); every session's recorded `prior` equals the `prior` of one of this RUN's ledger records, and the newest
+     (R-095), and each Kaggle session's `killed_hours` equals the Σ of the `killed` lines of its issue that precede its
+     own `seq` line, rounded up to 4 decimals (R-095); every session's recorded `prior` equals the `prior` of one of this RUN's ledger records, and the newest
      session's equals this issue's (R-082, R-097); entries without `end` are counted with their heartbeat hours and listed in
-     GATE-G-001.md. After **every** G-004 response except `stop`, update and commit `results/<VOICE>/ledger.json` (D-035
-     §Voice ledger; PK-77). `owner-fixed:` and `budget-exhausted` responses are handled as plan/GATES.md G-004 says. A failed check →
+     GATE-G-001.md. After every G-004 response, update and commit `results/<VOICE>/ledger.json` exactly as D-035 §Voice
+     ledger says (record order, file-sourced figures, never-decreasing check, `unverified`; PK-77). `owner-fixed:` and `budget-exhausted` responses are handled as plan/GATES.md G-004 says. A failed check →
      ask the owner for the files again (at most twice, then `BLOCKED.md`); files are never edited. GATE-G-001.md gets the
      stage→commit table from the uploaded `commits.json` (written whenever a stage runs, so it includes evaluate; R-054).
   3. Commit the extracted files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the
      package name `<VOICE>-run<RUN>` is checked in action 2a); before writing any new `GATE-G-004.md` or `GATE-G-001.md`,
      `git mv` the existing one to `GATE-G-00<g>.run<RUN>.<k>.md` (`RUN` of the archived issue; `k` = 1 + the number of files
      already archived for that gate and RUN), whatever the response (`failed:`, `owner-fixed:`, `prune:`,
-     `switch-platform:`, `budget-exhausted`, `retrain`, `raise-budget`; history kept, Rule 9); never commit audio,
+     `switch-platform:`, `budget-exhausted`, `retrain`, `raise-budget-to`; history kept, Rule 9); never commit audio,
      recordings or voice packages (T-062).
-  4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`; per threshold metric the verdict and
+  4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md` and the voice ledger; per threshold metric the verdict and
      "indeterminate" when min ≤ threshold ≤ max of `spread.json`, the `similarity_gain` spread being the per-repeat
      differences, D-017) and halt.
   5. After a G-001 `proceed-with-thresholds` amendment has been merged (HANDOFF §Amendments), compute the bound verdict

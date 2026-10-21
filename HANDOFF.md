@@ -105,11 +105,11 @@ save that adds the row). `DEVIATIONS.md` — `| UTC time | Step | Plan says | Do
 ## Amendments (planning changes during implementation)
 The implementer never edits frozen files, `eval/thresholds.json`, `tests/python/interfaces.json` or the manifest, and never
 runs `tools/freeze.py` or `tools/gen/interfaces.py`. When a gate response or a test challenge needs a planning change
-(G-001 `proceed-with-thresholds`, G-001 `raise-budget`, G-005 `use-voicebank`, TEST_CHALLENGE.md), the implementer halts and says so; the owner
+(G-001 `proceed-with-thresholds`, G-001 `raise-budget-to` (offered only on the budget-exhausted GATE-G-001.md), G-005 `use-voicebank`, TEST_CHALLENGE.md), the implementer halts and says so; the owner
 starts a planning session that runs the amendment of plan/PROTOCOL_EXCERPTS.md §2E.4 (re-research, re-freeze with
 `tools/freeze.py`, cold read and pre-mortem on the changed items) and pushes to the generation branch; the implementer then
 merges the generation branch into the impl branch and resumes. After `proceed-with-thresholds` it resumes at S-017 action
-5. After `raise-budget: <hours>` (the amendment sets A-015 and D-035's `BUDGET_HOURS` to the new value; G-001's retrain
+5. After `raise-budget-to: <total hours>` (the amendment sets A-015 and D-035's `BUDGET_HOURS` to that total; G-001's retrain
 bound is `BUDGET_HOURS` − 1) it sets `BUDGET_HOURS` in cell (3) of both notebooks, re-runs
 `../venv-lock/bin/python -I tools/notebook_dryrun.py` (exit 0), Saves, and re-issues GATE-G-004.md for the **same** `RUN`
 (its experiment resumes from its checkpoints) with `EXPECTED_COMMIT` = the new head and `PRIOR_VOICE_GPU_HOURS` from the

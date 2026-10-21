@@ -30,7 +30,6 @@
     "5"
   ],
   "pending": [
-    "4-r6",
     "3.6-r6",
     "5"
   ],
@@ -47,8 +46,8 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "HANDOFF.md": "e58e3c3b09fd9d85866d903e18625f86dad53349625f9b2d898a6258f805927c",
-    "HANDOFF.src.md": "0ceaddb7fac8028003b918b3b102097be5f5799fe3151c45f4e9b8054164ac13",
+    "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
+    "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "README.md": "224e525c0be42832449e0060dc16efd08b87a76a1d3c706cf10be8e593ca847c",
     "TAXONOMY.md": "e3bbb181cfef0ea4e7e16ac23514b2689f92f8735dcccbd793ca0e296277d3d6",
@@ -203,11 +202,11 @@
     "lessons/L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject.md": "11cbfd3a6df84b3f05e5237f08a0a3e48d67cbadaaf8a6cb0883c99f4582d6e9",
     "lessons/L-20261021T200500Z-package-added-to-pinned-install-without-resolving.md": "d7115414a93c3dac6f5787fe1028fba7ea19d41924475aae10f302eb380c5999",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "742dd5da0adc29c7d6b8487924ddc38db0f68679472b691b3d80df7dd2e8e637",
+    "plan/DECISIONS.md": "425c27eb650c4f41e7fadc6b83ae8a485f4967958531dd1f584d4d9dfcaaad7a",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
-    "plan/GATES.md": "cd6e30e2a1cd168687ffa87a59243db73a7789f4143221376902f9ffc5439bf6",
-    "plan/PLAN.md": "91586a40bb5ca43679b8e0f2bc4e6803a2741e597bca6ac43f88aae9398edd61",
-    "plan/PLAN.src.md": "5398c03837452e8564ed391c59275c03d3939899c473637516fa8c291aee41b9",
+    "plan/GATES.md": "514cd5633ec1c81567d6288eabd061b196f4107bf8b38aa018d94ea9994ff71e",
+    "plan/PLAN.md": "4cf6fd9407a5b3752bf9ca13b60aa69f2ab6f22ae397a1c596a3e672b165657b",
+    "plan/PLAN.src.md": "606a07bac88302903644e518dfd3b88ec65eaa0ff25915db5b857368dad1319e",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
     "plan/TRACEABILITY.md": "58994de06c5e519ba3d99f94c69b648a1c34c5894001b5537949b7490309e338",
@@ -215,7 +214,7 @@
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
     "premortem/RESIDUAL.md": "c9148188d28e45beafc067c91f6d30bae6fc25b8978201f6df0062f6da276af3",
-    "premortem/RISK_REGISTER.md": "5e7ab4fd05ae47aca27b355dca104b913ae3bd5be089e8e5fd8cd287acc1af2a",
+    "premortem/RISK_REGISTER.md": "a33f238439def41f5b43a42713a6cb48858050044dbdb2230cdf46c4c6e51cab",
     "premortem/coldread-pass-1.md": "94bfdca50c1f0b7ee5d4f429df0196eb34225a29b8189dc5b204d729a534cc76",
     "premortem/coldread-pass-10.md": "a33cf2eb8e0cf90f739a7132657567bfb87cd39beb6a325127437865c1bbb8c1",
     "premortem/coldread-pass-2.md": "1229c3da0b81a812c5bd5cb47903045ca288b9b19a03fb3b509f5cc9576f69e0",
@@ -231,6 +230,7 @@
     "premortem/round-3.md": "d9d0a8cc248ae07ce14ae719baa5fa35df96bfa2bc41aa466f219ca3f5530139",
     "premortem/round-4.md": "c4ec2c553729818734047e7fc973c29061ab37671f5b076e5abe6840a60a7d5b",
     "premortem/round-5.md": "a81819807d1b98f3ef84b2c48af255d99af50338d6cf510b08a33cfb3750e640",
+    "premortem/round-6.md": "51edae3478034cb15a9acc6658c3fcf832fa6149d29cd2e0837be724ab2c6549",
     "pytest.ini": "2a0de770d527a5f24cbc18dbb0dd4d7331b2127646bafdc14eea5aad5122e6b4",
     "python/pyproject.toml": "7491b80ae2d7c9e09d60ccf11210c5f87134188baf18c5ea46b6c6a4036e2d58",
     "python/requirements-lock.txt": "a05381edd0780e4d6ed4292236fbc098aa17e0c5940d399732b470f2aa517eaf",
@@ -777,14 +777,14 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T20:18:22Z",
+  "updated_at": "2026-10-21T20:36:29Z",
   "active_step_id": "S-000",
   "execution_context": {
     "current_objective": "Owner chose review (D-039): pre-mortem round 6 + cold read on GPU-hour accounting, then Phase 5 again",
     "call_stack": [],
     "scratchpad": "Phase 5 done: consistency check (12 traceability cell items fixed), status header BLOCKED, pushed. Next: owner decision per premortem/RESIDUAL.md; then implementer starts at S-000.",
     "in_flight_operation": {
-      "op": "pre-mortem round 6 on /home/claude/premortem6 and cold read pass 11 on /home/claude/coldread11"
+      "op": "cold read pass 12 on /home/claude/coldread12"
     },
     "tool_cache": {},
     "step_pointer": {
@@ -824,7 +824,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 124,
+  "sequence": 126,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
