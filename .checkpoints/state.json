@@ -177,7 +177,7 @@
     "lessons/L-20261015T090100Z-unbounded-parallel-build-flag-from-memory.md": "b8c6a7c05b51a6fe847def805f2ca97a08e980e5d6df0323b2e299d08ce6f17c",
     "lessons/L-20261015T180000Z-plan-left-interfaces-that-later-steps-call-unspecified.md": "388e28af688bbbaac74164df31b0a1cd2808e04a4cf600f96c64b73f493fccb9",
     "lessons/L-20261015T180100Z-ci-gate-step-ran-a-test-that-cannot-pass-yet.md": "b071f32365342918302e01cf8da91f11ca8f64c19f4f2e9156d745b1ea777c4b",
-    "lessons/L-20261015T180200Z-plan-cross-references-stale-after-renames.md": "f1688d815396d953460d6df5cf4b523eb873a186bf911322cce16fa7e7ac61ee",
+    "lessons/L-20261015T180200Z-plan-cross-references-stale-after-renames.md": "b29cc0dbdc916f9102759ad4c5acc4e5c8b1ce735c4f67067ddbf7121641abbe",
     "lessons/L-20261015T180300Z-plan-allowed-what-a-frozen-test-forbids.md": "4ad59edf15e2ec85fe772b32ab16f2989122e8e10776af9464147d91515445a7",
     "lessons/L-20261015T180400Z-protocol-procedures-cited-but-not-shipped.md": "7f788384456183d9456f7a41f834c58549a335ecd582bcc135e02e9932e4cde9",
     "lessons/L-20261015T190000Z-ci-pass-criterion-relied-on-absent-error-annotations.md": "fcbe450b0108b51cda3f9d675987f94badd99f93a41f69d17a82c858ed30ccb0",
@@ -194,6 +194,7 @@
     "lessons/L-20261016T040400Z-provenance-named-a-lock-the-run-never-installed.md": "7c65ed66463b5d8ed7f19be56387f8e1897c2a16ce082d43e28b93db505593b4",
     "lessons/L-20261016T140000Z-hardening-changes-not-checked-against-each-other.md": "dd3c3f284782540893a824c43a8b6655c617e67d7e4760ef7ac93deb6296b79b",
     "lessons/L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value.md": "9d450b8165bf60e23ced422f0556cc3dfa1f514fc754659b1e06c42f85530fe0",
+    "lessons/L-20261021T150000Z-behaviour-specified-against-an-interface-that-cannot-express-it.md": "63bc1bd244eefb7974c30042f81ed205e98d8780b778193cdefa823a668dd0e5",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "3c5e3deee7480bf5c38e277633a6cfb670fcf45e7b531d804d20bda989237bd8",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
@@ -206,7 +207,7 @@
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
-    "premortem/RISK_REGISTER.md": "980f62d7d0011e9fe4e4060a4be72d8363f47fa4b5422404078a01ddc64a8637",
+    "premortem/RISK_REGISTER.md": "f3ab90b6f80c25352506c7f50a31aa9133378e653c98a9f651c214e94e48ed1d",
     "premortem/coldread-pass-1.md": "94bfdca50c1f0b7ee5d4f429df0196eb34225a29b8189dc5b204d729a534cc76",
     "premortem/coldread-pass-2.md": "1229c3da0b81a812c5bd5cb47903045ca288b9b19a03fb3b509f5cc9576f69e0",
     "premortem/coldread-pass-3.md": "b9c2309a3adef033d42237de5c4ec1eddddaff9b1afad52f15eb8d970821d396",
@@ -233,7 +234,7 @@
     "python/singvst_train/provenance.py": "a5e47ca15f0ad13651e74f35a5e44c000002582549c57c16bf6ed9834c99123e",
     "python/singvst_train/rvc_files.py": "f3223c4efc1ddead1379b99265dcf0d76bd66f2a3b72b59caa8fc35aafd0de1e",
     "python/singvst_train/security.py": "751e7c455fc9e62123b64fcc9cd395e2188842f3ccc8019a610e56684dc7b4e6",
-    "research/PRIOR_KNOWLEDGE.md": "84f32c4e3379975fc354323fd0a9b7e4b3e65ac7a29fbb87a72c8f30fe210d20",
+    "research/PRIOR_KNOWLEDGE.md": "f23a32cf202178dc6d94b02b5dbfbd7a5ef07ef8f1055845ffc0dd0709e423e2",
     "research/QUESTIONS.md": "9e984b411b6e82bb65788b8e1de6d535f277b4a7f0698b31fe4001af40f312f5",
     "research/SOURCES.md": "e714b866002ee59b5faa28dc3b3ec76420caa79c7546081acbd12a9c22a45694",
     "research/claims.json": "fd7714e7e22e582c9aac5e50e420adcee3ed6513166752bc596b737b373874fb",
@@ -394,9 +395,9 @@
     "tools/gen/interfaces.py": "195b8f66ff75a23c9caf18974561a2ba3d595607a63bb4e6b34248552e5a830c",
     "tools/gen/lessons.py": "2f5c152e5ef50cd0115731429ab4ee7486333bbe8aa5affcd5434035fe6fa08f",
     "tools/gen/phrases.py": "4d56db5b6b2562aa473aa08872ab164e03438dabfe096d88300fc61ae6aacc5c",
-    "tools/gen/pk_checklist.json": "832e9f5a56905c4a02a2b15059fdc6f11a14e482f3c5db1d6c372fe93f579136",
+    "tools/gen/pk_checklist.json": "e6acd0391efce27e4ebaa301c0b3270a776b48873ff7c1f88ef818ac00bdd69b",
     "tools/gen/pk_knowledge.json": "4e4620e0de56740fa874231e1996c1cb5d558b05a3a5d56e7899122d4dd34526",
-    "tools/gen/pk_map.json": "0dc46c2bc5c5e35267113dcc733420d62d35661b8853e4123281d07e241aad86",
+    "tools/gen/pk_map.json": "650059bc1db96888f2298d3507474c2d42dfdbe532603fcc1cafed8feebf955b",
     "tools/gen/plan.py": "0ab09cb74ce4ab1989eb5a44d2c08ffc30ddbf089c2d3212e0dab717a47e07e7",
     "tools/gen/prior_knowledge.py": "4796b62a539dbb4c9144b228654cb85522de615467f9969a95aff1617d198d37",
     "tools/gen/protocol_excerpts.py": "c6e82440d1f339f2d1c0252cfd47a9fdc40a4a3a810ae5897818c40c3589110d",
@@ -673,7 +674,8 @@
     "L-20261016T040300Z-non-reproducible-render-in-a-recall-path",
     "L-20261016T040400Z-provenance-named-a-lock-the-run-never-installed",
     "L-20261016T140000Z-hardening-changes-not-checked-against-each-other",
-    "L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value"
+    "L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value",
+    "L-20261021T150000Z-behaviour-specified-against-an-interface-that-cannot-express-it"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -752,7 +754,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T14:10:21Z",
+  "updated_at": "2026-10-21T14:10:48Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -802,7 +804,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 96,
+  "sequence": 97,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

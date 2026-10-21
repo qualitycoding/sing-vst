@@ -373,5 +373,10 @@
   "Check values, not messages; when matching text, verify the emitted string, not the source literal.",
   "D-035 checkpoint guard; C-063",
   "both"
+ ],
+ "PK-76": [
+  "Every behaviour added to a frozen component names the interface call that carries it; if none exists, add the interface (Phase 2) or move the behaviour to the caller.",
+  "D-010 resample worker; T-071; D-012 split rule",
+  "both"
  ]
 }

@@ -4,7 +4,7 @@ title: "Checklist 'applied via' cells, header comments and step texts named test
 status: active
 supersedes: []
 recurrence_of: null
-occurrences: 1
+occurrences: 2
 severity: Medium
 tags: [applies:all, kind:verification-gap, phase:planning]
 recorded_by: planner
@@ -23,3 +23,4 @@ After any renumbering, grep every document for the old IDs and names and check e
 The cold read reports no wrong-reference item; `grep -rn T-P13b plan HANDOFF.md` is empty.
 ## Evidence
 premortem/coldread-pass-1.md S25, S33, H9.
+Recurrence 2026-10-21 (pre-mortem round 3 R-053): S-017 1a kept 'RUN = the issue number' after D-035 changed the RUN rule.
