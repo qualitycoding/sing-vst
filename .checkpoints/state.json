@@ -295,7 +295,7 @@
     "research/spikes/pyworld/run.sh": "094b36b39b40d4a1481ae99551999bdd5b5438a91d06bbcc5e26e1a1f2046fc8",
     "research/spikes/red-verification/README.md": "bfaadd8b7c4e9d66459a221d0002dd42d18e9fb169dd8c2b46341b148e79824f",
     "research/spikes/red-verification/output.txt": "71d69978ee9ca4249a9701355822b710dee9a7235549b5695c0a97c2e21f16d8",
-    "research/spikes/red-verification/round1-new-tests.txt": "083c40fa7be506bda95cc437d0589c3ef931d787e6325f47310fc93398dba02b",
+    "research/spikes/red-verification/round1-new-tests.txt": "6bbac4147459439ed4fa0707d18c89314eed40bcc15e9f900e9e1cddefb1ac41",
     "research/spikes/red-verification/run.sh": "43b9eaf18addcc20f0db4de0b4552497a3d617c3b4274037db732c5ccc251f0c",
     "research/spikes/rvc-resume/output.txt": "a8128beab07eb672f9b660488055e5640d715ffed45eecb19cf1c1dbac6cfe41",
     "research/spikes/rvc-resume/verify.sh": "f84db57a4cf407de4bda17e1269006f8dc6b129c110619133fa4e76cb4f37521",
@@ -752,7 +752,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T14:10:00Z",
+  "updated_at": "2026-10-21T14:10:10Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -802,7 +802,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 94,
+  "sequence": 95,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

@@ -7,4 +7,5 @@
 test cases: 4 | 4 failed
 assertions: 5 | 5 failed
 test cases: 4 | 4 failed
-
+# Round 3 (2026-10-21): T-071 on the stubs — 'not implemented: resampleTake'; test cases: 1 | 1 failed.
+# Planning sketch research/spikes/premortem-r2/resample_take_sketch.cpp: All tests passed (12 assertions in 1 test case).
