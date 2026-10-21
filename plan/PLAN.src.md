@@ -391,7 +391,8 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-013, S-014, S-015, G-005 answered
 - Inputs: D-016, D-019, D-025, D-035; plan/GATES.md G-004; the G-005 answer; ../rvc (RVC 81eed5e checkout);
   research/spikes/hf-cli/output.txt (exact `hf download` flags, C-052); claims C-052, C-054, C-055, C-057, C-060…C-064
-- Actions: write `notebooks/train_voice_colab.ipynb` and `notebooks/train_voice_kaggle.ipynb` (nbformat 4, no outputs)
+- Actions: rebuild `singvst-render` in `../build-gcc11` as S-010 does (it must compile with GCC 11; R-103), then write
+  `notebooks/train_voice_colab.ipynb` and `notebooks/train_voice_kaggle.ipynb` (nbformat 4, no outputs)
   with exactly the cells of D-035 §Notebook layout and §Notebook environment (installs split by index, C-062; RVC's own
   `requirments_cu128_py312.txt` from the RVC checkout at 81eed5e), and the guide voicebank cells of D-035 §Guide voicebank for the G-005 answer. Before writing
   the RVC cells, `grep -n sys.argv ../rvc/train/preprocess.py ../rvc/train/dataset/extract_f0.py
@@ -514,7 +515,8 @@ Defaults for every step unless the step says otherwise:
 - Profile: software, computational
 - Depends on: S-018
 - Inputs: everything above
-- Actions: run the full suite locally; read the final CI run of all jobs through the API (D-036); check `git diff --stat
+- Actions: run the full suite locally; rebuild `singvst-render` in `../build-gcc11` as S-010 does (R-103); read the final CI run
+  of all jobs through the API (D-036); check `git diff --stat
   <report git_commit>..HEAD -- core cli python/singvst_train eval`, the report being the highest `results/<VOICE>/run<RUN>/`
   (the run G-001 accepted): when it is not empty, list the
   changes in `DEVIATIONS.md` and the pull request body and ask the owner there whether to re-run `evaluate` (R-038, PK-67); write
