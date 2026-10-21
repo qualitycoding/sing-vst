@@ -25,8 +25,9 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 - **Responses:** `proceed` (defaults bind; continue to S-018) · `proceed-with-thresholds: <json>` (planning amendment updates
   eval/thresholds.json via 2E.4, then continue; the verdict against the defaults stays committed beside the new one, and
   README and the pull request quote both and say the thresholds were set after the measurement — R-037) · `retrain: <data/epochs/de-reverb change>` (repeat S-017 — a new GATE-G-004.md, all its questions, with `RUN` + 1 and
-  the changed Parameters-cell values — while `budget-voice.json` `gpu_hours` < 19 minus the previous run's GPU hours per 10 epochs, A-015 per voice (R-086);
-  otherwise ask again) ·
+  the changed Parameters-cell values — allowed only while `gpu_hours + h10 < 19`, with `gpu_hours` from `budget-voice.json`
+  and `h10` = the previous run's train-stage GPU hours ÷ (`epochs_trained` ÷ 10), A-015 per voice (R-086); otherwise
+  GATE-G-001.md is re-issued with only `proceed`, `proceed-with-thresholds` and `stop`) ·
   `stop`.
 
 ### G-002 External or irreversible actions
@@ -52,7 +53,7 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   T4 GPU with **Internet: On** (clone, installs, Hugging Face), which needs a phone-verified Kaggle account (R-044);
   **resuming** after "start a new session": Colab — reopen the same notebook and *Run all*; Kaggle — in the next version add
   the previous version's output as an input (*Add Input → Your Work → this notebook*), set `RESUME = True` (True exactly when an
-  earlier version of this voice printed "state.tar written"; attach the most recent such version), then *Save & Run All* (cell (3) finds its `state.tar`); a version that ends with
+  earlier Kaggle version of this voice has a `state.tar` in its output; attach the most recent such version), then *Save & Run All* (cell (3) finds its `state.tar`); a version that ends with
   `failed: <cell> …` printed is reported with that line; the budget (A-015), and the consent and platform-terms statements (A-011, C-018).
 - **Questions:** (1) Are the recordings your own voice or used with the singer's consent, and is this use within the
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
@@ -63,7 +64,11 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   D-035 and attaches `upload-run<RUN>.tar` and pastes the `sha256sum` line cell (17) printed) ·
   `owner: <message>` printed by the notebook → the owner fixes the stated condition (recordings, disk, RAM, parameters)
   and answers `owner-fixed: <cell>`; the implementer re-issues with the same commit, not counted as an attempt (R-087) ·
-  `budget-exhausted` (the voice reached its budget before a loadable snapshot; S-017 takes it to G-001 as a result, R-086) ·
+  `budget-exhausted, hours-used: <the last printed budget-voice gpu_hours>` (the voice reached its budget before a loadable
+  snapshot; no upload exists; S-017 writes GATE-G-001.md with only that evidence and the responses `stop` and
+  `raise-budget: <hours>` — a planning amendment to A-015 — never `proceed`; R-086) ·
+  `switch-platform: colab|kaggle, hours-used: <the last printed budget-voice gpu_hours>` (a new RUN on the other platform with
+  `PRIOR_VOICE_GPU_HOURS` = that figure plus any earlier other-platform hours; R-082) ·
   `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
   issue (a `retrain` re-issue starts a new count; a `failed:` re-issue keeps `RUN`; switching platform is a new `RUN`, with
   `PRIOR_VOICE_GPU_HOURS` covering the hours already used, R-082), then

@@ -36,7 +36,10 @@ Defaults for every step unless the step says otherwise:
      probes (PK-17), each must succeed: `gh api repos/qualitycoding/<repo> --jq .permissions.push`
      prints `true` for all three; `gh api repos/qualitycoding/sing-vst --jq .default_branch` prints `main`;
      `gh api "repos/qualitycoding/sing-vst/actions/runs?per_page=1"` (Actions readable); `gh api
-     "repos/qualitycoding/sing-vst/pulls?per_page=1"` (pull requests readable). Write access for `gh run rerun` and
+     "repos/qualitycoding/sing-vst/pulls?per_page=1"` (pull requests readable); check-run annotations readable (the CI result
+     channel, D-036): take `gh api "repos/qualitycoding/sing-vst/commits/<generation branch head>/check-runs?per_page=1" --jq
+     '.check_runs[0].id'` and read `check-runs/<id>/annotations`. Without a session repository tool, clone with `gh repo clone
+     qualitycoding/<repo> <path>` (the preconfigured credential); if neither works, `BLOCKED.md`. Write access for `gh run rerun` and
      `gh pr create` cannot be probed read-only: if either fails later, record it and use the fallback of D-036 (re-run) or S-019 (pull request).
   2. Branch (`<impl>` = `impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics`): `git config --add remote.origin.fetch
      '+refs/heads/*:refs/remotes/origin/*'`; `git fetch origin` (`git fetch --unshallow origin` first if `git rev-parse
@@ -61,7 +64,9 @@ Defaults for every step unless the step says otherwise:
      `09f3458`) that are active (lessons `status: active`, knowledge items `status: current`) and whose tags include a task
      tag of research/PRIOR_KNOWLEDGE.md line 3 or `applies:all` (protocol Appendix C). Record each in
      `DEVIATIONS.md` (`Plan says` = the store rule or fact, `Done instead` = "followed" or "not followed: conflicts with
-     <plan item or frozen file>"); the plan and frozen files win over a new store rule (PK-02).
+     <plan item or frozen file>"); the plan and frozen files win over a new store rule (PK-02). Both stores must have
+     `scripts/check_knowledge_schema.py` and `scripts/build_index.py`; one missing from `../store-knowledge` is copied from
+     `../store-lessons/scripts/` at S-KNOW and recorded in `DEVIATIONS.md`; missing from both → `BLOCKED.md`.
   5. `bash research/spikes/hosts/run.sh > ../hosts-now.txt`; compare every row with plan/ENVIRONMENT.md §Hosts (its "run.sh roles" column maps the rows; 000 = unreachable, any
      HTTP status = reachable); a changed row
      is recorded in `DEVIATIONS.md` with the table's alternative channel; rows already marked unreachable are expected (PK-13).
@@ -229,7 +234,7 @@ Defaults for every step unless the step says otherwise:
 - Evidence produced: T-042…T-047; the external-data check output (D-012)
 - Done when: T-042…T-047 pass on Linux and in CI on Windows; `research/spikes/s008-external-data/output.txt` shows the
   external-data model rejected with `ValidationError` and the original fixture accepted; a second throw-away check in the
-  same folder renders a 3000-frame single phrase with the fixture guide and shows two model runs, the exact output length
+  same folder renders a 3000-frame single phrase with the fixture guide and shows two model runs (via `SINGVST_DEBUG_RUNS=1`, D-012), the exact output length
   and exact zeros only at SP spans ≥ 22 frames (the D-012 30-s cap, R-077).
 - Checkpoint: default
 - On failure: an input name/shape mismatch → DR-01.
@@ -394,15 +399,18 @@ Defaults for every step unless the step says otherwise:
   downloaded by the owner inside the notebook and never stored in the repository. The stage table is built by one code
   cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself). For
   each notebook it loads the cells with nbformat, execs cell (3) (the cell containing `def make_stages`) with
-  `PATH_ROOTS` mapped into a temporary directory and the globals `PLATFORM`, `VOICE="dry"`, `RUN=1`, `EPOCHS=10`,
-  `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"`, `RESUME`, pre-creates the four non-stage inputs (`raw/` with two
+  `PATH_ROOTS` mapped into a temporary directory and every Parameters-cell global preset (`CONSENT_CONFIRMED=True`,
+  `ATTESTATION="dry"`, `VOICE="dry"`, `RUN=1`, `EXPECTED_COMMIT="0"*40`, `RESUME`, `PRIOR_VOICE_GPU_HOURS=0.0`,
+  `DEREVERB=False`, `EPOCHS=10`, `SPEAKER_ID=0`, `GUIDE="tiger"`; `PLATFORM` comes from the notebook's cell (3)), pre-creates the four non-stage inputs (`raw/` with two
   WAV files, `<run>/params.json`, `<LOCAL>/build-render/cli/singvst-render` and `<root>/voicebank/`), wraps each `Stage.run` with a fake that creates that
-  stage's declared outputs, and checks these scenarios, using the notebook's own `guarded`, `pack_state` and `restore_state`
+  stage's declared outputs (a path ending in `/` is a directory; every later stage's input path under it is created too,
+  e.g. `prepared/segments/`; each file gets bytes unique to that invocation), calls `run_stages` per `CELL_STAGES` slice as
+  the notebook does, and checks these scenarios, using the notebook's own `guarded`, `pack_state` and `restore_state`
   (R-066, R-079): (1) a full session runs every stage; (2) `end_session` then `restore_state` into a fresh root with
   `RESUME=True` and a fresh `<LOCAL>` → `stages_run` is exactly `["render-bin", "evaluate"]` (D-035 cell (13); R-089); (3) editing `params.json` → every stage runs; (4) the train fake raises `SessionEnd` →
   `STOP` set, `end_session` still writes `state.tar` and the `sessions[]` entry with `end` and `seq`, and the next session resumes at train; (5) a stage fake raises
-  `RuntimeError` inside `guarded` → no exception escapes, `STOP_REASON` starts `failed:`, `end_session` writes `state.tar`
-  (R-069), and an `OwnerAction` gives `STOP_REASON` starting `owner:` (R-087);
+  `RuntimeError` inside `guarded` → no exception escapes, `STOP` is set, `STOP_REASON` starts `failed:`, and `end_session`
+  writes the budget files with `end` set (Colab) or also `state.tar` (Kaggle) (R-069), and an `OwnerAction` gives `STOP_REASON` starting `owner:` (R-087);
   (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068). Scenarios (1),
   (3) and (5) run for both notebooks; (2), (4) and (6) for the Kaggle notebook; for the Colab notebook (4) instead re-runs
   in the same root and checks the session resumes at train from its markers (no `state.tar` on Colab). It must exit 0
@@ -429,8 +437,8 @@ Defaults for every step unless the step says otherwise:
   1. Halt at G-004: write `GATE-G-004.md` (plan/GATES.md) and end the turn with the gate message.
   1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
      values (`VOICE` = `myvoice` unless the owner names one, `RUN` = 1 for the first G-004 issue and +1 for each G-001 `retrain` — a `failed:` re-issue keeps `RUN` (D-035,
-     R-053), `RESUME` = True exactly when an earlier Kaggle version of this voice printed "state.tar written" (attach the most recent
-     such version's output), `EXPECTED_COMMIT` = `git rev-parse
+     R-053), the `RESUME` rule of D-035 (True exactly when an earlier Kaggle version of this voice has a `state.tar` in its output;
+     the owner applies it), `PRIOR_VOICE_GPU_HOURS` (the hours of a `switch-platform` response, else 0), `EXPECTED_COMMIT` = `git rev-parse
      HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
      implementer reads the attachment where the session exposes attached files (its uploads folder) and copies it to
@@ -439,7 +447,8 @@ Defaults for every step unless the step says otherwise:
   2a. Verify before committing (R-036, R-056; log every check in EXECUTION_LOG.md): the tar's SHA-256 equals the pasted
      line (two mismatches → `BLOCKED.md`), then extract it outside the repository;
      `budget.json` `gpu_hours` equals the sum of its `sessions[].gpu_hours` and is > 0 when `train` ran (R-051);
-     `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json`; the report provenance
+     `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json` (for an invalid report:
+     `verdict.json` = `{"all": false, "status": <the report's status>}`); budget sums compared with tolerance 1e-6; the report provenance
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
      on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `t-p20.xml`
      exists and its outcome (pass, or failure with its message) is recorded as a result for G-001, never re-run (D-035

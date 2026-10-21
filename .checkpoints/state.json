@@ -197,11 +197,11 @@
     "lessons/L-20261021T150000Z-behaviour-specified-against-an-interface-that-cannot-express-it.md": "63bc1bd244eefb7974c30042f81ed205e98d8780b778193cdefa823a668dd0e5",
     "lessons/L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject.md": "11cbfd3a6df84b3f05e5237f08a0a3e48d67cbadaaf8a6cb0883c99f4582d6e9",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "4c4b71b4af9d67724236552a7b78e446aaf39ba7424e2ea16586062ed997ac37",
+    "plan/DECISIONS.md": "1c26a7d0756ed577a766f05a7101a54388bfc70a802a2974e9724194e642b6f7",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
-    "plan/GATES.md": "72dfe6f1772d466b865a849e12e073b7746659f6523390d542773a54ad2e2794",
-    "plan/PLAN.md": "d5e2663b670a3ff159894d76eca6e64867c86fa62ec4849bffa3a1b5ee7e9e1b",
-    "plan/PLAN.src.md": "0f6d8df92e625a4ef874beec775b5c2ccb8c16ad7a6fe2b8fdae9f26287d8b17",
+    "plan/GATES.md": "421c1ef5017c7150ed8099802f8cafba8a4453531aba17ee45bd0d038cf32785",
+    "plan/PLAN.md": "ff29d925f4b0b195689125e5222585851911a649fffd0535100caf7c0e745400",
+    "plan/PLAN.src.md": "67438e4ea3991553e70699e27c61abe3a2823e6f3e20b5b8b9fad048dc566492",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
     "plan/TRACEABILITY.md": "7e3442415c6e01e2316997633959051cd45e15cdc34e5df4ddb5003aab4598e9",
@@ -217,6 +217,7 @@
     "premortem/coldread-pass-6.md": "240c2052c75beea561242d719423ec0d5133eac029fea12ae45b2dcdad2f1012",
     "premortem/coldread-pass-7.md": "e9ef8a9be96268ab45edea0716f8b6d5479e3a1fc1f14cbb6078f8557db9188f",
     "premortem/coldread-pass-8.md": "aad4c56bf7262e5937a0cb586ea851cf4963461788ca75b7d5c81eb8ba69bce6",
+    "premortem/coldread-pass-9.md": "a4f694dd357075580d7ee5b7acf1b59fba58b01dd1ad0133b97396fd93db9d6e",
     "premortem/round-1.md": "da26d8296f4df26570f504496508c1db94abc0201a4942f58ba816af794d00c5",
     "premortem/round-2.md": "e502a3d6903ee97cb3cef5e0b395a71ee6ac7627dcb7b1012f3dcd31f842d336",
     "premortem/round-3.md": "d9d0a8cc248ae07ce14ae719baa5fa35df96bfa2bc41aa466f219ca3f5530139",
@@ -758,7 +759,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T14:28:56Z",
+  "updated_at": "2026-10-21T14:44:38Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -808,7 +809,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 108,
+  "sequence": 109,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
