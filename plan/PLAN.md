@@ -1,4 +1,5 @@
-<!-- STATUS HEADER: written by the planning agent's final consistency check (protocol Phase 5) with tools/gen/status.py -->
+<!-- STATUS: BLOCKED — HUMAN DECISION REQUIRED -->
+**Status: BLOCKED — HUMAN DECISION REQUIRED** · profiles `software`, `computational` · claims 65 (corroborated 3, single-source 3, verified 59) · tests: C++ core 61, C++ plugin 6, Python 30 IDs, CI-only 1 (T-059) · steps 22 · gates 5 · risks 108 (Critical 15, High 29, Low 21, Medium 43) · pre-mortem rounds 5 · figures 0 (D-032) · **decision needed: premortem/RESIDUAL.md — no step may start**
 
 # Execution plan — sing-vst
 
