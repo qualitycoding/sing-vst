@@ -196,11 +196,11 @@
     "lessons/L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value.md": "9d450b8165bf60e23ced422f0556cc3dfa1f514fc754659b1e06c42f85530fe0",
     "lessons/L-20261021T150000Z-behaviour-specified-against-an-interface-that-cannot-express-it.md": "63bc1bd244eefb7974c30042f81ed205e98d8780b778193cdefa823a668dd0e5",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "f96b29507c4dce333938ecbc0558d4327f89de273baa0eebe9c6d8852a31e416",
+    "plan/DECISIONS.md": "c10e21d2431ce90a0d9e85d7ea245764492c5a66159e8e1bf26b32e93f2c8e50",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
-    "plan/GATES.md": "07b2bc849050bef98bc5c9e006fd6405d89eac7235d69326aa1589c87e5cddd2",
-    "plan/PLAN.md": "8095eeead86bc97a690d76a0987c8f5dd7605cfbd0bbd9bd91c28ea84edb179c",
-    "plan/PLAN.src.md": "2886b90c110ad52443ed51e8d6f69e6aa1da1fc0426dbf725cac17d4ab60c015",
+    "plan/GATES.md": "c4f27b7fcd920aca0ac82df576b174a257c656b65f253f62ede3690f0aaac0c8",
+    "plan/PLAN.md": "f9fe0a1608d5b051e473619239ad3dfdc4d6999964af75cbc47911425910c0c1",
+    "plan/PLAN.src.md": "92bf1c62f4f984276cf86da9ea25140f69e88158ad24a26149b2e3830ce480a3",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
     "plan/TRACEABILITY.md": "7e3442415c6e01e2316997633959051cd45e15cdc34e5df4ddb5003aab4598e9",
@@ -283,7 +283,7 @@
     "research/spikes/premortem-r1/limits_fixture_check.py": "f4210da2216edff5adc42d38f58c72c3fc83dd13d4e002f1f4435d231eef6fbe",
     "research/spikes/premortem-r1/notebook_deps.txt": "f1a78e55e35e5ab3420aa088a5cd756f855ce87913205eecb638afb703de5817",
     "research/spikes/premortem-r1/rvc_resume.txt": "89139603d537beceea5a5c4c96abb8d7550ae94124cb0cdc2335f5a50726397c",
-    "research/spikes/premortem-r1/take_cache_sketch.cpp": "51b9743eae0a94f5f07c7dee9fcfaab2d3030791549abc4e802b7d52270df40f",
+    "research/spikes/premortem-r1/take_cache_sketch.cpp": "6790cfe0fef93cdcdd910e6ce96d9d8eb173a3ae76fe50c1cc532c91ccde91ee",
     "research/spikes/premortem-r2/kaggle_output_limit.txt": "f70a4addf12d9da938daf425e941d27dff8ecaddb6ca20befc34f0a151763fae",
     "research/spikes/premortem-r2/resample_take_sketch.cpp": "9a2b594a0f02a7b538f30bb8b7874521ad8d1a2e5e17cba772843373c3915f75",
     "research/spikes/premortem-r2/rvc_checkpoint_i18n.txt": "8e9ac58a20f78133751fa5724d028cb9ff49187eb421b31f30a97419a995b6a1",
@@ -754,7 +754,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T14:25:41Z",
+  "updated_at": "2026-10-21T14:26:17Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -804,7 +804,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 101,
+  "sequence": 102,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

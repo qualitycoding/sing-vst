@@ -50,8 +50,8 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   is published, the Drive folder is not shared (R-021); Kaggle: run as "Save & Run All" (background, no idle timeout) on a
   T4 GPU with **Internet: On** (clone, installs, Hugging Face), which needs a phone-verified Kaggle account (R-044);
   **resuming** after "start a new session": Colab — reopen the same notebook and *Run all*; Kaggle — in the next version add
-  the previous version's output as an input (*Add Input → Your Work → this notebook*), set `RESUME = True` (False only for
-  the voice's very first Kaggle version), then *Save & Run All* (cell (3) finds its `state.tar`); a version that ends with
+  the previous version's output as an input (*Add Input → Your Work → this notebook*), set `RESUME = True` (True exactly when an
+  earlier version of this voice printed "state.tar written"; attach the most recent such version), then *Save & Run All* (cell (3) finds its `state.tar`); a version that ends with
   `failed: <cell> …` printed is reported with that line; the budget (A-015), and the consent and platform-terms statements (A-011, C-018).
 - **Questions:** (1) Are the recordings your own voice or used with the singer's consent, and is this use within the
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?

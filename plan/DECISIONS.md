@@ -518,7 +518,9 @@ on stderr). Paths are absolute or relative to the working directory.
 | `make-test-weights` | `--rvc-root D --out F [--seed 0]` | `make_test_weights` |
 | `pack` | `--out D --name S --consent S --guide-licence S --acoustic F --vocoder F --phonemes F [--speaker F] [--languages F] [--synth F --content F] [--language en] [--steps 20] [--depth 0.4] [--converter-sample-rate 48000] [--speaker-id 0]` | `pack_voice` (`--synth`/`--content` together or not at all) |
 | `evaluate` | `--voice D --heldout D --phrases D --render-bin F --out D [--seed 0] [--thresholds eval/thresholds.json] [--lockfile F]` | `evaluate_voice` (`lockfile` = `--lockfile`; held-out files = the sorted `*.wav` directly in `--heldout`; a `ValueError` from
-a metric or a failed render makes the report "invalid: <reason>" with `null` metrics instead of propagating), then writes
+a metric or a failed render makes the report "invalid: <reason>" with `null` metrics instead of propagating; an invalid run still writes
+`spread.json` with `null` for every per-repeat value it could not compute, keeps every render already written, and writes
+`report.json`, its sidecar and `verdict.json`), then writes
 `OUT/verdict.json` = `metrics.judge(report, thresholds)` for a measured report, or `{"all": false, "status": <the report's
 status>}` for an invalid one (judge is not called); exit 0 whenever `report.json` was written, 3 otherwise; the report's provenance `params` = `{"voice_name": <manifest name>, "voice_sha256", "phrases": <dir>, "heldout_files": <count>}`, `seeds` = `{"converter": <seed>}` (eval/PROCEDURE.md) |
 | `provenance` | `--result F --params JSON --seeds JSON [--repo .] [--lockfile python/requirements-lock.txt]` | `collect` + `write_sidecar` |
@@ -691,8 +693,8 @@ voice tests/python/test_evaluate.py --junitxml=<run>/out/eval/t-p20.xml` (T-P20)
 heartbeat and write `budget.json` a final time; `tar -C <run>/out -cf <root>/out-run<RUN>.tar .` (members `./conv/`, `./voice/`, `./eval/…`; Drive / Kaggle output); write
 `<root>/upload-run<RUN>.tar` holding the upload files (§Upload) and print its `sha256sum` line (R-036, R-056); Kaggle: then
 `pack_state` writes `/kaggle/working/state.tar` (+ `state.tar.sha256`) of every `run*/`, `logs/`, `weights/`, `assets-archive/` and `budget-voice.json`, deletes those
-untarred copies and `voicebank/` (re-extracted from `assets-archive/` each session), and asserts `/kaggle/working` holds
-at most 20 items (R-055, R-073).
+untarred copies and `voicebank/` (re-extracted from `assets-archive/` each session), asserts `/kaggle/working` holds
+at most 20 items and prints "state.tar written" (R-055, R-073).
 Every stage from (7) runs through `pipeline.run_stages` with markers in `<run>/state/` and these inputs → outputs; every
 stage also has `params.json` as an input (R-013); the notebook prints the list `run_stages` returns and appends it to
 `budget.json` `sessions[].stages_run` (the RVC experiment directory `logs/<exp>/` and its `G_*.pth`/`D_*.pth` checkpoints are

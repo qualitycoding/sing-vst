@@ -1,4 +1,5 @@
-// Planning sketch (not shipped): proves T-067/T-068 are satisfiable under D-038.
+// Planning sketch (not shipped): proves T-067/T-068 are satisfiable under D-038. Its 900 × sampleRate bound is superseded by
+// D-038's 901 (R-067); D-038 wins wherever they differ.
 #include "singvst/take_cache.hpp"
 #include <cstdio>
 #include <cstring>

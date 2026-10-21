@@ -132,7 +132,7 @@ Defaults for every step unless the step says otherwise:
 - Tier: Opus
 - Profile: software, computational
 - Depends on: S-002
-- Inputs: core/include/singvst/synthesis.hpp; D-007, D-012 (standardNormal), D-021
+- Inputs: core/include/singvst/synthesis.hpp; D-007, D-021
 - Actions: implement every function declared in synthesis.hpp (including `softClip` and `peakAbs`) in `core/src/synthesis.cpp`
   (D-033); run the full suite. (`standardNormal` is declared in engine.hpp and belongs to S-007.)
 - Outputs: core/src/synthesis.cpp, core/src/stubs.cpp
@@ -141,7 +141,7 @@ Defaults for every step unless the step says otherwise:
 - Checkpoint: default
 - On failure: default
 - Gate: none
-- Relevant decisions/claims: D-007, D-012, D-021, C-009, C-021
+- Relevant decisions/claims: D-007, D-021, C-009, C-021
 - Lessons applied: PK-27 (L-20261004T102003, L-20261009T193612, L-20261009T140010); PK-30 (L-20261009T120001, L-20261008T173530, L-20261009T090804); PK-32 (L-20261004T150300); PK-34 (L-20261009T120012); PK-36 (L-20261009T092002, L-20261009T161000)
 - Exclusive resources: default
 
@@ -393,14 +393,16 @@ Defaults for every step unless the step says otherwise:
   cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself). For
   each notebook it loads the cells with nbformat, execs cell (3) (the cell containing `def make_stages`) with
   `PATH_ROOTS` mapped into a temporary directory and the globals `PLATFORM`, `VOICE="dry"`, `RUN=1`, `EPOCHS=10`,
-  `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"`, `RESUME`, pre-creates the two non-stage inputs
-  (`<LOCAL>/build-render/cli/singvst-render` and `<root>/voicebank/`), wraps each `Stage.run` with a fake that creates that
+  `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"`, `RESUME`, pre-creates the four non-stage inputs (`raw/` with two
+  WAV files, `<run>/params.json`, `<LOCAL>/build-render/cli/singvst-render` and `<root>/voicebank/`), wraps each `Stage.run` with a fake that creates that
   stage's declared outputs, and checks these scenarios, using the notebook's own `guarded`, `pack_state` and `restore_state`
   (R-066, R-079): (1) a full session runs every stage; (2) `pack_state` then `restore_state` into a fresh root with
   `RESUME=True` → no stage runs; (3) editing `params.json` → every stage runs; (4) the train fake raises `SessionEnd` →
   `STOP` set, `pack_state` still writes `state.tar`, and the next session resumes at train; (5) a stage fake raises
   `RuntimeError` inside `guarded` → no exception escapes, `STOP_REASON` starts `failed:`, `state.tar` is written (R-069);
-  (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068). It must exit 0
+  (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068). Scenarios (1),
+  (3) and (5) run for both notebooks; (2), (4) and (6) for the Kaggle notebook; for the Colab notebook (4) instead re-runs
+  in the same root and checks the session resumes at train from its markers (no `state.tar` on Colab). It must exit 0
   for both notebooks (R-016, R-013).
   GATE-G-004.md (S-017) gives the owner opening links pinned to a commit (R-029): Colab
   `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<EXPECTED_COMMIT>/notebooks/train_voice_colab.ipynb`;
@@ -424,7 +426,8 @@ Defaults for every step unless the step says otherwise:
   1. Halt at G-004: write `GATE-G-004.md` (plan/GATES.md) and end the turn with the gate message.
   1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
      values (`VOICE` = `myvoice` unless the owner names one, `RUN` = 1 for the first G-004 issue and +1 for each G-001 `retrain` — a `failed:` re-issue keeps `RUN` (D-035,
-     R-053), `RESUME` = False for the voice's first Kaggle version and True afterwards, `EXPECTED_COMMIT` = `git rev-parse
+     R-053), `RESUME` = True exactly when an earlier Kaggle version of this voice printed "state.tar written" (attach the most recent
+     such version's output), `EXPECTED_COMMIT` = `git rev-parse
      HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
      implementer reads the attachment where the session exposes attached files (its uploads folder) and copies it to
@@ -435,11 +438,13 @@ Defaults for every step unless the step says otherwise:
      `budget.json` `gpu_hours` equals the sum of its `sessions[].gpu_hours` and is > 0 when `train` ran (R-051);
      `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json`; the report provenance
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
-     on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `out/eval/t-p20.xml`
-     reports 1 test, 0 failures, 0 errors (R-071); on Kaggle every session after the voice's first has `restored_from` equal
-     to the previous session's `state_tar_sha256` (R-068). A failed check →
+     on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `t-p20.xml`
+     reports 1 test with 0 failures and 0 errors when the report is "measured", or 1 failure when it is "invalid: …"
+     (D-035 §Evaluation outcome; an invalid report is a result, recorded and taken to G-001; R-071); on Kaggle every
+     session entry after the first restored session has `restored_from` equal to the previous entry's `state_tar_sha256`
+     (backfilled at restore, D-035; R-068); entries without `end` are ignored. A failed check →
      ask the owner for the files again (at most twice, then `BLOCKED.md`); files are never edited. GATE-G-001.md gets the
-     stage→commit table from the uploaded `state/commits.json` (written whenever a stage runs, so it includes evaluate; R-054).
+     stage→commit table from the uploaded `commits.json` (written whenever a stage runs, so it includes evaluate; R-054).
   3. Commit the extracted files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the
      package name `<VOICE>-run<RUN>` is checked in action 2a); before re-issuing a gate, `git mv` the previous gate file:
      after `failed:` to `GATE-G-004.run<RUN>.fail<k>.md` (k = 1, 2, 3), after `retrain` to `GATE-G-004.run<RUN>.md` and
@@ -447,7 +452,7 @@ Defaults for every step unless the step says otherwise:
   4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md`; per threshold metric the verdict and
      "indeterminate" when min ≤ threshold ≤ max of `spread.json`, the `similarity_gain` spread being the per-repeat
      differences, D-017) and halt.
-- Outputs: results/<VOICE>/run<RUN>/ (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, budget.json, budget-voice.json, training.json, env/), GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<RUN>[.fail<k>].md)
+- Outputs: results/<VOICE>/run<RUN>/ — the upload tar's members committed verbatim (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, t-p20.xml, budget.json, training.json, budget-voice.json, commits.json, env/), GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<k>.run<RUN>[.fail<k>].md)
 - Evidence produced: T-P20 (run by the owner); G-001 record
 - Done when: the G-001 response is recorded in `GATE-G-001.md`.
 - Checkpoint: default
