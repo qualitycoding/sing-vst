@@ -606,7 +606,7 @@ single definition below; R-068), `PLATFORM_EXPECTED = ""` in both notebooks (GAT
 cell (3) raises `OwnerAction` "PLATFORM_EXPECTED is '<value>' but this is the <PLATFORM> notebook: use the notebook
 GATE-G-004.md names" when it differs from the notebook's own `PLATFORM`, including when left empty; R-082),
 `PRUNE = ""` (Kaggle: the `<exp>` a `prune:` response named, as its re-issued GATE-G-004.md states; one-shot:
-`restore_state` skips `logs/<PRUNE>/` only when the restored state holds no `pruned-<PRUNE>` marker, and then writes
+`restore_state` skips `logs/<PRUNE>/` and `weights/<PRUNE>_e*_s*.pth` (snapshots of the discarded training) only when the restored state holds no `pruned-<PRUNE>` marker, and then writes
 `WORKING/pruned-<PRUNE>`, which `pack_state` packs; `pack_state` always packs all of `logs/`; so only the first version
 after the `prune:` re-issue restarts that run's training and every later version resumes it; ignored on Colab, where the
 owner deletes the folder; R-102, R-112), `PRIOR_VOICE_GPU_HOURS = 0.0` (the GPU hours of this voice that this
@@ -614,7 +614,7 @@ platform's `budget-voice.json` does not hold — the other platform's runs and e
 GATE-G-004.md states from the repository ledger `results/<VOICE>/ledger.json`, 4 decimals, R-082, R-095, R-097),
 `KILLED_HOURS = 0.0` (Kaggle: the sum of the `killed` run times, in hours as §Voice ledger converts them, of this
 issue's earlier versions; the owner adds each killed version's time before starting the next version, as GATE-G-004.md
-says; always 0.0 on Colab, whose killed sessions are covered by the heartbeat; R-095), `DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
+says; on Colab cell (3) raises `OwnerAction` unless it is 0.0, since Colab's killed sessions are covered by the heartbeat; R-095), `DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
 it), `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). At step (4e) — after the Colab mount, so
 nothing is written under the Drive path before it is mounted — the first session of a
 run writes `<run>/params.json` = exactly `{VOICE, RUN, PLATFORM, DEREVERB, EPOCHS, SPEAKER_ID, GUIDE}` (a platform change
@@ -652,7 +652,11 @@ elapsed hours to `stage_hours[name]` for GPU-time stages and clears `CURRENT_STA
 budget stop with no loadable snapshot), `write_params()` (step (4e)),
 `start_session()` (step (4e), after `write_params()`: appends this session's `sessions[]` entry — `seq`, `restored_from`,
 `prior` = `PRIOR_VOICE_GPU_HOURS`, `commit`, `start`, `end` null, `gpu_hours` 0, `session_hours` 0, `stage_hours` {},
-`stages_run` [], `killed_hours` = `KILLED_HOURS` — and starts the heartbeat), `end_session(stop: bool)` (cell (17)'s `finally` body: sets this session's `end`
+`stages_run` [], `killed_hours` = `KILLED_HOURS`, `restored_from` = the global `RESTORED_FROM` — and starts the heartbeat), `RESTORED_FROM` (cell (3) sets it to
+`restore_state`'s return value on Kaggle and to `None` on Colab; the dry run sets it the same way before each
+`start_session`), `make_dirs()` (step (4e): creates `<run>/` with `state/`, `out/` and `out/env/`, `<root>/logs/<exp>/`
+and `<root>/weights/`, and the symlinks `<rvc>/logs/<exp>` → `<root>/logs/<exp>` and `<rvc>/assets/weights` →
+`<root>/weights`), `end_session() -> None` (cell (17)'s `finally` body, identical for the `STOP` and normal branches: sets this session's `end`
 and `gpu_hours` if the normal branch has not, writes the budget files, prints the final `hours:` line, on Kaggle calls
 `pack_state(WORKING)` — the only call of `pack_state` in a session — then prints
 `STOP_REASON` when set and, as its last line on Kaggle, `seq <n> state.tar <sha256>`), `pack_state(dst_dir: str) -> str`
@@ -700,7 +704,8 @@ response. So no cell from (5) on raises and every version reaches cell (17), whi
 branch inside its own `try`/`finally`, whose `finally` always stops the heartbeat, writes the budget files and (Kaggle)
 runs `pack_state`. Cells (1)–(4) are not guarded and may raise; every stop there that the owner can fix (the
 `PLATFORM_EXPECTED` mismatch, the `RESUME` messages and the parameters message of cell (3)/(4e), (4c)) raises `OwnerAction`,
-which the cell first prints as `owner: <cell> <message>` (`<cell>` = `3`, `4c` or `4e`) — so every `owner:` line the G-004 response quotes is printed by the
+which the raising helper itself prints as `owner: <cell> <message>` before raising (`<cell>` = `3` for cell (3)'s
+platform, `KILLED_HOURS` and `RESUME` checks, `4c` for the GPU check, `4e` for `write_params()`) — so every `owner:` line the G-004 response quotes is printed by the
 notebook, from a guarded cell's `STOP_REASON` or from cells (3)–(4); if (4f) raises after (4e) wrote its files, (4) first closes this session's
 `sessions[]` entry (`end`, its `gpu_hours`) and stops the heartbeat, then re-raises; every budget sum includes every entry, using its last
 heartbeat `gpu_hours` when `end` is missing (an abnormally ended session; S-017 reports it, R-095). **Evaluation outcome** (R-071, R-084, PROCEDURE validity rules): a T-P20 failure is a result exactly when `t-p20.xml`
@@ -748,8 +753,8 @@ platform's first session has `seq` 1 and `restored_from` null, and on Colab `res
 copies from every Kaggle version's log into the G-004 response (a tar cannot hold its own hash; R-068, R-083); (4) in exactly this order (R-051; stops in (4c) and (4e) raise `OwnerAction` and print an `owner:` line, R-102): (a) clone sing-vst and check out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal
 it, else stop; R-029) and RVC 81eed5e; (b) create the venv and install exactly as §Notebook environment; (c) the GPU's
 compute capability must be in `torch.cuda.get_arch_list()`, else stop naming both (R-044); (d) Colab only:
-`drive.mount('/content/drive')` — no cell writes under `/content/drive` before this point; (e) create the `<run>/`
-directories and the RVC symlinks, `write_params()` (write or check `<run>/params.json`, above), write this session's
+`drive.mount('/content/drive')` — no cell writes under `/content/drive` before this point; (e) `make_dirs()`,
+`write_params()` (write or check `<run>/params.json`, above), write this session's
 freeze and env files, then `start_session()` (its `sessions[]` entry with its commit, and the budget heartbeat; §Time and
 budget);
 (f) build `singvst-render` on local disk, never on Drive (R-052): `g++ --version`; `cmake -S <sing-vst> -B
@@ -805,7 +810,7 @@ set, else EPOCHS (R-104)>, "stopped_by_budget": <bool: budget.json's value is no
 out/env/<session>.freeze.txt`; then `out/eval/ceiling.json` = `{"heldout_vs_train": mean over held-out files of cosine(embedding of
 the file, mean embedding of the `train/` files)}` with the PROCEDURE step 4 Resemblyzer settings (R-032); (16) first sets `SINGVST_VOICE` = `<run>/out/voice`, `SINGVST_HELDOUT` = `<run>/heldout` and `SINGVST_RENDER_BIN` =
 `<LOCAL>/bin/singvst-render` (absolute paths, in `os.environ`) and asserts that each of those paths exists (else `failed:
-16`, R-099), then with cwd `<sing-vst>`: `python -m pytest -q -m
+16`, R-099), then — inside `timed("t-p20", …)`, so it gets the 9.5-h check and its `stage_hours` — with cwd `<sing-vst>`: `python -m pytest -q -m
 voice tests/python/test_evaluate.py --junitxml=<run>/out/eval/t-p20.xml` (T-P20); §Evaluation outcome decides whether a failure is a guarded failure (R-071); (17) stop the budget
 heartbeat and write `budget.json` a final time; `tar -C <run>/out -cf <root>/out-run<RUN>.tar .` (members `./conv/`, `./voice/`, `./eval/…`; Drive / Kaggle output); write
 `<root>/upload-run<RUN>.tar` holding the upload files (§Upload) and print its `sha256sum` line (R-036, R-056); Kaggle: then
@@ -836,8 +841,13 @@ the normal branch, by `end_session` otherwise; `prior` = the `PRIOR_VOICE_GPU_HO
 prepare (with `DEREVERB`), rvc-f0, rvc-features, train, export, evaluate, and `t-p20` for cell (16) — in this session,
 written by `timed` at each stage's end and by every heartbeat for the running stage, so Σ `stage_hours` = the session's
 `gpu_hours` at every write, R-109), and `<root>/budget-voice.json` holds this platform's own `{"runs": {RUN: gpu_hours}}`; the voice total the notebook
-enforces (`t_budget`, the `BUDGET_HOURS` stop) is `PRIOR_VOICE_GPU_HOURS` + `KILLED_HOURS` + Σ `runs`. `timed` (before
-each stage) and `end_session` print `hours: platform <p> voice <v>` (4 decimals; `p` = Σ `runs`, `v` = the voice total);
+enforces (`t_budget`, the `BUDGET_HOURS` stop) is `PRIOR_VOICE_GPU_HOURS` + `KILLED_HOURS` + Σ `runs`. Formulas:
+`runs[RUN]` = `budget.json` `gpu_hours` = Σ `gpu_hours` over every `sessions[]` entry of this RUN's `budget.json` (an entry
+without `end` contributes its last heartbeat value); at any moment the notebook computes Σ `runs` as Σ `runs[r]` for
+`r` ≠ `RUN` from `budget-voice.json` plus `runs[RUN]` recomputed with the live session's in-memory `gpu_hours`, so the
+running session is counted once and without the heartbeat's lag; every write of `budget-voice.json` sets
+`runs[RUN]` from that formula. `timed` (before each stage) and `end_session` print `hours: platform <p> voice <v>` (`p` =
+Σ `runs`, `v` = the voice total, both rounded up to 4 decimals as §Voice ledger says);
 which figure a G-004 response reports is defined in §Voice ledger (A-015 is per voice; R-062).
 **Voice ledger** (PK-77; R-082, R-095, R-097): the authoritative record of the voice's GPU hours is
 `results/<VOICE>/ledger.json` in the repository, `{"colab": h, "kaggle": h, "unlogged": h, "total": h, "issues": [...]}`;
@@ -851,26 +861,30 @@ Record: `{"issue": "run<RUN>.<k>"` (the name its gate file gets when archived, S
 the issue's `PLATFORM_EXPECTED` — the platform whose notebook produced the figure, never a `switch-platform` target —
 `"switch_to"`: the target of a `switch-platform` response (else absent), `"prior"`: the issued `PRIOR_VOICE_GPU_HOURS`,
 `"platform_hours"`, `"versions"`: the response's Kaggle lines, oldest first, each `{"seq", "sha256"}`,
-`{"killed_hours": h}` or `{"no_gpu": true}`}` (R-111).
+`{"killed_hours": h}` or `{"no_gpu": true}`, `"unverified"`: `true` only as above, else `false`}` (R-111); for a Colab
+`consent:` the uploaded `budget-voice.json` is the source even when the record is unverified.
 `platform_hours` comes from a file or a notebook line, never from memory (R-082, R-095): **Colab** — Σ `runs` of the
 `budget-voice.json` attached with the response (the uploaded one for `consent:`; for every other Colab response the
 owner downloads `MyDrive/singvst/<VOICE>/budget-voice.json` from Google Drive, which needs no runtime and includes every
 heartbeat of a killed session, and writes `hours-used: drive`); when that file does not exist because no Colab session of this voice ever reached step
 (4e), the owner answers `budget-voice: none` and the platform's previous ledger value is kept. **Kaggle** — the `p` of the
-`hours:` line that cell (17) printed immediately before the newest `seq` line among this issue's versions (equal to
+last `hours:` line above the newest `seq <n> state.tar` line among this issue's versions — the one `end_session` printed (equal to
 Σ `runs` inside the `state.tar` that version packed); a version reported `killed` is never a source; with no `seq` line in
 this issue the owner answers `hours-used: none` and the platform's previous ledger value is kept. A platform's figure
-never decreases (each is a cumulative Σ `runs`): a figure below the platform's current ledger value is asked for again
-(at most twice, then `BLOCKED.md`).
+never decreases (each is a cumulative Σ `runs`): a figure below the platform's ledger value — computed without the record
+being replaced and without `unverified` records — is asked for again (at most twice, then `BLOCKED.md`). For a Kaggle
+`consent:`, `p` must equal Σ `runs` of the uploaded `budget-voice.json` (S-017 action 2a).
 Kaggle version lines, oldest first: `seq <n> state.tar <sha256>` for a version that printed one; `no-gpu` for a version
 that printed no `hours:` line at all (it ran no GPU-time stage — a stop in cells (1)–(4)), counted 0; `killed <run
 time>` for any other version. A `killed` run time `<h>h <m>m <s>s` (a missing component is 0) is (h·3600 + m·60 + s) /
-3600 hours; when the Versions panel shows no run time for it, 12 h (the session limit, C-019) is used (UNVERIFIED panel
-field). Totals: `colab` and `kaggle` = the `platform_hours` of the newest record — the last element of `issues` — on that
+3600 hours, rounded up to 4 decimals per version; when the Versions panel shows no run time for it, the owner writes
+`killed ?`, counted 12 h (the session limit, C-019; UNVERIFIED panel field). Totals: `colab` and `kaggle` = the `platform_hours` of the newest record — the last element of `issues` — on that
 platform (the figure already sums all of the platform's runs, so it is set, never summed), 0 when none; `unlogged` = Σ
 `killed_hours` over all records; `total` = `colab` + `kaggle` + `unlogged`. Every stored hour value, `PRIOR_VOICE_GPU_HOURS`
-and the totals are rounded **up** to 4 decimals (`ceil(x·10⁴)/10⁴`); the S-017 `prior` check compares these 4-decimal
-values exactly. So hours on another platform or in a killed version are never dropped. A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
+and the totals are held as integer ten-thousandths of an hour: a measured or converted value `x` becomes
+`math.ceil(round(x·10⁴, 6))` once (rounded **up**, the `round` removing float noise so an exact 4-decimal value is not
+raised), and sums, differences and comparisons are done on those integers; the S-017 `prior` and `killed_hours` checks
+compare them exactly (`killed_hours` = Σ of the per-version values). So hours on another platform or in a killed version are never dropped. A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
 earlier run of the cells in the same runtime before starting a new one, and each write re-reads the files and updates only
 its own `<session>` entry (R-074) — rewrites both with
 `pipeline.atomic_write_text` every 5 minutes with the running session's GPU time, so a killed session loses at most 5

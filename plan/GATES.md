@@ -34,7 +34,9 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   prepare, rvc-f0 and rvc-features (a new RUN repeats them) and `h10` = Σ `stage_hours["train"]` ÷ (`epochs_trained` ÷ 10),
   the hours of 10 epochs (a new RUN trains from the pretrained model, so this is the least it needs), and `r` = 1, or —
   when the retrain changes the recordings, in which case the response must state `recordings-minutes: <m>` — `max(1, m ÷
-  training.json raw_minutes)`; A-015 per voice (R-086); otherwise GATE-G-001.md is re-issued with only `proceed`,
+  training.json raw_minutes)`; A-015 per voice (R-086); it is a minimal-feasibility test (a retrain that enables
+  de-reverb or raises `EPOCHS` needs more and may still end in `budget-exhausted`, which this gate then handles, R-110), and
+  after a prune `h10` includes the discarded training's hours (conservative); otherwise GATE-G-001.md is re-issued with only `proceed`,
   `proceed-with-thresholds` and `stop`) ·
   `stop`.
 
@@ -56,12 +58,12 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<EXPECTED_COMMIT>/notebooks/train_voice_colab.ipynb`;
   Kaggle: *File → Import notebook → GitHub* with that commit and path `notebooks/train_voice_kaggle.ipynb`; the Drive/dataset layout it expects, the values to enter in
   the Parameters cell (`VOICE`, `RUN`, `EXPECTED_COMMIT` = the full SHA of the impl branch head after S-016's last save,
-  `RESUME` (the Kaggle rule below), `PLATFORM_EXPECTED`, `PRIOR_VOICE_GPU_HOURS` (from the voice ledger), `PRUNE`,
+  `RESUME` (the Kaggle rule below), `PLATFORM_EXPECTED`, `PRIOR_VOICE_GPU_HOURS` (from the voice ledger), `KILLED_HOURS`, `PRUNE`,
   `DEREVERB`, `EPOCHS` (a multiple of 10), `SPEAKER_ID`, `GUIDE`; D-035, S-017 action 1a); how to hand over
   `upload-run<RUN>.tar`: attach it to the conversation, or — when the implementer reports it cannot find the attachment —
   upload it through GitHub's web interface to a new branch `upload-<VOICE>-run<RUN>-<n>` (`n` = 1, then 2 for a re-request;
   *Add file → Upload files*; the tar holds no audio; S-017 action 2); the ledger's current figure for `PLATFORM_EXPECTED`
-  (the value a response repeats when this issue produced none); privacy: the Kaggle dataset and notebook stay **Private**, no version
+  (the value the ledger keeps when this issue produced none); privacy: the Kaggle dataset and notebook stay **Private**, no version
   is published, the Drive folder is not shared (R-021); Kaggle: run as "Save & Run All" (background, no idle timeout) on a
   T4 GPU with **Internet: On** (clone, installs, Hugging Face), which needs a phone-verified Kaggle account (R-044);
   **resuming** after "start a new session": Colab — reopen the same notebook and *Run all*; Kaggle — in the next version add
@@ -70,7 +72,8 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   version to attach may belong to an earlier notebook; a version that stopped in cells (3)–(4) carries a copy of the
   `state.tar` it restored and may be attached too — same hash), set `RESUME = True` (True exactly when an
   earlier Kaggle version of this voice has a `state.tar` in its output), add the run time of every version of this issue
-  that you will report as `killed` to `KILLED_HOURS` (D-035), then *Save & Run All* (cell (3) finds its `state.tar`); a version that ends with
+  that you will report as `killed` to `KILLED_HOURS` — per version (h·3600 + m·60 + s) / 3600 rounded **up** to 4 decimals
+  (3h 20m 0s → 3.3334), or 12.0 for `killed ?` (D-035) — then *Save & Run All* (cell (3) finds its `state.tar`); a version that ends with
   `failed: <cell> …` printed is reported with that line; the budget (A-015), and the consent and platform-terms statements (A-011, C-018).
 - **Questions:** (1) Are the recordings your own voice or used with the singer's consent, and is this use within the
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
@@ -79,11 +82,11 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 - **Hours in every response** (D-035 §Voice ledger; R-082, R-095): on **Colab**, attach
   `MyDrive/singvst/<VOICE>/budget-voice.json` downloaded from Google Drive (no runtime needed) and write `hours-used:
   drive`, or `budget-voice: none` when that file does not exist; on **Kaggle**, write `hours-used: <p>` with `p` from the
-  `hours: platform <p> voice <v>` line printed immediately before the newest `seq` line among this issue's versions (never
+  last `hours: platform <p> voice <v>` line above the newest `seq <n> state.tar` line among this issue's versions (never
   from a version you report as `killed`), or `hours-used: none` when no version of this issue printed a `seq` line, and
   add one line per Kaggle version you ran **since this GATE-G-004.md was issued**, oldest first (the Versions panel lists
   newest first): `seq <n> state.tar <sha256>` (its last line), `no-gpu` (a version that printed no `hours:` line), or
-  `killed <run time as the panel shows it, e.g. 1h 23m 45s>` (any other version; its time is added to `unlogged` as an
+  `killed <run time as the panel shows it, e.g. 1h 23m 45s>`, or `killed ?` when the panel shows none (any other version; its time is added to `unlogged` as an
   upper bound). In the responses below `<hours>` stands for this part.
 - **Responses:** `consent: yes, visibility: private, voice: <VOICE>, platform: colab|kaggle, dereverb: yes|no, epochs: <N>`
   + `<hours>` (`platform` equals `PLATFORM_EXPECTED`; the values the owner used; `RUN` is always the number GATE-G-004.md
@@ -93,22 +96,29 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   for a corrected response or a re-run; the gate file's values always name `RUN`, the paths and the ledger record) ·
   `owner-fixed: <cell from the owner: line, or params>` + `<hours>` after the notebook printed `owner: <cell> <message>`:
   the owner fixed the stated condition (recordings, disk, RAM, the notebook to open); `params` answers "parameters changed
-  within run", and the re-issue repeats this RUN's original Parameters-cell values · `prune: <exp>` + `<hours>` (Kaggle,
+  within run", and the re-issue repeats this RUN's original `VOICE`, `RUN`, `DEREVERB`, `EPOCHS`, `SPEAKER_ID`, `GUIDE`
+  and platform, while `PRIOR_VOICE_GPU_HOURS`, `KILLED_HOURS`, `RESUME`, `PRUNE` and `EXPECTED_COMMIT` follow S-017 action 1a · `prune: <exp>` + `<hours>` (Kaggle,
   after the unreadable-checkpoint `owner:` line). For both the implementer re-issues with the same commit, not counted as
-  a `failed:` attempt; at most two `owner-fixed:`/`prune:` re-issues per RUN, then `BLOCKED.md` (R-087, R-102) ·
+  a `failed:` attempt; at most two `owner-fixed:` and `prune:` re-issues together per RUN, then `BLOCKED.md` (R-087, R-102) ·
   `budget-exhausted` + `<hours>` (answered when cell (17) printed `budget: no checkpoint`: the voice reached its budget
-  before a loadable snapshot; no upload exists; S-017 writes GATE-G-001.md with that evidence and the responses `stop`,
-  `raise-budget-to: <new BUDGET_HOURS total>` — valid only here, greater than the ledger `total` + 1 (else asked again), a
+  before a loadable snapshot; no upload exists; S-017 writes GATE-G-001.md with only this evidence — the voice ledger,
+  the notebook's `budget: no checkpoint` line, the response's `<hours>` part and version lines, and the run's
+  `EPOCHS` — and the responses `stop`,
+  `raise-budget-to: <new BUDGET_HOURS total>` — valid only here, at least the ledger `total` + 2 (1 h reserve plus at
+  least 1 h of training; else asked again), a
   planning amendment to A-015 run as HANDOFF §Amendments says — and, when an earlier run of this voice was evaluated, also
   `proceed` and `proceed-with-thresholds` for the newest such run with its evidence and a note that run <RUN> was cut by the
   budget; R-086, R-110, R-114) ·
-  `switch-platform: colab|kaggle` + `<hours>` (`<hours>` belongs to the platform being left; a new RUN on the other
+  `switch-platform: colab|kaggle` + `<hours>` (the named platform must differ from `PLATFORM_EXPECTED`, and a `consent:`
+  `platform:` must equal it — else the response is asked for again, at most twice, then `BLOCKED.md`; `<hours>` belongs to the platform being left; a new RUN on the other
   platform, whose `PRIOR_VOICE_GPU_HOURS` S-017 action 1a takes from the voice ledger; R-082, R-111) ·
   `failed: <cell number> <error text>` + `<hours>` (the implementer fixes the notebook — one attempt per report, at most
   three `failed:` re-issues per RUN, then `BLOCKED.md`; a `failed:` re-issue keeps `RUN`; a `retrain` or `switch-platform`
   is a new RUN with its own counts; `raise-budget-to` keeps the RUN and its counts — and re-issues G-004) ·
   `stop`, optionally + `<hours>` (recorded when given; R-113).
-  Counts are taken from the archived `GATE-G-004.run<RUN>.*.md` files whose `## Response` starts with that keyword. A
+  Counts are taken from the archived `GATE-G-004.run<RUN>.*.md` files whose `## Response` starts with that keyword
+  (`owner-fixed:` and `prune:` pooled); the response being handled is not archived yet, so a re-issue is allowed while the
+  archived count is below the limit. A
   response that starts with a listed keyword but lacks a required part is asked for again (at most twice, then
   `BLOCKED.md`) without changing any state; any other text is `stop`. S-017 updates `results/<VOICE>/ledger.json` after
   every response as D-035 §Voice ledger says, before acting on it.

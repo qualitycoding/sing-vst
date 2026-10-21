@@ -407,16 +407,21 @@ Defaults for every step unless the step says otherwise:
   cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself). For
   each notebook it loads the cells with nbformat, execs cell (3) (the cell containing `def make_stages`) with
   `PATH_ROOTS` mapped into a temporary directory and every global of cell (2) and the Parameters cell (2a) preset (`CONSENT_CONFIRMED=True`,
-  `ATTESTATION="dry"`, `VOICE="dry"`, `RUN=1`, `EXPECTED_COMMIT="0"*40`, `RESUME`, `PLATFORM_EXPECTED` = the notebook's
+  `ATTESTATION="dry"`, `VOICE="dry"`, `RUN=1`, `EXPECTED_COMMIT="0"*40`, `RESUME=False` (True for the restoring sessions of
+  (2) and (9)), `RESTORED_FROM` as D-035 says, `PLATFORM_EXPECTED` = the notebook's
   own platform (`"colab"` or `"kaggle"`), `PRIOR_VOICE_GPU_HOURS=0.0`, `PRUNE=""`, `DEREVERB=False`, `EPOCHS=10`,
-  `SPEAKER_ID=0`, `GUIDE="tiger"`, `KILLED_HOURS=0.0`, and `SESSION_T0`, `CLOCK` (a fake clock the script advances) and
+  `SPEAKER_ID=0`, `GUIDE="tiger"`, `KILLED_HOURS=0.0`, and `SESSION_T0 = CLOCK()`, `CLOCK` (a fake clock the script advances) and
   `HEARTBEAT_INTERVAL=10**9` (no background beats; the script calls `heartbeat_write()` itself); `PLATFORM` comes from the
   notebook's cell (3)), pre-creates the four non-stage inputs
   with fixed bytes, identical in every root and `<LOCAL>` it creates (`raw/` with two WAV files, `<root>/voicebank/` with one
-  file, `<LOCAL>/build-render/cli/singvst-render`; cell (4) is not exec'd, so it calls the notebook's `write_params()` and
-  `start_session()` itself, which write `<run>/params.json` and the `sessions[]` entry), replaces the notebook's global
-  `sh` with a fake (so every stage still runs through the notebook's own `timed`) that advances the fake clock by the
-  scenario's hours for `CURRENT_STAGE`, returns the scenario's rc, and creates that stage's declared outputs (an output whose `Path.suffix` is empty is a directory — every directory of
+  file, `<LOCAL>/build-render/cli/singvst-render`; cell (4) is not exec'd, so it calls the notebook's `make_dirs()`,
+  `write_params()` and `start_session()` itself, which create the run directories and RVC symlinks and write
+  `<run>/params.json` and the `sessions[]` entry; every new session in a scenario first sets `STOP=False`,
+  `STOP_REASON=""`, advances the clock by one minute and sets a new `SESSION_T0`, so its `SESSION` differs; a restore copies
+  the previous `state.tar` and `.sha256` into `<fresh root>/kaggle/input/prev/`), replaces the notebook's global
+  `sh` with a fake (so every stage still runs through the notebook's own `timed`) that, on the first call within each
+  `timed` run, advances the fake clock by the scenario's hours for `CURRENT_STAGE`, returns rc 0 for every check command
+  (the `torch.load` checks) and the scenario's rc for the stage's main command, and creates that stage's declared outputs (an output whose `Path.suffix` is empty is a directory — every directory of
   the D-035 stage table has none and every file has one — created holding one file `fake.bin`; any other output is a
   file; every later stage's input path under a created directory is created too, e.g. `prepared/segments/`; every file a
   fake writes gets bytes unique to that stage invocation; repeated `sh` calls within one stage create them once), runs each cell's slice through the notebook's `run_cell`, and checks
@@ -427,17 +432,19 @@ Defaults for every step unless the step says otherwise:
   `RuntimeError` inside `guarded` → no exception escapes, `STOP` is set, `STOP_REASON` starts `failed:`, and `end_session`
   writes the budget files with `end` set (Colab) or also `state.tar` (Kaggle) (R-069), and an `OwnerAction` gives `STOP_REASON` starting `owner:` (R-087);
   (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068);
-  (7) accounting: with 1 h per GPU-time stage on the fake clock, `PRIOR_VOICE_GPU_HOURS=2.5` and `KILLED_HOURS=0.5`, the
-  session's `gpu_hours` = Σ `stage_hours` = Σ `runs` of `budget-voice.json`, `prior` = 2.5 and `killed_hours` = 0.5 are
-  recorded, every printed `hours:` line matches `^hours: platform \d+\.\d{4} voice \d+\.\d{4}$` with `voice` = `platform`
-  + 3.0, and a `heartbeat_write()` during the train fake records the elapsed train time in `stage_hours["train"]`; a
+  (7) accounting: with 1 h per GPU-time stage on the fake clock (the five run by `run_cell`: rvc-f0, rvc-features, train,
+  export, evaluate; cell (16) is not executed), `PRIOR_VOICE_GPU_HOURS=2.5` and, on Kaggle, `KILLED_HOURS=0.5` (0.0 on
+  Colab), the session's `gpu_hours` = Σ `stage_hours` = 5.0 = `runs[RUN]` of `budget-voice.json`, `prior` = 2.5 and
+  `killed_hours` are recorded, every printed `hours:` line matches `^hours: platform \d+\.\d{4} voice \d+\.\d{4}$` with
+  `voice` = `platform` + 3.0 (Kaggle) or + 2.5 (Colab), and a `heartbeat_write()` during the train fake records the elapsed train time in `stage_hours["train"]`; a
   session left without `end_session` and followed by a new session is still summed with its heartbeat hours (R-095,
   R-109); (8) budget stop: with `PRIOR_VOICE_GPU_HOURS` = `BUDGET_HOURS` − 1, the train stage's `t_budget` ≤ 0 → with a
   fake loadable `<exp>_e10_s100.pth` the stage completes with `stopped_by_budget` 10; without one `STOP_REASON` is exactly
   `budget: no checkpoint` (R-086); (9) prune (Kaggle): a restore with `PRUNE` set skips `logs/<PRUNE>/` and writes the
-  marker, and a second restore of that version's `state.tar` with the same `PRUNE` keeps `logs/<PRUNE>/` (R-112);
-  (10) a `PLATFORM_EXPECTED` mismatch and a changed `params.json` value each raise `OwnerAction` and print a line
-  starting `owner: 3 ` or `owner: 4e ` (R-082). Scenarios (1),
+  marker; that session then runs the train fake (re-creating `logs/<PRUNE>/`) and `end_session`; a second restore of the
+  new `state.tar` with the same `PRUNE` keeps `logs/<PRUNE>/` (R-112);
+  (10) a `PLATFORM_EXPECTED` mismatch (cell (3)'s check) and a changed `params.json` value (`write_params()`) each raise
+  `OwnerAction` and print a line starting `owner: 3 ` or `owner: 4e ` (R-082). Scenarios (1),
   (3), (5), (7), (8) and (10) run for both notebooks; (2), (4), (6) and (9) for the Kaggle notebook; for the Colab notebook (4) instead re-runs
   in the same root and checks the session resumes at train from its markers (no `state.tar` on Colab). It must exit 0
   for both notebooks (R-016, R-013).
@@ -473,7 +480,7 @@ Defaults for every step unless the step says otherwise:
      minus the ledger's `colab` or `kaggle` value for `PLATFORM_EXPECTED` (D-035 §Voice ledger; 4 decimals; 0.0 with no
      ledger), `KILLED_HOURS = 0.0` with the rule for adding killed versions, the ledger's current figure for
      `PLATFORM_EXPECTED`, `PRUNE` = the `<exp>` of a `prune:` response for its re-issue, else `""`; `EXPECTED_COMMIT` = `git rev-parse
-     HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
+     HEAD` of the impl branch when GATE-G-004.md is written (after S-016's last save and every later notebook fix), `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
      implementer finds the attachment by name — `find / \( -path /proc -o -path /sys \) -prune -o -name
      'upload-run<RUN>.tar' -type f -print 2>/dev/null`, taking the hit whose SHA-256 equals the pasted line — and copies it
@@ -497,8 +504,9 @@ Defaults for every step unless the step says otherwise:
      §Voice ledger): every Kaggle session of the uploaded `budget.json` has a `seq` line with its `seq`, the `seq` lines
      increase by 1 in version order (killed lines skipped), and each session's `restored_from` equals the `sha256` of the
      line whose `seq` is one less (null when its `seq` is 1) (R-068, R-083), `killed` versions counted as unlogged hours
-     (R-095), and each Kaggle session's `killed_hours` equals the Σ of the `killed` lines of its issue that precede its
-     own `seq` line, rounded up to 4 decimals (R-095); every session's recorded `prior` equals the `prior` of one of this RUN's ledger records, and the newest
+     (R-095), and each Kaggle session's `killed_hours` equals the Σ of the per-version 4-decimal values of the `killed`
+     lines of its issue that precede its own `seq` line (R-095), and for a Kaggle `consent:` the response's `p` equals Σ
+     `runs` of the uploaded `budget-voice.json`; every session's recorded `prior` equals the `prior` of one of this RUN's ledger records, and the newest
      session's equals this issue's (R-082, R-097); entries without `end` are counted with their heartbeat hours and listed in
      GATE-G-001.md. After every G-004 response, update and commit `results/<VOICE>/ledger.json` exactly as D-035 §Voice
      ledger says (record order, file-sourced figures, never-decreasing check, `unverified`; PK-77). `owner-fixed:` and `budget-exhausted` responses are handled as plan/GATES.md G-004 says. A failed check →

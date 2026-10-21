@@ -202,11 +202,11 @@
     "lessons/L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject.md": "11cbfd3a6df84b3f05e5237f08a0a3e48d67cbadaaf8a6cb0883c99f4582d6e9",
     "lessons/L-20261021T200500Z-package-added-to-pinned-install-without-resolving.md": "d7115414a93c3dac6f5787fe1028fba7ea19d41924475aae10f302eb380c5999",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "b53ed41cd8196ecaeb8c97084a34347b1aa6c385b29b307cdf693deca2158150",
+    "plan/DECISIONS.md": "327697c4b6899489cd6c03284dc93638feaf060a8a8c5524627cd76669beda5d",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
-    "plan/GATES.md": "514cd5633ec1c81567d6288eabd061b196f4107bf8b38aa018d94ea9994ff71e",
-    "plan/PLAN.md": "4cf6fd9407a5b3752bf9ca13b60aa69f2ab6f22ae397a1c596a3e672b165657b",
-    "plan/PLAN.src.md": "606a07bac88302903644e518dfd3b88ec65eaa0ff25915db5b857368dad1319e",
+    "plan/GATES.md": "38cf8037dd23072bb6fb36a95b6a6bc49676f20f49063fef5bb2b60b9a60be3b",
+    "plan/PLAN.md": "b77d41cfe6d449199376794d5753eaf5271a2d00d89fc974cacdd7e0bf7821d8",
+    "plan/PLAN.src.md": "395dcd525ef8cdabcf8dd8925b93e04cd6e8416f2b62c066cf63fb135addbc8f",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
     "plan/TRACEABILITY.md": "58994de06c5e519ba3d99f94c69b648a1c34c5894001b5537949b7490309e338",
@@ -218,6 +218,7 @@
     "premortem/coldread-pass-1.md": "94bfdca50c1f0b7ee5d4f429df0196eb34225a29b8189dc5b204d729a534cc76",
     "premortem/coldread-pass-10.md": "a33cf2eb8e0cf90f739a7132657567bfb87cd39beb6a325127437865c1bbb8c1",
     "premortem/coldread-pass-11.md": "199f2ad4e0ffdc96cd5f51a127c32244c14b1578415f9c28b551647007d5b4fd",
+    "premortem/coldread-pass-12.md": "0c28df277fc543e2e1b2c912908e3cd0298dfe94b3eb5883dca112335fe26755",
     "premortem/coldread-pass-2.md": "1229c3da0b81a812c5bd5cb47903045ca288b9b19a03fb3b509f5cc9576f69e0",
     "premortem/coldread-pass-3.md": "b9c2309a3adef033d42237de5c4ec1eddddaff9b1afad52f15eb8d970821d396",
     "premortem/coldread-pass-4.md": "e6ddfafc90c172568522c94ca6456a9623f9287f68b76e8696c3b561a9a144f8",
@@ -778,14 +779,14 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T20:40:11Z",
+  "updated_at": "2026-10-21T20:50:01Z",
   "active_step_id": "S-000",
   "execution_context": {
     "current_objective": "Owner chose review (D-039): pre-mortem round 6 + cold read on GPU-hour accounting, then Phase 5 again",
     "call_stack": [],
     "scratchpad": "Phase 5 done: consistency check (12 traceability cell items fixed), status header BLOCKED, pushed. Next: owner decision per premortem/RESIDUAL.md; then implementer starts at S-000.",
     "in_flight_operation": {
-      "op": "cold read pass 12 on /home/claude/coldread12"
+      "op": "cold read pass 13 on /home/claude/coldread13"
     },
     "tool_cache": {},
     "step_pointer": {
@@ -825,7 +826,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 128,
+  "sequence": 130,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
