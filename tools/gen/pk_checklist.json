@@ -378,5 +378,10 @@
   "Every behaviour added to a frozen component names the interface call that carries it; if none exists, add the interface (Phase 2) or move the behaviour to the caller.",
   "D-010 resample worker; T-071; D-012 split rule",
   "both"
+ ],
+ "PK-77": [
+  "Key every budget ledger by the budgeted subject and carry its total across location changes through the authorising gate.",
+  "D-035 budget-voice.json; GATES G-004 PRIOR_VOICE_GPU_HOURS; S-017",
+  "both"
  ]
 }
