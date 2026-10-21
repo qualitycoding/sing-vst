@@ -25,7 +25,8 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 - **Responses:** `proceed` (defaults bind; continue to S-018) · `proceed-with-thresholds: <json>` (planning amendment updates
   eval/thresholds.json via 2E.4, then continue; the verdict against the defaults stays committed beside the new one, and
   README and the pull request quote both and say the thresholds were set after the measurement — R-037) · `retrain: <data/epochs/de-reverb change>` (repeat S-017 — a new GATE-G-004.md, all its questions, with `RUN` + 1 and
-  the changed Parameters-cell values — while `budget-voice.json` `gpu_hours` < 20, A-015 per voice; otherwise ask again) ·
+  the changed Parameters-cell values — while `budget-voice.json` `gpu_hours` < 19 minus the previous run's GPU hours per 10 epochs, A-015 per voice (R-086);
+  otherwise ask again) ·
   `stop`.
 
 ### G-002 External or irreversible actions
@@ -57,10 +58,15 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
   (3) Colab or Kaggle?
 - **Responses:** `consent: yes, visibility: private, voice: <VOICE>, platform: colab|kaggle, dereverb: yes|no, epochs: <N>`
+  followed, on Kaggle, by the `seq <n> state.tar <sha256>` last line of every version in order (R-083)
   (the values the owner used; `RUN` is always the number GATE-G-004.md states; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
   D-035 and attaches `upload-run<RUN>.tar` and pastes the `sha256sum` line cell (17) printed) ·
+  `owner: <message>` printed by the notebook → the owner fixes the stated condition (recordings, disk, RAM, parameters)
+  and answers `owner-fixed: <cell>`; the implementer re-issues with the same commit, not counted as an attempt (R-087) ·
+  `budget-exhausted` (the voice reached its budget before a loadable snapshot; S-017 takes it to G-001 as a result, R-086) ·
   `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
-  issue (a `retrain` re-issue starts a new count; a `failed:` re-issue keeps `RUN`), then
+  issue (a `retrain` re-issue starts a new count; a `failed:` re-issue keeps `RUN`; switching platform is a new `RUN`, with
+  `PRIOR_VOICE_GPU_HOURS` covering the hours already used, R-082), then
   `BLOCKED.md`; GPU hours already used stay in `budget.json` — and re-issues G-004) · `stop`. Recordings, renders and voice packages are
   never uploaded to the repository (A-011, T-062).
 

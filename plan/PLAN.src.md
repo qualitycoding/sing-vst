@@ -50,7 +50,7 @@ Defaults for every step unless the step says otherwise:
      `BLOCKED.md`), `python3.12`,
      `curl`, `unzip` exist (else `BLOCKED.md`). With root or sudo: `sudo apt-get update && sudo apt-get install -y` the
      package list of the `cpp` job's apt step in `.github/workflows/ci.yml` (it includes `xvfb`) plus `python3.12-venv
-     locales` (an install failure is the no-root path below), and generate the German
+     locales g++-11` (an install failure is the no-root path below), and generate the German
      locale T-034 needs (`localedef -i de_DE -f UTF-8 de_DE.UTF-8` as root, else `sudo locale-gen de_DE.UTF-8`; C-056).
      Without root/sudo or apt mirrors: record it in `DEVIATIONS.md`; the plugin build, plugin tests, pluginval and T-034 are
      then checked in CI only (D-036) — not a halt.
@@ -264,7 +264,9 @@ Defaults for every step unless the step says otherwise:
 - Inputs: cli/main.cpp (stub); D-014, D-021
 - Actions: implement D-014 in `cli/main.cpp` (options, exit codes, float32 WAV writer, provenance sidecar with
   `seeds = {"converter": <seed>}` and the D-014 shapes; `git_commit` from a header generated at build time by a custom
-  command in `cli/CMakeLists.txt` that runs on every build, R-047); set `SINGVST_RENDER_BIN` to the built binary for every later run of the suite.
+  command in `cli/CMakeLists.txt` that runs on every build, R-047); also build `singvst-render` with `g++-11` in
+  `../build-gcc11` (`CXX=g++-11`, `-DSINGVST_BUILD_PLUGIN=OFF -DSINGVST_BUILD_TESTS=OFF`, `--parallel 2`) — it must compile
+  (D-033, R-023); without `g++-11` (no-root path) record it in `DEVIATIONS.md`; set `SINGVST_RENDER_BIN` to the built binary for every later run of the suite.
 - Outputs: cli/main.cpp, cli/CMakeLists.txt
 - Evidence produced: T-P18
 - Done when: T-P18 passes locally and in CI job `python`. (The binary part of T-P13 needs `pack_voice` and is checked at S-012.)
@@ -396,10 +398,11 @@ Defaults for every step unless the step says otherwise:
   `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"`, `RESUME`, pre-creates the four non-stage inputs (`raw/` with two
   WAV files, `<run>/params.json`, `<LOCAL>/build-render/cli/singvst-render` and `<root>/voicebank/`), wraps each `Stage.run` with a fake that creates that
   stage's declared outputs, and checks these scenarios, using the notebook's own `guarded`, `pack_state` and `restore_state`
-  (R-066, R-079): (1) a full session runs every stage; (2) `pack_state` then `restore_state` into a fresh root with
-  `RESUME=True` → no stage runs; (3) editing `params.json` → every stage runs; (4) the train fake raises `SessionEnd` →
-  `STOP` set, `pack_state` still writes `state.tar`, and the next session resumes at train; (5) a stage fake raises
-  `RuntimeError` inside `guarded` → no exception escapes, `STOP_REASON` starts `failed:`, `state.tar` is written (R-069);
+  (R-066, R-079): (1) a full session runs every stage; (2) `end_session` then `restore_state` into a fresh root with
+  `RESUME=True` and a fresh `<LOCAL>` → `stages_run` is exactly `["render-bin", "evaluate"]` (D-035 cell (13); R-089); (3) editing `params.json` → every stage runs; (4) the train fake raises `SessionEnd` →
+  `STOP` set, `end_session` still writes `state.tar` and the `sessions[]` entry with `end` and `seq`, and the next session resumes at train; (5) a stage fake raises
+  `RuntimeError` inside `guarded` → no exception escapes, `STOP_REASON` starts `failed:`, `end_session` writes `state.tar`
+  (R-069), and an `OwnerAction` gives `STOP_REASON` starting `owner:` (R-087);
   (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068). Scenarios (1),
   (3) and (5) run for both notebooks; (2), (4) and (6) for the Kaggle notebook; for the Colab notebook (4) instead re-runs
   in the same root and checks the session resumes at train from its markers (no `state.tar` on Colab). It must exit 0
@@ -439,10 +442,11 @@ Defaults for every step unless the step says otherwise:
      `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json`; the report provenance
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
      on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `t-p20.xml`
-     reports 1 test with 0 failures and 0 errors when the report is "measured", or 1 failure when it is "invalid: …"
-     (D-035 §Evaluation outcome; an invalid report is a result, recorded and taken to G-001; R-071); on Kaggle every
-     session entry after the first restored session has `restored_from` equal to the previous entry's `state_tar_sha256`
-     (backfilled at restore, D-035; R-068); entries without `end` are ignored. A failed check →
+     exists and its outcome (pass, or failure with its message) is recorded as a result for G-001, never re-run (D-035
+     §Evaluation outcome; R-071, R-084); on Kaggle the pasted `seq <n> state.tar <sha>` lines, in version order, match
+     the `sessions[]` `seq` values with no gap and each session's `restored_from` equals the previous line's hash
+     (R-068, R-083); `budget-voice.json` `gpu_hours` ≥ `PRIOR_VOICE_GPU_HOURS` + this run's `gpu_hours` (R-082); entries
+     without `end` are ignored. `owner-fixed:` and `budget-exhausted` responses are handled as plan/GATES.md G-004 says. A failed check →
      ask the owner for the files again (at most twice, then `BLOCKED.md`); files are never edited. GATE-G-001.md gets the
      stage→commit table from the uploaded `commits.json` (written whenever a stage runs, so it includes evaluate; R-054).
   3. Commit the extracted files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the
@@ -514,7 +518,8 @@ Defaults for every step unless the step says otherwise:
   (PK-68); do **not** merge (G-002).
 - Outputs: plan/IMPLEMENTATION_MAP.md; pull request URL in EXECUTION_LOG.md
 - Evidence produced: all tests
-- Done when: every frozen test passes (T-P20 from S-017's record), CI green on both OSes, the pull request exists.
+- Done when: every frozen test passes (T-P20: S-017's record shows a pass, or its failure is disclosed in README, the pull
+  request body and DEVIATIONS.md — R-084), CI green on both OSes, the pull request exists.
 - Checkpoint: default
 - On failure: default
 - Gate: none (merging is the owner's action, G-002)

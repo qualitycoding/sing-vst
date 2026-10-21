@@ -282,7 +282,8 @@ every transition is a compare-and-swap on both threads (R-078): the message thre
 `Armed`→`Idle` and `Capturing`→`Cancelling` (disarm during a capture; internal values `Cancelling` and `CancelAck`, both reported as `Idle`);
 `processBlock` moves `Armed`→`Capturing` and `Capturing`→`Stopping` and writes FIFO events only while `Capturing`; a
 failed CAS means the other thread won and the loser does nothing; the timer, after draining the FIFO in `Stopping`,
-finishes the capture (stored notes replaced, warning `stored notes replaced; the previous take stays in the take cache`),
+finishes the capture (stored notes replaced; the warning `stored notes replaced; the previous take stays in the take cache`
+is carried into the warnings of the render that capture submits, so `lastWarnings()` still shows it afterwards, R-093),
 or, once `processBlock` has acknowledged a cancel by moving `Cancelling`→`CancelAck` at the start of its next block (it
 writes no event in either state; the timer also proceeds when no block has arrived for 2 s), discards the drained events
 (stored notes kept), then resets the FIFO indices and stores `Idle` — the indices are never reset while the audio
@@ -304,8 +305,10 @@ the last keystroke), changes of `convert`/`portamento`/`vibrato`/`seed`, a host 
 bpm. A host sample rate differing from the take's never re-renders (R-059, R-072): `RenderParams::outputSampleRate` is
 always 48000 (the state default), so the request and its cache key never depend on the host rate; the plugin owns a
 second worker (one `std::thread`, newest request wins) that, whenever the original take (the Renderer's `latest()` or a
-cache hit) or the host rate changes, publishes `resampleTake(original, hostRate)` (D-038, T-071) — always from the
-original, never from a resampled copy — or the original itself when the rates match. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
+cache hit) or the host rate changes, computes `resampleTake(original, hostRate)` (D-038, T-071) — always from the
+original, never from a resampled copy — or takes the original itself when the rates match, and hands it to the message
+thread (`juce::MessageManager::callAsync`), which publishes it only if the job's generation number is still the newest
+(R-091); the processor's destructor sets the worker's stop flag and joins it before `TakeSlot` is destroyed. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
 no voice, lyrics that fail to parse, no stored notes. No voice loaded → no render and
 `lastError()` = `Load a voice`. Lyrics that fail `parseLyrics` → no render, `lastError()` = `Lyrics: <ParseError message>`.
 No stored notes → no render and no error (status stays as it was). The renderer's function is
@@ -486,8 +489,9 @@ provenance sidecar and audio renders reviewed at G-001. No `figures/SPEC.md` is 
 of the evaluation, that is a new planning amendment.
 
 ### D-033 Implementation conventions
-Code compiles with GCC ≥ 11 and MSVC 2022 (no `<format>`, `<print>` or `std::expected`; the notebook builds the CLI with the
-hosted image's compiler, R-023). Private helpers and private headers live in `core/src/` (never `core/include/singvst/`, whose files are all frozen;
+Code compiles with GCC ≥ 11 and MSVC 2022 (no `<format>`, `<print>`, `std::expected` or `std::atomic<std::shared_ptr>`;
+the notebook builds the CLI with the hosted image's compiler, R-023); S-010 checks it with a `g++-11` build of
+`singvst-render`. Private helpers and private headers live in `core/src/` (never `core/include/singvst/`, whose files are all frozen;
 T-060). Each core step adds `core/src/<module>.cpp` for its header and **deletes the matching definitions from
 `core/src/stubs.cpp`** in the same commit (`core/CMakeLists.txt` globs `src/*.cpp`, so a duplicate definition is a link
 error, not a silent override). The plugin step replaces `plugin/PluginProcessor.cpp` and adds `plugin/PluginEditor.*`; the
@@ -566,10 +570,12 @@ cwd `<rvc>`; every other command runs with cwd `<run>`.
 singer's consent, and that this use is within the platform's terms." (A-011). **Parameters cell** (2a): `VOICE = "myvoice"`
 (lower-case letters, digits and `-`), `RUN = 1`, `EXPECTED_COMMIT = "<40-hex commit named in GATE-G-004.md>"`,
 `RESUME = False` (Kaggle: True exactly when an earlier version of this voice printed "state.tar written"; R-068),
-`DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
+`PRIOR_VOICE_GPU_HOURS = 0.0` (GATE-G-004.md states the GPU hours this voice has already used on any
+platform, R-082), `DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
 it), `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). At step (4e) — after the Colab mount, so
 nothing is written under the Drive path before it is mounted — the first session of a
-run writes `<run>/params.json` = exactly `{VOICE, RUN, DEREVERB, EPOCHS, SPEAKER_ID, GUIDE}` (`RESUME` and `EXPECTED_COMMIT`
+run writes `<run>/params.json` = exactly `{VOICE, RUN, PLATFORM, DEREVERB, EPOCHS, SPEAKER_ID, GUIDE}` (a platform change
+within a run therefore stops with the parameters message: a switch needs a new RUN, R-082) (`RESUME` and `EXPECTED_COMMIT`
 change between sessions and are never part of it; each session's commit goes to `budget.json` `sessions[].commit`); every later session asserts its values equal the file's, else stops with
 "parameters changed within run <RUN>: set RUN = <RUN+1> for a new run" (R-013). `params.json` is an input of every stage.
 `--consent` = the attestation text; `--guide-licence` = the D-035 §Guide voicebank string. **Memory and disk check**
@@ -583,37 +589,43 @@ session also records `session_hours` = wall-clock from cell (1) to its end, whic
 **Kernel and helpers** (shared by all cells; names fixed): the notebook kernel (not the venv) runs the orchestration; after
 step (4a) it does `sys.path.insert(0, f"{SINGVST}/python")` and imports `pipeline` lazily inside `make_stages` and later
 cells (`pipeline.py` is standard-library only). Globals: `PLATFORM` ("colab"|"kaggle"), `ROOT`, `RUNDIR`, `LOCAL`, `RVC`,
-`SINGVST`, `VENV`, `SESSION`, `STOP`, `HEARTBEAT`, `HEARTBEAT_ERROR`, and `class SessionEnd(Exception)`; cell (3) derives
+`SINGVST`, `VENV`, `SESSION`, `STOP`, `HEARTBEAT`, `HEARTBEAT_ERROR`, `class SessionEnd(Exception)`, `class OwnerAction(Exception)`, `write_params()` (step (4e)) and
+`end_session(stop)` (cell (17)'s `finally` body); cell (3) derives
 every path from `PATH_ROOTS = globals().get("PATH_ROOTS", {"content": "/content", "kaggle": "/kaggle", "tmp": "/tmp"})`,
 so the S-016 dry run remaps them by pre-setting `PATH_ROOTS`. `sh(cmd, cwd, timeout=None) -> (rc, output)` runs `bash -c
 cmd` in `cwd` in a new process group (`start_new_session=True`) with `VENV/bin` first on PATH, streams and captures
 stdout+stderr, and on timeout sends SIGTERM to the whole group (RVC's `train.py` trains in `multiprocessing` child
 processes, C-065), then SIGKILL to the group after 60 s, returning rc 124; after a train-stage timeout the notebook
-checks `nvidia-smi --query-compute-apps=pid --format=csv,noheader` is empty before anything else runs, else SIGKILLs those
-PIDs and re-checks (R-070); venv-side Python checks (the checkpoint guard's `torch.load`) run
+checks the process group is gone (`os.killpg(pgid, 0)` raises `ProcessLookupError`; else SIGKILL the group again and
+re-check once, then stop) and prints `nvidia-smi --query-compute-apps=pid,used_memory --format=csv` for information only —
+PIDs from it are never killed (R-070, R-094); venv-side Python checks (the checkpoint guard's `torch.load`) run
 through `sh` and print their result. A non-train stage whose command returns rc ≠ 0 raises `RuntimeError` (command and
 last 50 output lines). **Train-stage outcomes:** `train.py` exits 0 and `<exp>.pth` exists → complete; the stage timeout
 is computed by the main thread's exact counters as `t = min(t_session, t_budget)` with `t_session` = 10 h − elapsed −
 0.5 h and `t_budget` = 20 h − 1 h − the voice's `gpu_hours` (1 h reserved for export, evaluate and T-P20; R-075). When
-`t_budget` is the smaller term and ≤ 0, or binds and `sh` returns 124 → DR-13 copy of `latest_weights` → complete; when
+`t_budget` is the smaller term and ≤ 0, or binds and `sh` returns 124 → DR-13 copy of the newest `<exp>_e<N>_s<M>.pth`
+that loads (checked newest first with `torch.load` through `sh`) → complete; with none, `STOP_REASON` = `budget: no
+checkpoint` — the owner pastes it as the G-004 response `budget-exhausted`, which S-017 takes to G-001 as a result with no
+evaluation (R-086); when
 `t_session` binds and is ≤ 0 or `sh` returns 124 → `STOP = True` and `raise SessionEnd` (no marker; the next session
 resumes); checkpoint guard or restart detection fails, or any other rc ≠ 0 → `RuntimeError` (a real failure, reported
 as `failed:`). On restart detection the notebook first copies `G_2333333.pth.bak`/`D_2333333.pth.bak` (still at `e0`)
 back over the restarted files and writes `logs/<exp>/RESTART_DETECTED`; while that file exists the guard never
-overwrites a `.bak` (R-076). `.bak` files are named `<file>.pth.bak`, which RVC's `G_*.pth` glob does not match. Every cell that calls `run_stages` catches `SessionEnd` only,
+overwrites a `.bak` (R-076); the first later session whose post-train check passes refreshes `.bak` and deletes the marker (R-092). `.bak` files are named `<file>.pth.bak`, which RVC's `G_*.pth` glob does not match. Every cell that calls `run_stages` catches `SessionEnd` only,
 printing "start a new session". The 9.5-h check before each stage also raises `SessionEnd`.
 **Guarded cells** (R-069): from cell (5) through (16), each cell's body runs inside `guarded(<cell number>, body)`, which does
 nothing when `STOP` is set and otherwise catches every exception: `SessionEnd` → `STOP_REASON` = "start a new
-session"; any other exception (including every "stop" this decision names after cell (4)) → its traceback is printed,
+session"; `OwnerAction` (raised by every stop the owner can fix: too few recordings (7), RAM or disk (10a), an unreadable
+checkpoint (11)) → `STOP_REASON` = `owner: <message>` (R-087); any other exception → its traceback is printed,
 `STOP = True` and `STOP_REASON` = `failed: <cell number> <first line of the error>` — the line the owner pastes as the G-004
 response. So no cell from (5) on raises and every version reaches cell (17), which is not guarded: it runs its `STOP` or normal
 branch inside its own `try`/`finally`, whose `finally` always stops the heartbeat, writes the budget files and (Kaggle)
 runs `pack_state`. Cells (1)–(4) may raise; if (4f) raises after (4e) wrote its files, (4) first closes this session's
 `sessions[]` entry (`end`, its `gpu_hours`) and stops the heartbeat, then re-raises; readers (S-017, the budget sums) also
-ignore any entry without `end`. **Evaluation outcome** (R-071, PROCEDURE validity rules): when cell (15) wrote a
-`report.json` whose `status` is "invalid: …", the T-P20 failure in cell (16) is the intended outcome — not a guarded
-failure: the junit file is kept and cell (17) writes the upload tar normally. Cell (16) is a guarded failure only when the
-report is "measured" and T-P20 fails, or pytest exits with a code other than 0 or 1.
+ignore any entry without `end`. **Evaluation outcome** (R-071, R-084, PROCEDURE validity rules): a T-P20 assertion failure (pytest exit 1) is a result,
+never a guarded failure — an invalid report is the intended outcome of PROCEDURE's validity checks, and T-P20 runs its own
+evaluation draw; `t-p20.xml` is always uploaded and S-017 takes the outcome to G-001. Only pytest exits 2–5 (error,
+interruption, usage, no tests collected) are a guarded `failed: 16`. T-P20 is never re-run to obtain a pass (Rule 9).
 **Ending a session** (R-055): a stop condition (9.5 h, train timeout, or a guarded failure) sets `STOP = True`; every later cell
 starts with `if STOP:` printing "skipped — start a new session", so a Kaggle version always completes without an error
 and keeps its output (outputs are limited to 500 items, C-064 — hence `state.tar`). This applies on both platforms; with
@@ -633,13 +645,16 @@ the eleven `pipeline.Stage` objects of the stage table, each stage's `run` calli
 `sh`, `guarded`, the heartbeat helpers) and `pack_state(dst_dir)` and `restore_state(src_dir)` (used by cells (3) and
 (17) and by the S-016 dry run, R-079). Kaggle only: restore the previous session (R-016, R-055, R-068) — `prev =
 glob("/kaggle/input/*/state.tar")`; the Parameters cell's `RESUME` (True exactly when an earlier version of this voice
-printed "state.tar written" at the end of cell (17) — attach the most recent such version's output; False otherwise, e.g. for
-the very first Kaggle version of this voice or after versions that failed in cells (1)–(4); GATE-G-004.md says so) decides: `RESUME` and no match → raise "attach the previous version's
+has a `state.tar` in its output — attach the most recent such version; False only while no version of this voice has one;
+GATE-G-004.md says so) decides: `RESUME` and no match → raise "attach the previous version's
 output (Add Input → Your Work)"; not `RESUME` and a match → raise "set RESUME = True"; more than one match → raise naming
-them; one → its `state.tar.sha256` must match, then `restore_state` extracts it with `tarfile` `filter="data"` into
+them; one → its `state.tar.sha256` must match, then `restore_state` first copies `state.tar` and
+`state.tar.sha256` into `/kaggle/working` (so even a version that fails in cell (4) carries them in its output, R-088), checks
+every member is a regular file or directory with a relative path and no `..` (on any Python version), and extracts it into
 `/kaggle/working` (it holds every `run*/`, `logs/`, `weights/`, `assets-archive/`, `budget-voice.json`) and the session
-records the restored tar's SHA-256 (checked against `state.tar.sha256`) as `restored_from` in its new `sessions[]` entry and
-writes the same value as `state_tar_sha256` into the previous entry (a tar cannot hold its own hash, R-068); (4) in exactly this order (R-051): (a) clone sing-vst and check out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal
+records the restored tar's SHA-256 (checked against `state.tar.sha256`) as `restored_from` and `seq` = the previous entry's
+`seq` + 1 in its new `sessions[]` entry; cell (17) prints `seq <n> state.tar <sha256>` as its last line, which the owner
+copies from every Kaggle version's log into the G-004 response (a tar cannot hold its own hash; R-068, R-083); (4) in exactly this order (R-051): (a) clone sing-vst and check out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal
 it, else stop; R-029) and RVC 81eed5e; (b) create the venv and install exactly as §Notebook environment; (c) the GPU's
 compute capability must be in `torch.cuda.get_arch_list()`, else stop naming both (R-044); (d) Colab only:
 `drive.mount('/content/drive')` — no cell writes under `/content/drive` before this point; (e) create the `<run>/`
@@ -713,8 +728,9 @@ stage also has `params.json` as an input (R-013); the notebook prints the list `
 | pack | `out/conv/`, `<root>/voicebank/` | `out/voice/`, `out/training.json` |
 | evaluate | `out/voice/`, `heldout/`, `<LOCAL>/bin/` | `out/eval/` |
 **Time and budget.** `out/budget.json` holds `{"gpu_hours", "stopped_by_budget": <epoch N of the copied weights, or null>, "sessions": [{"commit", "start", "end", "gpu_hours",
-"session_hours", "stages_run"}]}`, and `<root>/budget-voice.json` holds `{"gpu_hours", "runs": {RUN: gpu_hours}}` summed
-over every run of the voice (A-015 is per voice; R-062). A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
+"session_hours", "stages_run"}]}`, and `<root>/budget-voice.json` holds `{"prior_gpu_hours", "runs": {RUN: gpu_hours}, "gpu_hours"}` with `prior_gpu_hours` =
+max(the file's, `PRIOR_VOICE_GPU_HOURS`) and `gpu_hours` = `prior_gpu_hours` + Σ `runs` of this platform's folder, so hours
+spent on the other platform are never dropped (R-082), (A-015 is per voice; R-062). A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
 earlier run of the cells in the same runtime before starting a new one, and each write re-reads the files and updates only
 its own `<session>` entry (R-074) — rewrites both with
 `pipeline.atomic_write_text` every 5 minutes with the running session's GPU time, so a killed session loses at most 5
