@@ -406,7 +406,7 @@ Defaults for every step unless the step says otherwise:
   downloaded by the owner inside the notebook and never stored in the repository. The stage table is built by one code
   cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself). For
   each notebook it loads the cells with nbformat, execs cell (3) (the cell containing `def make_stages`) with
-  `PATH_ROOTS` mapped into a temporary directory and every Parameters-cell global preset (`CONSENT_CONFIRMED=True`,
+  `PATH_ROOTS` mapped into a temporary directory and every global of cell (2) and the Parameters cell (2a) preset (`CONSENT_CONFIRMED=True`,
   `ATTESTATION="dry"`, `VOICE="dry"`, `RUN=1`, `EXPECTED_COMMIT="0"*40`, `RESUME`, `PLATFORM_EXPECTED` = the notebook's
   own platform (`"colab"` or `"kaggle"`), `PRIOR_VOICE_GPU_HOURS=0.0`, `PRUNE=""`, `DEREVERB=False`, `EPOCHS=10`,
   `SPEAKER_ID=0`, `GUIDE="tiger"`; `PLATFORM` comes from the notebook's cell (3)), pre-creates the four non-stage inputs

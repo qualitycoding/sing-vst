@@ -203,11 +203,11 @@
     "lessons/L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject.md": "11cbfd3a6df84b3f05e5237f08a0a3e48d67cbadaaf8a6cb0883c99f4582d6e9",
     "lessons/L-20261021T200500Z-package-added-to-pinned-install-without-resolving.md": "d7115414a93c3dac6f5787fe1028fba7ea19d41924475aae10f302eb380c5999",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "af1b4068a02950b977dd6d61b3faf7213c59597703199783c69e1283ce0fe1ad",
+    "plan/DECISIONS.md": "742dd5da0adc29c7d6b8487924ddc38db0f68679472b691b3d80df7dd2e8e637",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
     "plan/GATES.md": "cd6e30e2a1cd168687ffa87a59243db73a7789f4143221376902f9ffc5439bf6",
-    "plan/PLAN.md": "f16da574dcb19a32f8fa986f730e89c7f2c3668ce002c5970fbd007bb2b5529c",
-    "plan/PLAN.src.md": "866db7db2c2056c29ceb0ec5f69992fb529337f21bfb9955504e8ff069277a18",
+    "plan/PLAN.md": "91586a40bb5ca43679b8e0f2bc4e6803a2741e597bca6ac43f88aae9398edd61",
+    "plan/PLAN.src.md": "5398c03837452e8564ed391c59275c03d3939899c473637516fa8c291aee41b9",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
     "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
     "plan/TRACEABILITY.md": "58994de06c5e519ba3d99f94c69b648a1c34c5894001b5537949b7490309e338",
@@ -777,7 +777,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T20:13:33Z",
+  "updated_at": "2026-10-21T20:18:22Z",
   "active_step_id": "S-000",
   "execution_context": {
     "current_objective": "Owner chose review (D-039): pre-mortem round 6 + cold read on GPU-hour accounting, then Phase 5 again",
@@ -824,7 +824,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 123,
+  "sequence": 124,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

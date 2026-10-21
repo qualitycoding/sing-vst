@@ -780,10 +780,10 @@ set, else EPOCHS (R-104)>, "stopped_by_budget": <bool: budget.json's value is no
 (15) `python -m singvst_train.cli evaluate --voice out/voice --heldout heldout --phrases <sing-vst>/eval/phrases
 --render-bin <LOCAL>/bin/singvst-render --out out/eval --thresholds <sing-vst>/eval/thresholds.json --lockfile
 out/env/<session>.freeze.txt`; then `out/eval/ceiling.json` = `{"heldout_vs_train": mean over held-out files of cosine(embedding of
-the file, mean embedding of the `train/` files)}` with the PROCEDURE step 4 Resemblyzer settings (R-032); (16) first asserts that `SINGVST_VOICE`, `SINGVST_HELDOUT` and `SINGVST_RENDER_BIN` exist (else `failed: 16`, R-099), then with
-cwd `<sing-vst>`: `python -m pytest -q -m
-voice tests/python/test_evaluate.py --junitxml=<run>/out/eval/t-p20.xml` (T-P20) with `SINGVST_VOICE`, `SINGVST_HELDOUT`,
-`SINGVST_RENDER_BIN` set to the paths above (absolute); §Evaluation outcome decides whether a failure is a guarded failure (R-071); (17) stop the budget
+the file, mean embedding of the `train/` files)}` with the PROCEDURE step 4 Resemblyzer settings (R-032); (16) first sets `SINGVST_VOICE` = `<run>/out/voice`, `SINGVST_HELDOUT` = `<run>/heldout` and `SINGVST_RENDER_BIN` =
+`<LOCAL>/bin/singvst-render` (absolute paths, in `os.environ`) and asserts that each of those paths exists (else `failed:
+16`, R-099), then with cwd `<sing-vst>`: `python -m pytest -q -m
+voice tests/python/test_evaluate.py --junitxml=<run>/out/eval/t-p20.xml` (T-P20); §Evaluation outcome decides whether a failure is a guarded failure (R-071); (17) stop the budget
 heartbeat and write `budget.json` a final time; `tar -C <run>/out -cf <root>/out-run<RUN>.tar .` (members `./conv/`, `./voice/`, `./eval/…`; Drive / Kaggle output); write
 `<root>/upload-run<RUN>.tar` holding the upload files (§Upload) and print its `sha256sum` line (R-036, R-056); Kaggle: then
 `pack_state` writes `/kaggle/working/state.tar` (+ `state.tar.sha256`) of every `run*/`, `logs/`, `weights/`, `assets-archive/` and `budget-voice.json`, deletes those
