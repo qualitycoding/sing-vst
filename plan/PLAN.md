@@ -228,7 +228,9 @@ Defaults for every step unless the step says otherwise:
 - Outputs: core/src/guide_engine.cpp, core/src/converter_engine.cpp, core/src/stubs.cpp, research/spikes/s008-external-data/ (check program, run.sh, output.txt)
 - Evidence produced: T-042…T-047; the external-data check output (D-012)
 - Done when: T-042…T-047 pass on Linux and in CI on Windows; `research/spikes/s008-external-data/output.txt` shows the
-  external-data model rejected with `ValidationError` and the original fixture accepted.
+  external-data model rejected with `ValidationError` and the original fixture accepted; a second throw-away check in the
+  same folder renders a 3000-frame single phrase with the fixture guide and shows two model runs, the exact output length
+  and exact zeros only at SP spans ≥ 22 frames (the D-012 30-s cap, R-077).
 - Checkpoint: default
 - On failure: an input name/shape mismatch → DR-01.
 - Gate: none
@@ -241,12 +243,13 @@ Defaults for every step unless the step says otherwise:
 - Profile: software
 - Depends on: S-005, S-006, S-008
 - Inputs: core/include/singvst/render.hpp; D-013
-- Actions: implement render.hpp in `core/src/render.cpp` (with the D-013 limits and engine ownership) and take_cache.hpp in
+- Actions: implement render.hpp in `core/src/render.cpp` (with the D-013 limits and engine ownership) and take_cache.hpp
+  (including `resampleTake`) in
   `core/src/take_cache.cpp` exactly as D-038 (research/spikes/premortem-r1/take_cache_sketch.cpp is a debugging reference
   only); run the full suite; T-050, T-051 and T-068 in `../build-tsan` (`ctest -R "T-050|T-051|T-068"`; CI's TSan step runs the same set), T-067 and T-070 in `../build-asan` (plan/ENVIRONMENT.md).
 - Outputs: core/src/render.cpp, core/src/take_cache.cpp, core/src/stubs.cpp (now empty of definitions; delete it if nothing remains)
-- Evidence produced: T-048…T-052, T-067, T-068, T-070
-- Done when: all core tests T-001…T-052, T-063…T-070 pass; T-050/T-051 clean under TSan; CI `sanitizers` green.
+- Evidence produced: T-048…T-052, T-067, T-068, T-070, T-071
+- Done when: all core tests T-001…T-052, T-063…T-071 pass; T-050/T-051 clean under TSan; CI `sanitizers` green.
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -278,7 +281,7 @@ Defaults for every step unless the step says otherwise:
 - Depends on: S-009
 - Inputs: plugin/PluginProcessor.h; D-010, D-022, D-027; core/include/singvst/params.hpp
 - Actions: implement `plugin/PluginProcessor.cpp` and `plugin/PluginEditor.{h,cpp}` (D-033); grep the JUCE 9.0.3 headers for
-  every API used before using it (PK-37); follow D-022 **Plugin threading**, D-010's take cache and status line and D-027's
+  every API used before using it (PK-37); follow D-022 **Plugin threading** (capture CAS on both threads), D-010's take cache, resample worker and status line and D-027's
   `launchAsync` dialogs (no modal loop; R-048); build `build-full`; run plugin tests under `xvfb-run -a`; run pluginval 1.0.4
   locally as in the CI step; list editor behaviour that cannot be run headless as "implemented, unverified" in
   `docs/UNVERIFIED.md` (one bullet per behaviour, with the D-027 item it belongs to); S-017 copies it into GATE-G-001.md (PK-39).
@@ -387,14 +390,18 @@ Defaults for every step unless the step says otherwise:
   the RVC cells, `grep -n sys.argv ../rvc/train/preprocess.py ../rvc/train/dataset/extract_f0.py
   ../rvc/train/dataset/extract_hubert_feature.py` and check the D-035 command lines against it (C-057); the voicebank is
   downloaded by the owner inside the notebook and never stored in the repository. The stage table is built by one code
-  cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself), which
-  wraps each `Stage.run` with a fake that creates that stage's declared outputs (a second scenario makes the train fake
-  raise `SessionEnd` once and checks the next session resumes at train), loads each notebook with nbformat, finds the cell containing `def make_stages` (D-035 cell (3)), execs it with the
-  globals `VOICE="dry"`, `RUN=1`, `EPOCHS=10`, `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"` and with a fake `sh` that creates each stage's declared outputs, runs the stages
-  in `<tmp>/a`, packs `<tmp>/a` with the notebook's own cell-(17) `state.tar` code and restores it into `<tmp>/b` by
-  executing the notebook's own cell-(3) restore code with `/kaggle/input` and `/kaggle/working` remapped to `<tmp>/in` and
-  `<tmp>/b` (R-066), runs them again (no stage may run),
-  then edits `params.json` and runs again (every stage must run); it must exit 0 for both notebooks (R-016, R-013).
+  cell defining `make_stages(run, rvc, sh)` (`sh` runs one shell command); write `tools/notebook_dryrun.py` (run with `../venv-lock/bin/python -I`; it puts `python/` on `sys.path` itself). For
+  each notebook it loads the cells with nbformat, execs cell (3) (the cell containing `def make_stages`) with
+  `PATH_ROOTS` mapped into a temporary directory and the globals `PLATFORM`, `VOICE="dry"`, `RUN=1`, `EPOCHS=10`,
+  `DEREVERB=False`, `SPEAKER_ID=0`, `GUIDE="tiger"`, `RESUME`, pre-creates the two non-stage inputs
+  (`<LOCAL>/build-render/cli/singvst-render` and `<root>/voicebank/`), wraps each `Stage.run` with a fake that creates that
+  stage's declared outputs, and checks these scenarios, using the notebook's own `guarded`, `pack_state` and `restore_state`
+  (R-066, R-079): (1) a full session runs every stage; (2) `pack_state` then `restore_state` into a fresh root with
+  `RESUME=True` → no stage runs; (3) editing `params.json` → every stage runs; (4) the train fake raises `SessionEnd` →
+  `STOP` set, `pack_state` still writes `state.tar`, and the next session resumes at train; (5) a stage fake raises
+  `RuntimeError` inside `guarded` → no exception escapes, `STOP_REASON` starts `failed:`, `state.tar` is written (R-069);
+  (6) `RESUME=True` with no `state.tar`, and `RESUME=False` with one, both raise the D-035 messages (R-068). It must exit 0
+  for both notebooks (R-016, R-013).
   GATE-G-004.md (S-017) gives the owner opening links pinned to a commit (R-029): Colab
   `https://colab.research.google.com/github/qualitycoding/sing-vst/blob/<EXPECTED_COMMIT>/notebooks/train_voice_colab.ipynb`;
   Kaggle: *File → Import notebook → GitHub* with that commit and path `notebooks/train_voice_kaggle.ipynb`.
@@ -416,7 +423,8 @@ Defaults for every step unless the step says otherwise:
 - Actions: 
   1. Halt at G-004: write `GATE-G-004.md` (plan/GATES.md) and end the turn with the gate message.
   1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
-     values (`VOICE` = `myvoice` unless the owner names one, `RUN` = the issue number, `EXPECTED_COMMIT` = `git rev-parse
+     values (`VOICE` = `myvoice` unless the owner names one, `RUN` = 1 for the first G-004 issue and +1 for each G-001 `retrain` — a `failed:` re-issue keeps `RUN` (D-035,
+     R-053), `RESUME` = False for the voice's first Kaggle version and True afterwards, `EXPECTED_COMMIT` = `git rev-parse
      HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
      implementer reads the attachment where the session exposes attached files (its uploads folder) and copies it to
@@ -427,7 +435,9 @@ Defaults for every step unless the step says otherwise:
      `budget.json` `gpu_hours` equals the sum of its `sessions[].gpu_hours` and is > 0 when `train` ran (R-051);
      `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json`; the report provenance
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
-     on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set). A failed check →
+     on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `out/eval/t-p20.xml`
+     reports 1 test, 0 failures, 0 errors (R-071); on Kaggle every session after the voice's first has `restored_from` equal
+     to the previous session's `state_tar_sha256` (R-068). A failed check →
      ask the owner for the files again (at most twice, then `BLOCKED.md`); files are never edited. GATE-G-001.md gets the
      stage→commit table from the uploaded `state/commits.json` (written whenever a stage runs, so it includes evaluate; R-054).
   3. Commit the extracted files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the

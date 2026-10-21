@@ -1762,5 +1762,30 @@
    "D-035",
    "R-055"
   ]
+ },
+ {
+  "id": "C-065",
+  "claim": "RVC 81eed5e train.py main() starts training in torch.multiprocessing child processes (mp.Process target=run, one per GPU) and joins them, so terminating only the launcher leaves training running.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/premortem-r2/rvc_process_structure.txt",
+    "doi": "",
+    "title": "spike premortem-r2 rvc_process_structure (pinned source)",
+    "version": "",
+    "locator": "train.py 56, 140-158",
+    "accessed": "2026-10-21",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "R-070"
+  ]
  }
 ]

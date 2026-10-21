@@ -277,9 +277,12 @@ inUse.load()`; `u == BUSY` → free nothing; else free every retired take `!= u`
 scratch buffer). Incoming MIDI is ignored except while capturing (D-010). **Plugin threading** (R-026): the capture buffer
 is a single-producer/single-consumer FIFO (`juce::AbstractFifo` over 4096 preallocated events) allocated once in the
 constructor. The capture state is one `std::atomic<int>` with an internal fourth value `Stopping` (reported as `Capturing`):
-the message thread moves `Idle`→`Armed` and `Armed`→`Idle` with compare-and-swap; `processBlock` moves `Armed`→`Capturing`
-and `Capturing`→`Stopping` and writes FIFO events only while `Capturing`; the timer, after draining the FIFO in
-`Stopping`, finishes the capture, resets the FIFO indices and stores `Idle` — the indices are never reset while the audio
+every transition is a compare-and-swap on both threads (R-078): the message thread moves `Idle`→`Armed`,
+`Armed`→`Idle` and `Capturing`→`Cancelling` (disarm during a capture; a fifth internal value, reported as `Idle`);
+`processBlock` moves `Armed`→`Capturing` and `Capturing`→`Stopping` and writes FIFO events only while `Capturing`; a
+failed CAS means the other thread won and the loser does nothing; the timer, after draining the FIFO in `Stopping`,
+finishes the capture (stored notes replaced, warning `stored notes replaced; the previous take stays in the take cache`),
+or in `Cancelling` discards the drained events (stored notes kept), then resets the FIFO indices and stores `Idle` — the indices are never reset while the audio
 thread may write (R-064). Host bpm, sample rate and transport state reach the message thread
 through `std::atomic` values written by `processBlock`; every other piece of state (lyrics, stored notes, voice, engines,
 render parameters) is guarded by one message-side mutex that `processBlock` never takes, and `get/setStateInformation`
@@ -295,9 +298,11 @@ while armed; event positions = block PPQ + sample offset · bpm / (60 · sample 
 stored notes replaced, bpm taken from the host, render submitted, back to `Idle`; disarm returns to `Idle` and keeps stored
 notes. Renders are submitted (message thread, 4 Hz timer) after: capture end, import, voice load, lyric edits (500 ms after
 the last keystroke), changes of `convert`/`portamento`/`vibrato`/`seed`, a host tempo differing from the take's by > 0.1
-bpm. A host sample rate differing from the take's never re-renders: the worker resamples the stored take to the host
-rate (`resample`, D-011) and publishes that copy, while the request — and so the cache key — keeps the state's
-`outputSampleRate` (R-059). `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
+bpm. A host sample rate differing from the take's never re-renders (R-059, R-072): `RenderParams::outputSampleRate` is
+always 48000 (the state default), so the request and its cache key never depend on the host rate; the plugin owns a
+second worker (one `std::thread`, newest request wins) that, whenever the original take (the Renderer's `latest()` or a
+cache hit) or the host rate changes, publishes `resampleTake(original, hostRate)` (D-038, T-071) — always from the
+original, never from a resampled copy — or the original itself when the rates match. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
 no voice, lyrics that fail to parse, no stored notes. No voice loaded → no render and
 `lastError()` = `Load a voice`. Lyrics that fail `parseLyrics` → no render, `lastError()` = `Lyrics: <ParseError message>`.
 No stored notes → no render and no error (status stays as it was). The renderer's function is
@@ -476,7 +481,8 @@ provenance sidecar and audio renders reviewed at G-001. No `figures/SPEC.md` is 
 of the evaluation, that is a new planning amendment.
 
 ### D-033 Implementation conventions
-Private helpers and private headers live in `core/src/` (never `core/include/singvst/`, whose files are all frozen;
+Code compiles with GCC ≥ 11 and MSVC 2022 (no `<format>`, `<print>` or `std::expected`; the notebook builds the CLI with the
+hosted image's compiler, R-023). Private helpers and private headers live in `core/src/` (never `core/include/singvst/`, whose files are all frozen;
 T-060). Each core step adds `core/src/<module>.cpp` for its header and **deletes the matching definitions from
 `core/src/stubs.cpp`** in the same commit (`core/CMakeLists.txt` globs `src/*.cpp`, so a duplicate definition is a link
 error, not a silent override). The plugin step replaces `plugin/PluginProcessor.cpp` and adds `plugin/PluginEditor.*`; the
@@ -551,6 +557,7 @@ cwd `<rvc>`; every other command runs with cwd `<run>`.
 `CONSENT_CONFIRMED = True` and `ATTESTATION` = "I confirm these recordings are my own voice, or are used with the
 singer's consent, and that this use is within the platform's terms." (A-011). **Parameters cell** (2a): `VOICE = "myvoice"`
 (lower-case letters, digits and `-`), `RUN = 1`, `EXPECTED_COMMIT = "<40-hex commit named in GATE-G-004.md>"`,
+`RESUME = False` (Kaggle: False for the voice's first version, True for every later one; R-068),
 `DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
 it), `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). At the end of cell (4) — after the Colab mount, so
 nothing is written under the Drive path before it is mounted — the first session of a
@@ -729,6 +736,7 @@ preceding bytes (u64): size = 56 + 4n. `storeTake` writes `<name>.tmp` then rena
 allocating, then magic, stored hash = requested hash, `sampleRate` > 0, `n` ≤ 901 × `sampleRate` (900 s plus frame-rounding slack, R-067), and the checksum; any
 failure is a miss. `cachedRender` keys by `phraseHash(request)` and stores only a take whose `contentHash` equals it.
 Implemented by S-009 (planning sketch: research/spikes/premortem-r1/take_cache_sketch.cpp passes T-067/T-068).
+**resampleTake** (R-072; T-071): playback copy at another rate, from the original take only (D-010).
 **Limits** (R-027): 5000 notes and 900 s per take, in `importMidi` (D-031, T-069, S-006) and `renderTake` (D-013, T-070,
 S-009); external-data ONNX models rejected at engine load (D-012, S-008).
 **Index of round-1 mitigations:** R-013/R-014/R-015/R-016/R-019/R-020/R-021/R-022/R-023/R-029/R-031/R-033/R-034/R-035/

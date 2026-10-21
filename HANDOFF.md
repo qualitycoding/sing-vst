@@ -53,7 +53,7 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | S-006 | Standard MIDI File import | T-064…T-066, T-069 | none |
 | S-007 | Resampler and runtime loading | T-039…T-041 | none |
 | S-008 | Guide and converter engines | T-042…T-047; the external-data check output (D-012) | none |
-| S-009 | Render pipeline and background renderer | T-048…T-052, T-067, T-068, T-070 | none |
+| S-009 | Render pipeline and background renderer | T-048…T-052, T-067, T-068, T-070, T-071 | none |
 | S-010 | CLI `singvst-render` | T-P18 | none |
 | S-011 | Plugin processor and editor | T-053…T-058, T-059 | none |
 | S-012 | Python toolkit core | T-P01…T-P15 (T-P13 including its binary part `test_P13b_…`), T-P25 | none |

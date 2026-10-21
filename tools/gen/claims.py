@@ -194,6 +194,10 @@ claim("C-064", "Kaggle notebook outputs are limited to 500 items (Kaggle product
       "operational", True, [S("https://www.kaggle.com/product-feedback/420538", "[Bug] Kaggle notebook outputs are limited to 500 items", "meta description", 3, "2026-10-16")],
       "single-source", ["D-035", "R-055"], ["subject:kaggle", "domain:hosted-gpu"], "2026-10", kstamp="20261016T130100Z")
 
+claim("C-065", "RVC 81eed5e train.py main() starts training in torch.multiprocessing child processes (mp.Process target=run, one per GPU) and joins them, so terminating only the launcher leaves training running.",
+      "software", True, [S("research/spikes/premortem-r2/rvc_process_structure.txt", "spike premortem-r2 rvc_process_structure (pinned source)", "train.py 56, 140-158", 1, "2026-10-21")],
+      "verified", ["D-035", "R-070"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e", kstamp="20261021T150000Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)

@@ -1,0 +1,21 @@
+# RVC 81eed5e train/train.py main(): training runs in torch.multiprocessing child processes (read 2026-10-21)
+56:import torch.multiprocessing as mp
+140:    if single_cuda:
+141:        run(0, 1, hps, logger, False)
+142:        return
+143:    os.environ["MASTER_ADDR"] = "localhost"
+144:    os.environ["MASTER_PORT"] = str(randint(20000, 55555))
+145:    children = []
+146:    for i in range(n_gpus):
+147:        subproc = mp.Process(
+148:            target=run,
+149:            args=(i, n_gpus, hps, logger, True),
+150:        )
+151:        children.append(subproc)
+152:        subproc.start()
+153:
+154:    for i in range(n_gpus):
+155:        children[i].join()
+156:
+157:
+158:def run(rank, n_gpus, hps, logger, use_ddp):
