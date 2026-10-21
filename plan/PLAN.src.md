@@ -438,7 +438,9 @@ Defaults for every step unless the step says otherwise:
   1a. `GATE-G-004.md` gives the commit-pinned notebook URLs, the attestation sentence of D-035 and the Parameters-cell
      values (`VOICE` = `myvoice` unless the owner names one, `RUN` = 1 for the first G-004 issue and +1 for each G-001 `retrain` — a `failed:` re-issue keeps `RUN` (D-035,
      R-053), the `RESUME` rule of D-035 (True exactly when an earlier Kaggle version of this voice has a `state.tar` in its output;
-     the owner applies it), `PRIOR_VOICE_GPU_HOURS` (the hours of a `switch-platform` response, else 0), `EXPECTED_COMMIT` = `git rev-parse
+     the owner applies it), `PLATFORM_EXPECTED` (Colab for the first issue; the other platform after `switch-platform`),
+     `PRIOR_VOICE_GPU_HOURS` = `results/<VOICE>/ledger.json` `total` minus the ledger's hours for `PLATFORM_EXPECTED`,
+     `PRUNE` after a `prune:` response; `EXPECTED_COMMIT` = `git rev-parse
      HEAD` after S-016's last save, `DEREVERB`/`EPOCHS` defaults of D-035); the response reports the values used.
   2. After the owner runs the notebook, they attach `upload-run<RUN>.tar` and paste its `sha256sum` line (D-035); the
      implementer reads the attachment where the session exposes attached files (its uploads folder) and copies it to
@@ -454,8 +456,9 @@ Defaults for every step unless the step says otherwise:
      exists and its outcome (pass, or failure with its message) is recorded as a result for G-001, never re-run (D-035
      §Evaluation outcome; R-071, R-084); on Kaggle the pasted `seq <n> state.tar <sha>` lines, in version order, match
      the `sessions[]` `seq` values with no gap and each session's `restored_from` equals the previous line's hash
-     (R-068, R-083); `budget-voice.json` `gpu_hours` ≥ `PRIOR_VOICE_GPU_HOURS` + this run's `gpu_hours` (R-082); entries
-     without `end` are ignored. `owner-fixed:` and `budget-exhausted` responses are handled as plan/GATES.md G-004 says. A failed check →
+     (R-068, R-083), `killed` versions counted as unlogged hours (R-095); every session's recorded `prior` equals the issued
+     `PRIOR_VOICE_GPU_HOURS` (R-082, R-097); entries without `end` are counted with their heartbeat hours and listed in
+     GATE-G-001.md. After **every** G-004 response, update and commit `results/<VOICE>/ledger.json` (D-035; PK-77). `owner-fixed:` and `budget-exhausted` responses are handled as plan/GATES.md G-004 says. A failed check →
      ask the owner for the files again (at most twice, then `BLOCKED.md`); files are never edited. GATE-G-001.md gets the
      stage→commit table from the uploaded `commits.json` (written whenever a stage runs, so it includes evaluate; R-054).
   3. Commit the extracted files to `results/<VOICE>/run<RUN>/` (`VOICE` and `RUN` of the response and GATE-G-004.md; the

@@ -283,9 +283,11 @@ constructor. The capture state is one `std::atomic<int>` with an internal fourth
 every transition is a compare-and-swap on both threads (R-078): the message thread moves `Idle`→`Armed`,
 `Armed`→`Idle` and `Capturing`→`Cancelling` (disarm during a capture; internal values `Cancelling` and `CancelAck`, both reported as `Idle`);
 `processBlock` moves `Armed`→`Capturing` and `Capturing`→`Stopping` and writes FIFO events only while `Capturing`; a
-failed CAS means the other thread won and the loser does nothing; the timer, after draining the FIFO in `Stopping`,
+failed CAS means the other thread won and the loser does nothing — except `arm(true)` in `Cancelling`/`CancelAck`, which sets a
+pending-arm flag the timer applies after storing `Idle` (R-105); the timer, after draining the FIFO in `Stopping`,
 finishes the capture (stored notes replaced; the warning `stored notes replaced; the previous take stays in the take cache`
-is carried into the warnings of the render that capture submits, so `lastWarnings()` still shows it afterwards, R-093),
+is appended by the message thread to `lastWarnings()` at capture finish and kept until the next capture or import, whatever
+renders or cache hits follow, R-093, R-106),
 or, once `processBlock` has acknowledged a cancel by moving `Cancelling`→`CancelAck` at the start of its next block (it
 writes no event in either state; the timer also proceeds when no block has arrived for 2 s), discards the drained events
 (stored notes kept), then resets the FIFO indices and stores `Idle` — the indices are never reset while the audio
@@ -309,7 +311,9 @@ always 48000 (the state default), so the request and its cache key never depend 
 second worker (one `std::thread`, newest request wins) that, whenever the original take (the Renderer's `latest()` or a
 cache hit) or the host rate changes, computes `resampleTake(original, hostRate)` (D-038, T-071) — always from the
 original, never from a resampled copy — or takes the original itself when the rates match, and hands it to the message
-thread (`juce::MessageManager::callAsync`), which publishes it only if the job's generation number is still the newest
+thread (`juce::MessageManager::callAsync`), which publishes it only if the job's generation number is still the newest; `renderStatus()` is `Rendering` while the Renderer
+is busy or the newest worker generation is not yet published, and `Ready` only after that publish (R-100); the timer posts
+the worker job as soon as it sees `latest()` change; the message thread publishes
 and a shared `alive` flag (`std::shared_ptr<std::atomic<bool>>` captured by the closure, cleared first in the destructor)
 is still set (R-091); the processor's destructor sets the worker's stop flag and joins it before `TakeSlot` is destroyed. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
 no voice, lyrics that fail to parse, no stored notes. No voice loaded → no render and
@@ -573,20 +577,23 @@ cwd `<rvc>`; every other command runs with cwd `<run>`.
 singer's consent, and that this use is within the platform's terms." (A-011). **Parameters cell** (2a): `VOICE = "myvoice"`
 (lower-case letters, digits and `-`), `RUN = 1`, `EXPECTED_COMMIT = "<40-hex commit named in GATE-G-004.md>"`,
 `RESUME = False` (Kaggle: True exactly when an earlier version of this voice printed "state.tar written"; R-068),
-`PRIOR_VOICE_GPU_HOURS = 0.0` (the GPU hours this voice used on the **other** platform only; GATE-G-004.md states it from
-the owner's `switch-platform` response, else 0; R-082), `DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
+`PLATFORM_EXPECTED = "colab"` (GATE-G-004.md pins the platform for the issue; cell (3) stops with an `owner:` line when it
+differs from the notebook's own `PLATFORM`, R-082), `PRIOR_VOICE_GPU_HOURS = 0.0` (the GPU hours of this voice that this
+platform's `budget-voice.json` does not hold — the other platform's runs and every unlogged Kaggle version — as
+GATE-G-004.md states from the repository ledger `results/<VOICE>/ledger.json`, R-082, R-095, R-097), `DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
 it), `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). At step (4e) — after the Colab mount, so
 nothing is written under the Drive path before it is mounted — the first session of a
 run writes `<run>/params.json` = exactly `{VOICE, RUN, PLATFORM, DEREVERB, EPOCHS, SPEAKER_ID, GUIDE}` (a platform change
 within a run therefore stops with the parameters message: a switch needs a new RUN, R-082) (`RESUME` and `EXPECTED_COMMIT`
 change between sessions and are never part of it; each session's commit goes to `budget.json` `sessions[].commit`); every later session asserts its values equal the file's, else stops with
-"parameters changed within run <RUN>: set RUN = <RUN+1> for a new run" (R-013). `params.json` is an input of every stage.
+an `owner:` line "parameters changed within run <RUN>: report it and wait for a new GATE-G-004.md" (R-013, R-102). `params.json` is an input of every stage.
 `--consent` = the attestation text; `--guide-licence` = the D-035 §Guide voicebank string. **Memory and disk check**
 (cell (10a), PK-43): print GPU name, GPU memory, RAM and free space on `<root>`'s file system; batch size 8 when GPU memory ≥
 14 GiB, else 4; RAM < 10 GiB → stop with a message to choose a High-RAM runtime; free space < 3 × the size of `raw/` +
 8 GiB (features, G/D checkpoints and their `.bak`, 20 weight snapshots; on Kaggle twice that, because `state.tar` is written
 beside its inputs) → stop with a message to free Drive space,
-naming earlier runs' `logs/<exp>/` as the largest deletable items (R-033, R-063).
+naming earlier runs' `logs/<exp>/` as the largest deletable items (R-033, R-063); on Kaggle the `owner:` line says "switch to
+Colab (`switch-platform`)" instead, because Kaggle state cannot be pruned by hand (R-102).
 **GPU time** = the wall-clock time of the stages rvc-f0, rvc-features, train, export and evaluate, plus cell (16); each
 session also records `session_hours` = wall-clock from cell (1) to its end, which is what platform quotas charge (R-062).
 **Kernel and helpers** (shared by all cells; names fixed): the notebook kernel (not the venv) runs the orchestration; after
@@ -631,8 +638,9 @@ checkpoint (11)) → `STOP_REASON` = `owner: <message>` (R-087); any other excep
 response. So no cell from (5) on raises and every version reaches cell (17), which is not guarded: it runs its `STOP` or normal
 branch inside its own `try`/`finally`, whose `finally` always stops the heartbeat, writes the budget files and (Kaggle)
 runs `pack_state`. Cells (1)–(4) may raise; if (4f) raises after (4e) wrote its files, (4) first closes this session's
-`sessions[]` entry (`end`, its `gpu_hours`) and stops the heartbeat, then re-raises; readers (S-017, the budget sums) also
-ignore any entry without `end`. **Evaluation outcome** (R-071, R-084, PROCEDURE validity rules): a T-P20 assertion failure (pytest exit 1) is a result,
+`sessions[]` entry (`end`, its `gpu_hours`) and stops the heartbeat, then re-raises; every budget sum includes every entry, using its last
+heartbeat `gpu_hours` when `end` is missing (an abnormally ended session; S-017 reports it, R-095). **Evaluation outcome** (R-071, R-084, PROCEDURE validity rules): a T-P20 failure whose junit message is one of T-P20's own assertions on the report (status, keys,
+renders, spread, finiteness) is a result (any other exit-1 failure — an exception inside the test — is `failed: 16`, R-099),
 never a guarded failure — an invalid report is the intended outcome of PROCEDURE's validity checks, and T-P20 runs its own
 evaluation draw; `t-p20.xml` is always uploaded and S-017 takes the outcome to G-001. Only pytest exits 2–5 (error,
 interruption, usage, no tests collected) are a guarded `failed: 16`. T-P20 is never re-run to obtain a pass (Rule 9).
@@ -666,7 +674,7 @@ every member is a regular file or directory with a relative path and no `..` (on
 records the restored tar's SHA-256 (checked against `state.tar.sha256`) as `restored_from` and `seq` = the largest `seq` in
 every restored `run*/out/budget.json` + 1 in its new `sessions[]` entry (the chain continues across RUNs; the voice's first
 session has `seq` 1 and `restored_from` null; on Colab `restored_from` is always null); cell (17) prints `seq <n> state.tar <sha256>` as its last line, which the owner
-copies from every Kaggle version's log into the G-004 response (a tar cannot hold its own hash; R-068, R-083); (4) in exactly this order (R-051): (a) clone sing-vst and check out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal
+copies from every Kaggle version's log into the G-004 response (a tar cannot hold its own hash; R-068, R-083); (4) in exactly this order (R-051; stops in (4c) and (4e) raise `OwnerAction` and print an `owner:` line, R-102): (a) clone sing-vst and check out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal
 it, else stop; R-029) and RVC 81eed5e; (b) create the venv and install exactly as §Notebook environment; (c) the GPU's
 compute capability must be in `torch.cuda.get_arch_list()`, else stop naming both (R-044); (d) Colab only:
 `drive.mount('/content/drive')` — no cell writes under `/content/drive` before this point; (e) create the `<run>/`
@@ -693,7 +701,8 @@ cuda 1 0 0 <rvc>/logs/<exp> v2 False` (full precision, RVC's fp32 path, works on
 method in cuda mode; argv verified in C-057); (10) `rvc-files`; (10a) the Memory and disk check; (11) the train stage:
 **checkpoint guard** (R-035, R-057) — when `logs/<exp>/G_2333333.pth` or `D_2333333.pth` exists, each must load with
 `torch.load(path, map_location="cpu")` (exactly as RVC loads it, C-063) and `e0` = the G checkpoint's `"iteration"`; a file that fails is replaced by its `.bak` when that loads,
-else the cell stops ("checkpoint unreadable; delete logs/<exp> to restart this run"); after the check both are copied to
+else the cell stops (`owner:` "checkpoint unreadable; delete logs/<exp> to restart this run" — on Kaggle "answer `prune:
+<exp>`", which the next GATE-G-004.md turns into `PRUNE = "<exp>"`, excluded by `restore_state` and the next `pack_state`; R-102); after the check both are copied to
 `.bak`; then run the JSON argv printed by `rvc-train-command` (RVC resumes from `logs/<exp>` automatically, C-047, C-061;
 no retrieval index is trained — the converter does not use it, D-012); after it exits, in a session that started with a
 checkpoint: the G checkpoint's `"iteration"` must be ≥ `e0` (a restart from the pretrained model saves lower epochs),
@@ -705,17 +714,18 @@ complete when `assets/weights/<exp>.pth` exists (RVC writes it at `total_epoch` 
 1e-3 → stop (DR-14, R-050); (13) the render-bin stage: `mkdir -p <LOCAL>/bin && cp <LOCAL>/build-render/cli/singvst-render
 <LOCAL>/build-render/cli/cmudict.dict <LOCAL>/build-render/cli/onnxruntime-LICENSE.txt
 <LOCAL>/build-render/cli/libonnxruntime.so* <LOCAL>/bin/` (the build copies the runtime files beside the binary; D-024,
-D-005; `<LOCAL>` is rebuilt every session, so a resumed session re-runs render-bin and, because the binary's bytes differ,
-evaluate); (14) the guide voicebank (§Guide voicebank,
+D-005; `<LOCAL>` is rebuilt every session, so a resumed session re-runs render-bin, and evaluate too when the rebuilt binary's bytes differ — a deterministic rebuild
+of the same commit may leave evaluate skipped, R-107); (14) the guide voicebank (§Guide voicebank,
 into `<root>/voicebank/`, the zip archived like (5)) and `python -m singvst_train.cli pack --out out/voice --name <exp> …`,
-then `out/training.json` = `{"voice_name": <exp>, "epochs_requested": EPOCHS, "epochs_trained": <N of the newest
-<exp>_e<N>_s<M>.pth, or EPOCHS>, "stopped_by_budget": <bool: budget.json's value is not null>, "weights_sha256", "env_files": [the session freeze/env files], "stage_commits":
+then `out/training.json` = `{"voice_name": <exp>, "epochs_requested": EPOCHS, "epochs_trained": <budget.json `stopped_by_budget` when
+set, else EPOCHS (R-104)>, "stopped_by_budget": <bool: budget.json's value is not null>, "weights_sha256", "env_files": [the session freeze/env files], "stage_commits":
 {stage: commit it last ran under}, "commit"}` (R-019, R-054; `make_stages` records `stage_commits` in
 `<run>/state/commits.json` whenever a stage runs);
 (15) `python -m singvst_train.cli evaluate --voice out/voice --heldout heldout --phrases <sing-vst>/eval/phrases
 --render-bin <LOCAL>/bin/singvst-render --out out/eval --thresholds <sing-vst>/eval/thresholds.json --lockfile
 out/env/<session>.freeze.txt`; then `out/eval/ceiling.json` = `{"heldout_vs_train": mean over held-out files of cosine(embedding of
-the file, mean embedding of the `train/` files)}` with the PROCEDURE step 4 Resemblyzer settings (R-032); (16) with cwd `<sing-vst>`: `python -m pytest -q -m
+the file, mean embedding of the `train/` files)}` with the PROCEDURE step 4 Resemblyzer settings (R-032); (16) first asserts that `SINGVST_VOICE`, `SINGVST_HELDOUT` and `SINGVST_RENDER_BIN` exist (else `failed: 16`, R-099), then with
+cwd `<sing-vst>`: `python -m pytest -q -m
 voice tests/python/test_evaluate.py --junitxml=<run>/out/eval/t-p20.xml` (T-P20) with `SINGVST_VOICE`, `SINGVST_HELDOUT`,
 `SINGVST_RENDER_BIN` set to the paths above (absolute); §Evaluation outcome decides whether a failure is a guarded failure (R-071); (17) stop the budget
 heartbeat and write `budget.json` a final time; `tar -C <run>/out -cf <root>/out-run<RUN>.tar .` (members `./conv/`, `./voice/`, `./eval/…`; Drive / Kaggle output); write
@@ -742,9 +752,12 @@ stage also has `params.json` as an input (R-013); the notebook prints the list `
 | evaluate | `out/voice/`, `heldout/`, `<LOCAL>/bin/` | `out/eval/` |
 **Time and budget.** `out/budget.json` holds `{"gpu_hours", "stopped_by_budget": <epoch N of the copied weights, or null>, "sessions": [{"seq", "restored_from", "commit", "start",
 "end", "gpu_hours", "session_hours", "stages_run"}]}` (`end` is set by the final budget write — before the upload tar in
-the normal branch, by `end_session` otherwise), and `<root>/budget-voice.json` holds `{"prior_gpu_hours", "runs": {RUN: gpu_hours}, "gpu_hours"}` with `prior_gpu_hours` =
-max(the file's, `PRIOR_VOICE_GPU_HOURS`) and `gpu_hours` = `prior_gpu_hours` + Σ `runs` of this platform's folder, so hours
-spent on the other platform are never dropped (R-082), (A-015 is per voice; R-062). A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
+the normal branch, by `end_session` otherwise), and `<root>/budget-voice.json` holds this platform's own `{"runs": {RUN: gpu_hours}}`; the voice total the notebook
+enforces (`t_budget`, the 20-h stop) is `PRIOR_VOICE_GPU_HOURS` + Σ `runs`, and each session records the `prior` it used.
+The authoritative voice ledger is `results/<VOICE>/ledger.json` in the repository, `{"colab": h, "kaggle": h,
+"unlogged": h, "total": h}`, which S-017 updates and commits after **every** G-004 response (from the upload, or from
+the `hours-used` figure and Kaggle version list of a `failed:`/`owner:`/`switch-platform:`/`budget-exhausted` response),
+so hours on another platform or in a killed version are never dropped (PK-77; R-082, R-095, R-097); (A-015 is per voice; R-062). A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
 earlier run of the cells in the same runtime before starting a new one, and each write re-reads the files and updates only
 its own `<session>` entry (R-074) — rewrites both with
 `pipeline.atomic_write_text` every 5 minutes with the running session's GPU time, so a killed session loses at most 5

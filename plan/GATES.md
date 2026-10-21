@@ -59,17 +59,21 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   platform's terms? (2) De-reverb: use the audio-separator model (licence unstated, C-043) or supply dry recordings (D-025)?
   (3) Colab or Kaggle?
 - **Responses:** `consent: yes, visibility: private, voice: <VOICE>, platform: colab|kaggle, dereverb: yes|no, epochs: <N>`
-  followed, on Kaggle, by the `seq <n> state.tar <sha256>` last line of every version in order (R-083)
+  followed, on Kaggle, by one line per version of this issue in order from the Versions panel: its `seq <n> state.tar
+  <sha256>` last line, or `killed <run time>` for a version that printed none (its run time is added to the ledger's
+  `unlogged` hours as an upper bound; R-083, R-095)
   (the values the owner used; `RUN` is always the number GATE-G-004.md states; without `consent: yes` and `visibility: private` the response is `stop`; the owner runs the notebook per
   D-035 and attaches `upload-run<RUN>.tar` and pastes the `sha256sum` line cell (17) printed) ·
   `owner: <message>` printed by the notebook → the owner fixes the stated condition (recordings, disk, RAM, parameters)
-  and answers `owner-fixed: <cell>`; the implementer re-issues with the same commit, not counted as an attempt (R-087) ·
+  and answers `owner-fixed: <cell>, hours-used: <the last printed voice total>` (or `prune: <exp>` on Kaggle); the
+  implementer re-issues with the same commit, not counted as an attempt, at most twice per issue, then `BLOCKED.md` (R-087,
+  R-102) ·
   `budget-exhausted, hours-used: <the last printed budget-voice gpu_hours>` (the voice reached its budget before a loadable
   snapshot; no upload exists; S-017 writes GATE-G-001.md with only that evidence and the responses `stop` and
   `raise-budget: <hours>` — a planning amendment to A-015 — never `proceed`; R-086) ·
   `switch-platform: colab|kaggle, hours-used: <the last printed budget-voice gpu_hours>` (a new RUN on the other platform with
   `PRIOR_VOICE_GPU_HOURS` = that figure plus any earlier other-platform hours; R-082) ·
-  `failed: <cell number> <error text>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
+  `failed: <cell number> <error text>, hours-used: <the last printed voice total>` (the implementer fixes the notebook — one attempt per report, at most three per G-004
   issue (a `retrain` re-issue starts a new count; a `failed:` re-issue keeps `RUN`; switching platform is a new `RUN`, with
   `PRIOR_VOICE_GPU_HOURS` covering the hours already used, R-082), then
   `BLOCKED.md`; GPU hours already used stay in `budget.json` — and re-issues G-004) · `stop`. Recordings, renders and voice packages are
