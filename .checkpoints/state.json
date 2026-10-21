@@ -207,7 +207,7 @@
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
-    "premortem/RISK_REGISTER.md": "35190c2291298d83ef61f449cc91abfd3c2b8f85beffaefe7dc97319796ddf6c",
+    "premortem/RISK_REGISTER.md": "bd42e8d9b3fbb1f8b78b385a660ccab95524448dc09954bfced04a99b612cd79",
     "premortem/coldread-pass-1.md": "94bfdca50c1f0b7ee5d4f429df0196eb34225a29b8189dc5b204d729a534cc76",
     "premortem/coldread-pass-2.md": "1229c3da0b81a812c5bd5cb47903045ca288b9b19a03fb3b509f5cc9576f69e0",
     "premortem/coldread-pass-3.md": "b9c2309a3adef033d42237de5c4ec1eddddaff9b1afad52f15eb8d970821d396",
@@ -215,6 +215,7 @@
     "premortem/coldread-pass-5.md": "428f0069c0eaaedf47b2bdaa979591fe8fbb05a8fc6d145d9ad70f55360208bd",
     "premortem/coldread-pass-6.md": "240c2052c75beea561242d719423ec0d5133eac029fea12ae45b2dcdad2f1012",
     "premortem/coldread-pass-7.md": "e9ef8a9be96268ab45edea0716f8b6d5479e3a1fc1f14cbb6078f8557db9188f",
+    "premortem/coldread-pass-8.md": "aad4c56bf7262e5937a0cb586ea851cf4963461788ca75b7d5c81eb8ba69bce6",
     "premortem/round-1.md": "da26d8296f4df26570f504496508c1db94abc0201a4942f58ba816af794d00c5",
     "premortem/round-2.md": "e502a3d6903ee97cb3cef5e0b395a71ee6ac7627dcb7b1012f3dcd31f842d336",
     "premortem/round-3.md": "d9d0a8cc248ae07ce14ae719baa5fa35df96bfa2bc41aa466f219ca3f5530139",
@@ -755,7 +756,7 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T14:28:09Z",
+  "updated_at": "2026-10-21T14:28:33Z",
   "active_step_id": "4",
   "execution_context": {
     "current_objective": "Finish Phase 3 (HANDOFF.md), then Phase 2E freeze, 3.6 cold read, Phase 4 pre-mortem, Phase 5 push",
@@ -805,7 +806,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 104,
+  "sequence": 105,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
