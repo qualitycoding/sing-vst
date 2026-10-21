@@ -1,0 +1,5 @@
+== pytest 9.1.1
+test_own_assert: <failure> message="AssertionError: assert {'status': 'invalid: x'} == {'status': 'measured'}" last='tests/python/test_evaluate.py:3: AssertionError' result=True
+test_need_env: <failure> message='AssertionError: SINGVST_X is not set (set by plan step S-017)' last='tests/python/conftest.py:2: AssertionError' result=False
+test_toolkit_exception: <failure> message='ValueError: metric failed' last='tests/python/test_evaluate.py:2: ValueError' result=False
+test_type_error: <failure> message="TypeError: '<' not supported between instances of 'NoneType' and 'float'" last='tests/python/test_evaluate.py:6: TypeError' result=False

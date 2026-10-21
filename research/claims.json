@@ -1787,5 +1787,56 @@
    "D-035",
    "R-070"
   ]
+ },
+ {
+  "id": "C-066",
+  "claim": "audio-separator 0.47.0 (PyPI wheel sha256 756f3b62\u2026) exports Separator(model_file_dir, output_dir, output_format='WAV', output_single_stem, \u2026), load_model(model_filename) and separate(audio_file_path, custom_output_names); custom_output_names keys are stem names matched case-insensitively and give <name>.<format> in output_dir; the de-reverb model's stems are noreverb/reverb; it requires numpy>=2 while RVC 81eed5e's cu128 file pins numpy<2, so the two cannot be resolved into one environment (uv pip compile: no solution), but audio-separator resolves on its own with torch 2.7.1.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/audio-separator-047/output.txt",
+    "doi": "",
+    "title": "spike audio-separator-047 (wheel inspection and uv resolution)",
+    "version": "",
+    "locator": "whole file",
+    "accessed": "2026-10-21",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-025",
+   "D-035",
+   "R-108"
+  ]
+ },
+ {
+  "id": "C-067",
+  "claim": "With pytest 9.1.1, a junit <failure> for an assertion in the test body ends its text with '<test file>:<line>: AssertionError'; an assertion inside a conftest helper ends with 'conftest.py:<line>: AssertionError'; an exception raised elsewhere ends with '<file>:<line>: <ExceptionType>'.",
+  "kind": "software",
+  "load_bearing": true,
+  "sources": [
+   {
+    "url": "research/spikes/junit-classify/output.txt",
+    "doi": "",
+    "title": "spike junit-classify",
+    "version": "",
+    "locator": "whole file",
+    "accessed": "2026-10-21",
+    "tier": 1
+   }
+  ],
+  "confidence": "verified",
+  "evidence_class": "n/a",
+  "independent_publishers": 1,
+  "contradicted_by": [],
+  "informs": [
+   "D-035",
+   "R-099"
+  ]
  }
 ]

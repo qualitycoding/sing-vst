@@ -208,7 +208,8 @@ whose initializers use external data (R-027), detected by a bounded protobuf wal
 (graph) → GraphProto field 5 (initializer) → TensorProto field 14 (`data_location`) = 1 (EXTERNAL) or any field 13
 (`external_data`); malformed bytes → `ValidationError`. S-008 verifies it with a throw-away check (not a committed test: `tests/` is frozen; model runs are counted through a
 private debug hook in `core/src/guide_engine.cpp` — environment variable `SINGVST_DEBUG_RUNS=1` prints one stderr line per
-model run) — a program under
+model run, a model run being one guide part (the acoustic `Run` call and the vocoder `Run` call of one part of a split
+phrase), printed after both as `guide part <i>: frames <n>`) — a program under
 `research/spikes/s008-external-data/` linked against `../build-core/core/libsingvst_core.a`, loading a copy of a fixture model saved
 by `onnx.save(..., save_as_external_data=True)`.
 
@@ -279,15 +280,17 @@ inUse.load()`; `u == BUSY` → free nothing; else free every retired take `!= u`
 `renderBlock` (header) produces the mono signal; the plugin renders into channel 0 and copies it to the other channels (no
 scratch buffer). Incoming MIDI is ignored except while capturing (D-010). **Plugin threading** (R-026): the capture buffer
 is a single-producer/single-consumer FIFO (`juce::AbstractFifo` over 4096 preallocated events) allocated once in the
-constructor. The capture state is one `std::atomic<int>` with an internal fourth value `Stopping` (reported as `Capturing`):
+constructor. The capture state is one `std::atomic<int>` holding the three public values `Idle`, `Armed`, `Capturing` and
+three internal ones — `Stopping` (reported as `Capturing`), `Cancelling` and `CancelAck` (both reported as `Idle`):
 every transition is a compare-and-swap on both threads (R-078): the message thread moves `Idle`→`Armed`,
-`Armed`→`Idle` and `Capturing`→`Cancelling` (disarm during a capture; internal values `Cancelling` and `CancelAck`, both reported as `Idle`);
+`Armed`→`Idle` and `Capturing`→`Cancelling` (disarm during a capture);
 `processBlock` moves `Armed`→`Capturing` and `Capturing`→`Stopping` and writes FIFO events only while `Capturing`; a
 failed CAS means the other thread won and the loser does nothing — except `arm(true)` in `Cancelling`/`CancelAck`, which sets a
 pending-arm flag the timer applies after storing `Idle` (R-105); the timer, after draining the FIFO in `Stopping`,
 finishes the capture (stored notes replaced; the warning `stored notes replaced; the previous take stays in the take cache`
-is appended by the message thread to `lastWarnings()` at capture finish and kept until the next capture or import, whatever
-renders or cache hits follow, R-093, R-106),
+is held by the message thread from capture finish until the next capture finish or import, and while held it is appended
+after the render or import warnings in every `lastWarnings()` result, whatever renders or cache hits follow (D-010), R-093,
+R-106),
 or, once `processBlock` has acknowledged a cancel by moving `Cancelling`→`CancelAck` at the start of its next block (it
 writes no event in either state; the timer also proceeds when no block has arrived for 2 s), discards the drained events
 (stored notes kept), then resets the FIFO indices and stores `Idle` — the indices are never reset while the audio
@@ -310,12 +313,14 @@ bpm. A host sample rate differing from the take's never re-renders (R-059, R-072
 always 48000 (the state default), so the request and its cache key never depend on the host rate; the plugin owns a
 second worker (one `std::thread`, newest request wins) that, whenever the original take (the Renderer's `latest()` or a
 cache hit) or the host rate changes, computes `resampleTake(original, hostRate)` (D-038, T-071) — always from the
-original, never from a resampled copy — or takes the original itself when the rates match, and hands it to the message
+original, never from a resampled copy — or takes the original itself when the rates match (before the first
+`prepareToPlay` the host rate is unknown, stored as 0, and counts as matching, so `resampleTake` is never called with a rate
+≤ 0), and hands it to the message
 thread (`juce::MessageManager::callAsync`), which publishes it only if the job's generation number is still the newest; `renderStatus()` is `Rendering` while the Renderer
 is busy or the newest worker generation is not yet published, and `Ready` only after that publish (R-100); the timer posts
-the worker job as soon as it sees `latest()` change; the message thread publishes
-and a shared `alive` flag (`std::shared_ptr<std::atomic<bool>>` captured by the closure, cleared first in the destructor)
-is still set (R-091); the processor's destructor sets the worker's stop flag and joins it before `TakeSlot` is destroyed. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
+the worker job as soon as it sees `latest()` change; the posted closure publishes only if a shared `alive` flag
+(`std::shared_ptr<std::atomic<bool>>` captured by the closure, cleared first in the destructor) is still set, as well as
+the generation condition above (R-091); the processor's destructor sets the worker's stop flag and joins it before `TakeSlot` is destroyed. `gain` never triggers a render. Blocking conditions are checked in this order and only the first that holds is reported:
 no voice, lyrics that fail to parse, no stored notes. No voice loaded → no render and
 `lastError()` = `Load a voice`. Lyrics that fail `parseLyrics` → no render, `lastError()` = `Lyrics: <ParseError message>`.
 No stored notes → no render and no error (status stays as it was). The renderer's function is
@@ -329,7 +334,7 @@ in the take cache (`phraseHash` of the stored notes, `parseLyrics` of the stored
 `voiceId` is the voice's SHA) and publishes a hit even when the voice folder cannot be found (status "voice not found —
 playing the stored take", which is also `lastError()`); a miss on a restored project with notes adds the warning `approved take not found in the take
 cache; a new performance was rendered` (R-059). The status line also shows the cache's total size (R-058). `lastWarnings()` = the warnings of the most recent import or completed render, whichever was
-last. Capture never allocates on the audio thread (D-022, whose **Plugin threading** rule wins: the 4096-event FIFO is
+last (a later one replaces them, never appends), followed by D-022's capture warning while it is held. Capture never allocates on the audio thread (D-022, whose **Plugin threading** rule wins: the 4096-event FIFO is
 allocated once in the constructor; D-022 governs the capture state and FIFO reset); the
 audio thread appends `(ppq, note, on/off)` without allocating (events beyond 4096 are dropped and counted); the message-thread
 timer feeds them to `CaptureRecorder`, and after the stop it stores the notes (a dropped-event count > 0 adds the warning
@@ -447,7 +452,16 @@ RTF ≤ 1.0) with `"status": "unmeasured-default"`; `judge` reports verdicts aga
 ### D-025 De-reverb
 Optional and **off by default**. The candidate (audio-separator 0.47.0 with the MelBand-Roformer de-reverb model; C-043) has no
 stated model licence, so the owner decides at G-004 whether to use it; otherwise the owner supplies dry recordings (or the
-dryest subset). `prepare --dereverb` is the only switch.
+dryest subset). `prepare --dereverb` is the only switch. audio-separator 0.47.0 requires numpy ≥ 2 and RVC's requirement
+file numpy < 2, so the two cannot share a venv (C-066): the notebook installs it in its own venv (D-035 §Notebook
+environment) and `prepare.dereverb(in_dir, out_dir)` runs one subprocess `[os.environ["SINGVST_SEPARATOR_PYTHON"], "-c",
+<script>]` (variable unset → `RuntimeError`) whose script, for each sorted `*.wav` `f` of `in_dir`, does exactly
+`from audio_separator.separator import Separator` (once), `s = Separator(output_dir=str(out_dir),
+output_single_stem="noreverb")` and `s.load_model(model_filename="dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt")`
+(once), then `s.separate(str(f), custom_output_names={"noreverb": f.stem})`, which writes `out_dir/<f.stem>.wav` (stem
+names match case-insensitively; C-066); afterwards every expected file must exist, else `RuntimeError` naming the missing
+ones; it returns the sorted output paths. The stem name comes from the model's YAML, downloaded at `load_model`, so it is
+listed in `docs/UNVERIFIED.md` (S-016).
 
 ---
 
@@ -528,13 +542,17 @@ on stderr). Paths are absolute or relative to the working directory.
 | `export` | `--rvc-root D (--weights F \| --exp-name S) --out-dir D` | `export_synth` → `OUT/rvc_synth.onnx`, `export_content` → `OUT/content.onnx`; `--exp-name` uses `latest_weights` |
 | `make-test-weights` | `--rvc-root D --out F [--seed 0]` | `make_test_weights` |
 | `pack` | `--out D --name S --consent S --guide-licence S --acoustic F --vocoder F --phonemes F [--speaker F] [--languages F] [--synth F --content F] [--language en] [--steps 20] [--depth 0.4] [--converter-sample-rate 48000] [--speaker-id 0]` | `pack_voice` (`--synth`/`--content` together or not at all) |
-| `evaluate` | `--voice D --heldout D --phrases D --render-bin F --out D [--seed 0] [--thresholds eval/thresholds.json] [--lockfile F]` | `evaluate_voice` (`lockfile` = `--lockfile`; held-out files = the sorted `*.wav` directly in `--heldout`, read with soundfile and averaged to mono before `metrics.extract_f0` (Resemblyzer gets the paths); a `ValueError` from
-a metric or a failed render makes the report "invalid: <reason>" with `null` metrics instead of propagating; an invalid run still writes
-`spread.json` with `null` for every per-repeat value it could not compute, keeps every render already written, and writes
+| `evaluate` | `--voice D --heldout D --phrases D --render-bin F --out D [--seed 0] [--thresholds eval/thresholds.json] [--lockfile F]` | `evaluate_voice` (`lockfile` = `--lockfile`; held-out files = the sorted `*.wav` directly in `--heldout`, read with soundfile and averaged to mono before `metrics.extract_f0` (Resemblyzer gets the paths); `evaluate_voice` itself — for the CLI and for T-P20 alike — turns a `ValueError` from
+a metric or a failed render into the report "invalid: <reason>" with `null` metrics and returns it instead of raising (PROCEDURE validity checks); an invalid run still writes
+`spread.json` with `null` for every per-repeat value it could not compute (a key's `min` and `max` are `null` when any of its values is `null`), keeps every render already written, and writes
 `report.json`, its sidecar and `verdict.json`), then writes
 `OUT/verdict.json` = `metrics.judge(report, thresholds)` for a measured report, or `{"all": false, "status": <the report's
 status>}` for an invalid one (judge is not called); exit 0 whenever `report.json` was written, 3 otherwise; the report's provenance `params` = `{"voice_name": <manifest name>, "voice_sha256", "phrases": <dir>, "heldout_files": <count>}`, `seeds` = `{"converter": <seed>}` (eval/PROCEDURE.md) |
 | `provenance` | `--result F --params JSON --seeds JSON [--repo .] [--lockfile python/requirements-lock.txt]` | `collect` + `write_sidecar` |
+
+`prepare` and `evaluate` (which the notebook runs with cwd `<run>`, not a git checkout) call `provenance.collect` with
+`repo_root` = the repository holding the `singvst_train` package (`Path(singvst_train.__file__).resolve().parents[2]`),
+never the working directory, so the sidecar's `git_commit` is the checked-out commit S-019 compares with.
 
 **Notebook environment.** Every Python command of the notebook runs in a uv-managed Python 3.12 venv, whatever the runtime's
 Python (C-060): `pip install uv==0.13.1`; `uv venv --python 3.12 --python-preference only-managed $VENV`;
@@ -547,10 +565,13 @@ https://pypi.org/simple -r rvc-req.txt`, where `rvc-req.txt` is RVC's `requirmen
 (`grep -vE -- '--(extra-)?index-url'`); (iii) `uv pip uninstall onnxruntime-gpu onnxruntime` (RVC's file pins
 onnxruntime-gpu < 1.20, which provides the same `onnxruntime` package; C-023); (iv) from PyPI: `onnx==1.23.2
 onnxruntime==1.31.0 pyworld==0.3.5 mido==1.3.3 pytest==9.1.1 nbformat==5.10.4 PyYAML==6.0.3 openai-whisper==20250625
-webrtcvad-wheels==2.0.14` (+ `audio-separator==0.47.0` only when `DEREVERB`), then `resemblyzer==0.1.4 --no-deps` (its
+webrtcvad-wheels==2.0.14`, then `resemblyzer==0.1.4 --no-deps` (its
 `webrtcvad` dependency imports `pkg_resources` unconditionally; `webrtcvad-wheels` provides the same module through
 `importlib.metadata`, and librosa, numpy, scipy and torch are already installed; C-062); (v) the toolkit with
-`-e <sing-vst>/python --no-deps`. Every session (step (4e), after the Colab mount) writes `uv pip freeze --python
+`-e <sing-vst>/python --no-deps`. Only when `DEREVERB`: a second venv `<LOCAL>/sep` (`uv venv --python 3.12
+--python-preference only-managed <LOCAL>/sep`) gets (i) the same torch pair from the PyTorch index and (ii) `--index-url
+https://pypi.org/simple audio-separator==0.47.0` — never the main venv (D-025, C-066); its `uv pip freeze` goes to
+`<run>/out/env/<session>.sep-freeze.txt`, and `os.environ["SINGVST_SEPARATOR_PYTHON"]` = `<LOCAL>/sep/bin/python`. Every session (step (4e), after the Colab mount) writes `uv pip freeze --python
 $VENV/bin/python` to `<run>/out/env/<session>.freeze.txt` and `<run>/out/env/<session>.json` = `{"python", "torch",
 "cuda", "gpu", "driver", "image"}` (`<session>` = the session's UTC start, `YYYYmmddTHHMMSSZ`; files of earlier
 sessions are kept, R-054; `--lockfile` arguments name the current session's freeze file) (`torch.__version__`,
@@ -562,8 +583,12 @@ mounted **after** these installs (R-020), at step (4d).
 `/tmp/rvc`, `<sing-vst>` = `/tmp/sing-vst`, `VENV` = `/tmp/py312`, recordings in the input dataset
 `/kaggle/input/singvst-<VOICE>/` (read-only; `raw/` below means that folder). `<LOCAL>` = `/content/local` (Colab) or
 `/tmp/local` (Kaggle): local disk for the build tree and the binary — no executable or build tree is ever placed on Drive
-(R-052). **Runs** (R-013, R-014, R-015, R-053): the first G-004 issue and each G-001 `retrain` start a new run number `RUN`
-(1, 2, …); a `failed:` re-issue keeps `RUN` and its experiment and changes only `EXPECTED_COMMIT`. Each run has its own run root `<run>` = `<root>/run<RUN>/`, holding `params.json`, `state/`,
+(R-052). **Runs** (R-013, R-014, R-015, R-053): the first G-004 issue (`RUN` 1), each G-001 `retrain` and each
+`switch-platform` response start a new run number `RUN` = the previous `RUN` + 1 (a number is never reused, so a switch
+before any session leaves an unused number); `failed:`, `owner-fixed:`, `prune:` and post-`raise-budget` re-issues keep
+`RUN` and its experiment and change only `EXPECTED_COMMIT`, `PRUNE` or `PRIOR_VOICE_GPU_HOURS`. Every absolute path in
+this decision is written through `PATH_ROOTS` (below): `/content/…` = `PATH_ROOTS["content"]`, `/kaggle/…` =
+`PATH_ROOTS["kaggle"]`, `/tmp/…` = `PATH_ROOTS["tmp"]`. Each run has its own run root `<run>` = `<root>/run<RUN>/`, holding `params.json`, `state/`,
 `raw_wav/`, `split.json`, `train/`, `heldout/`, `prepared/` and `out/`; the RVC experiment name is `<exp>` =
 `<VOICE>-run<RUN>`, and `pack --name <exp>`. Nothing of one run is read, overwritten or deleted by another; earlier runs'
 voice packages stay where they are. `<rvc>` and `<sing-vst>` are re-cloned every session; the RVC experiment and weights
@@ -576,9 +601,13 @@ cwd `<rvc>`; every other command runs with cwd `<run>`.
 `CONSENT_CONFIRMED = True` and `ATTESTATION` = "I confirm these recordings are my own voice, or are used with the
 singer's consent, and that this use is within the platform's terms." (A-011). **Parameters cell** (2a): `VOICE = "myvoice"`
 (lower-case letters, digits and `-`), `RUN = 1`, `EXPECTED_COMMIT = "<40-hex commit named in GATE-G-004.md>"`,
-`RESUME = False` (Kaggle: True exactly when an earlier version of this voice printed "state.tar written"; R-068),
-`PLATFORM_EXPECTED = "colab"` (GATE-G-004.md pins the platform for the issue; cell (3) stops with an `owner:` line when it
-differs from the notebook's own `PLATFORM`, R-082), `PRIOR_VOICE_GPU_HOURS = 0.0` (the GPU hours of this voice that this
+`RESUME = False` (Kaggle: True exactly when an earlier Kaggle version of this voice has a `state.tar` in its output — the
+single definition below; R-068), `PLATFORM_EXPECTED = ""` in both notebooks (GATE-G-004.md states `"colab"` or `"kaggle"`;
+cell (3) raises `OwnerAction` "PLATFORM_EXPECTED is '<value>' but this is the <PLATFORM> notebook: use the notebook
+GATE-G-004.md names" when it differs from the notebook's own `PLATFORM`, including when left empty; R-082),
+`PRUNE = ""` (Kaggle: the `<exp>` a `prune:` response named, as its re-issued GATE-G-004.md states; `restore_state` does
+not extract `logs/<PRUNE>/` and `pack_state` does not pack it, so that run's training restarts; ignored on Colab, where
+the owner deletes the folder; R-102), `PRIOR_VOICE_GPU_HOURS = 0.0` (the GPU hours of this voice that this
 platform's `budget-voice.json` does not hold — the other platform's runs and every unlogged Kaggle version — as
 GATE-G-004.md states from the repository ledger `results/<VOICE>/ledger.json`, R-082, R-095, R-097), `DEREVERB = False`, `EPOCHS = 200` (a multiple of 10, asserted in (2a); `train_command` requires `--save-every` 10 to divide
 it), `SPEAKER_ID = 0`, `GUIDE = "tiger"` (or the G-005 alternative). At step (4e) — after the Colab mount, so
@@ -599,14 +628,23 @@ session also records `session_hours` = wall-clock from cell (1) to its end, whic
 **Kernel and helpers** (shared by all cells; names fixed): the notebook kernel (not the venv) runs the orchestration; after
 step (4a) it does `sys.path.insert(0, f"{SINGVST}/python")` and imports `pipeline` lazily inside `make_stages` and later
 cells (`pipeline.py` is standard-library only). Globals: `PLATFORM` ("colab"|"kaggle"), `ROOT`, `RUNDIR`, `LOCAL`, `RVC`,
-`SINGVST`, `VENV`, `SESSION`, `STOP`, `HEARTBEAT`, `HEARTBEAT_ERROR`, `class SessionEnd(Exception)`, `class OwnerAction(Exception)`, `write_params()` (step (4e)), `end_session(stop: bool)` (cell (17)'s `finally` body: sets this session's `end`
-and `gpu_hours` if the normal branch has not, writes the budget files, and on Kaggle calls `pack_state(WORKING)` and prints
-`seq <n> state.tar <sha256>`), `pack_state(dst_dir: str) -> str` (writes `dst_dir/state.tar` and `.sha256`, returns the
-hash), `restore_state(input_root: str, resume: bool) -> str | None` (globs `input_root/*/state.tar`, applies the `RESUME`
-rules below raising `OwnerAction`, verifies, copies and extracts into `WORKING`, returns the hash or `None`), and
+`SINGVST`, `VENV`, `SESSION`, `STOP` (bool), `STOP_REASON` (str, `""` until a stop), `WORKING` (Kaggle:
+`PATH_ROOTS["kaggle"] + "/working"`; Colab: `None`), `BUDGET_HOURS` (20), `HEARTBEAT`, `HEARTBEAT_ERROR`, `class SessionEnd(Exception)`, `class OwnerAction(Exception)`, `write_params()` (step (4e)),
+`start_session()` (step (4e), after `write_params()`: appends this session's `sessions[]` entry — `seq`, `restored_from`,
+`prior` = `PRIOR_VOICE_GPU_HOURS`, `commit`, `start`, `end` null, `gpu_hours` 0, `session_hours` 0, `stage_hours` {},
+`stages_run` [] — and starts the heartbeat), `end_session(stop: bool)` (cell (17)'s `finally` body: sets this session's `end`
+and `gpu_hours` if the normal branch has not, writes the budget files, on Kaggle calls `pack_state(WORKING)`, then prints
+`STOP_REASON` when set and, as its last line on Kaggle, `seq <n> state.tar <sha256>`), `pack_state(dst_dir: str) -> str`
+(writes `dst_dir/state.tar` and `.sha256`, prints `state.tar written`, returns the hash), `restore_state(input_root: str,
+resume: bool) -> str | None` (globs `input_root/*/state.tar`, applies the `RESUME` rules below raising `OwnerAction`,
+verifies, copies and extracts into `WORKING`, returns the hash or `None`; cell (3) calls it with `PATH_ROOTS["kaggle"] +
+"/input"` and `RESUME`), `guarded(cell: int, body: Callable[[], None]) -> None` (below), `run_cell(cell: int) ->
+list[str]` (`by_name = {s.name: s for s in make_stages(RUNDIR, RVC, sh)}`; `ran = pipeline.run_stages([by_name[n] for n in
+CELL_STAGES[cell]], Path(RUNDIR) / "state")`; prints `ran`, appends it to this session's `stages_run` and returns it), and
 `CELL_STAGES = {7: ["split"], 8: ["prepare"], 9: ["rvc-preprocess", "rvc-f0", "rvc-features"], 10: ["rvc-files"],
-11: ["train"], 12: ["export"], 13: ["render-bin"], 14: ["pack"], 15: ["evaluate"]}` — each of cells (7)–(15) calls
-`run_stages` once on exactly its slice (so `run_stages`' "every later stage runs too" applies within a cell only);
+11: ["train"], 12: ["export"], 13: ["render-bin"], 14: ["pack"], 15: ["evaluate"]}` — each of cells (7)–(15) is
+`guarded(<n>, body)` with a body that calls `run_cell(<n>)` once (plus that cell's own checks), so `run_stages` runs on
+exactly the cell's slice and its "every later stage runs too" applies within a cell only;
 `PLATFORM` is a constant set in cell (3) of each notebook; cell (3) derives
 every path from `PATH_ROOTS = globals().get("PATH_ROOTS", {"content": "/content", "kaggle": "/kaggle", "tmp": "/tmp"})`,
 so the S-016 dry run remaps them by pre-setting `PATH_ROOTS`. `sh(cmd, cwd, timeout=None) -> (rc, output)` runs `bash -c
@@ -619,11 +657,13 @@ PIDs from it are never killed (R-070, R-094); venv-side Python checks (the check
 through `sh` and print their result. A non-train stage whose command returns rc ≠ 0 raises `RuntimeError` (command and
 last 50 output lines). **Train-stage outcomes:** `train.py` exits 0 and `<exp>.pth` exists → complete; the stage timeout
 is computed by the main thread's exact counters as `t = min(t_session, t_budget)` with `t_session` = 10 h − elapsed −
-0.5 h and `t_budget` = 20 h − 1 h − the voice's `gpu_hours` (1 h reserved for export, evaluate and T-P20; R-075). When
+0.5 h and `t_budget` = `BUDGET_HOURS` − 1 h − the voice total (`PRIOR_VOICE_GPU_HOURS` + Σ `runs`; 1 h reserved for
+export, evaluate and T-P20; R-075; `BUDGET_HOURS = 20` is a constant of cell (3), A-015, changed only by a `raise-budget`
+amendment). When
 `t_budget` is the smaller term and ≤ 0, or binds and `sh` returns 124 → DR-13 copy of the newest `<exp>_e<N>_s<M>.pth`
 that loads (checked newest first with `torch.load` through `sh`) → complete; with none, `STOP_REASON` = `budget: no
-checkpoint` — the owner pastes it as the G-004 response `budget-exhausted`, which S-017 takes to G-001 as a result with no
-evaluation (R-086); when
+checkpoint` — on seeing that line the owner answers `budget-exhausted, hours-used: <figure>`, which S-017 takes to G-001
+as a result with no evaluation (R-086); when
 `t_session` binds and is ≤ 0 or `sh` returns 124 → `STOP = True` and `raise SessionEnd` (no marker; the next session
 resumes); checkpoint guard or restart detection fails, or any other rc ≠ 0 → `RuntimeError` (a real failure, reported
 as `failed:`). On restart detection the notebook first copies `G_2333333.pth.bak`/`D_2333333.pth.bak` (still at `e0`)
@@ -637,11 +677,18 @@ checkpoint (11)) → `STOP_REASON` = `owner: <message>` (R-087); any other excep
 `STOP = True` and `STOP_REASON` = `failed: <cell number> <first line of the error>` — the line the owner pastes as the G-004
 response. So no cell from (5) on raises and every version reaches cell (17), which is not guarded: it runs its `STOP` or normal
 branch inside its own `try`/`finally`, whose `finally` always stops the heartbeat, writes the budget files and (Kaggle)
-runs `pack_state`. Cells (1)–(4) may raise; if (4f) raises after (4e) wrote its files, (4) first closes this session's
+runs `pack_state`. Cells (1)–(4) are not guarded and may raise; every stop there that the owner can fix (the
+`PLATFORM_EXPECTED` mismatch, the `RESUME` messages and the parameters message of cell (3)/(4e), (4c)) raises `OwnerAction`,
+which the cell first prints as `owner: <message>` — so every `owner:` line the G-004 response quotes is printed by the
+notebook, from a guarded cell's `STOP_REASON` or from cells (3)–(4); if (4f) raises after (4e) wrote its files, (4) first closes this session's
 `sessions[]` entry (`end`, its `gpu_hours`) and stops the heartbeat, then re-raises; every budget sum includes every entry, using its last
-heartbeat `gpu_hours` when `end` is missing (an abnormally ended session; S-017 reports it, R-095). **Evaluation outcome** (R-071, R-084, PROCEDURE validity rules): a T-P20 failure whose junit message is one of T-P20's own assertions on the report (status, keys,
-renders, spread, finiteness) is a result (any other exit-1 failure — an exception inside the test — is `failed: 16`, R-099),
-never a guarded failure — an invalid report is the intended outcome of PROCEDURE's validity checks, and T-P20 runs its own
+heartbeat `gpu_hours` when `end` is missing (an abnormally ended session; S-017 reports it, R-095). **Evaluation outcome** (R-071, R-084, PROCEDURE validity rules): a T-P20 failure is a result exactly when `t-p20.xml`
+has the `<testcase>` `test_P20_evaluation_procedure_produces_a_complete_measured_report` whose only child is a
+`<failure>` whose text's last non-empty line matches `^tests/python/test_evaluate\.py:\d+: AssertionError$` — an
+assertion in T-P20's own body (status, keys, renders, spread, finiteness); a `need_env` assertion ends in `conftest.py`, an
+exception from the toolkit names another file or exception type, and an `<error>` child is a setup failure, so each of
+those exit-1 outcomes is `failed: 16` (R-099; pytest 9.1.1 junit format, C-067); cell (16) applies this rule and S-017
+re-applies it. A result is never a guarded failure — an invalid report is the intended outcome of PROCEDURE's validity checks, and T-P20 runs its own
 evaluation draw; `t-p20.xml` is always uploaded and S-017 takes the outcome to G-001. Only pytest exits 2–5 (error,
 interruption, usage, no tests collected) are a guarded `failed: 16`. T-P20 is never re-run to obtain a pass (Rule 9).
 **Ending a session** (R-055): a stop condition (9.5 h, train timeout, or a guarded failure) sets `STOP = True`; every later cell
@@ -661,32 +708,41 @@ Parameters cell; (3) set paths and define `make_stages(run, rvc, sh)` (the cell 
 the eleven `pipeline.Stage` objects of the stage table, each stage's `run` calling `sh(<command>, cwd=<RVC or RUNDIR per the cwd rule>, timeout=<None, or the train timeout>)`,
 using the globals
 `VOICE`, `RUN`, `EPOCHS`, `DEREVERB`, `SPEAKER_ID`, `GUIDE`; cells (7)–(15) call `run_stages` on its slices); cell (3) also defines every helper and global of §Kernel and helpers (`SessionEnd`, `STOP`, `STOP_REASON`, `SESSION`,
-`sh`, `guarded`, the heartbeat helpers) and `pack_state(dst_dir)` and `restore_state(src_dir)` (used by cells (3) and
-(17) and by the S-016 dry run, R-079). Kaggle only: restore the previous session (R-016, R-055, R-068) — `prev =
-glob("/kaggle/input/*/state.tar")` inside `restore_state`; the Parameters cell's `RESUME` (the single definition: True
+`sh`, `guarded`, `run_cell`, `write_params`, `start_session`, `end_session`, the heartbeat helpers), `pack_state(dst_dir)`
+(called by `end_session`) and `restore_state(input_root, resume)` (called by cell (3), Kaggle only); the S-016 dry run
+calls all of them directly (R-079). Kaggle only: restore the previous session (R-016, R-055, R-068) — `prev =
+glob(f"{input_root}/*/state.tar")` inside `restore_state`; the Parameters cell's `RESUME` (the single definition: True
 exactly when an earlier Kaggle version of this voice has a `state.tar` in its output — attach the most recent such version;
-False only while none has; GATE-G-004.md states this rule and the owner applies it) decides: `RESUME` and no match → raise "attach the previous version's
-output (Add Input → Your Work)"; not `RESUME` and a match → raise "set RESUME = True"; more than one match → raise naming
-them; one → its `state.tar.sha256` must match, then `restore_state` first copies `state.tar` and
-`state.tar.sha256` into `/kaggle/working` (so even a version that fails in cell (4) carries them in its output, R-088), checks
+False only while none has; GATE-G-004.md states this rule and the owner applies it) decides: `RESUME` and no match → `OwnerAction` "attach the previous version's
+output (Add Input → Your Work)"; not `RESUME` and a match → `OwnerAction` "set RESUME = True"; more than one match →
+`OwnerAction` naming them; one → its `state.tar.sha256` must match, then `restore_state` first copies `state.tar` and
+`state.tar.sha256` into `WORKING` (so even a version that fails in cell (4) carries them in its output, R-088), checks
 every member is a regular file or directory with a relative path and no `..` (on any Python version), and extracts it into
-`/kaggle/working` (it holds every `run*/`, `logs/`, `weights/`, `assets-archive/`, `budget-voice.json`) and the session
-records the restored tar's SHA-256 (checked against `state.tar.sha256`) as `restored_from` and `seq` = the largest `seq` in
-every restored `run*/out/budget.json` + 1 in its new `sessions[]` entry (the chain continues across RUNs; the voice's first
-session has `seq` 1 and `restored_from` null; on Colab `restored_from` is always null); cell (17) prints `seq <n> state.tar <sha256>` as its last line, which the owner
+`WORKING` (it holds every `run*/`, `logs/`, `weights/`, `assets-archive/`, `budget-voice.json`; `logs/<PRUNE>/` is skipped)
+and `start_session` records the restored tar's SHA-256 (checked against `state.tar.sha256`) as `restored_from`. On both
+platforms `start_session` sets `seq` = 1 + the largest `seq` in every `<root>/run*/out/budget.json` present at step (4e)
+(on Kaggle after the restore; 0 when there is none), so `seq` counts this voice's sessions per platform across RUNs; the
+platform's first session has `seq` 1 and `restored_from` null, and on Colab `restored_from` is always null; cell (17) prints `seq <n> state.tar <sha256>` as its last line, which the owner
 copies from every Kaggle version's log into the G-004 response (a tar cannot hold its own hash; R-068, R-083); (4) in exactly this order (R-051; stops in (4c) and (4e) raise `OwnerAction` and print an `owner:` line, R-102): (a) clone sing-vst and check out `EXPECTED_COMMIT` (`git rev-parse HEAD` must equal
 it, else stop; R-029) and RVC 81eed5e; (b) create the venv and install exactly as §Notebook environment; (c) the GPU's
 compute capability must be in `torch.cuda.get_arch_list()`, else stop naming both (R-044); (d) Colab only:
 `drive.mount('/content/drive')` — no cell writes under `/content/drive` before this point; (e) create the `<run>/`
-directories and the RVC symlinks, write or check `<run>/params.json` (above), write this session's freeze and env files,
-append this session to `budget.json` `sessions[]` (with its commit) and start the budget heartbeat (§Time and budget);
+directories and the RVC symlinks, `write_params()` (write or check `<run>/params.json`, above), write this session's
+freeze and env files, then `start_session()` (its `sessions[]` entry with its commit, and the budget heartbeat; §Time and
+budget);
 (f) build `singvst-render` on local disk, never on Drive (R-052): `g++ --version`; `cmake -S <sing-vst> -B
 <LOCAL>/build-render -DCMAKE_BUILD_TYPE=Release -DSINGVST_BUILD_PLUGIN=OFF -DSINGVST_BUILD_TESTS=OFF && cmake --build
 <LOCAL>/build-render --target singvst-render --parallel 4` (C-055), then run `<LOCAL>/build-render/cli/singvst-render
 --check-voice <sing-vst>/tests/fixtures/voice-convert`, which must print `ok …` — a failure stops the run before GPU time
 is spent (R-023);
-(5) RVC assets with `hf download` exactly as C-052 but with `--revision <the SHA recorded in plan/ENVIRONMENT.md by S-013>`
-(hubert_base, rmvpe.pt, pretrained_v2, mute.zip → `logs/`) in a separate venv for huggingface_hub 2.2.0 (C-054), taken from
+(5) RVC assets, with cwd `<rvc>`, `HF` = the `hf` of a separate venv for huggingface_hub 2.2.0 (C-054) and `REV` = the
+SHA recorded in plan/ENVIRONMENT.md by S-013 — RVC 81eed5e README.md lines 170-180 (C-052) with `--revision $REV` for
+`main`: `$HF download lj1995/VoiceConversionWebUI --revision $REV --include "hubert_base/*" --local-dir assets`; `$HF
+download lj1995/VoiceConversionWebUI rmvpe.pt --revision $REV --local-dir assets/rmvpe`; `$HF download
+lj1995/VoiceConversionWebUI --revision $REV --include "pretrained/*" "pretrained_v2/*" --local-dir assets`; `$HF download
+lj1995/VoiceConversionWebUI mute.zip --revision $REV --local-dir .model-downloads` and `python -m zipfile -e
+.model-downloads/mute.zip logs` — giving `assets/hubert_base/` (T-P19), `assets/rmvpe/rmvpe.pt`, `assets/pretrained/`,
+`assets/pretrained_v2/` and `logs/mute/`; each file is taken from
 `<root>/assets-archive/` when present there and matching the hash recorded in `assets-archive/SHA256SUMS` (`sha256sum -c`),
 else downloaded, copied there and their hashes appended to `SHA256SUMS` (a mismatch → delete and re-download)
 (R-042); (6) checks before any GPU stage: `SINGVST_RVC_ROOT=<rvc> python -m pytest -q -m torch` (T-P19) from the sing-vst
@@ -750,14 +806,26 @@ stage also has `params.json` as an input (R-013); the notebook prints the list `
 | render-bin | `<LOCAL>/build-render/cli/singvst-render` | `<LOCAL>/bin/` |
 | pack | `out/conv/`, `<root>/voicebank/` | `out/voice/`, `out/training.json` |
 | evaluate | `out/voice/`, `heldout/`, `<LOCAL>/bin/` | `out/eval/` |
-**Time and budget.** `out/budget.json` holds `{"gpu_hours", "stopped_by_budget": <epoch N of the copied weights, or null>, "sessions": [{"seq", "restored_from", "commit", "start",
-"end", "gpu_hours", "session_hours", "stages_run"}]}` (`end` is set by the final budget write — before the upload tar in
-the normal branch, by `end_session` otherwise), and `<root>/budget-voice.json` holds this platform's own `{"runs": {RUN: gpu_hours}}`; the voice total the notebook
-enforces (`t_budget`, the 20-h stop) is `PRIOR_VOICE_GPU_HOURS` + Σ `runs`, and each session records the `prior` it used.
-The authoritative voice ledger is `results/<VOICE>/ledger.json` in the repository, `{"colab": h, "kaggle": h,
-"unlogged": h, "total": h}`, which S-017 updates and commits after **every** G-004 response (from the upload, or from
-the `hours-used` figure and Kaggle version list of a `failed:`/`owner:`/`switch-platform:`/`budget-exhausted` response),
-so hours on another platform or in a killed version are never dropped (PK-77; R-082, R-095, R-097); (A-015 is per voice; R-062). A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
+**Time and budget.** `out/budget.json` holds `{"gpu_hours", "stopped_by_budget": <epoch N of the copied weights, or null>, "sessions": [{"seq", "restored_from", "prior", "commit", "start",
+"end", "gpu_hours", "session_hours", "stage_hours", "stages_run"}]}` (`end` is set by the final budget write — before the upload tar in
+the normal branch, by `end_session` otherwise; `prior` = the `PRIOR_VOICE_GPU_HOURS` the session ran with; `stage_hours` =
+`{<stage>: h}`, the wall-clock hours of each GPU-time stage — rvc-f0, rvc-features, train, export, evaluate, and `t-p20`
+for cell (16) — in this session, whose sum is the session's `gpu_hours`), and `<root>/budget-voice.json` holds this platform's own `{"runs": {RUN: gpu_hours}}`; the voice total the notebook
+enforces (`t_budget`, the `BUDGET_HOURS` stop) is `PRIOR_VOICE_GPU_HOURS` + Σ `runs`. Before each stage and in cell (17)
+the notebook prints `hours: platform <p> voice <v>` (4 decimals; `p` = Σ `runs`, `v` = `PRIOR_VOICE_GPU_HOURS` + `p`);
+every G-004 `hours-used:` figure is the `p` of the last such line (A-015 is per voice; R-062).
+**Voice ledger** (PK-77; R-082, R-095, R-097): the authoritative record of the voice's GPU hours is
+`results/<VOICE>/ledger.json` in the repository, `{"colab": h, "kaggle": h, "unlogged": h, "total": h, "issues": [...]}`;
+a missing file means all four 0 and no issues. After every G-004 response except `stop` (which changes nothing), S-017
+**sets** the answered issue's record — re-entering a response replaces the record, never adds a second one — then
+recomputes the four totals and commits the file. Record: `{"issue": "run<RUN>.<k>"` (the name its gate file gets when
+archived, S-017 action 3), `"run"`, `"platform"`, `"prior"`: the issued `PRIOR_VOICE_GPU_HOURS`, `"platform_hours"`: the
+response's `hours-used`, or Σ `runs` of the uploaded `budget-voice.json` for a `consent:` response, `"versions"`: the
+response's Kaggle lines in order, each `{"seq", "sha256"}` or `{"killed_hours"}`}`. Totals: `colab` and `kaggle` = the
+`platform_hours` of the newest record on that platform (the figure already sums all of the platform's runs, so it is set,
+never summed), 0 when none; `unlogged` = Σ `killed_hours` over all records; `total` = `colab` + `kaggle` + `unlogged`. A
+`killed` run time `<h>h <m>m <s>s` (a missing component is 0) is (h·3600 + m·60 + s) / 3600 hours. So hours on another
+platform or in a killed version are never dropped. A background thread started at step (4e) — a module-level singleton: (4e) stops and joins any heartbeat left from an
 earlier run of the cells in the same runtime before starting a new one, and each write re-reads the files and updates only
 its own `<session>` entry (R-074) — rewrites both with
 `pipeline.atomic_write_text` every 5 minutes with the running session's GPU time, so a killed session loses at most 5

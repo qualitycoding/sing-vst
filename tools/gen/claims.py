@@ -198,6 +198,14 @@ claim("C-065", "RVC 81eed5e train.py main() starts training in torch.multiproces
       "software", True, [S("research/spikes/premortem-r2/rvc_process_structure.txt", "spike premortem-r2 rvc_process_structure (pinned source)", "train.py 56, 140-158", 1, "2026-10-21")],
       "verified", ["D-035", "R-070"], ["subject:rvc", "tech:rvc"], "RVC 81eed5e", kstamp="20261021T150000Z")
 
+claim("C-066", "audio-separator 0.47.0 (PyPI wheel sha256 756f3b62…) exports Separator(model_file_dir, output_dir, output_format='WAV', output_single_stem, …), load_model(model_filename) and separate(audio_file_path, custom_output_names); custom_output_names keys are stem names matched case-insensitively and give <name>.<format> in output_dir; the de-reverb model's stems are noreverb/reverb; it requires numpy>=2 while RVC 81eed5e's cu128 file pins numpy<2, so the two cannot be resolved into one environment (uv pip compile: no solution), but audio-separator resolves on its own with torch 2.7.1.",
+      "software", True, [S("research/spikes/audio-separator-047/output.txt", "spike audio-separator-047 (wheel inspection and uv resolution)", "whole file", 1, "2026-10-21")],
+      "verified", ["D-025", "D-035", "R-108"], ["subject:audio-separator", "domain:hosted-gpu"], "audio-separator 0.47.0", kstamp="20261021T200000Z")
+
+claim("C-067", "With pytest 9.1.1, a junit <failure> for an assertion in the test body ends its text with '<test file>:<line>: AssertionError'; an assertion inside a conftest helper ends with 'conftest.py:<line>: AssertionError'; an exception raised elsewhere ends with '<file>:<line>: <ExceptionType>'.",
+      "software", True, [S("research/spikes/junit-classify/output.txt", "spike junit-classify", "whole file", 1, "2026-10-21")],
+      "verified", ["D-035", "R-099"], ["subject:pytest", "tech:pytest"], "pytest 9.1.1", kstamp="20261021T200100Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)
