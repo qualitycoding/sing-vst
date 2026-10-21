@@ -106,7 +106,7 @@ voice ledger (S-017 action 1a).
 
 ## Resume (zero-context, protocol v3.3 1.2.3)
 **Before anything else:** read the first line of `plan/PLAN.md`. If it says `BLOCKED — HUMAN DECISION REQUIRED`, do not
-start or continue any step; premortem/RESIDUAL.md names the owner's decision, which a planning session records (D-039)
+start or continue any step; premortem/RESIDUAL.md names the owner's decision, which a planning session records as the next decision in plan/DECISIONS.md
 before the status becomes `READY`.
 Every session begins with the S-000 preamble (recreate missing out-of-tree artefacts, including `.git/singvst-trailers`,
 before the first save — `tools/save.sh` refuses to commit without trailers). `*.src.md` files are generator inputs

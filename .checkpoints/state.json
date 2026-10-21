@@ -44,8 +44,8 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "HANDOFF.md": "5973278ec0fc2f3592ec5177628477a6722e0ac06d9f8e317533757921c5a581",
-    "HANDOFF.src.md": "bca4213762c6f74a82282c16f7bfc1bd32e9814e6cc39f375b9976c2d42d0f9a",
+    "HANDOFF.md": "e58e3c3b09fd9d85866d903e18625f86dad53349625f9b2d898a6258f805927c",
+    "HANDOFF.src.md": "0ceaddb7fac8028003b918b3b102097be5f5799fe3151c45f4e9b8054164ac13",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "README.md": "224e525c0be42832449e0060dc16efd08b87a76a1d3c706cf10be8e593ca847c",
     "TAXONOMY.md": "e3bbb181cfef0ea4e7e16ac23514b2689f92f8735dcccbd793ca0e296277d3d6",
@@ -210,7 +210,7 @@
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
-    "premortem/RESIDUAL.md": "211c7ed476174fec2c0658e4ed91d7a0795015dfb8543dbaf0e476f6e568694b",
+    "premortem/RESIDUAL.md": "c9148188d28e45beafc067c91f6d30bae6fc25b8978201f6df0062f6da276af3",
     "premortem/RISK_REGISTER.md": "5e7ab4fd05ae47aca27b355dca104b913ae3bd5be089e8e5fd8cd287acc1af2a",
     "premortem/coldread-pass-1.md": "94bfdca50c1f0b7ee5d4f429df0196eb34225a29b8189dc5b204d729a534cc76",
     "premortem/coldread-pass-10.md": "a33cf2eb8e0cf90f739a7132657567bfb87cd39beb6a325127437865c1bbb8c1",
@@ -772,10 +772,10 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-21T19:38:56Z",
+  "updated_at": "2026-10-21T19:39:12Z",
   "active_step_id": "S-000",
   "execution_context": {
-    "current_objective": "Planning complete; status BLOCKED \u2014 HUMAN DECISION REQUIRED (premortem/RESIDUAL.md). Implementation starts at S-000 only after the owner's decision is recorded as D-039 and the status is READY.",
+    "current_objective": "Planning complete; status BLOCKED \u2014 HUMAN DECISION REQUIRED (premortem/RESIDUAL.md). Implementation starts at S-000 only after the owner's decision is recorded in plan/DECISIONS.md and the status is READY.",
     "call_stack": [],
     "scratchpad": "Phase 5: final consistency check, status header, push, stop report. Planner never executes plan steps.",
     "in_flight_operation": null,
@@ -817,7 +817,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 116,
+  "sequence": 117,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

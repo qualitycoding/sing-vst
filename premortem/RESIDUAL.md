@@ -2,7 +2,7 @@
 
 **Plan status: BLOCKED — HUMAN DECISION REQUIRED.** Pre-mortem rounds are exhausted (5 of 5). Critical/High risks remain
 whose mitigations exist only as plan text. **Implementation (S-000 onward) must not start until the owner has answered the
-decision below** and a planning session has recorded the answer as a decision `D-039` and re-run `tools/gen/status.py`.
+decision below** and a planning session has recorded the answer as the next decision in plan/DECISIONS.md and re-run `tools/gen/status.py`.
 
 ## A. Mitigated after the final round, never re-reviewed (the reason for BLOCKED)
 These mitigations were written after pre-mortem round 5. No further round or fresh review has checked them. Cold read
