@@ -33,8 +33,10 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
   unlogged hour), from the evaluated run's committed `budget.json`: `h_pre` = Σ over its sessions of `stage_hours` of
   prepare, rvc-f0 and rvc-features (a new RUN repeats them) and `h10` = Σ `stage_hours["train"]` ÷ (`epochs_trained` ÷ 10),
   the hours of 10 epochs (a new RUN trains from the pretrained model, so this is the least it needs), and `r` = 1, or —
-  when the retrain changes the recordings, in which case the response must state `recordings-minutes: <m>` — `max(1, m ÷
-  training.json raw_minutes)`; A-015 per voice (R-086); it is a minimal-feasibility test (a retrain that enables
+  when the response adds, removes or replaces recordings, in which case it must state `recordings-minutes: <m>`, the
+  total minutes of the new recording set (as `training.json` `raw_minutes` measures them; without it the response is asked
+  for again at most twice, then treated as `stop`) — `max(1, m ÷ training.json raw_minutes)`; a response naming no
+  recording change uses `r` = 1; A-015 per voice (R-086); it is a minimal-feasibility test (a retrain that enables
   de-reverb or raises `EPOCHS` needs more and may still end in `budget-exhausted`, which this gate then handles, R-110), and
   after a prune `h10` includes the discarded training's hours (conservative); otherwise GATE-G-001.md is re-issued with only `proceed`,
   `proceed-with-thresholds` and `stop`) ·

@@ -525,7 +525,10 @@ Defaults for every step unless the step says otherwise:
      recordings or voice packages (T-062).
   4. Write `GATE-G-001.md` with the G-001 evidence (including `docs/UNVERIFIED.md` and the voice ledger; per threshold metric the verdict and
      "indeterminate" when min ≤ threshold ≤ max of `spread.json`, the `similarity_gain` spread being the per-repeat
-     differences, D-017) and halt.
+     differences, D-017) and halt; then act on the G-001 response exactly as plan/GATES.md G-001 says — `proceed` →
+     S-018; `proceed-with-thresholds` → amendment, then action 5; `retrain` → evaluate its bound with the committed
+     `budget.json`, `training.json` and ledger and, when allowed, issue a new GATE-G-004.md (action 1a, a new RUN), else
+     re-issue GATE-G-001.md as GATES says; `raise-budget-to` → HANDOFF §Amendments; `stop` → S-RETRO.
   5. After a G-001 `proceed-with-thresholds` amendment has been merged (HANDOFF §Amendments), compute the bound verdict
      with `../venv-lock/bin/python -I -c 'import json, sys; sys.path.insert(0, "python"); from singvst_train import
      metrics; print(json.dumps(metrics.judge(json.load(open(sys.argv[1])), json.load(open("eval/thresholds.json"))),

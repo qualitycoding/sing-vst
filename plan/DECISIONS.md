@@ -587,7 +587,7 @@ mounted **after** these installs (R-020), at step (4d).
 `switch-platform` response start a new run number `RUN` = the previous `RUN` + 1 (a number is never reused, so a switch
 before any session leaves an unused number); `failed:`, `owner-fixed:`, `prune:` and post-`raise-budget-to` re-issues keep
 `RUN` and its experiment; `owner-fixed:` and `prune:` re-issues keep `EXPECTED_COMMIT` (no notebook change) and change
-only `PRUNE`, `PRIOR_VOICE_GPU_HOURS` and `KILLED_HOURS`, while `failed:` and `raise-budget-to` re-issues also take the new head. Every absolute path in
+only `RESUME` (by its rule), `PRUNE`, `PRIOR_VOICE_GPU_HOURS` and `KILLED_HOURS`, while `failed:` and `raise-budget-to` re-issues also take the new head. Every absolute path in
 this decision is written through `PATH_ROOTS` (below): `/content/…` = `PATH_ROOTS["content"]`, `/kaggle/…` =
 `PATH_ROOTS["kaggle"]`, `/tmp/…` = `PATH_ROOTS["tmp"]`. Each run has its own run root `<run>` = `<root>/run<RUN>/`, holding `params.json`, `state/`,
 `raw_wav/`, `split.json`, `train/`, `heldout/`, `prepared/` and `out/`; the RVC experiment name is `<exp>` =
@@ -972,7 +972,9 @@ The owner answered the Phase 5 escalation on 2026-10-21 with "Review", i.e. opti
 extra pre-mortem round (premortem/round-6.md) and a cold read restricted to the GPU-hour accounting — D-035 §Time and
 budget and §Voice ledger, plan/GATES.md G-001 `retrain` and G-004, plan/PLAN.md S-016 and S-017 and the HANDOFF
 `raise-budget` path — run as a planning amendment. The status stays BLOCKED until that round ends with no Critical or High
-finding; R-082, R-095 and R-097 are then re-rated from the round's audit.
+finding; R-082, R-095 and R-097 are then re-rated from the round's audit. **Outcome:** round 6 rated R-082 and R-095
+inadequate (Critical) and R-097 partially adequate; their fixes and R-109…R-115 were applied and checked by cold reads
+11–14, not by a further round, so the status stays BLOCKED and premortem/RESIDUAL.md asks the owner again.
 
 ---
 
