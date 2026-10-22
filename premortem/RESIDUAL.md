@@ -35,6 +35,8 @@ history of the decision.
   round-6 fixes.
 
 ## A. Residual Critical/High risks (accepted by the owner, D-040)
+Tracked as GitHub issues #1 (R-082), #2 (R-095) and #3 (R-097) in qualitycoding/sing-vst.
+
 | Risk | Severity | What could still go wrong | Mitigation now in the plan |
 |---|---|---|---|
 | R-082 | Critical | A Colab↔Kaggle switch splits or resets the voice's GPU-hour ledger, so A-015's 20 h is silently exceeded. | per-issue ledger records set from file-sourced, never-decreasing figures; record `platform` = the issue's platform; `PRIOR` = ledger total − own platform |
