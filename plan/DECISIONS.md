@@ -976,6 +976,14 @@ finding; R-082, R-095 and R-097 are then re-rated from the round's audit. **Outc
 inadequate (Critical) and R-097 partially adequate; their fixes and R-109…R-115 were applied and checked by cold reads
 11–14, not by a further round, so the status stays BLOCKED and premortem/RESIDUAL.md asks the owner again.
 
+
+### D-040 Owner accepts the residual GPU-hour accounting risks (premortem/RESIDUAL.md)
+On 2026-10-22 the owner answered the escalation after pre-mortem round 6 with "Accept" (option 1 `accept`): R-082,
+R-095 and R-097 are accepted with the mitigations now in D-035 §Time and budget and §Voice ledger, plan/GATES.md G-001
+and G-004, and S-016/S-017 (register status `accepted`, Phase 4.6). The Critical/High risks of premortem/RESIDUAL.md
+section B proceed under their planned controls, proven by the named tests, the S-016 dry run and the G-004/G-001
+evidence. The plan status becomes READY; implementation starts at S-000 as HANDOFF.md says.
+
 ---
 
 ## Decision rules (if → then)

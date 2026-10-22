@@ -1,8 +1,8 @@
 # Residual risks and the owner's decision (protocol Phase 4.6 / Phase 5)
 
-**Plan status: BLOCKED — HUMAN DECISION REQUIRED.** **Implementation (S-000 onward) must not start until the owner has
-answered the decision below** and a planning session has recorded the answer as the next decision in plan/DECISIONS.md
-and re-run `tools/gen/status.py`.
+**Plan status: READY.** The owner answered "Accept" on 2026-10-22 (plan/DECISIONS.md D-040): R-082, R-095 and R-097 are
+accepted with the mitigations below; section B proceeds under its planned controls. The record below is kept as the
+history of the decision.
 
 ## History
 - After pre-mortem round 5 (the protocol's last), R-082, R-095 and R-097 had mitigations nobody had reviewed. The owner
@@ -34,7 +34,7 @@ and re-run `tools/gen/status.py`.
   Cold reads check that the plan can be executed. They are not a pre-mortem, so no adversarial review has checked the
   round-6 fixes.
 
-## A. Residual Critical/High risks (the reason for BLOCKED)
+## A. Residual Critical/High risks (accepted by the owner, D-040)
 | Risk | Severity | What could still go wrong | Mitigation now in the plan |
 |---|---|---|---|
 | R-082 | Critical | A Colab↔Kaggle switch splits or resets the voice's GPU-hour ledger, so A-015's 20 h is silently exceeded. | per-issue ledger records set from file-sourced, never-decreasing figures; record `platform` = the issue's platform; `PRIOR` = ledger total − own platform |
@@ -49,7 +49,7 @@ Unchanged by round 6. Critical: R-013, R-015, R-019, R-020, R-034, R-035, R-051,
 R-016, R-022, R-024, R-025, R-026, R-052, R-055, R-059, R-060, R-069, R-070, R-083, R-086, R-088. See
 premortem/RISK_REGISTER.md.
 
-## Decision needed from the owner (answer one)
+## Decision offered to the owner (answered `accept`, D-040)
 1. **`accept`**: accept R-082, R-095 and R-097 with the round-6 fixes; the register status becomes `accepted`, and the
    plan becomes READY.
 2. **`review`**: authorise pre-mortem round 7 on the round-6 fixes only (same scope as D-039). Status stays BLOCKED until

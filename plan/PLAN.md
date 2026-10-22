@@ -1,5 +1,5 @@
-<!-- STATUS: BLOCKED — HUMAN DECISION REQUIRED -->
-**Status: BLOCKED — HUMAN DECISION REQUIRED** · profiles `software`, `computational` · claims 65 (corroborated 3, single-source 3, verified 59) · tests: C++ core 61, C++ plugin 6, Python 30 IDs, CI-only 1 (T-059) · steps 22 · gates 5 · risks 115 (Critical 15, High 29, Low 24, Medium 47) · pre-mortem rounds 6 · figures 0 (D-032) · **decision needed: premortem/RESIDUAL.md — no step may start**
+<!-- STATUS: READY -->
+**Status: READY** · profiles `software`, `computational` · claims 65 (corroborated 3, single-source 3, verified 59) · tests: C++ core 61, C++ plugin 6, Python 30 IDs, CI-only 1 (T-059) · steps 22 · gates 5 · risks 115 (Critical 15, High 29, Low 24, Medium 47) · pre-mortem rounds 6 · figures 0 (D-032)
 
 # Execution plan — sing-vst
 
