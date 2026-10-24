@@ -50,10 +50,11 @@
     "plan/OPERATIONS.md"
   ],
   "artifacts": {
+    ".gitattributes": "3c9dce7995fe2e5ad1027f59e9807783127b33882a73597f995eb612b60094cd",
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "b661456f8a47cff3215680dcea64fec138e316b0b226ff62dd2e306e481e63cc",
+    "DEVIATIONS.md": "5fea47c49d2dc05957af0941a4c525bcfbe011d8b14b0151926e372701ad9c4a",
     "EXECUTION_LOG.md": "79d6d4d919df7e7c1d16871e90d47691477e0d4e4f95b8beda2c19731d523a21",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
@@ -831,14 +832,14 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-24T13:01:54Z",
+  "updated_at": "2026-10-24T13:15:21Z",
   "active_step_id": "S-007",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
     "scratchpad": "Planning complete. Next actor: implementer, starting S-000.",
     "in_flight_operation": {
-      "op": "S-007 CI wait (cpp on both OSes)"
+      "op": "CI wait: T-031 on windows after .gitattributes"
     },
     "tool_cache": {},
     "step_pointer": {
@@ -878,7 +879,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 162,
+  "sequence": 164,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
