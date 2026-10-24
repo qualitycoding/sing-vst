@@ -54,7 +54,7 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "bba9728d13b6cb82a1d7c68b2de16bee704962e1d384fac1fca1aaacea6fa6f6",
+    "DEVIATIONS.md": "bcc49cb59d329e95e7ca84a87181706320eccaa1dd56166a06c841943ae41ddd",
     "EXECUTION_LOG.md": "a09cb2caa8ee210e95b1bec9d09f4b7abc54cb2f39ac7345b0a75c5786d7b928",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
@@ -98,6 +98,7 @@
     "core/src/synthesis.cpp": "67e2d972b7815f1664f4c825a74bb13629c159d29e2ba98794cca50bfef3e01e",
     "core/src/take_cache.cpp": "9b10a59d85ed76945676af40f06b99b773cbd3accd0798a7836ff173c9d9a5ec",
     "core/src/voice.cpp": "60455c97a333b2206f0f472babd741ff3ff2cd3ec0592378d1b88ef433cae191",
+    "docs/UNVERIFIED.md": "4c59d01dd9469238c314bcfbafb4501d5cf5d1ff699a86c415580679f847a112",
     "eval/PROCEDURE.md": "b3f4f713684a8f799934e7b8af8df078ebd86ea0ab35ef86c6ae9d8fd4cc9cbc",
     "eval/phrases/p1.mid": "7ea321f576c32f8051c5c67a99f553dcab89ab768ce4ee8ea50a40d2b3eda573",
     "eval/phrases/p1.txt": "5086a84ad85f517fc6e2fe2051f2c0921735127e8974f65ebab41cf6c2f8e762",
@@ -179,6 +180,7 @@
     "knowledge/K-20261021T200100Z-c-067-pytest.md": "a097f81fbb2657ae8aac61d73eae8e2ba5c8a3b2d82e856a635ef3a0ae8a63a4",
     "knowledge/K-20261024T125942Z-tsan-unexpected-memory-mapping-setarch.md": "4f3bcffedda1f88282153e73a5886e0eee51438e0d5932ff7b7ff4acc9bfa648",
     "knowledge/K-20261024T133254Z-ort-typeinfo-view-lifetime.md": "6e02a88473beec2bb665ea1b8a131878ef1271e90595866ca6242cff342a0bf7",
+    "knowledge/K-20261024T144526Z-juce-linux-build-without-root.md": "ef0e520d445b6e2fb084645ebec6e5cab66d8c888d9c7d2897da896aa3e8a4a4",
     "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
     "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
     "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
@@ -246,7 +248,9 @@
     "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
     "plan/TRACEABILITY.md": "e65e29ea7eb2c739d915a8e3fa98e063c35307265f5c596654524e094e489803",
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
-    "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
+    "plugin/PluginEditor.cpp": "3e406896256631ea04f1795e85d6aeb30fedc06c3e8e475594e57928ab08e438",
+    "plugin/PluginEditor.h": "6c95452adfec3a6cb429030af64b01eada8fc592bf861eb00ca41574b484c1f0",
+    "plugin/PluginProcessor.cpp": "b3476d3f7e61f49e457961f968a4f1fbde6f0977909d22001fb167d7ffcf7915",
     "plugin/PluginProcessor.h": "14cae2a16db9dcd6c6d9c22e298cc0e689cd4367d9426024f2b26953abc1c469",
     "premortem/RESIDUAL.md": "670b14d7feff48770b220b862550104c07edcf2bf6fe2b961bd372cfeb64d88a",
     "premortem/RISK_REGISTER.md": "7bf1e104921c204c696e545392c78c70d47b73505d005db9c47895961ffc1127",
@@ -500,6 +504,11 @@
     },
     {
       "step": "S-009",
+      "wanted": "Opus",
+      "used": "claude-sonnet-5-5"
+    },
+    {
+      "step": "S-011",
       "wanted": "Opus",
       "used": "claude-sonnet-5-5"
     }
@@ -849,7 +858,8 @@
     "K-20261021T200000Z-c-066-audio-separator",
     "K-20261021T200100Z-c-067-pytest",
     "K-20261024T125942Z-tsan-unexpected-memory-mapping-setarch",
-    "K-20261024T133254Z-ort-typeinfo-view-lifetime"
+    "K-20261024T133254Z-ort-typeinfo-view-lifetime",
+    "K-20261024T144526Z-juce-linux-build-without-root"
   ],
   "environment": {},
   "notes": [
@@ -861,13 +871,15 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-24T14:21:46Z",
+  "updated_at": "2026-10-24T14:45:26Z",
   "active_step_id": "S-011",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
     "scratchpad": "Planning complete. Next actor: implementer, starting S-000.",
-    "in_flight_operation": null,
+    "in_flight_operation": {
+      "op": "S-011 CI wait (cpp both OSes incl. pluginval, sanitizers, python)"
+    },
     "tool_cache": {},
     "step_pointer": {
       "phase": "impl",
@@ -906,7 +918,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 181,
+  "sequence": 184,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
