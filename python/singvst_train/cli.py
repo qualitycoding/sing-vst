@@ -92,6 +92,21 @@ def _cmd_pack(args) -> int:
     return 0
 
 
+def _cmd_rvc_files(args) -> int:
+    from singvst_train import rvc_files
+    print(rvc_files.write_filelist(args.exp_dir, args.rvc_root, args.speaker_id, args.sr_tag, args.seed))
+    print(rvc_files.copy_config(args.exp_dir, args.rvc_root, args.sr_tag))
+    return 0
+
+
+def _cmd_rvc_train_command(args) -> int:
+    from singvst_train import rvc_files
+    command = rvc_files.train_command(args.python or sys.executable, args.exp_name, args.sr_tag, args.batch_size, args.epochs,
+                                      args.save_every, args.gpus)
+    print(json.dumps(command))
+    return 0
+
+
 def _cmd_export(args) -> int:
     from singvst_train import export_rvc
     weights = args.weights
@@ -118,7 +133,8 @@ def _cmd_provenance(args) -> int:
 
 
 _HANDLERS = {"split": _cmd_split, "prepare": _cmd_prepare, "pack": _cmd_pack, "provenance": _cmd_provenance,
-             "export": _cmd_export, "make-test-weights": _cmd_make_test_weights}
+             "export": _cmd_export, "make-test-weights": _cmd_make_test_weights, "rvc-files": _cmd_rvc_files,
+             "rvc-train-command": _cmd_rvc_train_command}
 
 
 def build_parser():
@@ -160,6 +176,22 @@ def build_parser():
     p.add_argument("--depth", type=float, default=0.4)
     p.add_argument("--converter-sample-rate", type=int, default=48000)
     p.add_argument("--speaker-id", type=int, default=0)
+
+    p = subs["rvc-files"]
+    p.add_argument("--exp-dir", required=True, type=Path)
+    p.add_argument("--rvc-root", required=True, type=Path)
+    p.add_argument("--sr-tag", default="48k")
+    p.add_argument("--speaker-id", type=int, default=0)
+    p.add_argument("--seed", type=int, default=0)
+
+    p = subs["rvc-train-command"]
+    p.add_argument("--exp-name", required=True)
+    p.add_argument("--sr-tag", default="48k")
+    p.add_argument("--batch-size", type=int, default=8)
+    p.add_argument("--epochs", type=int, default=200)
+    p.add_argument("--save-every", type=int, default=10)
+    p.add_argument("--gpus", default="0")
+    p.add_argument("--python", default=None)
 
     p = subs["export"]
     p.add_argument("--rvc-root", required=True, type=Path)
