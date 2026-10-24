@@ -2,8 +2,104 @@
 Stub until plan step S-012 (commands are added by S-012..S-015)."""
 from __future__ import annotations
 
+import argparse
+import json
+import sys
+from pathlib import Path
+
 COMMANDS = ("prepare", "split", "rvc-files", "rvc-train-command", "export", "make-test-weights", "pack", "evaluate",
             "provenance")
+
+
+_HELP = {
+    "prepare": "slice and normalise recordings into a training dataset",
+    "split": "write the held-out split of a folder of recordings",
+    "rvc-files": "write RVC's filelist and config for an experiment",
+    "rvc-train-command": "print the RVC training command",
+    "export": "export an RVC model to ONNX",
+    "make-test-weights": "write small random RVC weights for tests",
+    "pack": "write a voice package",
+    "evaluate": "evaluate a voice package",
+    "provenance": "write a provenance sidecar for a result file",
+}
+
+
+def _repo_root() -> Path:
+    import singvst_train
+    return Path(singvst_train.__file__).resolve().parents[2]
+
+
+def _cmd_split(args) -> int:
+    from singvst_train.pipeline import atomic_write_text
+    from singvst_train.prepare import split_heldout
+    names = sorted(p.name for p in args.files_dir.iterdir() if p.is_file() and p.suffix == ".wav")
+    if not names:
+        raise ValueError(f"no .wav files in {args.files_dir}")
+    train, heldout = split_heldout(names, args.seed, args.fraction)
+    atomic_write_text(args.out, json.dumps({"train": train, "heldout": heldout}, indent=1) + "\n")
+    return 0
+
+
+def _cmd_prepare(args) -> int:
+    from math import gcd
+
+    import numpy as np
+    import soundfile as sf
+    from scipy.signal import resample_poly
+
+    from singvst_train import prepare, provenance
+
+    params = {"in": str(args.in_dir), "out": str(args.out), "sr": args.sr, "threshold_db": args.threshold_db,
+              "min_sec": args.min_sec, "max_sec": args.max_sec, "dereverb": bool(args.dereverb)}
+    source_dir = args.in_dir
+    if args.dereverb:
+        prepare.dereverb(args.in_dir, args.out / "dry")
+        source_dir = args.out / "dry"
+    wavs = sorted(source_dir.glob("*.wav")) if source_dir.is_dir() else []
+    if not wavs:
+        raise ValueError(f"no .wav files in {source_dir}")
+    seg_dir = args.out / "segments"
+    seg_dir.mkdir(parents=True, exist_ok=True)
+    segments = []
+    for wav in wavs:
+        data, rate = sf.read(str(wav), dtype="float64", always_2d=True)
+        mono = data.mean(axis=1)
+        if rate != args.sr:
+            g = gcd(rate, args.sr)
+            mono = resample_poly(mono, args.sr // g, rate // g)
+        mono = mono.astype(np.float32)
+        for k, (start, end) in enumerate(prepare.slice_on_silence(mono, args.sr, args.threshold_db, args.min_sec, args.max_sec)):
+            rel = f"segments/{wav.stem}_{k:03d}.wav"
+            sf.write(str(args.out / rel), prepare.normalise(mono[start:end]), args.sr, subtype="PCM_16")
+            segments.append({"file": rel, "source": wav.name, "start": int(start), "end": int(end)})
+    prepare.build_dataset_manifest(args.out, segments, params)
+    lock = args.lockfile or _repo_root() / "python" / "requirements-lock.txt"
+    record = provenance.collect(params, {}, _repo_root(), lock)
+    provenance.write_sidecar(args.out / "dataset.json", record)
+    print(f"{len(segments)} segments from {len(wavs)} recording(s) in {args.out / 'segments'}")
+    return 0
+
+
+def _cmd_pack(args) -> int:
+    from singvst_train.pack import pack_voice
+    if (args.synth is None) != (args.content is None):
+        raise ValueError("--synth and --content go together or not at all")
+    guide = {r: getattr(args, r) for r in ("acoustic", "vocoder", "phonemes", "speaker", "languages") if getattr(args, r) is not None}
+    converter = None if args.synth is None else {"synth": args.synth, "content": args.content}
+    pack_voice(args.out, args.name, args.consent, args.guide_licence, guide, converter, language=args.language,
+               steps=args.steps, depth=args.depth, converter_sample_rate=args.converter_sample_rate, speaker_id=args.speaker_id)
+    print(args.out / "manifest.json")
+    return 0
+
+
+def _cmd_provenance(args) -> int:
+    from singvst_train import provenance
+    record = provenance.collect(json.loads(args.params), json.loads(args.seeds), args.repo, args.lockfile)
+    print(provenance.write_sidecar(args.result, record))
+    return 0
+
+
+_HANDLERS = {"split": _cmd_split, "prepare": _cmd_prepare, "pack": _cmd_pack, "provenance": _cmd_provenance}
 
 
 def build_parser():
@@ -11,13 +107,65 @@ def build_parser():
     has ``--help``. Unknown commands exit 2 via argparse. ``split --files-dir DIR --seed N [--fraction F] --out FILE``
     lists ``*.wav`` names directly in DIR, applies ``prepare.split_heldout`` and writes ``{"train": [...], "heldout":
     [...]}`` (1-space indent) to FILE. The other commands' options are defined by the steps that implement them."""
-    raise NotImplementedError("build_parser")
+    parser = argparse.ArgumentParser(prog="singvst-train", description="sing-vst training toolkit (D-015)")
+    sub = parser.add_subparsers(dest="command", required=True, metavar="command")
+    subs = {name: sub.add_parser(name, help=_HELP[name]) for name in COMMANDS}
+
+    p = subs["split"]
+    p.add_argument("--files-dir", required=True, type=Path)
+    p.add_argument("--seed", required=True, type=int)
+    p.add_argument("--fraction", type=float, default=0.1)
+    p.add_argument("--out", required=True, type=Path)
+
+    p = subs["prepare"]
+    p.add_argument("--in", dest="in_dir", required=True, type=Path)
+    p.add_argument("--out", required=True, type=Path)
+    p.add_argument("--sr", type=int, default=48000)
+    p.add_argument("--threshold-db", type=float, default=-40.0)
+    p.add_argument("--min-sec", type=float, default=2.0)
+    p.add_argument("--max-sec", type=float, default=15.0)
+    p.add_argument("--dereverb", action="store_true")
+    p.add_argument("--lockfile", type=Path, default=None)
+
+    p = subs["pack"]
+    p.add_argument("--out", required=True, type=Path)
+    p.add_argument("--name", required=True)
+    p.add_argument("--consent", required=True)
+    p.add_argument("--guide-licence", required=True)
+    for role in ("acoustic", "vocoder", "phonemes"):
+        p.add_argument(f"--{role}", required=True, type=Path)
+    for role in ("speaker", "languages", "synth", "content"):
+        p.add_argument(f"--{role}", type=Path, default=None)
+    p.add_argument("--language", default="en")
+    p.add_argument("--steps", type=int, default=20)
+    p.add_argument("--depth", type=float, default=0.4)
+    p.add_argument("--converter-sample-rate", type=int, default=48000)
+    p.add_argument("--speaker-id", type=int, default=0)
+
+    p = subs["provenance"]
+    p.add_argument("--result", required=True, type=Path)
+    p.add_argument("--params", required=True)
+    p.add_argument("--seeds", required=True)
+    p.add_argument("--repo", type=Path, default=Path("."))
+    p.add_argument("--lockfile", type=Path, default=Path("python/requirements-lock.txt"))
+    return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     """Parse ``argv`` and dispatch; returns the process exit code (0 success, 2 usage or input error, 3 run failure).
     Errors are printed to stderr as ``singvst-train: <command>: <message>``."""
-    raise NotImplementedError("main")
+    args = build_parser().parse_args(argv)
+    handler = _HANDLERS.get(args.command)
+    try:
+        if handler is None:
+            raise NotImplementedError(f"the {args.command} command is added by a later plan step")
+        return handler(args)
+    except (ValueError, FileNotFoundError, NotADirectoryError, json.JSONDecodeError) as exc:
+        print(f"singvst-train: {args.command}: {exc}", file=sys.stderr)
+        return 2
+    except Exception as exc:    # noqa: BLE001 - a run failure is reported, not hidden (exit 3)
+        print(f"singvst-train: {args.command}: {exc}", file=sys.stderr)
+        return 3
 
 
 if __name__ == "__main__":
