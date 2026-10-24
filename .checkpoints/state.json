@@ -9,17 +9,17 @@
     "software.deploys": false
   },
   "phase": "impl",
-  "subphase": "S-001",
+  "subphase": "S-002",
   "research_round": 6,
   "exploration_round": 0,
   "proof_review_round": 0,
   "premortem_round": 6,
   "completed": [
     "S-000",
-    "S-001"
+    "S-001",
+    "S-002"
   ],
   "pending": [
-    "S-002",
     "S-003",
     "S-004",
     "S-005",
@@ -53,8 +53,8 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "07817f6bb28b2e6482433495ceafda749062e005d5a8b8f2d2e560f32636eb24",
-    "EXECUTION_LOG.md": "7ce222749d20bc2272b0d8db107dd22929f6acb8572f8f90cc7189ea95bd5886",
+    "DEVIATIONS.md": "ae522c812e684d2f269cc84df999a1213d6d7c87bf89e5368e9b5891d2978a76",
+    "EXECUTION_LOG.md": "1c0a5c3432da51e36d7eb59ba25a8eabadb3dd29aee718ca6f06f50d3e06316e",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -77,7 +77,10 @@
     "core/include/singvst/synthesis.hpp": "f759f86dd4494ad3f78ce7f044340da6cc91ca94927c1c78ded9ba06cc7a7a68",
     "core/include/singvst/take_cache.hpp": "5baf8331e183225587ae9c34240e43e9e7ef0d77cfff7645292d6071ff7eb055",
     "core/include/singvst/voice.hpp": "304da299930ead4adeccfb6acefcbf021022d67cba6a23362a3b369c4c290fdb",
-    "core/src/stubs.cpp": "7bccf0e11cb7a94721c31eab41b135b318d174281c7b610c1d9ec0fc5d4746f5",
+    "core/src/align.cpp": "7a79dbd4b06606cf523c27a704359d44e619abff2b827cc5880682d51853632e",
+    "core/src/g2p.cpp": "421f59aa7c9066fc6286c7c9e35edbb6380600fbe3642d0eea9ea8e23aadcfa9",
+    "core/src/lyrics.cpp": "f60effdacc3518d226555b3655da9e1a9520cfe21113b6611e724ffa8fd996fd",
+    "core/src/stubs.cpp": "e5eb499e18d96b462ef1d33685c6c96dedd71186fe2741f5ce2dc1a662b3f8e1",
     "eval/PROCEDURE.md": "b3f4f713684a8f799934e7b8af8df078ebd86ea0ab35ef86c6ae9d8fd4cc9cbc",
     "eval/phrases/p1.mid": "7ea321f576c32f8051c5c67a99f553dcab89ab768ce4ee8ea50a40d2b3eda573",
     "eval/phrases/p1.txt": "5086a84ad85f517fc6e2fe2051f2c0921735127e8974f65ebab41cf6c2f8e762",
@@ -442,7 +445,13 @@
     "tools/tsan.supp": "ef4093a99304f1b50ccab56b8dc92db04e01f9c0110ff16f365caa3b02c8e1bd",
     "tools/turn_end_check.sh": "cccef70db2e2529a3f6bf3b5ec6c4aa171cc6a8f009e433208988fbac537269f"
   },
-  "tier_substitutions": [],
+  "tier_substitutions": [
+    {
+      "step": "S-002",
+      "wanted": "Opus",
+      "used": "claude-sonnet-5-5"
+    }
+  ],
   "open_items": [],
   "knowledge_store": {
     "location": "lessons: github.com/qualitycoding/Lessons (cloned as qualitycoding/lessons); knowledge: github.com/qualitycoding/knowledge",
@@ -794,8 +803,8 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-24T12:54:32Z",
-  "active_step_id": "S-002",
+  "updated_at": "2026-10-24T12:55:38Z",
+  "active_step_id": "S-003",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
@@ -804,7 +813,7 @@
     "tool_cache": {},
     "step_pointer": {
       "phase": "impl",
-      "subphase": "S-001",
+      "subphase": "S-002",
       "item_index": 0,
       "sub_action": "start S-000 per HANDOFF.md",
       "retry_count": 0
@@ -839,7 +848,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 146,
+  "sequence": 149,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

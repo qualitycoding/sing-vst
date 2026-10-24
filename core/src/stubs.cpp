@@ -13,17 +13,8 @@
 #include "singvst/voice.hpp"
 
 namespace singvst {
-std::vector<LyricToken> parseLyrics (std::string_view) { throw NotImplemented ("parseLyrics"); }
 
-Dictionary Dictionary::fromCmuText (std::string_view) { throw NotImplemented ("Dictionary::fromCmuText"); }
-std::optional<Phones> Dictionary::lookup (std::string_view) const { throw NotImplemented ("Dictionary::lookup"); }
-std::size_t Dictionary::size() const { throw NotImplemented ("Dictionary::size"); }
-bool Dictionary::hasPhone (std::string_view) const { throw NotImplemented ("Dictionary::hasPhone"); }
-bool isVowel (std::string_view) { throw NotImplemented ("isVowel"); }
-std::vector<Phones> syllabify (const Phones&, std::size_t) { throw NotImplemented ("syllabify"); }
 
-std::vector<Note> toMonophonic (std::vector<Note>) { throw NotImplemented ("toMonophonic"); }
-AlignmentResult align (const std::vector<Note>&, const std::vector<LyricToken>&, const Dictionary&) { throw NotImplemented ("align"); }
 
 double midiToHz (double) { throw NotImplemented ("midiToHz"); }
 std::vector<PhonemeSpan> layoutPhonemes (const std::vector<NoteAssignment>&, double, double) { throw NotImplemented ("layoutPhonemes"); }
