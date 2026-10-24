@@ -16,3 +16,4 @@
 | 2026-10-24T13:01:54Z | S-007 | Tier: Opus | run by claude-sonnet-5-5 | HANDOFF §Tiers substitution |
 | 2026-10-24T13:15:21Z | S-004 | no .gitattributes in the plan | added .gitattributes marking tests/fixtures/** and third_party/cmudict/** as -text | T-031 failed on windows-2022 (run for 522825e) while passing on Linux; hypothesis: git autocrlf rewrote text fixtures (phonemes.txt) so the manifest SHA-256 no longer matched. Frozen files unchanged (T-060 still OK). Outcome recorded in EXECUTION_LOG |
 | 2026-10-24T13:32:59Z | S-008 | Tier: Opus | run by claude-sonnet-5-5 | HANDOFF §Tiers substitution |
+| 2026-10-24T13:49:01Z | S-009 | Tier: Opus | run by claude-sonnet-5-5 | HANDOFF §Tiers substitution |
