@@ -26,7 +26,6 @@ std::vector<float> standardNormal (std::uint64_t, std::size_t) { throw NotImplem
 const OrtRuntimeInfo& loadOrtRuntime (const std::filesystem::path&) { throw NotImplemented ("loadOrtRuntime"); }
 bool ortRuntimeLoaded() noexcept { return false; }
 std::string bundledOrtFileName() { throw NotImplemented ("bundledOrtFileName"); }
-MidiImport importMidi (std::string_view) { throw NotImplemented ("importMidi"); }
 
 RenderedTake renderTake (const RenderRequest&, const Dictionary&, GuideEngine&, ConverterEngine*, const std::atomic<bool>&, std::vector<std::string>*) { throw NotImplemented ("renderTake"); }
 struct Renderer::Impl {};
