@@ -125,6 +125,20 @@ def _cmd_make_test_weights(args) -> int:
     return 0
 
 
+def _cmd_evaluate(args) -> int:
+    from singvst_train import evaluate, metrics
+    from singvst_train.pipeline import atomic_write_text
+    thresholds = json.loads(args.thresholds.read_text(encoding="utf-8"))
+    report = evaluate.evaluate_voice(args.voice, args.heldout, args.phrases, args.render_bin, args.out, args.seed, args.lockfile)
+    if report["status"] == "measured":
+        verdict = metrics.judge(report, thresholds)
+    else:
+        verdict = {"all": False, "status": report["status"]}
+    atomic_write_text(args.out / "verdict.json", json.dumps(verdict, sort_keys=True, indent=1) + "\n")
+    print(f"{report['status']} -> {args.out / 'report.json'}")
+    return 0
+
+
 def _cmd_provenance(args) -> int:
     from singvst_train import provenance
     record = provenance.collect(json.loads(args.params), json.loads(args.seeds), args.repo, args.lockfile)
@@ -134,7 +148,7 @@ def _cmd_provenance(args) -> int:
 
 _HANDLERS = {"split": _cmd_split, "prepare": _cmd_prepare, "pack": _cmd_pack, "provenance": _cmd_provenance,
              "export": _cmd_export, "make-test-weights": _cmd_make_test_weights, "rvc-files": _cmd_rvc_files,
-             "rvc-train-command": _cmd_rvc_train_command}
+             "rvc-train-command": _cmd_rvc_train_command, "evaluate": _cmd_evaluate}
 
 
 def build_parser():
@@ -204,6 +218,16 @@ def build_parser():
     p.add_argument("--rvc-root", required=True, type=Path)
     p.add_argument("--out", required=True, type=Path)
     p.add_argument("--seed", type=int, default=0)
+
+    p = subs["evaluate"]
+    p.add_argument("--voice", required=True, type=Path)
+    p.add_argument("--heldout", required=True, type=Path)
+    p.add_argument("--phrases", required=True, type=Path)
+    p.add_argument("--render-bin", required=True, type=Path)
+    p.add_argument("--out", required=True, type=Path)
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--thresholds", type=Path, default=Path("eval/thresholds.json"))
+    p.add_argument("--lockfile", type=Path, default=None)
 
     p = subs["provenance"]
     p.add_argument("--result", required=True, type=Path)

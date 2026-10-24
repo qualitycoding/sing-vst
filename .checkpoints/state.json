@@ -9,7 +9,7 @@
     "software.deploys": false
   },
   "phase": "impl",
-  "subphase": "S-014",
+  "subphase": "S-015",
   "research_round": 6,
   "exploration_round": 0,
   "proof_review_round": 0,
@@ -29,10 +29,10 @@
     "S-011",
     "S-012",
     "S-013",
-    "S-014"
+    "S-014",
+    "S-015"
   ],
   "pending": [
-    "S-015",
     "S-016",
     "S-017",
     "S-018",
@@ -54,8 +54,9 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "7e71752e41f0653efd058594835859e2c974353775a24966c776bd7c69911468",
-    "EXECUTION_LOG.md": "e0e3f59194aed250b62154f44dd96495e27518dda73fa536c5858a4f5e09e1a7",
+    "DEVIATIONS.md": "d2c286ab2b5f1b7f6e1161d357a29420650312f06f7c1ddbbc3d34f35328b929",
+    "EXECUTION_LOG.md": "92b2b59c26b4546b4bc76a3bd20199a6f433ed66968cf55017b438f8c2cc4de6",
+    "GATE-G-005.md": "bc983c4a0f6592b3c81de89779c448818b9d2ea8b30d739237a04dfb94aa18ba",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -284,8 +285,8 @@
     "python/requirements.in": "42dc4f0003aace85ec39cbc2aed9259fcc6953f5cd68dbbf8af7ff7638d154be",
     "python/singvst_train/__init__.py": "5ecd5f1edeedf95e2afc4f709893f6dd25956ce01b2073a6beeb0037f02bfb6b",
     "python/singvst_train/__main__.py": "ef62c3c62a9940ba12ab445224b29094b7b2a259a02117f1bfe0abb3e88c4b1e",
-    "python/singvst_train/cli.py": "7573fc34fd7f4d6243956d855d5efe8d19c6452fef5dff8fe74444394ebb7021",
-    "python/singvst_train/evaluate.py": "ed94c8cb3a8420136456df8de46f6fdba4841a1165b89c16a3d582720176f60c",
+    "python/singvst_train/cli.py": "85015249086f25f54960827265ad0e63082d02ca990b125df94b13bae6515778",
+    "python/singvst_train/evaluate.py": "811502a5fe2a98ca32a5449fc4e7d81efe5f57359a9b827b284924f0b19846d3",
     "python/singvst_train/export_rvc.py": "62f6cd053d0845b70997729000b15f94f6b5c25c945596ff5b32578c543ee024",
     "python/singvst_train/metrics.py": "3d2301a2519458d88e87d8fb5c8b804a4fc2198d0059e7d716d914bb98580b7e",
     "python/singvst_train/pack.py": "57af562804a05c5ac93cf389fef0cbe792857639acd80bbb5750ee0352e93ee6",
@@ -518,6 +519,11 @@
     },
     {
       "step": "S-013",
+      "wanted": "Opus",
+      "used": "claude-sonnet-5-5"
+    },
+    {
+      "step": "S-015",
       "wanted": "Opus",
       "used": "claude-sonnet-5-5"
     }
@@ -882,10 +888,11 @@
     "2026-10-10: research round 3 (TIGER guide voicebank, ORT explicit-path loading, de-reverb, Resemblyzer, JUCE lyric spike re-run); WebFetch hit a weekly usage limit at 09:50, web research closed.",
     "2026-10-14: resumed; round 4 corrected C-027 (pyworld sine) and C-044 (hosts); round logs backfilled",
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
-    "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
+    "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B.",
+    "HALTED at gate G-005 (GATE-G-005.md); S-016 onward depend on the answer"
   ],
-  "updated_at": "2026-10-24T15:28:04Z",
-  "active_step_id": "S-015",
+  "updated_at": "2026-10-24T15:31:02Z",
+  "active_step_id": "S-016",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
@@ -894,7 +901,7 @@
     "tool_cache": {},
     "step_pointer": {
       "phase": "impl",
-      "subphase": "S-014",
+      "subphase": "S-015",
       "item_index": 0,
       "sub_action": "start S-000 per HANDOFF.md",
       "retry_count": 0
@@ -929,7 +936,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 195,
+  "sequence": 198,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
