@@ -1,7 +1,7 @@
 # singvst_train — data preparation, RVC training orchestration, ONNX export, packing and evaluation (D-015).
 # Dependencies are pinned by python/requirements-lock.txt (D-019); install with `pip install --no-deps -e python`.
 [build-system]
-requires = ["setuptools==84.0.0"]
+requires = ["setuptools==84.1.0"]
 build-backend = "setuptools.build_meta"
 
 [project]

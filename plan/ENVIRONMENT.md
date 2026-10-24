@@ -12,7 +12,7 @@
 | CMake | ≥ 3.22 (sandbox `cmake --version` 3.28.3 on 2026-10-15; CI runner default); always `--parallel <N>` (C-055) | | C-012, C-055 |
 | Compilers | GCC 13.3 (ubuntu-24.04), MSVC (windows-2022) | | D-001 |
 | Python | **3.12** (`/usr/bin/python3.12` in the sandbox; `python-version: "3.12"` in CI) — never bare `python3` (PK-55) | | D-019 |
-| Toolkit lock | `python/requirements-lock.txt` (32 lines, incl. pip 26.2.1, setuptools 84.0.0, wheel 0.48.0) | | D-019, C-046 |
+| Toolkit lock | `python/requirements-lock.txt` (32 lines, incl. pip 26.2.1, setuptools 84.1.0, wheel 0.48.0) | | D-019, C-046 |
 | RVC | commit `81eed5e8f68b6bed1789f682fe78cdd324495afc` | | C-001, C-022 |
 | RVC assets | Hugging Face `lj1995/VoiceConversionWebUI`, `--revision main` (S-013 records the resolved revision here) | | C-032 |
 | huggingface_hub (download venv only) | 2.2.0 (`hf download` flags checked 2026-10-15) | | C-032 |

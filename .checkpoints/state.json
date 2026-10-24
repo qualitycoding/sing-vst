@@ -8,31 +8,37 @@
   "mode_flags": {
     "software.deploys": false
   },
-  "phase": "impl-ready",
+  "phase": "impl",
   "subphase": "S-000",
   "research_round": 6,
   "exploration_round": 0,
   "proof_review_round": 0,
   "premortem_round": 6,
   "completed": [
-    "0.1",
-    "0.3.7",
-    "R0",
-    "1.3",
-    "1.4",
-    "2B",
-    "3.1-3.5",
-    "2E",
-    "1.1",
-    "2C",
-    "3.6",
-    "4",
-    "5",
-    "4-r6",
-    "3.6-r6"
+    "S-000"
   ],
   "pending": [
-    "S-000"
+    "S-001",
+    "S-002",
+    "S-003",
+    "S-004",
+    "S-005",
+    "S-006",
+    "S-007",
+    "S-008",
+    "S-009",
+    "S-010",
+    "S-011",
+    "S-012",
+    "S-013",
+    "S-014",
+    "S-015",
+    "S-016",
+    "S-017",
+    "S-018",
+    "S-019",
+    "S-RETRO",
+    "S-KNOW"
   ],
   "not_applicable": [
     "2A",
@@ -47,6 +53,8 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
+    "DEVIATIONS.md": "07817f6bb28b2e6482433495ceafda749062e005d5a8b8f2d2e560f32636eb24",
+    "EXECUTION_LOG.md": "dc48a636959845c21446bde7f5f2dc3ddd7cea4a76f7fbadedbf73901060ac4b",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -204,7 +212,7 @@
     "lessons/L-20261021T200500Z-package-added-to-pinned-install-without-resolving.md": "d7115414a93c3dac6f5787fe1028fba7ea19d41924475aae10f302eb380c5999",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "c33b03950cb424969d693219339336383b416fa61eeb617b7f5db2876dbab94a",
-    "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
+    "plan/ENVIRONMENT.md": "27fc042509178f968c6506ac8fc9b50a66266a3023a7ad5d88785887b58769b8",
     "plan/GATES.md": "6b839a4acafc655a044edadad63f46419fc7337b3c55def2b4cfd3e27d5ef25e",
     "plan/PLAN.md": "b635ead01974e0aec1f662d4d8c8ead8dc1615fa54a4dbc5f47aff9f5766a293",
     "plan/PLAN.src.md": "83cfae831efcf3378114d8a55b175b5628f3e62de671d81560184eb7d1461ad9",
@@ -237,9 +245,9 @@
     "premortem/round-5.md": "a81819807d1b98f3ef84b2c48af255d99af50338d6cf510b08a33cfb3750e640",
     "premortem/round-6.md": "51edae3478034cb15a9acc6658c3fcf832fa6149d29cd2e0837be724ab2c6549",
     "pytest.ini": "2a0de770d527a5f24cbc18dbb0dd4d7331b2127646bafdc14eea5aad5122e6b4",
-    "python/pyproject.toml": "7491b80ae2d7c9e09d60ccf11210c5f87134188baf18c5ea46b6c6a4036e2d58",
-    "python/requirements-lock.txt": "a05381edd0780e4d6ed4292236fbc098aa17e0c5940d399732b470f2aa517eaf",
-    "python/requirements.in": "15da3a6732912584ab418c5bdd23a3fcebbf5547fea3d9523e79273258e7cb92",
+    "python/pyproject.toml": "e5fa8fa8df7a88cf62cfb856625e49c939a8ad483c473740feac3aafdc725a0b",
+    "python/requirements-lock.txt": "822a2c98da312130713745fdd7400871e9cc5c4a99541f7a39f73c90a7fde96b",
+    "python/requirements.in": "42dc4f0003aace85ec39cbc2aed9259fcc6953f5cd68dbbf8af7ff7638d154be",
     "python/singvst_train/__init__.py": "5ecd5f1edeedf95e2afc4f709893f6dd25956ce01b2073a6beeb0037f02bfb6b",
     "python/singvst_train/__main__.py": "ef62c3c62a9940ba12ab445224b29094b7b2a259a02117f1bfe0abb3e88c4b1e",
     "python/singvst_train/cli.py": "bb6e411ccda93535a08075a77764db62400a0631a6aef8bc13ccfbdc8819b148",
@@ -447,6 +455,10 @@
       "qualitycoding/agent-knowledge": "not found (2026-10-04)",
       "qualitycoding/Lessons": "readable, push via add_repo (2026-10-10)",
       "qualitycoding/knowledge": "readable, push via add_repo (2026-10-10)"
+    },
+    "commit_at_impl": {
+      "lessons": "ac028c7d4c50969a279d152b77bebeb0a03f5386",
+      "knowledge": "09f34582dfb50f876834a42b85ba19efac5a3129"
     }
   },
   "lessons_loaded": [
@@ -782,8 +794,8 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-22T07:28:16Z",
-  "active_step_id": "S-000",
+  "updated_at": "2026-10-24T12:39:48Z",
+  "active_step_id": "S-001",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
@@ -791,7 +803,7 @@
     "in_flight_operation": null,
     "tool_cache": {},
     "step_pointer": {
-      "phase": "impl-ready",
+      "phase": "impl",
       "subphase": "S-000",
       "item_index": 0,
       "sub_action": "start S-000 per HANDOFF.md",
@@ -827,7 +839,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 140,
+  "sequence": 144,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
