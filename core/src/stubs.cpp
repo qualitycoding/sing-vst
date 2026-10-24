@@ -17,8 +17,6 @@ namespace singvst {
 
 
 
-VoiceManifest parseManifest (std::string_view) { throw NotImplemented ("parseManifest"); }
-void validatePackage (const std::filesystem::path&, const VoiceManifest&, std::uintmax_t) { throw NotImplemented ("validatePackage"); }
 
 std::optional<std::int64_t> takeSampleAt (const RenderedTake&, double, double, double) { throw NotImplemented ("takeSampleAt"); }
 void renderBlock (const RenderedTake*, bool, double, double, double, float, float* out, int n) noexcept { for (int i = 0; i < n; ++i) out[i] = 1.0e9f; }
@@ -45,7 +43,6 @@ const OrtRuntimeInfo& loadOrtRuntime (const std::filesystem::path&) { throw NotI
 bool ortRuntimeLoaded() noexcept { return false; }
 std::string bundledOrtFileName() { throw NotImplemented ("bundledOrtFileName"); }
 MidiImport importMidi (std::string_view) { throw NotImplemented ("importMidi"); }
-std::string sha256Hex (std::string_view) { throw NotImplemented ("sha256Hex"); }
 
 RenderedTake renderTake (const RenderRequest&, const Dictionary&, GuideEngine&, ConverterEngine*, const std::atomic<bool>&, std::vector<std::string>*) { throw NotImplemented ("renderTake"); }
 struct Renderer::Impl {};
