@@ -20,3 +20,87 @@
 | 2026-10-24T15:27:32Z | S-013 | 1 | pass | 41b2636 | T-P19 (both functions) passes locally and in CI python-torch (run 40105798141); parity 3e-7 at 1/7/200/600 frames, 2e-7 vs RVC infer with noise zeroed; hf-revision e6d0c1a17da07c33557852f9dfa2bd44cc75737d recorded in plan/ENVIRONMENT.md. Mid-step correction: trace baked in the example length (lesson recorded) |
 | 2026-10-24T15:28:04Z | S-014 | 1 | pass | a03d227 | T-P24 and T-P25 pass locally (27 passed in the lock venv; still red: T-P16/P17 S-016, T-P23 S-018, T-P26 S-015). rvc-files and rvc-train-command run; export --exp-name now delegates to latest_weights |
 | 2026-10-24T15:30:59Z | S-015 | 1 | pass | 9911c31 | T-P26 and T-P25 pass locally. Dry run with stand-in resemblyzer/whisper on the fixture voice: 100 renders, report.json (exactly REPORT_KEYS), spread.json (5 values per metric), sidecar (params/seeds per D-035), verdict.json; status 'invalid: f0: only 7 scored F0 frames in phrase p2 (repeat 0)' as accepted for the dry run. GATE-G-005.md written; HALTED at G-005 (S-016 onward wait) |
+
+
+### S-016 `tools/notebook_dryrun.py` output ($N)
+
+```text
+==== train_voice_colab.ipynb
+(1) a full session runs every stage [train_voice_colab.ipynb]
+  ok   stages run in order: ['split', 'prepare', 'rvc-preprocess', 'rvc-f0', 'rvc-features', 'rvc-files', 'train', 'export', 'render-bin', 'pack', 'evaluate']
+  ok   no stop
+  ok   commits.json records every stage
+(3) editing params.json makes every stage run [train_voice_colab.ipynb]
+  ok   second pass reran: ['split', 'prepare', 'rvc-preprocess', 'rvc-f0', 'rvc-features', 'rvc-files', 'train', 'export', 'render-bin', 'pack', 'evaluate']
+(4) a train SessionEnd stops the session; the next one resumes at train [train_voice_colab.ipynb]
+  ok   STOP set: 'start a new session'
+  ok   train left no marker; stages run: ['split', 'prepare', 'rvc-preprocess', 'rvc-f0', 'rvc-features', 'rvc-files']
+  ok   resumed at train: ['train', 'export', 'render-bin', 'pack', 'evaluate']
+(5) failures and owner stops never escape guarded [train_voice_colab.ipynb]
+  ok   RuntimeError -> 'failed: 9 boom'
+  ok   Colab: budget.json has the session's end
+  ok   OwnerAction -> 'owner: 9 fix the thing'
+(7) GPU-hour accounting [train_voice_colab.ipynb]
+  ok   gpu_hours 5.0 = sum of stage_hours {'evaluate': 1.0, 'export': 1.0, 'rvc-f0': 1.0, 'rvc-features': 1.0, 'train': 1.0}
+  ok   budget-voice.json runs[1] = 5.0
+  ok   prior 2.5 killed_hours 0.0
+  ok   11 hours lines match and voice = platform + 2.5
+  ok   a heartbeat during the train stage records its elapsed time: [1.0]
+  ok   unended session still counted: gpu_hours 5.0
+(8) budget stop in the train stage [train_voice_colab.ipynb]
+  ok   stage completed from the snapshot (STOP_REASON '')
+  ok   stopped_by_budget = 10
+  ok   <exp>.pth was copied from the snapshot
+  ok   no snapshot -> 'budget: no checkpoint'
+(10) owner stops in cells (3) and (4e) [train_voice_colab.ipynb]
+  ok   PLATFORM_EXPECTED mismatch -> OwnerAction and `owner: 3 `
+  ok   changed params -> OwnerAction and `owner: 4e `
+==== train_voice_kaggle.ipynb
+(1) a full session runs every stage [train_voice_kaggle.ipynb]
+  ok   stages run in order: ['split', 'prepare', 'rvc-preprocess', 'rvc-f0', 'rvc-features', 'rvc-files', 'train', 'export', 'render-bin', 'pack', 'evaluate']
+  ok   no stop
+  ok   commits.json records every stage
+(2) end_session, then restore into a fresh root: only render-bin and evaluate run [train_voice_kaggle.ipynb]
+  ok   stages run after the restore: ['render-bin', 'evaluate']
+  ok   RESTORED_FROM holds the restored tar's hash
+(3) editing params.json makes every stage run [train_voice_kaggle.ipynb]
+  ok   second pass reran: ['split', 'prepare', 'rvc-preprocess', 'rvc-f0', 'rvc-features', 'rvc-files', 'train', 'export', 'render-bin', 'pack', 'evaluate']
+(4) a train SessionEnd stops the session; the next one resumes at train [train_voice_kaggle.ipynb]
+  ok   STOP set: 'start a new session'
+  ok   train left no marker; stages run: ['split', 'prepare', 'rvc-preprocess', 'rvc-f0', 'rvc-features', 'rvc-files']
+  ok   state.tar written by end_session
+  ok   first session entry has end and seq: 1
+  ok   resumed at train: ['train', 'export', 'render-bin', 'pack', 'evaluate']
+(5) failures and owner stops never escape guarded [train_voice_kaggle.ipynb]
+  ok   RuntimeError -> 'failed: 9 boom'
+  ok   Kaggle: state.tar written after a failure
+  ok   state.tar holds the budget files
+  ok   OwnerAction -> 'owner: 9 fix the thing'
+(6) RESUME rules raise the D-035 messages [train_voice_kaggle.ipynb]
+  ok   RESUME with no state.tar: "3 RESUME is True but no previous output is attached: attach the previous version's output (Add Input -> Your Work)"
+  ok   RESUME with no state.tar: prints an `owner: 3 ` line
+  ok   no RESUME with a state.tar: '3 a previous state.tar is attached (/tmp/nbdry-y311hnds/kaggle/input/prev/state.tar): set RESUME = True'
+  ok   no RESUME with a state.tar: prints an `owner: 3 ` line
+(7) GPU-hour accounting [train_voice_kaggle.ipynb]
+  ok   gpu_hours 5.0 = sum of stage_hours {'evaluate': 1.0, 'export': 1.0, 'rvc-f0': 1.0, 'rvc-features': 1.0, 'train': 1.0}
+  ok   budget-voice.json runs[1] = 5.0
+  ok   prior 2.5 killed_hours 0.5
+  ok   11 hours lines match and voice = platform + 3.0
+  ok   a heartbeat during the train stage records its elapsed time: [1.0]
+  ok   unended session still counted: gpu_hours 5.0
+(8) budget stop in the train stage [train_voice_kaggle.ipynb]
+  ok   stage completed from the snapshot (STOP_REASON '')
+  ok   stopped_by_budget = 10
+  ok   <exp>.pth was copied from the snapshot
+  ok   no snapshot -> 'budget: no checkpoint'
+(9) prune skips logs/<exp> once and keeps it afterwards [train_voice_kaggle.ipynb]
+  ok   logs/<exp> not restored
+  ok   pruned-<exp> marker written
+  ok   restarted training: ['rvc-preprocess', 'rvc-f0', 'rvc-features', 'rvc-files', 'train']
+  ok   second restore keeps logs/<exp>
+(10) owner stops in cells (3) and (4e) [train_voice_kaggle.ipynb]
+  ok   PLATFORM_EXPECTED mismatch -> OwnerAction and `owner: 3 `
+  ok   changed params -> OwnerAction and `owner: 4e `
+
+0 failure(s)
+```

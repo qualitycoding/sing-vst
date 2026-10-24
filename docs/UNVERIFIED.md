@@ -33,3 +33,16 @@ belongs to. S-017 copies the editor list into GATE-G-001.md as the owner's check
   zero (2e-7) and the graph is deterministic, but whether fricatives and breaths sound natural was not listened to. Judge at G-001.
 - **Real trained weights**: T-P19 uses randomly initialised test weights (`make_test_weights`); export of an actually trained
   checkpoint (float16 weights, `emb_g` size from training) is first exercised in the owner's notebook at G-004.
+
+## Training notebooks (D-016, D-035, S-016)
+- **De-reverb path (D-025)**: `prepare --dereverb` runs audio-separator 0.47.0 with the MelBand-Roformer de-reverb model in its own venv. The
+  `noreverb` stem name comes from the model's YAML, which is downloaded at `load_model`, so the call sequence was read from the wheel
+  (research/spikes/audio-separator-047/output.txt, C-066) but never run; CI does not run it. The model's licence is unstated (C-043).
+- **Cells the dry run does not execute**: cells (4) setup and installs, (5) RVC assets, (6) library checks, (10a) memory and disk check, the
+  TIGER download in (14), (16) T-P20 and the tar part of (17) need a GPU runtime or the network. Their shell commands were checked for
+  syntax and their helper scripts, archive logic and result parser were run locally against the real tools, but the cells themselves
+  first run on Colab or Kaggle at gate G-004. Expect `owner-fixed:` or `failed:` round trips there.
+- **Platform behaviour (D-016, C-017..C-019)**: Colab Drive mounting, Kaggle's "Save & Run All", the 12-hour session limit, the
+  500-item output limit and the weekly quota are as documented, not observed.
+- **GPU timing and memory (D-035 cell 10a)**: batch size 8 for a GPU of 14 GiB or more (else 4), the 9.5-hour session stop and the train
+  timeout were reasoned from the platforms' limits, not measured on a real T4.
