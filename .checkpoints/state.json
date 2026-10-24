@@ -9,7 +9,7 @@
     "software.deploys": false
   },
   "phase": "impl",
-  "subphase": "S-004",
+  "subphase": "S-005",
   "research_round": 6,
   "exploration_round": 0,
   "proof_review_round": 0,
@@ -19,10 +19,10 @@
     "S-001",
     "S-002",
     "S-003",
-    "S-004"
+    "S-004",
+    "S-005"
   ],
   "pending": [
-    "S-005",
     "S-006",
     "S-007",
     "S-008",
@@ -53,8 +53,8 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "d6cf580bb37f684fb9fcb0cfe6d7692c7923b83ec9bc1093b63bce6d26a9dbfe",
-    "EXECUTION_LOG.md": "04f363e4703f3c1642d70619819504581adecd07f9217582c696519de13c9acc",
+    "DEVIATIONS.md": "5996d1c201fc1e40df7d214d9a1bdc82775b4bc2451f2ade0178df0131b79424",
+    "EXECUTION_LOG.md": "903138b22d615597ec4504062d8fa0689b75adbfc752491d175afea05f596c0b",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -80,9 +80,10 @@
     "core/src/align.cpp": "7a79dbd4b06606cf523c27a704359d44e619abff2b827cc5880682d51853632e",
     "core/src/g2p.cpp": "421f59aa7c9066fc6286c7c9e35edbb6380600fbe3642d0eea9ea8e23aadcfa9",
     "core/src/lyrics.cpp": "f60effdacc3518d226555b3655da9e1a9520cfe21113b6611e724ffa8fd996fd",
+    "core/src/playback.cpp": "0e408517f6f0116ea385daa19d456148b3a0ebbe2e13fe33b859806a1e1ee069",
     "core/src/sha256.cpp": "f8d62bb6464f6cfe95e802f5aa21d54f468cb7b380ecc5088e9b15cf11744a74",
     "core/src/sha256.hpp": "381ffe7fb5ae6e64fd97cdefb313a6d4858c4b09d15c38c1c1cb3f694502d05e",
-    "core/src/stubs.cpp": "f2641bac6ba84aff8ba879aa4465db8c1338289365a25da4cf4c1d3c5956c664",
+    "core/src/stubs.cpp": "f6c4456ffa6667b72094966dc7ad2b76bb60d43b06b729f55e61fb51d70bd7e7",
     "core/src/synthesis.cpp": "67e2d972b7815f1664f4c825a74bb13629c159d29e2ba98794cca50bfef3e01e",
     "core/src/voice.cpp": "60455c97a333b2206f0f472babd741ff3ff2cd3ec0592378d1b88ef433cae191",
     "eval/PROCEDURE.md": "b3f4f713684a8f799934e7b8af8df078ebd86ea0ab35ef86c6ae9d8fd4cc9cbc",
@@ -164,6 +165,7 @@
     "knowledge/K-20261021T150000Z-c-065-rvc.md": "5b47c67184e4d8ba4ec0bc0710a996578e090dd62653ebb38f0ca2e0ddf9f88c",
     "knowledge/K-20261021T200000Z-c-066-audio-separator.md": "710da8763aa0d08d290f2424e84445a1cf201a8c0308e67717e5a59645eb4409",
     "knowledge/K-20261021T200100Z-c-067-pytest.md": "a097f81fbb2657ae8aac61d73eae8e2ba5c8a3b2d82e856a635ef3a0ae8a63a4",
+    "knowledge/K-20261024T125942Z-tsan-unexpected-memory-mapping-setarch.md": "4f3bcffedda1f88282153e73a5886e0eee51438e0d5932ff7b7ff4acc9bfa648",
     "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
     "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
     "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
@@ -217,6 +219,7 @@
     "lessons/L-20261021T150000Z-behaviour-specified-against-an-interface-that-cannot-express-it.md": "63bc1bd244eefb7974c30042f81ed205e98d8780b778193cdefa823a668dd0e5",
     "lessons/L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject.md": "11cbfd3a6df84b3f05e5237f08a0a3e48d67cbadaaf8a6cb0883c99f4582d6e9",
     "lessons/L-20261021T200500Z-package-added-to-pinned-install-without-resolving.md": "d7115414a93c3dac6f5787fe1028fba7ea19d41924475aae10f302eb380c5999",
+    "lessons/L-20261024T125942Z-tsan-aborts-under-high-entropy-aslr.md": "230ab3b0c09a87a038bebc105099b51b3fa810f17b4ec31c9023a9c03233ce9c",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "c33b03950cb424969d693219339336383b416fa61eeb617b7f5db2876dbab94a",
     "plan/ENVIRONMENT.md": "27fc042509178f968c6506ac8fc9b50a66266a3023a7ad5d88785887b58769b8",
@@ -457,6 +460,11 @@
     },
     {
       "step": "S-003",
+      "wanted": "Opus",
+      "used": "claude-sonnet-5-5"
+    },
+    {
+      "step": "S-005",
       "wanted": "Opus",
       "used": "claude-sonnet-5-5"
     }
@@ -731,7 +739,8 @@
     "L-20261016T140100Z-spike-checked-a-source-literal-not-the-emitted-value",
     "L-20261021T150000Z-behaviour-specified-against-an-interface-that-cannot-express-it",
     "L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject",
-    "L-20261021T200500Z-package-added-to-pinned-install-without-resolving"
+    "L-20261021T200500Z-package-added-to-pinned-install-without-resolving",
+    "L-20261024T125942Z-tsan-aborts-under-high-entropy-aslr"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -800,7 +809,8 @@
     "K-20261016T130100Z-c-064-kaggle",
     "K-20261021T150000Z-c-065-rvc",
     "K-20261021T200000Z-c-066-audio-separator",
-    "K-20261021T200100Z-c-067-pytest"
+    "K-20261021T200100Z-c-067-pytest",
+    "K-20261024T125942Z-tsan-unexpected-memory-mapping-setarch"
   ],
   "environment": {},
   "notes": [
@@ -812,8 +822,8 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-24T12:57:21Z",
-  "active_step_id": "S-005",
+  "updated_at": "2026-10-24T12:59:52Z",
+  "active_step_id": "S-006",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
@@ -822,7 +832,7 @@
     "tool_cache": {},
     "step_pointer": {
       "phase": "impl",
-      "subphase": "S-004",
+      "subphase": "S-005",
       "item_index": 0,
       "sub_action": "start S-000 per HANDOFF.md",
       "retry_count": 0
@@ -857,7 +867,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 154,
+  "sequence": 157,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

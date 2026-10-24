@@ -7,3 +7,4 @@
 | 2026-10-24T12:55:38Z | S-002 | 1 | pass | b319890 | T-001..T-018 pass; 43 other core tests still red (stubs) |
 | 2026-10-24T12:56:21Z | S-003 | 1 | pass | a00f149 | T-019..T-027 pass; 34 core tests still red (later steps) |
 | 2026-10-24T12:57:20Z | S-004 | 1 | pass | 09a02f6 | T-028..T-031, T-063 pass; 29 core tests still red (later steps) |
+| 2026-10-24T12:59:51Z | S-005 | 1 | pass | fb6c152 | T-032..T-038 pass (core); T-034 with LOCPATH de_DE; T-038 TSan clean x3 with setarch -R and ASan clean; 23 core tests still red (later steps) |

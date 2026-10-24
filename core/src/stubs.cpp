@@ -18,22 +18,6 @@ namespace singvst {
 
 
 
-std::optional<std::int64_t> takeSampleAt (const RenderedTake&, double, double, double) { throw NotImplemented ("takeSampleAt"); }
-void renderBlock (const RenderedTake*, bool, double, double, double, float, float* out, int n) noexcept { for (int i = 0; i < n; ++i) out[i] = 1.0e9f; }
-std::uint64_t phraseHash (const std::vector<Note>&, const std::vector<LyricToken>&, const RenderParams&) { throw NotImplemented ("phraseHash"); }
-void CaptureRecorder::noteOn (double, int) { throw NotImplemented ("CaptureRecorder::noteOn"); }
-void CaptureRecorder::noteOff (double, int) { throw NotImplemented ("CaptureRecorder::noteOff"); }
-std::vector<Note> CaptureRecorder::finish (double) { throw NotImplemented ("CaptureRecorder::finish"); }
-void CaptureRecorder::clear() { throw NotImplemented ("CaptureRecorder::clear"); }
-std::string toJson (const PluginState&) { throw NotImplemented ("toJson"); }
-PluginState pluginStateFromJson (std::string_view) { throw NotImplemented ("pluginStateFromJson"); }
-TakeSlot::TakeSlot() = default;
-TakeSlot::~TakeSlot() = default;
-void TakeSlot::publish (std::unique_ptr<RenderedTake>) { throw NotImplemented ("TakeSlot::publish"); }
-const RenderedTake* TakeSlot::acquire() noexcept { return nullptr; }
-void TakeSlot::release() noexcept {}
-std::size_t TakeSlot::collect() { throw NotImplemented ("TakeSlot::collect"); }
-std::size_t TakeSlot::retiredCount() const { throw NotImplemented ("TakeSlot::retiredCount"); }
 
 std::unique_ptr<GuideEngine> GuideEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("GuideEngine::load"); }
 std::unique_ptr<ConverterEngine> ConverterEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("ConverterEngine::load"); }

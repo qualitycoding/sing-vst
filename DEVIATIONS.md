@@ -11,3 +11,5 @@
 | 2026-10-24T12:39:48Z | S-000 | action 2: keep environment identity | environment had no user.name/user.email; set repo-local sing-vst implementer / noreply@anthropic.com | plan's stated fallback |
 | 2026-10-24T12:55:38Z | S-002 | Tier: Opus | run by claude-sonnet-5-5 (no Opus subagent used) | HANDOFF §Tiers: neither possible/chosen, substitution recorded |
 | 2026-10-24T12:56:21Z | S-003 | Tier: Opus | run by claude-sonnet-5-5 | HANDOFF §Tiers substitution |
+| 2026-10-24T12:59:51Z | S-005 | Tier: Opus | run by claude-sonnet-5-5 | HANDOFF §Tiers substitution |
+| 2026-10-24T12:59:51Z | S-005 | T-034 / T-038 local commands | T-034 run with a user-local de_DE.UTF-8 (localedef into $HOME/locale, LOCPATH) since no root; T-038 in ../build-tsan run under 'setarch $(uname -m) -R' | no-root path of S-000 action 3; TSan aborts under this kernel's ASLR (lesson L-*-tsan-aborts-under-high-entropy-aslr). CI remains the evidence for T-034 (D-036) |
