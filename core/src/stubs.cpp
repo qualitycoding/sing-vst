@@ -21,11 +21,6 @@ namespace singvst {
 
 std::unique_ptr<GuideEngine> GuideEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("GuideEngine::load"); }
 std::unique_ptr<ConverterEngine> ConverterEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("ConverterEngine::load"); }
-std::vector<float> resample (const std::vector<float>&, int, int) { throw NotImplemented ("resample"); }
-std::vector<float> standardNormal (std::uint64_t, std::size_t) { throw NotImplemented ("standardNormal"); }
-const OrtRuntimeInfo& loadOrtRuntime (const std::filesystem::path&) { throw NotImplemented ("loadOrtRuntime"); }
-bool ortRuntimeLoaded() noexcept { return false; }
-std::string bundledOrtFileName() { throw NotImplemented ("bundledOrtFileName"); }
 
 RenderedTake renderTake (const RenderRequest&, const Dictionary&, GuideEngine&, ConverterEngine*, const std::atomic<bool>&, std::vector<std::string>*) { throw NotImplemented ("renderTake"); }
 struct Renderer::Impl {};
