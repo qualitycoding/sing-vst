@@ -26,3 +26,10 @@ belongs to. S-017 copies the editor list into GATE-G-001.md as the owner's check
   tempo changes were not run (DR-09 covers reported failures).
 - **Live capture from a MIDI keyboard**: T-057 drives the capture with a fake play head and MIDI buffers only.
 - **Sample-rate change while a project is open**: the resampled copy is tested by T-071 and the worker only by code review.
+
+## Converter (D-012, S-013)
+- **Unvoiced consonant noise (D-012 converter, DEVIATIONS S-013)**: the NSF source's noise is read from the seed input `rnd`, each value
+  held for 2.5 samples, instead of drawn fresh at every sample as in RVC. Parity with RVC's own `infer` is exact when all noise is
+  zero (2e-7) and the graph is deterministic, but whether fricatives and breaths sound natural was not listened to. Judge at G-001.
+- **Real trained weights**: T-P19 uses randomly initialised test weights (`make_test_weights`); export of an actually trained
+  checkpoint (float16 weights, `emb_g` size from training) is first exercised in the owner's notebook at G-004.

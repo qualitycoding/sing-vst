@@ -92,6 +92,24 @@ def _cmd_pack(args) -> int:
     return 0
 
 
+def _cmd_export(args) -> int:
+    from singvst_train import export_rvc
+    weights = args.weights
+    if weights is None:
+        from singvst_train import rvc_files
+        weights = rvc_files.latest_weights(args.rvc_root, args.exp_name)
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    print(export_rvc.export_synth(args.rvc_root, weights, args.out_dir / "rvc_synth.onnx"))
+    print(export_rvc.export_content(args.rvc_root, args.out_dir / "content.onnx"))
+    return 0
+
+
+def _cmd_make_test_weights(args) -> int:
+    from singvst_train import export_rvc
+    print(export_rvc.make_test_weights(args.rvc_root, args.out, args.seed))
+    return 0
+
+
 def _cmd_provenance(args) -> int:
     from singvst_train import provenance
     record = provenance.collect(json.loads(args.params), json.loads(args.seeds), args.repo, args.lockfile)
@@ -99,7 +117,8 @@ def _cmd_provenance(args) -> int:
     return 0
 
 
-_HANDLERS = {"split": _cmd_split, "prepare": _cmd_prepare, "pack": _cmd_pack, "provenance": _cmd_provenance}
+_HANDLERS = {"split": _cmd_split, "prepare": _cmd_prepare, "pack": _cmd_pack, "provenance": _cmd_provenance,
+             "export": _cmd_export, "make-test-weights": _cmd_make_test_weights}
 
 
 def build_parser():
@@ -141,6 +160,18 @@ def build_parser():
     p.add_argument("--depth", type=float, default=0.4)
     p.add_argument("--converter-sample-rate", type=int, default=48000)
     p.add_argument("--speaker-id", type=int, default=0)
+
+    p = subs["export"]
+    p.add_argument("--rvc-root", required=True, type=Path)
+    group = p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--weights", type=Path)
+    group.add_argument("--exp-name")
+    p.add_argument("--out-dir", required=True, type=Path)
+
+    p = subs["make-test-weights"]
+    p.add_argument("--rvc-root", required=True, type=Path)
+    p.add_argument("--out", required=True, type=Path)
+    p.add_argument("--seed", type=int, default=0)
 
     p = subs["provenance"]
     p.add_argument("--result", required=True, type=Path)

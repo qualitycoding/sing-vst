@@ -54,7 +54,7 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "bcc49cb59d329e95e7ca84a87181706320eccaa1dd56166a06c841943ae41ddd",
+    "DEVIATIONS.md": "7e71752e41f0653efd058594835859e2c974353775a24966c776bd7c69911468",
     "EXECUTION_LOG.md": "54cb202ae0c6fd9e1e89ab4785e9fc843618cd4ad2f82390f11c543e7a8aa384",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
@@ -98,7 +98,7 @@
     "core/src/synthesis.cpp": "67e2d972b7815f1664f4c825a74bb13629c159d29e2ba98794cca50bfef3e01e",
     "core/src/take_cache.cpp": "9b10a59d85ed76945676af40f06b99b773cbd3accd0798a7836ff173c9d9a5ec",
     "core/src/voice.cpp": "60455c97a333b2206f0f472babd741ff3ff2cd3ec0592378d1b88ef433cae191",
-    "docs/UNVERIFIED.md": "4c59d01dd9469238c314bcfbafb4501d5cf5d1ff699a86c415580679f847a112",
+    "docs/UNVERIFIED.md": "05a9d2252b93ae2bd378530c364f40ff574a7f0ea02336f17c14faa1243f3cbc",
     "eval/PROCEDURE.md": "b3f4f713684a8f799934e7b8af8df078ebd86ea0ab35ef86c6ae9d8fd4cc9cbc",
     "eval/phrases/p1.mid": "7ea321f576c32f8051c5c67a99f553dcab89ab768ce4ee8ea50a40d2b3eda573",
     "eval/phrases/p1.txt": "5086a84ad85f517fc6e2fe2051f2c0921735127e8974f65ebab41cf6c2f8e762",
@@ -181,6 +181,9 @@
     "knowledge/K-20261024T125942Z-tsan-unexpected-memory-mapping-setarch.md": "4f3bcffedda1f88282153e73a5886e0eee51438e0d5932ff7b7ff4acc9bfa648",
     "knowledge/K-20261024T133254Z-ort-typeinfo-view-lifetime.md": "6e02a88473beec2bb665ea1b8a131878ef1271e90595866ca6242cff342a0bf7",
     "knowledge/K-20261024T144526Z-juce-linux-build-without-root.md": "ef0e520d445b6e2fb084645ebec6e5cab66d8c888d9c7d2897da896aa3e8a4a4",
+    "knowledge/K-20261024T151049Z-rvc-attention-trace.md": "5cb0663d9cb872fd9e159a2ebd8743a39b1f66c8d460ca127cc080035bd8e384",
+    "knowledge/K-20261024T151050Z-rvc-sinegen-noise.md": "b89656d09b847bfa4fbc05dbea00c3af127619a2912c7c51f74cf4c33d9fbca8",
+    "knowledge/K-20261024T151051Z-hubert-base-hf-revision.md": "578ea0c27fbdf905640e0417f95271701a36cd525303b27b861d95b48227e219",
     "lessons/L-20261010T000100Z-unpushed-generation-branch-lost-in-sandbox-reset.md": "136104386c58a901172544a7628e5f8c3a8c8f025165088b045421ac0299ae8a",
     "lessons/L-20261010T000101Z-pasted-token-written-to-disk-before-add-repo.md": "f284f0c7a2bb2874b2054dd60dd69559921d47bba4c182dbb96da30ed4914568",
     "lessons/L-20261010T000102Z-store-probe-used-only-the-default-name.md": "9daf36ab3b1cac0c2c659e307e263396f505f0769016c9f9c7d0f1d772e460e8",
@@ -238,6 +241,7 @@
     "lessons/L-20261024T132818Z-hashed-fixtures-need-no-eol-conversion.md": "18863292549ea9ee4015e371618d0c88bfe5060f75593520068655649437a224",
     "lessons/L-20261024T133252Z-ort-typeinfo-view-dangles.md": "b62f684eaf9f6c530e8f54aabdd1a4d211fb7ca149b1f5aa195ba09e243c8199",
     "lessons/L-20261024T133253Z-spike-passed-for-the-wrong-reason.md": "7eb001eb620485fc3890fea45207e400b46d36670ed4b6fc1b3c710e067a6153",
+    "lessons/L-20261024T151049Z-trace-bakes-example-length.md": "b079158c663dfd8af5e21f65052b2ed5fc962d514ea12f3ce591226a81bd7bd0",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
     "plan/DECISIONS.md": "c33b03950cb424969d693219339336383b416fa61eeb617b7f5db2876dbab94a",
     "plan/ENVIRONMENT.md": "27fc042509178f968c6506ac8fc9b50a66266a3023a7ad5d88785887b58769b8",
@@ -280,9 +284,9 @@
     "python/requirements.in": "42dc4f0003aace85ec39cbc2aed9259fcc6953f5cd68dbbf8af7ff7638d154be",
     "python/singvst_train/__init__.py": "5ecd5f1edeedf95e2afc4f709893f6dd25956ce01b2073a6beeb0037f02bfb6b",
     "python/singvst_train/__main__.py": "ef62c3c62a9940ba12ab445224b29094b7b2a259a02117f1bfe0abb3e88c4b1e",
-    "python/singvst_train/cli.py": "5d44cd1632cc26aa73aaf4a96c4e92c93cf1d13f54830ac2698fe2675cb5a552",
+    "python/singvst_train/cli.py": "8f29b4d155ddc2c79af158bc2241ad35fbcd0d5a5b9829e5619bdbde7e345f1c",
     "python/singvst_train/evaluate.py": "ed94c8cb3a8420136456df8de46f6fdba4841a1165b89c16a3d582720176f60c",
-    "python/singvst_train/export_rvc.py": "a39bc4d75af5e39682b39c4344300196369014d8e7e8d0b30bc0e27963809d28",
+    "python/singvst_train/export_rvc.py": "62f6cd053d0845b70997729000b15f94f6b5c25c945596ff5b32578c543ee024",
     "python/singvst_train/metrics.py": "3d2301a2519458d88e87d8fb5c8b804a4fc2198d0059e7d716d914bb98580b7e",
     "python/singvst_train/pack.py": "57af562804a05c5ac93cf389fef0cbe792857639acd80bbb5750ee0352e93ee6",
     "python/singvst_train/pipeline.py": "b260bcf5f6e21f0fd46f69da382ba27034880f93ba85f5c69e7cdd8eb3c2c7a4",
@@ -509,6 +513,11 @@
     },
     {
       "step": "S-011",
+      "wanted": "Opus",
+      "used": "claude-sonnet-5-5"
+    },
+    {
+      "step": "S-013",
       "wanted": "Opus",
       "used": "claude-sonnet-5-5"
     }
@@ -787,7 +796,8 @@
     "L-20261024T125942Z-tsan-aborts-under-high-entropy-aslr",
     "L-20261024T132818Z-hashed-fixtures-need-no-eol-conversion",
     "L-20261024T133252Z-ort-typeinfo-view-dangles",
-    "L-20261024T133253Z-spike-passed-for-the-wrong-reason"
+    "L-20261024T133253Z-spike-passed-for-the-wrong-reason",
+    "L-20261024T151049Z-trace-bakes-example-length"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -859,7 +869,10 @@
     "K-20261021T200100Z-c-067-pytest",
     "K-20261024T125942Z-tsan-unexpected-memory-mapping-setarch",
     "K-20261024T133254Z-ort-typeinfo-view-lifetime",
-    "K-20261024T144526Z-juce-linux-build-without-root"
+    "K-20261024T144526Z-juce-linux-build-without-root",
+    "K-20261024T151049Z-rvc-attention-trace",
+    "K-20261024T151050Z-rvc-sinegen-noise",
+    "K-20261024T151051Z-hubert-base-hf-revision"
   ],
   "environment": {},
   "notes": [
@@ -871,13 +884,15 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-24T15:02:04Z",
+  "updated_at": "2026-10-24T15:10:53Z",
   "active_step_id": "S-013",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
     "scratchpad": "Planning complete. Next actor: implementer, starting S-000.",
-    "in_flight_operation": null,
+    "in_flight_operation": {
+      "op": "S-013 CI wait (python-torch, python)"
+    },
     "tool_cache": {},
     "step_pointer": {
       "phase": "impl",
@@ -916,7 +931,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 188,
+  "sequence": 191,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
