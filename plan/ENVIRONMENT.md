@@ -14,7 +14,7 @@
 | Python | **3.12** (`/usr/bin/python3.12` in the sandbox; `python-version: "3.12"` in CI) — never bare `python3` (PK-55) | | D-019 |
 | Toolkit lock | `python/requirements-lock.txt` (32 lines, incl. pip 26.2.1, setuptools 84.1.0, wheel 0.48.0) | | D-019, C-046 |
 | RVC | commit `81eed5e8f68b6bed1789f682fe78cdd324495afc` | | C-001, C-022 |
-| RVC assets | Hugging Face `lj1995/VoiceConversionWebUI`, `--revision main` (S-013 records the resolved revision here) | | C-032 |
+| RVC assets | Hugging Face `lj1995/VoiceConversionWebUI`, revision `e6d0c1a17da07c33557852f9dfa2bd44cc75737d` (the CI hf-revision notice of run 40105798141; S-013) | | C-032 |
 | huggingface_hub (download venv only) | 2.2.0 (`hf download` flags checked 2026-10-15) | | C-032 |
 | GitHub Actions | checkout v7, setup-python v7, upload-artifact v7, download-artifact v8 | | C-045 |
 
@@ -66,7 +66,7 @@ ran red (research/spikes/red-verification/output.txt); the clean venv reproduced
 ## Open environment questions
 - **Q-E7** (QUESTIONS E3.4) — answered: JUCE 9.0.3 builds succeed on `windows-2022` and, with `--parallel 4` (C-055), on
   `ubuntu-24.04`; T-059 passes on the stub on both (CI run 38733038059). S-001 re-checks it on the impl branch.
-- **Q-E8**: the Hugging Face revision of `lj1995/VoiceConversionWebUI` used by T-P19b; S-013 records it in the pins table.
+- **Q-E8** — answered by S-013: revision `e6d0c1a17da07c33557852f9dfa2bd44cc75737d` (pins table).
 
 ## Owner build (G-001; on the owner's computer)
 Windows (Visual Studio 2022 with "Desktop development with C++", CMake ≥ 3.22, Git):
