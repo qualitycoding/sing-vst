@@ -105,3 +105,4 @@
 0 failure(s)
 ```
 | 2026-10-24T18:45:21Z | S-016 | 1 | pass | 1312749 | T-P16, T-P17, T-P22 pass locally and in CI (run 40121078176: python job passes every T-P test except T-P23 = S-018; repo job passes T-060..T-062, T-P21, T-P22, T-P27); tools/notebook_dryrun.py 57/57 ok for both notebooks (output above); real split/prepare/pack stages and helper scripts also run locally; g++-11 build skipped (no root) |
+| 2026-10-24T18:46:20Z | S-017 | 1 | blocked-on-gate | 6cffb4c | GATE-G-004.md raised for RUN 1 (Colab, EXPECTED_COMMIT 6cffb4c5c06a1e0fcf362be0186b6c1eb19cccb7, EPOCHS 200, VOICE myvoice, ledger 0.0 h); halted at G-004 |
