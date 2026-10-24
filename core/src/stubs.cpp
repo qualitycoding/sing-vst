@@ -19,8 +19,6 @@ namespace singvst {
 
 
 
-std::unique_ptr<GuideEngine> GuideEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("GuideEngine::load"); }
-std::unique_ptr<ConverterEngine> ConverterEngine::load (const VoiceManifest&, const std::filesystem::path&) { throw NotImplemented ("ConverterEngine::load"); }
 
 RenderedTake renderTake (const RenderRequest&, const Dictionary&, GuideEngine&, ConverterEngine*, const std::atomic<bool>&, std::vector<std::string>*) { throw NotImplemented ("renderTake"); }
 struct Renderer::Impl {};

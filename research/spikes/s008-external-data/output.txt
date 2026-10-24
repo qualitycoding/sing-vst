@@ -1,0 +1,15 @@
+external initialisers written: 8
+PASS: original fixture model accepted
+ValidationError: acoustic_external.onnx: model uses external data, which is not supported
+PASS: external-data model rejected with ValidationError naming external data
+-- render 3000-frame phrase (stderr 'guide part' lines expected: 2)
+guide part 0: frames 1500
+guide part 1: frames 1500
+PASS: output length == 3000 frames * 512
+PASS: every frame carries the f0 echo (no zeros inside the phrase)
+-- render with a 30-frame and a 21-frame SP (stderr: 2 parts expected, the 21-frame SP stays inside)
+guide part 0: frames 100
+guide part 1: frames 171
+PASS: rest render length
+PASS: frames 100..129 are exact zeros and no other frame is
+exit: 0
