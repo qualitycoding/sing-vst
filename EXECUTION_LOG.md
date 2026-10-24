@@ -9,3 +9,5 @@
 | 2026-10-24T12:57:20Z | S-004 | 1 | pass | 09a02f6 | T-028..T-031, T-063 pass; 29 core tests still red (later steps) |
 | 2026-10-24T12:59:51Z | S-005 | 1 | pass | fb6c152 | T-032..T-038 pass (core); T-034 with LOCPATH de_DE; T-038 TSan clean x3 with setarch -R and ASan clean; 23 core tests still red (later steps) |
 | 2026-10-24T13:00:48Z | S-006 | 1 | pass | 06f0f43 | T-064..T-066, T-069 pass; clean under ASan+UBSan (4/4); 19 core tests still red (later steps). Running status persists across meta/sysex per D-031 (the oracle clears it; D-031 text followed, T-065 passes) |
+| 2026-10-24T13:28:18Z | S-004 | 2 | pass | d0d6918 | T-031 fixed on windows-2022 by .gitattributes (CI run on d0d6918: T-001..T-041, T-063..T-066, T-069 pass on windows-2022; same on ubuntu) |
+| 2026-10-24T13:28:18Z | S-007 | 1 | pass | d0d6918 | T-039..T-041 pass locally and in CI on ubuntu-24.04 and windows-2022 (explicit-path loading of onnxruntime.dll worked; DR-06 not needed) |
