@@ -16,13 +16,6 @@ namespace singvst {
 
 
 
-double midiToHz (double) { throw NotImplemented ("midiToHz"); }
-std::vector<PhonemeSpan> layoutPhonemes (const std::vector<NoteAssignment>&, double, double) { throw NotImplemented ("layoutPhonemes"); }
-std::vector<float> f0Curve (const std::vector<NoteAssignment>&, double, double, double, double, double, double) { throw NotImplemented ("f0Curve"); }
-int rvcCoarsePitch (double) { throw NotImplemented ("rvcCoarsePitch"); }
-std::vector<std::int64_t> spansToFrameDurations (const std::vector<PhonemeSpan>&, double) { throw NotImplemented ("spansToFrameDurations"); }
-float softClip (float, float) noexcept { return 1.0e9f; }   // noexcept stub: a value no test accepts
-float peakAbs (const std::vector<float>&) noexcept { return -1.0f; }
 
 VoiceManifest parseManifest (std::string_view) { throw NotImplemented ("parseManifest"); }
 void validatePackage (const std::filesystem::path&, const VoiceManifest&, std::uintmax_t) { throw NotImplemented ("validatePackage"); }
