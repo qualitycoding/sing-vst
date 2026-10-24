@@ -39,4 +39,4 @@ is not trained here. This gate picks which guide voicebank the notebooks and the
 Any other text is treated as `stop`.
 
 ## Response
-(awaiting the owner's answer; it is copied here verbatim before the implementer acts on it)
+use-tiger

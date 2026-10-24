@@ -54,9 +54,9 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "d2c286ab2b5f1b7f6e1161d357a29420650312f06f7c1ddbbc3d34f35328b929",
+    "DEVIATIONS.md": "5dd05fefaffc87fc6856eb15162adc752fc764e8a4645f1dc7796b7092c62a2d",
     "EXECUTION_LOG.md": "92b2b59c26b4546b4bc76a3bd20199a6f433ed66968cf55017b438f8c2cc4de6",
-    "GATE-G-005.md": "bc983c4a0f6592b3c81de89779c448818b9d2ea8b30d739237a04dfb94aa18ba",
+    "GATE-G-005.md": "9681eefe3851aea041e48955846ad4c8662a91825e576fa72ef12243db19e879",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
@@ -889,9 +889,10 @@
     "2026-10-14: resumed; round 4 corrected C-027 (pyworld sine) and C-044 (hosts); round logs backfilled",
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B.",
-    "HALTED at gate G-005 (GATE-G-005.md); S-016 onward depend on the answer"
+    "HALTED at gate G-005 (GATE-G-005.md); S-016 onward depend on the answer",
+    "G-005 answered: use-tiger"
   ],
-  "updated_at": "2026-10-24T15:31:02Z",
+  "updated_at": "2026-10-24T15:50:31Z",
   "active_step_id": "S-016",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -936,7 +937,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 198,
+  "sequence": 200,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
