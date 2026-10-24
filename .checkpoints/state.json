@@ -54,15 +54,16 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "a911d203cbb613b8a63eec60a08639da4aeae1c7380e4f78841691493ed35f35",
+    "DEVIATIONS.md": "bba9728d13b6cb82a1d7c68b2de16bee704962e1d384fac1fca1aaacea6fa6f6",
     "EXECUTION_LOG.md": "f938b73d3d4c18b480f8c4cd95c2b871e7fd64c00be2e93d29f2f4dc88d7e822",
     "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
     "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "README.md": "224e525c0be42832449e0060dc16efd08b87a76a1d3c706cf10be8e593ca847c",
     "TAXONOMY.md": "e3bbb181cfef0ea4e7e16ac23514b2689f92f8735dcccbd793ca0e296277d3d6",
-    "cli/CMakeLists.txt": "14e49ac9f7ed39a815a9eaf5ee00ddfe2cf58bde1110c110ba65610b8b7986f6",
-    "cli/main.cpp": "1c0cbae41adc4b5e1f4c4c02d85450dafaf29b6f8e53cfa6f1719c9acfec0f7d",
+    "cli/CMakeLists.txt": "ce23d4fe424cb826b936291f7dcbd3c4cd3f01759cca435f9d6628012951534f",
+    "cli/git_commit.cmake": "1e8ffc4c3ac9cefaa7742be841486399c072cd343699aeb396d2df6135dc3715",
+    "cli/main.cpp": "c218b6afb2483a9c0ad5796616dd2c13d41e0569de3ef26db4cdeffc84f65d05",
     "cmake/Dependencies.cmake": "fb0278bc0e50cbb7c913f3711f17dba9b4d828e8a2c366c903922021a6ce5d87",
     "core/CMakeLists.txt": "3b9042acaee2f5cffd48d654e808ab4b1e339263ee085b1f5831ae7dcd01fafd",
     "core/include/singvst/align.hpp": "9ad22a583d9ee66472738f0152606936f3fad1a0aa281759c1276e69e5172666",
@@ -85,7 +86,8 @@
     "core/src/lyrics.cpp": "f60effdacc3518d226555b3655da9e1a9520cfe21113b6611e724ffa8fd996fd",
     "core/src/midifile.cpp": "f9ca2e39cc179a53db62d0fa2e71d79aff8784125dd6c27ceece65d782f12700",
     "core/src/ort_runtime.cpp": "92b66e185c4d3aa85dd5babd382c9d16eb05e98caeafe9dc2f97f4e4f6b8186c",
-    "core/src/ort_util.cpp": "ff17f4b462f71a068dfedc340ba252d87ac4f42ab1b76bfc6c404facc20ea2f0",
+    "core/src/ort_threads.hpp": "b237cfdc31c08d949319612866c64dbbc468ed1b5b21485da3b3e1c6b35c41f4",
+    "core/src/ort_util.cpp": "4d9ff867ccc13fd7114db40a0c5d98e27cc72f15459354b43692dff8f1bffdef",
     "core/src/ort_util.hpp": "495f97bfaa9e7337a900e68ae19ccf12d4d6ec45ebac3782bfa42624e4731772",
     "core/src/playback.cpp": "0e408517f6f0116ea385daa19d456148b3a0ebbe2e13fe33b859806a1e1ee069",
     "core/src/random.cpp": "23d9b9b2662e43699dfd524f6ed9f125e75f6de11255c4815dcd1480395e9db2",
@@ -859,13 +861,15 @@
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
     "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
   ],
-  "updated_at": "2026-10-24T14:03:36Z",
+  "updated_at": "2026-10-24T14:05:29Z",
   "active_step_id": "S-010",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
     "call_stack": [],
     "scratchpad": "Planning complete. Next actor: implementer, starting S-000.",
-    "in_flight_operation": null,
+    "in_flight_operation": {
+      "op": "S-010 CI wait (python job, T-P18)"
+    },
     "tool_cache": {},
     "step_pointer": {
       "phase": "impl",
@@ -904,7 +908,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 177,
+  "sequence": 179,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

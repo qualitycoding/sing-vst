@@ -1,4 +1,5 @@
 #include "ort_util.hpp"
+#include "ort_threads.hpp"
 #include "singvst/ort_runtime.hpp"
 #include <fstream>
 
@@ -92,6 +93,7 @@ Model loadModel (Ort::Env& env, const std::filesystem::path& dir, const std::str
     try {
         Ort::SessionOptions opts;
         opts.SetGraphOptimizationLevel (GraphOptimizationLevel::ORT_ENABLE_ALL);
+        opts.SetIntraOpNumThreads (ortIntraOpThreads());
         m.session = std::make_unique<Ort::Session> (env, bytes.data(), bytes.size(), opts);
         Ort::AllocatorWithDefaultOptions alloc;
         for (std::size_t i = 0; i < m.session->GetInputCount(); ++i) {
