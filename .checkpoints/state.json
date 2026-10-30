@@ -55,7 +55,7 @@
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "DEVIATIONS.md": "3252aff53505e05f51d8a7f9b089ffb295657cc6d313442471ec38e119ca1bad",
-    "EXECUTION_LOG.md": "7458f8e60d5932732a6f1cba78463cb70fabe888d5f3bd3d5166c5fe9ddc3ce7",
+    "EXECUTION_LOG.md": "6fdfff03b1c91d8f0c8d15290f0627305b48365b2d543a74ac4f787d06f38f55",
     "GATE-G-004.md": "607cd582f8102731a0544eae0eba37af95485f36885a79fcbd41b80cd4754e1d",
     "GATE-G-005.md": "9681eefe3851aea041e48955846ad4c8662a91825e576fa72ef12243db19e879",
     "HANDOFF.md": "41645196ed112f022cfe82229306a6580d28e8e322ab67a8b93f543495653be9",
@@ -464,6 +464,7 @@
     "third_party/cmudict/SOURCE.txt": "9055797f1532cd2199a480009da8e0a566287561e391acb70900cf3817562dc7",
     "third_party/cmudict/cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
     "tools/bootstrap_test_env.sh": "7cf8f9436357f3420b8572c9ebd19096edfbdc5c3fa9b75254a4938be450676f",
+    "tools/check_postconditions.py": "a264e7b15502da65b56b75642c9ff96f561a442a52d94817ffda1afb3360dbd6",
     "tools/check_schema.py": "8cde3b4237696055ce280894db0539513af151b27faf184a1cf60111929a33ef",
     "tools/checkpoint.py": "e567b53f1671429cb1f221961877b4090e0e24798cf00bd49ad2a36b6753243d",
     "tools/ci_annotate.py": "67e0696cbe35945fffc94255351ef3bd3c184d03165b43103815c61f6dd939e0",
@@ -923,7 +924,7 @@
     "HALTED at gate G-004 (GATE-G-004.md, RUN 1, Colab)",
     "Amendment 01 merged from the generation branch; AM-01..AM-10 follow"
   ],
-  "updated_at": "2026-10-30T23:33:01Z",
+  "updated_at": "2026-10-30T23:33:57Z",
   "active_step_id": "S-017",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -968,7 +969,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 212,
+  "sequence": 213,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",

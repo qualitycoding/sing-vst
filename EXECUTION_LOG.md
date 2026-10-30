@@ -110,3 +110,89 @@
 | 2026-10-30T23:25:08Z | AM-02 | 1 | pass | bb5b327 | environment class **stable** (research/spikes/env-class/output.txt): /tmp and ../ markers and a detached background process survived across tool calls; files from 2026-10-24 still present; host up since 2026-10-05. Protocol 1.5 [ephemeral] does not apply |
 | 2026-10-30T23:25:08Z | AM-03 | 1 | pass | bb5b327 | push cadence: tools/save.sh retries with 2/4/8/16 s backoff and fails unless ls-remote equals HEAD; tools/turn_end_check.sh compares ls-remote with HEAD; impl remote = local bb5b327, gen remote = local 09b9a1d |
 | 2026-10-30T23:33:01Z | AM-04 | 1 | pass | 75a228b | Rule 14 audit (reviews/RULE14_AUDIT.md): 2 load-bearing swallowed failures fixed (notebook cell 4 `|| true` on uv uninstall; plugin resample worker `catch (...) { continue; }` now reports Failed + lastError); 11 other catch/except sites justified; 36 numeric-threshold tests mapped to gating CI steps; dry run 57/57, T-P16/T-P17, ctest full tree 67/67 |
+| 2026-10-30T23:33:57Z | AM-05 | 1 | pass | f439a01 | tools/check_postconditions.py: 78/78 post-conditions of S-000..S-016 (and the open G-004) hold; negative control with HOME=/tmp/nohome exits 1 with 3 FAIL lines (the check can fail) |
+
+### AM-05 `tools/check_postconditions.py` output (2026-10-30T23:33:57Z)
+
+```text
+ok   S-000  .checkpoints/state.json phase impl, stores recorded
+ok   S-000  .git/singvst-trailers
+ok   S-000  EXECUTION_LOG.md
+ok   S-000  DEVIATIONS.md
+ok   S-000  ../store-lessons/.git
+ok   S-000  ../store-knowledge/.git
+ok   S-000  ../rvc/.git
+ok   S-000  ../hosts-now.txt
+ok   S-000  ../rvc at 81eed5e
+ok   S-000  $HOME/deps/JUCE/modules
+ok   S-000  $HOME/deps/Catch2/src
+ok   S-000  $HOME/deps/ort/lib/libonnxruntime.so.1.31.0
+ok   S-000  ../build-core/tests/cpp/singvst_tests
+ok   S-000  ../build-asan/tests/cpp/singvst_tests
+ok   S-000  ../build-tsan/tests/cpp/singvst_tests
+ok   S-000  ../build-full/tests/cpp/singvst_plugin_tests
+ok   S-000  ../venv-lock/bin/python
+ok   S-000  EXECUTION_LOG.md has a pass row for S-000
+ok   S-001  EXECUTION_LOG.md has a pass row for S-001
+ok   S-002  EXECUTION_LOG.md has a pass row for S-002
+ok   S-003  EXECUTION_LOG.md has a pass row for S-003
+ok   S-004  EXECUTION_LOG.md has a pass row for S-004
+ok   S-005  EXECUTION_LOG.md has a pass row for S-005
+ok   S-006  EXECUTION_LOG.md has a pass row for S-006
+ok   S-007  EXECUTION_LOG.md has a pass row for S-007
+ok   S-008  EXECUTION_LOG.md has a pass row for S-008
+ok   S-009  EXECUTION_LOG.md has a pass row for S-009
+ok   S-010  EXECUTION_LOG.md has a pass row for S-010
+ok   S-011  EXECUTION_LOG.md has a pass row for S-011
+ok   S-012  EXECUTION_LOG.md has a pass row for S-012
+ok   S-013  EXECUTION_LOG.md has a pass row for S-013
+ok   S-014  EXECUTION_LOG.md has a pass row for S-014
+ok   S-015  EXECUTION_LOG.md has a pass row for S-015
+ok   S-016  EXECUTION_LOG.md has a pass row for S-016
+ok   S-002  core/src/lyrics.cpp
+ok   S-002  core/src/g2p.cpp
+ok   S-002  core/src/align.cpp
+ok   S-003  core/src/synthesis.cpp
+ok   S-004  core/src/voice.cpp
+ok   S-004  core/src/sha256.cpp
+ok   S-005  core/src/playback.cpp
+ok   S-006  core/src/midifile.cpp
+ok   S-007  core/src/random.cpp
+ok   S-007  core/src/ort_runtime.cpp
+ok   S-007  core/src/resample.cpp
+ok   S-008  core/src/guide_engine.cpp
+ok   S-008  core/src/converter_engine.cpp
+ok   S-009  core/src/render.cpp
+ok   S-009  core/src/take_cache.cpp
+ok   S-009  core/src/stubs.cpp deleted
+ok   S-008  research/spikes/s008-external-data/output.txt
+ok   S-008  research/spikes/s008-external-data/run.sh
+ok   S-010  cli/main.cpp
+ok   S-010  cli/CMakeLists.txt
+ok   S-010  cli/git_commit.cmake
+ok   S-010  singvst-render without arguments exits 2 with usage
+ok   S-011  plugin/PluginProcessor.cpp
+ok   S-011  plugin/PluginEditor.h
+ok   S-011  plugin/PluginEditor.cpp
+ok   S-011  docs/UNVERIFIED.md
+ok   S-012  python/singvst_train/prepare.py bodies implemented (5)
+ok   S-012  python/singvst_train/pipeline.py bodies implemented (3)
+ok   S-012  python/singvst_train/provenance.py bodies implemented (2)
+ok   S-012  python/singvst_train/metrics.py bodies implemented (8)
+ok   S-012  python/singvst_train/pack.py bodies implemented (1)
+ok   S-012  python/singvst_train/security.py bodies implemented (1)
+ok   S-012  python/singvst_train/cli.py bodies implemented (2)
+ok   S-013  python/singvst_train/export_rvc.py bodies implemented (4)
+ok   S-013  plan/ENVIRONMENT.md records the Hugging Face revision
+ok   S-014  python/singvst_train/rvc_files.py bodies implemented (4)
+ok   S-015  python/singvst_train/evaluate.py bodies implemented (2)
+ok   S-015  GATE-G-005.md answered
+ok   S-016  notebooks/train_voice_colab.ipynb: nbformat 4, 19 code cells, no outputs
+ok   S-016  notebooks/train_voice_kaggle.ipynb: nbformat 4, 19 code cells, no outputs
+ok   S-016  tools/notebook_dryrun.py
+ok   S-016  EXECUTION_LOG.md
+ok   S-017  GATE-G-004.md pins a 40-hex EXPECTED_COMMIT and the Colab link
+ok   all    lessons/ and knowledge/ pass tools/check_schema.py
+
+78/78 post-conditions hold
+```
