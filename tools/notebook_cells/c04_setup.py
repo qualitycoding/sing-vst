@@ -20,7 +20,11 @@ UV = f"{q(sys.executable)} -m uv pip install --python {q(VENV)}/bin/python"
 _sh_ok(f"{UV} --index-url https://download.pytorch.org/whl/cu128 torch==2.7.1+cu128 torchaudio==2.7.1+cu128", "/")
 _sh_ok(f"grep -vE -- '--(extra-)?index-url' {q(RVC)}/requirments_cu128_py312.txt > {q(LOCAL)}/rvc-req.txt", "/")
 _sh_ok(f"{UV} --index-url https://pypi.org/simple -r {q(LOCAL)}/rvc-req.txt", "/")
-_sh_ok(f"{q(sys.executable)} -m uv pip uninstall --python {q(VENV)}/bin/python onnxruntime-gpu onnxruntime || true", "/")
+# RVC's file pins onnxruntime-gpu < 1.20, which provides the same `onnxruntime` module (C-023): remove whichever is installed.
+_listing = _sh_ok(f"{q(sys.executable)} -m uv pip list --python {q(VENV)}/bin/python --format json", "/")
+_present = [d["name"] for d in json.loads(_listing.strip().splitlines()[-1]) if d["name"].lower() in ("onnxruntime-gpu", "onnxruntime")]
+if _present:
+    _sh_ok(f"{q(sys.executable)} -m uv pip uninstall --python {q(VENV)}/bin/python " + " ".join(_present), "/")
 _sh_ok(f"{UV} --index-url https://pypi.org/simple onnx==1.23.2 onnxruntime==1.31.0 pyworld==0.3.5 mido==1.3.3 pytest==9.1.1 "
        "nbformat==5.10.4 PyYAML==6.0.3 openai-whisper==20250625 webrtcvad-wheels==2.0.14", "/")
 _sh_ok(f"{UV} --index-url https://pypi.org/simple resemblyzer==0.1.4 --no-deps", "/")

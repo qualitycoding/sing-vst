@@ -201,13 +201,31 @@ struct SingVstProcessor::Impl : private juce::Timer {
             try {
                 out = (j.rate <= 0 || j.rate == j.take->sampleRate) ? std::make_shared<RenderedTake> (*j.take)
                                                                     : std::make_shared<RenderedTake> (resampleTake (*j.take, j.rate));
-            } catch (...) { continue; }
+            } catch (const std::exception& e) {          // never silent (Rule 14): the message thread reports it
+                reportWorkerFailure (j.gen, e.what());
+                continue;
+            } catch (...) {
+                reportWorkerFailure (j.gen, "unknown error");
+                continue;
+            }
             const auto flag = alive;
             juce::MessageManager::callAsync ([this, flag, gen = j.gen, out] {
                 if (! flag->load()) return;
                 publishFromWorker (gen, out);
             });
         }
+    }
+
+    void reportWorkerFailure (std::uint64_t gen, std::string what)
+    {
+        const auto flag = alive;
+        juce::MessageManager::callAsync ([this, flag, gen, what = std::move (what)] {
+            if (! flag->load()) return;
+            std::lock_guard<std::recursive_mutex> l (mtx);
+            if (gen != newestGen.load()) return;
+            failedGen = gen;
+            setErr ("could not prepare the take for playback: " + what);
+        });
     }
 
     void publishFromWorker (std::uint64_t gen, const std::shared_ptr<RenderedTake>& take)
@@ -353,6 +371,7 @@ struct SingVstProcessor::Impl : private juce::Timer {
     {
         const auto s = renderer.status();
         if (s == RenderStatus::Rendering) return RenderStatus::Rendering;
+        if (newestGen.load() > 0 && failedGen.load() == newestGen.load()) return RenderStatus::Failed;
         if (renderer.latest() != seenLatest || publishedGen.load() < newestGen.load()) return RenderStatus::Rendering;
         if (s == RenderStatus::Failed) return RenderStatus::Failed;
         if (publishedGen.load() > 0) return RenderStatus::Ready;
@@ -408,7 +427,7 @@ struct SingVstProcessor::Impl : private juce::Timer {
     std::optional<Job> job;
     bool stopWorker = false;
     std::thread worker;
-    std::atomic<std::uint64_t> newestGen { 0 }, publishedGen { 0 };
+    std::atomic<std::uint64_t> newestGen { 0 }, publishedGen { 0 }, failedGen { 0 };
     std::shared_ptr<const RenderedTake> originalTake, seenLatest;
     int usedRate = 0;
     std::shared_ptr<std::atomic<bool>> alive;
