@@ -16,8 +16,11 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | TIGER repository README and LICENSE.md | https://github.com/spicytigermeat/tiger_diffsinger | 1 |  | 2026-10-10 | License section | C-010 (single-source) |
 | character_usage_tos.md | https://github.com/spicytigermeat/tiger_diffsinger/blob/988ec2c2dd23b7b28c448e1a6db710bfa20c5583/character_usage_tos.md | 1 |  | 2026-10-10 | allowed list | C-037 (verified) |
 | infer/module/models.py | https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/blob/81eed5e8f68b6bed1789f682fe78cdd324495afc/infer/module/models.py | 1 |  | 2026-10-10 | lines 646-676 | C-003 (verified) |
+| nvidia-smi documentation (NVIDIA) | https://docs.nvidia.com/deploy/nvidia-smi/index.html | 1 |  | 2026-10-30 | QUERY OPTIONS; --format; Driver Version / KMD Version | C-068 (single-source) |
 | oracle rvc_coarse | research/spikes/oracle/oracle.py | 1 |  | 2026-10-10 | function rvc_coarse | C-021 (verified) |
+| pytorch v2.7.1 torch/csrc/cuda/Module.cpp | https://github.com/pytorch/pytorch/blob/v2.7.1/torch/csrc/cuda/Module.cpp | 1 | v2.7.1 | 2026-10-30 | lines 1071-1079 (_CudaDeviceProperties.total_memory) | C-069 (corroborated) |
 | release notes | https://github.com/Tracktion/pluginval/releases/tag/v1.0.4 | 1 |  | 2026-10-04 | 1.0.0 changes | C-015 (verified) |
+| spike audio-separator-047 (wheel inspection and uv resolution) | research/spikes/audio-separator-047/output.txt | 1 |  | 2026-10-21 | whole file | C-066 (verified) |
 | spike cmake-parallel (CMake 3.28.3) | research/spikes/cmake-parallel/output.txt | 1 |  | 2026-10-15 | MAKE ARGS lines | C-055 (verified) |
 | spike deps-pins | research/spikes/deps-pins/output.txt | 1 |  | 2026-10-14 | downloads, tag commits | C-049 (verified) |
 | spike eval-apis (resemblyzer/audio.py, voice_encoder.py) | research/spikes/eval-apis/output.txt | 1 |  | 2026-10-15 | resemblyzer section | C-058 (verified) |
@@ -28,9 +31,12 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | spike hf-cli (RVC README.md lines 170-190) | research/spikes/hf-cli/output.txt | 1 |  | 2026-10-15 | README download commands | C-052 (verified) |
 | spike hosts | research/spikes/hosts/output.txt | 1 |  | 2026-10-14 | all lines | C-044 (verified) |
 | spike juce-lyrics | research/spikes/juce-lyrics/output.txt | 1 |  | 2026-10-10 | output.txt | C-013 (verified) |
+| spike junit-classify | research/spikes/junit-classify/output.txt | 1 |  | 2026-10-21 | whole file | C-067 (verified) |
 | spike locale-de | research/spikes/locale-de/output.txt | 1 |  | 2026-10-15 | before/after lines | C-056 (verified) |
+| spike notebook-commands | research/spikes/notebook-commands/output.txt | 1 |  | 2026-10-30 | whole file | C-070 (verified) |
 | spike ort | research/spikes/ort/output.txt | 1 |  | 2026-10-10 | sha256 lines, ORT 1.31.0 out[0]=9 | C-014 (verified) |
 | spike ort-manual-init | research/spikes/ort-manual-init/output.txt | 1 |  | 2026-10-10 | output.txt | C-042 (verified) |
+| spike pin-check | research/spikes/pin-check/output.txt | 1 |  | 2026-10-30 | whole file | C-071 (verified) |
 | spike pip-audit-setuptools | research/spikes/pip-audit-setuptools/output.txt | 1 |  | 2026-10-14 | PYSEC-2026-3447 rows | C-046 (verified) |
 | spike plugin-stub | research/spikes/plugin-stub/output.txt | 1 |  | 2026-10-14 | bundle, pluginval lines; packages, build exit | C-050 (verified), C-051 (verified) |
 | spike premortem-r1 notebook_deps | research/spikes/premortem-r1/notebook_deps.txt | 1 |  | 2026-10-16 | all sections; torch lines | C-023 (verified), C-062 (verified) |
@@ -45,6 +51,8 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | spike upstream-facts | research/spikes/upstream-facts/output.txt | 1 |  | 2026-10-10 | PASS C-001; PASS C-002a; PASS C-003a/b/c; PASS C-004; PASS C-005; PASS C-006a/b; PASS C-007a; PASS C-009a..e; PASS C-011a/b; PASS C-012a/b; PASS C-015a/b/c; PASS C-016a/b; sha256 line; PASS C-020a/b/c; PASS C-021a/b; PASS C-022a/b/c; PASS C-023a/b/c; PASS C-024; PASS C-029; PASS C-030; PASS C-031; PASS C-032; PASS C-033; PASS C-034; PASS C-035; upstream tips (drift check) | C-001 (verified), C-002 (verified), C-003 (verified), C-004 (verified), C-005 (verified), C-006 (verified), C-007 (verified), C-009 (verified), C-011 (verified), C-012 (verified), C-015 (verified), C-016 (verified), C-020 (verified), C-021 (verified), C-022 (verified), C-023 (verified), C-024 (verified), C-029 (verified), C-030 (verified), C-031 (verified), C-032 (verified), C-033 (verified), C-034 (verified), C-035 (verified), C-045 (verified) |
 | spike uv-python (host Python 3.13) | research/spikes/uv-python/output.txt | 1 |  | 2026-10-15 | all lines | C-060 (verified) |
 | spike vocoder-onnx | research/spikes/vocoder-onnx/output.txt | 1 |  | 2026-10-10 | licence line, inputs, outputs | C-007 (verified) |
+| torch.cuda.get_arch_list (PyTorch 2.7 docs) | https://docs.pytorch.org/docs/2.7/generated/torch.cuda.get_arch_list.html | 1 | 2.7 | 2026-10-30 | function description | C-069 (corroborated) |
+| torch.cuda.get_device_capability (PyTorch 2.7 docs) | https://docs.pytorch.org/docs/2.7/generated/torch.cuda.get_device_capability.html | 1 | 2.7 | 2026-10-30 | function description | C-069 (corroborated) |
 | onnxruntime discussion 23239 | https://github.com/microsoft/onnxruntime/discussions/23239 | 2 |  | 2026-10-10 | fdwr 2025-02-27 | C-026 (corroborated) |
 | onnxruntime issue 11799 | https://github.com/microsoft/onnxruntime/issues/11799 | 2 |  | 2026-10-10 | maintainer: 'By Windows team' | C-026 (corroborated) |
 | sherpa-onnx issue 3059 | https://github.com/k2-fsa/sherpa-onnx/issues/3059 | 2 |  | 2026-10-10 | API version [23] not available, 1.17.1 loaded | C-026 (corroborated) |
@@ -55,4 +63,4 @@ pinned version, specifications, or a committed spike; Tier 2 = maintainer statem
 | OpenUtau voicebank development | https://www.openutau.com/Voicebank-development/ | 3 |  | 2026-10-10 | Machine Learning voicebank development | C-010 (single-source) |
 | [Bug] Kaggle notebook outputs are limited to 500 items | https://www.kaggle.com/product-feedback/420538 | 3 |  | 2026-10-16 | meta description | C-064 (single-source) |
 
-48 sources, 63 claims.
+56 sources, 69 claims.

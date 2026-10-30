@@ -196,3 +196,4 @@ ok   all    lessons/ and knowledge/ pass tools/check_schema.py
 
 78/78 post-conditions hold
 ```
+| 2026-10-30T23:39:11Z | AM-06 | 1 | pass | b78a203 | 1.3.6: research/spikes/pin-check: 65/65 pins exist (git tags = pinned commits, cp312 cu128/cpu torch wheels, PyPI files, release assets, HF revision); research/spikes/notebook-commands: every GPU-free notebook command ran with uv 0.13.1 (exit 0); GPU-only invocations: torch 2.7.1 APIs doc+source verified (C-069), nvidia-smi field names not in NVIDIA's doc (C-068) -> cell (4c) checks --help-query-* first (1.3.6 rule 4) and (10a) reads GPU name/memory from torch; claims C-068..C-071 + knowledge items; dry run 57/57, T-P16/T-P17 |

@@ -1,10 +1,10 @@
 # (10a) Memory and disk check before training (PK-43).
 def _resources():
     global BATCH_SIZE
-    rc, out = sh("nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits", "/")
-    _need(rc, "nvidia-smi", out)
-    gpu_name, mem_mib = [x.strip() for x in out.strip().splitlines()[0].split(",")]
-    gpu_gib = int(mem_mib) / 1024.0
+    # torch's documented device properties (torch 2.7.1: get_device_properties(0).total_memory, bytes; AMENDMENT-01 AM-06)
+    out = _sh_ok("python -c \"import torch; p = torch.cuda.get_device_properties(0); print(p.name); print(p.total_memory)\"", "/")
+    gpu_name, mem_bytes = out.strip().splitlines()[-2:]
+    gpu_gib = int(mem_bytes) / 2 ** 30
     ram_gib = int(next(l for l in open("/proc/meminfo") if l.startswith("MemTotal")).split()[1]) / 1048576.0
     free_gib = shutil.disk_usage(ROOT).free / 2 ** 30
     raw_gib = sum(f.stat().st_size for f in Path(RAW).rglob("*") if f.is_file()) / 2 ** 30

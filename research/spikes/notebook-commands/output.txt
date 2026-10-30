@@ -1,0 +1,53 @@
+
+== kernel python and uv 0.13.1 (cell 4b)
+uv 0.13.1 (x86_64-unknown-linux-gnu)
+
+== uv venv --python 3.12 --python-preference only-managed (cell 4b)
+Creating virtual environment at: /tmp/tmp.i8RoIIt4YE/py312
+Activate with: source /tmp/tmp.i8RoIIt4YE/py312/bin/activate
+venv python 3.12.15 /tmp/tmp.i8RoIIt4YE/py312/bin/python
+
+== (i) torch cu128 from the PyTorch index only (dry run)
+Would install 26 packages
+ + torch==2.7.1+cu128
+ + torchaudio==2.7.1+cu128
+
+== (ii) RVC's cu128 requirement file without its index lines (cell 4b filter; C-062: it lists no torch)
+lines kept: 40; index lines left: 0
+torch lines in the file: 0
+Resolved 139 packages in 2.33s
+Would install 139 packages
+
+== (iii) uninstall whichever onnxruntime provider is installed (cell 4b after AM-04)
+ + protobuf==7.36.2
+Using Python 3.12.15 environment at: /tmp/tmp.i8RoIIt4YE/py312
+installed providers: onnxruntime
+ - onnxruntime==1.31.0
+
+== (iv) evaluation and export packages from PyPI (dry run, --no-deps for the pins alone)
+Would install 9 packages
+Would install 1 package
+
+== (v) the toolkit, editable, without dependencies
+ + singvst-train==0.1.0 (from file:///home/claude/projects/sing-vst/python)
+toolkit commands 9
+
+== freeze file (cell 4e)
+Using Python 3.12.15 environment at: /tmp/tmp.i8RoIIt4YE/py312
+freeze lines: 5
+
+== git clone + checkout of a pinned commit, then rev-parse (cell 4a)
+b78a203e35bb27803588927363ff032442ed629f
+
+== python -m zipfile -e, two levels, inner path with a space (cell 14: pack -> 'pack/Voice Library/TIGER_DS_v102.zip' -> tiger)
+extracted: tiger/dsacoustic/tiger_acou.onnx
+
+== separate venv for huggingface_hub 2.2.0 and its hf CLI (cell 5)
+Hint: A new version of huggingface_hub (2.4.0) is available! You are using version 2.2.0.
+To update, run: hf update
+Hint: The `hf-cli` skill is not installed. Run `hf skills add -g` to teach your AI agents how to use the `hf` CLI.
+  --revision TEXT                 Git revision id which can be a branch name,
+  --include TEXT                  Glob patterns to include from files to
+  --local-dir TEXT                If set, the downloaded file will be placed
+
+ALL COMMANDS OK

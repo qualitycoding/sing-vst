@@ -206,6 +206,22 @@ claim("C-067", "With pytest 9.1.1, a junit <failure> for an assertion in the tes
       "software", True, [S("research/spikes/junit-classify/output.txt", "spike junit-classify", "whole file", 1, "2026-10-21")],
       "verified", ["D-035", "R-099"], ["subject:pytest", "tech:pytest"], "pytest 9.1.1", kstamp="20261021T200100Z")
 
+# Amendment 01 (D-041), AM-06: protocol 1.3.6 command and pin verification
+claim("C-068", "NVIDIA's nvidia-smi documentation lists the query switches --query-gpu=<list> and --query-compute-apps=<list> and the --format options csv, noheader and nounits, but defers the field names to `nvidia-smi --help-query-gpu` / `--help-query-compute-apps`; it also marks 'Driver Version' deprecated in favour of 'KMD Version' on newer drivers, so the field names the notebook queries (name, driver_version, pid, used_memory) are checked on the runtime itself in cell (4c) before use.",
+      "software", True, [S("https://docs.nvidia.com/deploy/nvidia-smi/index.html", "nvidia-smi documentation (NVIDIA)", "QUERY OPTIONS; --format; Driver Version / KMD Version", 1, "2026-10-30")],
+      "single-source", ["D-035", "D-041"], ["subject:nvidia-smi", "tech:cuda"], "nvidia-smi documentation as published 2026-10-30", kstamp="20261030T233000Z")
+claim("C-069", "torch 2.7.1 provides torch.cuda.get_arch_list() (CUDA architectures the library was compiled for), torch.cuda.get_device_capability(device) (major, minor) and torch.cuda.get_device_properties(device) returning _CudaDeviceProperties whose total_memory is cudaDeviceProp.totalGlobalMem in bytes; the notebook's GPU check (4c) and memory check (10a) use these.",
+      "software", True, [S("https://docs.pytorch.org/docs/2.7/generated/torch.cuda.get_arch_list.html", "torch.cuda.get_arch_list (PyTorch 2.7 docs)", "function description", 1, "2026-10-30", "2.7"),
+                         S("https://docs.pytorch.org/docs/2.7/generated/torch.cuda.get_device_capability.html", "torch.cuda.get_device_capability (PyTorch 2.7 docs)", "function description", 1, "2026-10-30", "2.7"),
+                         S("https://github.com/pytorch/pytorch/blob/v2.7.1/torch/csrc/cuda/Module.cpp", "pytorch v2.7.1 torch/csrc/cuda/Module.cpp", "lines 1071-1079 (_CudaDeviceProperties.total_memory)", 1, "2026-10-30", "v2.7.1")],
+      "corroborated", ["D-035", "D-041"], ["subject:torch-cuda", "tech:python"], "torch 2.7.1", kstamp="20261030T233100Z")
+claim("C-070", "With uv 0.13.1 the notebook's commands work as written: `uv venv --python 3.12 --python-preference only-managed` creates a managed CPython 3.12 venv; `uv pip install --python <venv>` resolves torch==2.7.1+cu128/torchaudio from the cu128 index alone and RVC's cu128 requirement file (index lines removed; it lists no torch) from PyPI alone; `uv pip list --format json` prints its JSON as the last line even with stderr merged; `uv pip uninstall` of only the installed onnxruntime provider succeeds; `python -m zipfile -e` extracts a nested zip whose member path contains a space.",
+      "software", True, [S("research/spikes/notebook-commands/output.txt", "spike notebook-commands", "whole file", 1, "2026-10-30")],
+      "verified", ["D-035", "D-041"], ["subject:uv", "tech:python"], "uv 0.13.1", kstamp="20261030T233200Z")
+claim("C-071", "Every pin of plan/ENVIRONMENT.md, ci.yml and the notebook install cells exists in its registry on 2026-10-30 (65 lookups: PyPI JSON API, the PyTorch cu128 and cpu indexes with cp312 Linux wheels, GitHub tags resolving to the pinned commits, release assets, the Hugging Face revision).",
+      "software", True, [S("research/spikes/pin-check/output.txt", "spike pin-check", "whole file", 1, "2026-10-30")],
+      "verified", ["D-041", "D-019", "D-035"], ["subject:pins", "tech:python"], "pins as listed in the spike", kstamp="20261030T233300Z")
+
 cl = ROOT / "research" / "claims.json"
 cl.write_text(json.dumps([{k: v for k, v in c.items() if k not in ("tags", "applies_to_version", "kstamp")} for c in C], indent=1) + "\n")
 # Consistency rules on labels (lessons L-20261010T000115Z, L-20261009T123005Z)

@@ -42,6 +42,12 @@ rc, out = sh("python -c \"import torch; a = torch.cuda.get_arch_list(); c = torc
              "s = 'sm_%d%d' % c; print('arch', a, 'device', s); raise SystemExit(0 if s in a else 7)\"", "/")
 if rc != 0:
     owner_stop("4c", "this GPU's compute capability is not supported by the installed torch (see the arch line above): choose a T4 or newer")
+# 1.3.6 spike as the first use (AMENDMENT-01 AM-06): NVIDIA's nvidia-smi documentation defers the query field names to
+# --help-query-*, so check here that the fields this notebook queries exist on this driver before relying on them.
+_help = _sh_ok("nvidia-smi --help-query-gpu && nvidia-smi --help-query-compute-apps", "/")
+_missing = [f for f in ("name", "driver_version", "pid", "used_memory") if not re.search(rf"(?<![\w.]){re.escape(f)}(?![\w.])", _help)]
+if _missing:
+    raise RuntimeError(f"nvidia-smi on this runtime does not offer the query field(s) {_missing}: report this line as `failed: 4 ...`")
 
 # (d) Colab only: mount Drive. Nothing is written under /content/drive before this point.
 if PLATFORM == "colab":
