@@ -47,8 +47,8 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "HANDOFF.md": "6b716c361a33bc815cec80e6b4ff1b9ab28447222946db32a7baf6cfd9af93d3",
-    "HANDOFF.src.md": "404e9c0e665e6618766139a97e922fbeebb8355c8479bda5f7d5ca15bc73bc8e",
+    "HANDOFF.md": "41645196ed112f022cfe82229306a6580d28e8e322ab67a8b93f543495653be9",
+    "HANDOFF.src.md": "532895d9e101545710744107c44b43526c6efebf6ddf6bbd35cb1c13e58a4969",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "README.md": "224e525c0be42832449e0060dc16efd08b87a76a1d3c706cf10be8e593ca847c",
     "TAXONOMY.md": "e3bbb181cfef0ea4e7e16ac23514b2689f92f8735dcccbd793ca0e296277d3d6",
@@ -202,14 +202,15 @@
     "lessons/L-20261021T150000Z-behaviour-specified-against-an-interface-that-cannot-express-it.md": "63bc1bd244eefb7974c30042f81ed205e98d8780b778193cdefa823a668dd0e5",
     "lessons/L-20261021T180000Z-budget-ledger-keyed-by-storage-not-by-subject.md": "11cbfd3a6df84b3f05e5237f08a0a3e48d67cbadaaf8a6cb0883c99f4582d6e9",
     "lessons/L-20261021T200500Z-package-added-to-pinned-install-without-resolving.md": "d7115414a93c3dac6f5787fe1028fba7ea19d41924475aae10f302eb380c5999",
+    "plan/AMENDMENT-01.md": "9bbf1d6062f30b19a08050ccd5c36eca3077902ae9a1281fa8af1ff50aa51d2a",
     "plan/ASSUMPTIONS.md": "da3696c20b0bb0fea7097a6010eb798ed55d06b405564d8ad848acd1ebbfa6ec",
-    "plan/DECISIONS.md": "c33b03950cb424969d693219339336383b416fa61eeb617b7f5db2876dbab94a",
+    "plan/DECISIONS.md": "5416164dbbbfdab824cf981f788fc30e8f1fb09abfcda71b9e3bda85289c9889",
     "plan/ENVIRONMENT.md": "52a9bd50887e74c7428d1e5218e400e7252f3ed889a192d65899a5bfba7c6f3b",
     "plan/GATES.md": "6b839a4acafc655a044edadad63f46419fc7337b3c55def2b4cfd3e27d5ef25e",
     "plan/PLAN.md": "b635ead01974e0aec1f662d4d8c8ead8dc1615fa54a4dbc5f47aff9f5766a293",
     "plan/PLAN.src.md": "83cfae831efcf3378114d8a55b175b5628f3e62de671d81560184eb7d1461ad9",
     "plan/PROFILE.md": "998a3da8fd13bbd0262848206a350bcb735eef4d757e5f2260359614df45db04",
-    "plan/PROTOCOL_EXCERPTS.md": "0b7a964374b87a5bc3d7764625859d3f8bc8a26cd8c72fb9764c7787a079a616",
+    "plan/PROTOCOL_EXCERPTS.md": "74bd3df6796c19ebab02fa2a84bf62e6c6554f8590bd844ca7859ff0f2f69462",
     "plan/TRACEABILITY.md": "e65e29ea7eb2c739d915a8e3fa98e063c35307265f5c596654524e094e489803",
     "plugin/CMakeLists.txt": "3c7d5e6d2e41595735c85e2abf104c7a5569f12cd3a4ca1bbd0c17e44bdece1f",
     "plugin/PluginProcessor.cpp": "75f2779151ca54b3db348ea4e8add6cf712a40180a07046c9f3181ab9cc0d050",
@@ -424,7 +425,7 @@
     "tools/gen/pk_map.json": "17438d5b5d65d20087fd3de9b5fb41cf348ae0ad874b5be4a72c02875c2fbb82",
     "tools/gen/plan.py": "0ab09cb74ce4ab1989eb5a44d2c08ffc30ddbf089c2d3212e0dab717a47e07e7",
     "tools/gen/prior_knowledge.py": "4796b62a539dbb4c9144b228654cb85522de615467f9969a95aff1617d198d37",
-    "tools/gen/protocol_excerpts.py": "c6e82440d1f339f2d1c0252cfd47a9fdc40a4a3a810ae5897818c40c3589110d",
+    "tools/gen/protocol_excerpts.py": "539154204905a0f1f508fe58362b1db9aec000bed1c9e76aeed5a626c3883082",
     "tools/gen/sources.py": "6ed6a5c8fae13400015bdf01214a7f5a93833a2904a52036f9b0342a0395d4f2",
     "tools/gen/status.py": "10fd503cc0e4f08b3402600ec042b6724410ecc4b0c7533b09ceff82e54ffa44",
     "tools/gen/supersede.py": "f05242a9eec9c280a9631ad3c5fdd501f3ed090b7bde90f6b3b3a23619afa57f",
@@ -780,9 +781,10 @@
     "2026-10-10: research round 3 (TIGER guide voicebank, ORT explicit-path loading, de-reverb, Resemblyzer, JUCE lyric spike re-run); WebFetch hit a weekly usage limit at 09:50, web research closed.",
     "2026-10-14: resumed; round 4 corrected C-027 (pyworld sine) and C-044 (hosts); round logs backfilled",
     "2026-10-14 19:35Z: resumed; 125/126 hashes matched (bootstrap script edit uncommitted); orphaned WIP verified and committed; round 5 added C-046.",
-    "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B."
+    "2026-10-15 07:15Z: resumed; tree clean, origin tip = HEAD 02fa6ea; 11 hash mismatches all from committed Phase 2B work after the 19:40Z checkpoint (lesson L-20261015T071500Z); research closed at round 5 (no new claims since); continuing 2B.",
+    "Amendment 01 (v3.3 -> v3.6) planned at G-004; implementer merges it into the impl branch"
   ],
-  "updated_at": "2026-10-22T07:28:16Z",
+  "updated_at": "2026-10-30T23:24:01Z",
   "active_step_id": "S-000",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -827,7 +829,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 140,
+  "sequence": 142,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
@@ -845,5 +847,14 @@
     "K-20261009T193502Z-git-proxy-repo-authorization",
     "K-20261009T193504Z-proxy-injected-git-config",
     "K-20261009T234256Z-dash-lacks-pipestatus-and-time-keyword"
-  ]
+  ],
+  "amendments": {
+    "01": {
+      "status": "planned",
+      "file": "plan/AMENDMENT-01.md",
+      "decision": "D-041",
+      "protocol_from": "3.3 9636a79",
+      "protocol_to": "3.6 b361dab"
+    }
+  }
 }

@@ -7,7 +7,8 @@ free hosted GPU converts the timbre (D-020). Plus the CLI `singvst-render` and t
 Colab/Kaggle notebooks.
 
 **Active profiles:** `software`, `computational` (plan/PROFILE.md). `software.deploys = false`.
-**Protocol:** planning protocol v3.3 (external repository qualitycoding/skills, commit `9636a79`, D-034); every
+**Protocol:** planning protocol **v3.6** (external repository qualitycoding/skills, commit `b361dab`, D-041; the plan was
+written under v3.3, `9636a79`, D-034, and brought to v3.6 by `plan/AMENDMENT-01.md` and `plan/AMENDMENT-02.md`); every
 section the implementer needs is copied verbatim in `plan/PROTOCOL_EXCERPTS.md`.
 
 ## Reading order
@@ -104,7 +105,7 @@ voice ledger (S-017 action 1a).
   integrity, a public interface, research integrity, licences or consent, or after three failed attempts on one test.
 - Default rule: choose the most reversible option that does not expand scope, log it in DEVIATIONS.md, and continue.
 
-## Resume (zero-context, protocol v3.3 1.2.3)
+## Resume (zero-context, protocol v3.6 1.2.3)
 **Before anything else:** read the first line of `plan/PLAN.md`. If it says `BLOCKED — HUMAN DECISION REQUIRED`, do not
 start or continue any step; premortem/RESIDUAL.md names the owner's decision, which a planning session records as the next decision in plan/DECISIONS.md
 before the status becomes `READY`.
@@ -128,6 +129,11 @@ without the G-001 listening record (PK-46). After a push by any non-git mechanis
 
 ## Integrity (Rule 9, verbatim)
 {{RULE:9}}
+
+## Push cadence and honest verification (Rules 6 and 14, verbatim)
+{{RULE:6}}
+
+{{RULE:14}}
 
 ## Lessons, knowledge and the store (Rules 11, 12, 13, verbatim)
 {{RULE:11}}

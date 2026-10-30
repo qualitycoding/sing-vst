@@ -7,7 +7,8 @@ free hosted GPU converts the timbre (D-020). Plus the CLI `singvst-render` and t
 Colab/Kaggle notebooks.
 
 **Active profiles:** `software`, `computational` (plan/PROFILE.md). `software.deploys = false`.
-**Protocol:** planning protocol v3.3 (external repository qualitycoding/skills, commit `9636a79`, D-034); every
+**Protocol:** planning protocol **v3.6** (external repository qualitycoding/skills, commit `b361dab`, D-041; the plan was
+written under v3.3, `9636a79`, D-034, and brought to v3.6 by `plan/AMENDMENT-01.md` and `plan/AMENDMENT-02.md`); every
 section the implementer needs is copied verbatim in `plan/PROTOCOL_EXCERPTS.md`.
 
 ## Reading order
@@ -125,7 +126,7 @@ voice ledger (S-017 action 1a).
   integrity, a public interface, research integrity, licences or consent, or after three failed attempts on one test.
 - Default rule: choose the most reversible option that does not expand scope, log it in DEVIATIONS.md, and continue.
 
-## Resume (zero-context, protocol v3.3 1.2.3)
+## Resume (zero-context, protocol v3.6 1.2.3)
 **Before anything else:** read the first line of `plan/PLAN.md`. If it says `BLOCKED — HUMAN DECISION REQUIRED`, do not
 start or continue any step; premortem/RESIDUAL.md names the owner's decision, which a planning session records as the next decision in plan/DECISIONS.md
 before the status becomes `READY`.
@@ -151,6 +152,86 @@ without the G-001 listening record (PK-46). After a push by any non-git mechanis
 9. **Integrity** `[All]`: No step may fabricate, cherry-pick without disclosure, or manually alter data, test results, benchmarks, or figures. In addition:
    * `[computational, publication]` Every reported number is generated from committed results, not transcribed by hand.
    * `[publication]` Generative-AI images are never used as data figures. AI assistance is disclosed according to the venue's policy, as recorded in `plan/ASSUMPTIONS.md`.
+
+## Push cadence and honest verification (Rules 6 and 14, verbatim)
+6. **Everything Is Committed** `[All]`: No finding, decision, proof, figure spec, or artifact exists unless it is committed to the generation branch.
+    * **Push cadence** `[All]`, on **every** platform (stable and ephemeral): after every successful chunk — a plan step turning green, a frozen-test amendment round closed, a review or gate record committed — immediately push the working branch to the remote, then verify with `ls-remote` that the remote matches local HEAD. Retry transient failures with backoff (on flaky networks prefer HTTP/1.1 with a raised `http.postBuffer`); report any remote/local mismatch instead of assuming the push landed. On ephemeral platforms this is the primary defense against losing work; on stable platforms it is cheap insurance and keeps collaborators and CI current.
+
+14. **Honest Verification & Gating** `[All]`: *A check that cannot fail is not a check.* Every verification in the plan obeys:
+    * **No swallowed failures.** `|| true`, `continue-on-error: true`, `set +e`, empty `except`/`catch`, or any equivalent are forbidden on commands whose result the plan relies on. Flaky tools get explicit retry logic with bounded attempts and visible failure after the last attempt — never silence.
+    * **Artifact post-conditions.** Every step that produces a file, report, or metric lists in its `Done when` the artifact's existence *and* a sanity check (non-empty, parses, contains the expected fields/sections). CI asserts expected artifacts exist after the producing step; an upload or summary step that finds nothing is a failure, not a skip.
+    * **Budgets gate.** Any measurable acceptance criterion (performance %, latency ms, mutation score, coverage) fails the build when missed. Informational-only steps are permitted solely for metrics that have no acceptance criterion.
+    * **Baselines bootstrap.** A regression check of the form "within X% of baseline" specifies how and where the first baseline is recorded (committed file, CI artifact with retention) and what the check does before any baseline exists (it records one and passes). Without a stored baseline, the criterion is an absolute threshold.
+    * **Per-environment targets.** Every performance or resource target names the environment it applies to (OS, runner/CPU class, core count), and the plan pre-decides a decision rule for a miss *on each environment* (optimise, rescope, or relax). Relaxing a target is a human-gate decision; the implementer never relaxes one.
+    * **Substitutions are deviations.** Any substitution of a planned tool, version pin, flag, timeout, or config file — however small — is written to `DEVIATIONS.md` at the moment it is made, with the reason. The retrospective (3.7.1) verifies completeness by diffing against `plan/ENVIRONMENT.md`.
+
+## Phase 0: Environment Diagnostic, Intake & Ambiguity Resolution
+
+### 0.1 Environment Diagnostic `[All]`
+Verify and record in `.checkpoints/state.json`:
+* `[All]` Whether subagent spawning is supported, and which model tiers are actually available.
+* `[All]` GitHub access: target repository, authenticated identity, and push permission (e.g., `gh auth status`, `git ls-remote`). **If push access is absent, halt now** and report the missing credential; do not proceed to research.
+* `[All]` Every permission the plan's actions will need, not just push: for example writing workflow files, opening pull requests, reading CI results, publishing packages, and managing secrets. Test each one where an API allows a harmless check, and record the result. A missing permission that the plan needs becomes an intake item (0.3.6) or a documented implementer credential.
+* `[All]` Sandbox capability: whether you can execute code, install packages, and reach the network (needed for Phase 1 spikes).
+* `[All]` **Execution environment class: `stable` or `ephemeral`.** Probe whether local temp directories, staged toolchains, and background processes survive across turns. Classify as `ephemeral` if any of: temp dirs or staged tooling are wiped between turns; containers are reaped when a tool call exceeds a time budget (long calls end in a deadline error and the next call lands on a fresh instance — e.g., a changed system clock or lost processes); background processes die when the spawning tool call returns. Observed classes: **Kimi on cloud = ephemeral**; **Kimi on localhost = unknown — classify unknown as ephemeral**; **Claude on cloud/remote = stable** (no recycling observed). Record the class and the probing evidence in `.checkpoints/state.json`; every `[ephemeral]`-tagged section applies iff this class is `ephemeral`. All platforms, both classes: use the push cadence in Global Rule 6.
+* `[All]` Reachability of every host the work depends on, not just "the network": package registries, CI log and artifact storage, documentation sites, and deployment targets. For each unreachable host, choose an alternative channel and record it as a decision `D-###`: for example, run builds in CI; report CI failures through a reachable API (check annotations); build a dependency from source.
+* `[math, computational]` Mathematical tooling: a computer algebra system (e.g., SymPy, SageMath), arbitrary-precision arithmetic (e.g., mpmath), and, if required, a proof assistant (e.g., Lean 4 with Mathlib).
+* `[publication]` Document tooling: a TeX distribution with `latexmk`, `bibtex` or `biber`, `chktex`, and `pdffonts` (from poppler-utils).
+* `[All]` Implementer credentials that the planning agent does not need but must document: deployment keys, package-registry tokens, `ZENODO_TOKEN`, etc. Record each credential's name, scope, and whether a sandbox or staging target (e.g., `sandbox.zenodo.org`, a staging environment) is used for dry runs.
+
+### 0.2 Model Tier Hierarchy `[All]`
+```
+Fable (Mythos)  (Primary Orchestrator / Architecture / Proof Strategy / Complex Reasoning)
+└── Opus            (Deep Analysis, Code Logic, Proof Review, Referee Simulation)
+    └── Sonnet           (Standard Synthesis, Drafting, Refactoring, Figure Scripts)
+        └── Haiku            (Parsing, Fact Retrieval, Citation/Link Checks, Mechanical Checks)
+```
+Delegate routine searches, document and bibliography parsing, link and DOI checking, and log scanning to `Haiku`/`Sonnet`. Reserve `Fable (Mythos)`/`Opus` for architecture, proof strategy, proof review, research synthesis, adversarial review, referee simulation, and pre-mortem evaluation.
+
+### 0.3 Intake & Definition of Ready
+
+**0.3.1 Common intake** `[All]`. Restate the task as:
+* **Goal**.
+* **In Scope / Out of Scope**.
+* **Success Criteria**, all measurable.
+* **Constraints**: languages, versions, platforms, performance, compute budget, licensing.
+* **Proposed Profiles and Mode Flags** (Rule 0), with a one-line justification for each.
+* **Subject and classification tags**: what the work is about (for example, a VST instrument, a Java library, Maven Central publishing), with tags from the store taxonomy: the problem side (`domain:`) and the implementation side (`tech:`). These tags select the lessons and knowledge loaded in R0.
+* **Knowledge store** (Rule 13): where lessons and knowledge items are read from and finally pushed to. Default proposal: a repository named `knowledge`, owned by the same account as the target repository.
+
+**0.3.2 Software intake** `[software]`. Record:
+* the target users and supported platforms;
+* runtime environment and deployment target (if `software.deploys`);
+* performance and scale targets (throughput, latency, memory, dataset size);
+* the threat model and data-sensitivity classification;
+* data handling and retention;
+* the release channel and versioning scheme;
+* the maintenance expectations after delivery.
+
+**0.3.3 Mathematical intake** `[math]`. Record:
+* the **Research Question** and **Hypothesis** (or "exploratory, no hypothesis");
+* the known target statements, if any (which sets `math.exploration`);
+* which statements require `formally-checked` status (default: none);
+* the exploration budget, if `math.exploration` is set (default: stated as a count of plan steps and compute hours).
+
+**0.3.4 Computational intake** `[computational]`. Record:
+* the required floating-point precision;
+* the reproducibility requirements (bitwise identical, or within tolerance);
+* the target hardware and thread counts;
+* the maximum compute budget per run and in total.
+
+**0.3.5 Publication intake** `[publication]`. Record:
+* the **Intended Contribution**, meaning what is claimed to be new;
+* the target venue (primary and fallback), article type, and page or word limits;
+* the venue's template and author-guidelines URL;
+* authors, affiliations, ORCIDs, and the corresponding author;
+* the venue's AI-use and image-integrity policies;
+* code and data licenses, and the availability-statement wording;
+* the archive target (e.g., Zenodo) and whether a preprint is intended;
+* whether generative-AI imagery is permitted anywhere (default: only for non-data illustrative graphics, only if the venue allows it, and always disclosed).
+
+**0.3.6 Ambiguity resolution** `[All]`:
+1. List every ambiguity that would force a judgment call later, including the profile selection itself. For each, propose a default and its consequence.
 
 ## Lessons, knowledge and the store (Rules 11, 12, 13, verbatim)
 11. **Lessons** `[All]`: Whenever the executing agent corrects its own execution, it records a lesson before continuing. The *executing agent* is the planning agent while it runs this protocol, and the implementing agent while it runs the plan. A *correction* is any of:
