@@ -986,6 +986,23 @@ evidence. The plan status becomes READY; implementation starts at S-000 as HANDO
 
 ---
 
+### D-041 Protocol v3.6 adopted mid-run; Amendment 01 (plan/AMENDMENT-01.md)
+On 2026-10-30, with S-000…S-016 passed and S-017 halted at G-004, the owner asked for the plan to follow planning protocol
+**v3.6** (`qualitycoding/skills` `b361dab`), which supersedes v3.3 (D-034). plan/AMENDMENT-01.md compares the two and lists
+the retroactive steps AM-01…AM-10 for the work done so far: protocol excerpts and HANDOFF at v3.6 (Rules 6 and 14 restated),
+the environment-class probe (0.1), the push cadence with an `ls-remote` check (Rule 6), the honest-verification audit
+(Rule 14), a post-condition audit of the completed steps, pin and command verification (1.3.6), a deviation-completeness
+check (3.7.1 1a), the assumption and premise audit (4.7), and a re-pinned G-004 when a notebook changes. No frozen file
+changes, so no re-freeze; the amendment's cold read and pre-mortem run with Amendment 02 (D-042), which adds the new review
+steps (3.8) and the Rule 14 post-conditions to the remaining steps.
+**Targets (Rule 14 per-environment rule).** SC-4…SC-7 are unknown-outcome thresholds judged at G-001 (2B.4, PK-29): they are
+recorded, never gated in CI, and only the owner relaxes or binds them. The RTF target `realtime_factor_max` 1.0 names two
+environments: (a) the hosted runtime's CPU, measured by `evaluate` in cell (15) (Colab or Kaggle, CPU class printed in
+`report.json.provenance.json` `hardware`); (b) the owner's computer at G-001 (five `singvst-render` runs, plan/GATES.md
+G-001). Pre-decided miss rule for each: record the value with its environment; a miss on (a) alone is reported and does not
+decide (hosted CPUs are shared and slower, C-039 measured RTF 1.10 on 2 threads); a miss on (b) is a G-001 decision
+(`retrain` with fewer steps/depth or a smaller model, or `proceed-with-thresholds`) — the implementer never relaxes it (DR-08).
+
 ## Decision rules (if → then)
 
 **Engineering forks** `[software]`
