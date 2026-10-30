@@ -55,7 +55,7 @@
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
     "DEVIATIONS.md": "444526afd7d11d78afdf953dd46e96bec1be07444f71f05a7e68e9ce88833029",
-    "EXECUTION_LOG.md": "cbd034b0ce09217f67086069d73a34e0a96c95db305d44c03ea33154743a7d44",
+    "EXECUTION_LOG.md": "efb50cae328b69a89f64f90c2c831e4a513c6a3726cd3e523f56d594dd013b59",
     "GATE-G-004.md": "607cd582f8102731a0544eae0eba37af95485f36885a79fcbd41b80cd4754e1d",
     "GATE-G-005.md": "9681eefe3851aea041e48955846ad4c8662a91825e576fa72ef12243db19e879",
     "HANDOFF.md": "41645196ed112f022cfe82229306a6580d28e8e322ab67a8b93f543495653be9",
@@ -313,6 +313,8 @@
     "research/spikes/cmake-parallel/run.sh": "1dd175c0e8bc090a40becd14f27f9036c980c707bb77eae52bc6404563a1bf31",
     "research/spikes/deps-pins/output.txt": "a1f6120b1bbcfcd97a95c22a7775bc4ffc62b231d64d40c00fe197a0831d3373",
     "research/spikes/deps-pins/run.sh": "adefd8efb63fc08875cb0d9af2bd1d6343e706138d7c4079eefb7718fc0b8077",
+    "research/spikes/env-class/output.txt": "d729d334c0c1559a54907a9fd3b56b257999566cf1fcf7316436f007f0929ac9",
+    "research/spikes/env-class/run.sh": "fa37f5fec025a15c465fa4e57bf9110982402af2032195f5672804d88061bdce",
     "research/spikes/eval-apis/output.txt": "2335ca3884d4313815f8f41715bd9f2ea3f4afb2ed292c7f3a71e00c15bc132a",
     "research/spikes/eval-apis/run.sh": "c856836e72713484fd22762c059911f82475b2b2ff08f87e2cac7a8b8798974b",
     "research/spikes/hf-cli/output.txt": "b5ab93eac5f6b5d3c5a99f75bbcb8242efc136cd5f15911a87aba504d0afd270",
@@ -503,9 +505,9 @@
     "tools/notebook_cells/c16_tp20.py": "25ff498837bd64d0a950a17e53c0a96295e5fae97ea9cf927c8751c3482d18e8",
     "tools/notebook_cells/c17_finish.py": "1822154e18c3d7b0e653bb892eb99aa866ef7d6e13c7766bc5d27b45399751ec",
     "tools/notebook_dryrun.py": "f7ded3b45c4de4ef4ab33afd0930d687a65173dc197e69e95bd939c27ad27ca1",
-    "tools/save.sh": "69b3b316e07e99bf9db1a82090ed98d22d50175e3be7943a3e04cd499a28eae4",
+    "tools/save.sh": "605125c57827760cde5c933e18e120e8727c1ca369ae36bb7a29f623f057776f",
     "tools/tsan.supp": "ef4093a99304f1b50ccab56b8dc92db04e01f9c0110ff16f365caa3b02c8e1bd",
-    "tools/turn_end_check.sh": "cccef70db2e2529a3f6bf3b5ec6c4aa171cc6a8f009e433208988fbac537269f"
+    "tools/turn_end_check.sh": "f98dbec2ecf798b76771d8de04c1a819dc871e1246b5893e162b36e1d75d6790"
   },
   "tier_substitutions": [
     {
@@ -920,7 +922,7 @@
     "HALTED at gate G-004 (GATE-G-004.md, RUN 1, Colab)",
     "Amendment 01 merged from the generation branch; AM-01..AM-10 follow"
   ],
-  "updated_at": "2026-10-30T23:24:21Z",
+  "updated_at": "2026-10-30T23:25:08Z",
   "active_step_id": "S-017",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -965,7 +967,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 208,
+  "sequence": 211,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
@@ -996,5 +998,12 @@
   "protocol": {
     "version": "3.6",
     "commit": "b361dab"
+  },
+  "protocol_version": "3.6",
+  "environment_class": "stable",
+  "environment_probe": {
+    "spike": "research/spikes/env-class/output.txt",
+    "probed": "2026-10-30T23:24:59Z",
+    "evidence": "/tmp and ../ markers and a detached background process survived across tool calls; files from 2026-10-24 still present; host up since 2026-10-05 14:57:47"
   }
 }

@@ -19,8 +19,16 @@ if git diff --cached --quiet; then echo "save.sh: nothing staged"; else
   git commit -q -m "$msg" -m "$trailers"
 fi
 b=$(git branch --show-current)
-for i in 1 2 3; do git push -q -u origin "$b" && break; echo "push attempt $i failed" >&2; sleep $((i * 5)); done
+# Push cadence (Rule 6, protocol v3.6): retry transient failures with exponential backoff, then verify with ls-remote.
+pushed=0
+for wait in 2 4 8 16 0; do
+  if git push -q -u origin "$b"; then pushed=1; break; fi
+  [ "$wait" -gt 0 ] && { echo "push failed; retrying in ${wait}s" >&2; sleep "$wait"; }
+done
+[ "$pushed" -eq 1 ] || { echo "save.sh: push to origin/$b failed after 5 attempts" >&2; exit 1; }
 # Refresh the remote-tracking ref explicitly: a clone with a narrow fetch refspec has no origin/<branch> otherwise.
 git fetch -q origin "$b:refs/remotes/origin/$b" || { echo "save.sh: cannot fetch origin/$b" >&2; exit 1; }
-left=$(git rev-list --count "origin/$b..HEAD"); echo "saved $(git rev-parse --short HEAD) on $b; unpushed commits: $left"
-[ "$left" -eq 0 ]
+left=$(git rev-list --count "origin/$b..HEAD")
+remote=$(git ls-remote origin "refs/heads/$b" | cut -f1); local_head=$(git rev-parse HEAD)
+echo "saved $(git rev-parse --short HEAD) on $b; unpushed commits: $left; remote ${remote:0:7}"
+[ "$left" -eq 0 ] && [ "$remote" = "$local_head" ] || { echo "save.sh: remote $remote != local $local_head" >&2; exit 1; }

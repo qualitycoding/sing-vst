@@ -1,0 +1,11 @@
+== probe 2026-10-30T23:24:59Z on claude-the-butler, Linux 7.0.0-38-generic
+boot time: 2026-10-05 14:57:47 (uptime: up 3 weeks, 4 days, 9 hours, 27 minutes)
+/tmp marker from the start call: kept (written 2026-10-30T23:24:39Z)
+../ marker from the start call: kept (written 2026-10-30T23:24:39Z)
+background process from the start call: alive (pid 1697276)
+older evidence (files this session wrote in earlier turns):
+  /tmp/pv/pluginval_Linux.zip  2026-10-24T14:39:03Z
+  ../build-all.log  2026-10-24T12:39:29Z
+  ../venv-torch/bin/python  2026-08-31T10:18:26Z
+  ../build-full/tests/cpp/singvst_plugin_tests  2026-10-24T14:45:10Z
+class: stable

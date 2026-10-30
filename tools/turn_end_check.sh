@@ -7,6 +7,8 @@ dirty=$(git status --porcelain); [ -z "$dirty" ] || { echo "DIRTY:"; echo "$dirt
 if git fetch -q origin "$b:refs/remotes/origin/$b" 2>/dev/null; then
   ahead=$(git rev-list --count "origin/$b..HEAD"); [ "$ahead" -eq 0 ] || { echo "UNPUSHED: $ahead commit(s)"; rc=1; }
 else echo "UNPUSHED: origin/$b cannot be fetched (branch never pushed?)"; rc=1; fi
+remote=$(git ls-remote origin "refs/heads/$b" | cut -f1)                 # push cadence (Rule 6, v3.6)
+[ "$remote" = "$(git rev-parse HEAD)" ] || { echo "REMOTE MISMATCH: ls-remote $remote != HEAD $(git rev-parse HEAD)"; rc=1; }
 tok=$( { grep -rIlE 'github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{20,}' . --exclude-dir=.git 2>/dev/null; \
         git config --list 2>/dev/null | grep -lE 'github_pat_|ghp_' ; } | head -5)   # repository + git config only (cold read S38)
 [ -z "$tok" ] || { echo "TOKEN ON DISK:"; echo "$tok"; rc=1; }
