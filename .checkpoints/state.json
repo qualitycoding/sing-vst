@@ -54,8 +54,8 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "afdd29812d7ed111cbc62bb7de95477e96c3d6596cd85b7e85b8ae78124a876e",
-    "EXECUTION_LOG.md": "c35c1aaa8e477be7a19cfda1fc7c5ec7a4d695a6eca2906317ee4a1e41cf9c40",
+    "DEVIATIONS.md": "5de04eac35af32babe266e59d2f4237ec26fedc2681fe67ed3814078feb29056",
+    "EXECUTION_LOG.md": "eb310f45c5001b2d59a69bf92bc08a40bb47bdc40c536b69cc0fe7724d1aa7a0",
     "GATE-G-004.md": "607cd582f8102731a0544eae0eba37af95485f36885a79fcbd41b80cd4754e1d",
     "GATE-G-005.md": "9681eefe3851aea041e48955846ad4c8662a91825e576fa72ef12243db19e879",
     "HANDOFF.md": "41645196ed112f022cfe82229306a6580d28e8e322ab67a8b93f543495653be9",
@@ -248,6 +248,7 @@
     "lessons/L-20261024T133252Z-ort-typeinfo-view-dangles.md": "b62f684eaf9f6c530e8f54aabdd1a4d211fb7ca149b1f5aa195ba09e243c8199",
     "lessons/L-20261024T133253Z-spike-passed-for-the-wrong-reason.md": "7eb001eb620485fc3890fea45207e400b46d36670ed4b6fc1b3c710e067a6153",
     "lessons/L-20261024T151049Z-trace-bakes-example-length.md": "b079158c663dfd8af5e21f65052b2ed5fc962d514ea12f3ce591226a81bd7bd0",
+    "lessons/L-20261030T233959Z-config-file-added-without-deviation.md": "d66cd2ba3cb93ff92e829f4cf5d678498c70c928095950102e14b874f625a4cc",
     "notebooks/train_voice_colab.ipynb": "067aad576abf0623e9e96129558e26b80b87fbab6b78903955f0b9423e3f0f6a",
     "notebooks/train_voice_kaggle.ipynb": "058b08742fa439aa8f4bc91ceb01f2e190ae2a53fe360e2d97d1338a0969a438",
     "plan/AMENDMENT-01.md": "9bbf1d6062f30b19a08050ccd5c36eca3077902ae9a1281fa8af1ff50aa51d2a",
@@ -399,6 +400,7 @@
     "research/spikes/uv-python/run.sh": "621e38b1eb11d84f04243166617ca25d011cfefd532fddd4f0e2348b0aee8c64",
     "research/spikes/vocoder-onnx/output.txt": "1a0365c79a367bce16a75432c2c692110c833540422131d8ec2a1fc55f5bb95c",
     "research/spikes/vocoder-onnx/run.sh": "f59a59ba67edd37ce9696fc952c8323bdf3256dedb9dc2826d6e8da68bbc0c5f",
+    "reviews/DEVIATION_AUDIT.md": "662012a92c212fa33c3a7e6d9d0ada36bd8e4f51a5c5332341b5f335d3ac0be9",
     "reviews/RULE14_AUDIT.md": "4cf255d6fc52ae25aac295cc157eb46c3a30dc076fd1f954f8c76d4c84dcd480",
     "tests/FROZEN_MANIFEST.sha256": "73b357bf04319fc617f4ce5b9e6b71430def47704e4d03dac17226dcea5f4ea3",
     "tests/cpp/CMakeLists.txt": "6d846659b5db59a1510097edf4f8692fd676dd89a202d0c0dea2efe1fda0f0fd",
@@ -841,7 +843,8 @@
     "L-20261024T132818Z-hashed-fixtures-need-no-eol-conversion",
     "L-20261024T133252Z-ort-typeinfo-view-dangles",
     "L-20261024T133253Z-spike-passed-for-the-wrong-reason",
-    "L-20261024T151049Z-trace-bakes-example-length"
+    "L-20261024T151049Z-trace-bakes-example-length",
+    "L-20261030T233959Z-config-file-added-without-deviation"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -936,7 +939,7 @@
     "HALTED at gate G-004 (GATE-G-004.md, RUN 1, Colab)",
     "Amendment 01 merged from the generation branch; AM-01..AM-10 follow"
   ],
-  "updated_at": "2026-10-30T23:39:11Z",
+  "updated_at": "2026-10-30T23:39:59Z",
   "active_step_id": "S-017",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -981,7 +984,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 214,
+  "sequence": 215,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
