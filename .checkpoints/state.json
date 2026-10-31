@@ -54,9 +54,10 @@
     ".github/workflows/ci.yml": "d9b7a47538d90c3a35f4dca4d7884cf97d57354fcd50cd949d128d705113b398",
     ".gitignore": "a16e623a7201b100d397b68f00d6e3dad27129bb47168d54f661e9b2fa3e2c60",
     "CMakeLists.txt": "25a10b3738c06889bf9e4b27afc3da88b5e7cf442a96c8d2594ce56fda802f70",
-    "DEVIATIONS.md": "1485fea2beada4674f28c1fdfaf3037444b553074cb26cee7c664e953cc9a18d",
-    "EXECUTION_LOG.md": "3b579d985626dd3e255a620a66628a0f3fd08c764ec6c294a1a10f6a8dd976e8",
-    "GATE-G-004.md": "607cd582f8102731a0544eae0eba37af95485f36885a79fcbd41b80cd4754e1d",
+    "DEVIATIONS.md": "198b5afdf26d261a8f12afc8722c88ea765a6b0ed07b31518ab05db1a6b83099",
+    "EXECUTION_LOG.md": "0a91e80363c25d5158a02b71ecbc86a7245613a1fef6cfd9d9d51e8bc509e460",
+    "GATE-G-004.md": "807c07711ab8d8da3fa1ad3148dfc74921e54b825224641b298f8eb7a33c6ce4",
+    "GATE-G-004.run1.1.md": "607cd582f8102731a0544eae0eba37af95485f36885a79fcbd41b80cd4754e1d",
     "GATE-G-005.md": "9681eefe3851aea041e48955846ad4c8662a91825e576fa72ef12243db19e879",
     "HANDOFF.md": "4592c45e6a2359700165e36aa07ca9e98798201df95bf8a6dfdba9a02d4c12f0",
     "HANDOFF.src.md": "baf333ad745b285785ae75074d6e6b82043a1f5c87be800d103e32050489f035",
@@ -960,9 +961,10 @@
     "HALTED at gate G-005 (GATE-G-005.md); S-016 onward depend on the answer",
     "G-005 answered: use-tiger",
     "HALTED at gate G-004 (GATE-G-004.md, RUN 1, Colab)",
-    "Amendment 01 merged from the generation branch; AM-01..AM-10 follow"
+    "Amendment 01 merged from the generation branch; AM-01..AM-10 follow",
+    "G-004 re-issued at 48342143e0177561286d656edb119254044b7d0a (AM-09); halted at G-004; S-REVIEW/S-ADVERSARIAL/S-MUTATE may run meanwhile"
   ],
-  "updated_at": "2026-10-31T17:01:31Z",
+  "updated_at": "2026-10-31T17:02:08Z",
   "active_step_id": "S-017",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -1007,7 +1009,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 219,
+  "sequence": 221,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
@@ -1028,11 +1030,20 @@
   ],
   "amendments": {
     "01": {
-      "status": "in-progress",
+      "status": "complete",
       "file": "plan/AMENDMENT-01.md",
       "decision": "D-041",
       "protocol_from": "3.3 9636a79",
       "protocol_to": "3.6 b361dab"
+    },
+    "02": {
+      "status": "merged",
+      "file": "plan/AMENDMENT-02.md",
+      "decisions": [
+        "D-042",
+        "D-043",
+        "D-044"
+      ]
     }
   },
   "protocol": {

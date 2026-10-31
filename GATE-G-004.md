@@ -1,6 +1,6 @@
 # GATE G-004 — your hosted-GPU training run (RUN 1)
 
-Raised 2026-10-24T18:46:20Z by S-017. Nothing after this point can run without you: the training happens on a free GPU you control, on your
+Raised 2026-10-31T17:01:50Z by S-017, re-issued by Amendment 01 AM-09 (the notebook changed; the earlier issue had no response and is archived as GATE-G-004.run1.1.md). Nothing after this point can run without you: the training happens on a free GPU you control, on your
 recordings. Every value below is generated from the repository state (PK-05).
 
 ## What you will do
@@ -10,8 +10,8 @@ The notebook downloads the guide voicebank (TIGER DiffSinger v102, personal non-
 Your recordings, the renders and the voice package stay on your Drive.
 
 ## 1. Open the notebook (pinned to one commit)
-- Colab: https://colab.research.google.com/github/qualitycoding/sing-vst/blob/6cffb4c5c06a1e0fcf362be0186b6c1eb19cccb7/notebooks/train_voice_colab.ipynb
-- The commit is `6cffb4c5c06a1e0fcf362be0186b6c1eb19cccb7`. The notebook checks that the code it clones is exactly this commit and stops otherwise.
+- Colab: https://colab.research.google.com/github/qualitycoding/sing-vst/blob/48342143e0177561286d656edb119254044b7d0a/notebooks/train_voice_colab.ipynb
+- The commit is `48342143e0177561286d656edb119254044b7d0a`. The notebook checks that the code it clones is exactly this commit and stops otherwise.
 - Kaggle (only if you answer `switch-platform: kaggle` first, see below): *File -> Import notebook -> GitHub*, this commit and path
   `notebooks/train_voice_kaggle.ipynb`.
 
@@ -31,7 +31,7 @@ Dry, close-miked, one voice per file works best. Do not share the Drive folder.
 |---|---|
 | `VOICE` | `myvoice` (or your own name: lower-case letters, digits and `-`; tell me in the response) |
 | `RUN` | `1` |
-| `EXPECTED_COMMIT` | `6cffb4c5c06a1e0fcf362be0186b6c1eb19cccb7` |
+| `EXPECTED_COMMIT` | `48342143e0177561286d656edb119254044b7d0a` |
 | `RESUME` | `False` (Colab keeps its state on Drive; Kaggle rule below) |
 | `PLATFORM_EXPECTED` | `"colab"` |
 | `PRIOR_VOICE_GPU_HOURS` | `0.0` (no earlier hours: there is no ledger yet) |
