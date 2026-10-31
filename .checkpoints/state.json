@@ -255,6 +255,7 @@
     "lessons/L-20261030T234149Z-implementer-host-differs-from-planning-sandbox.md": "83c636b55210ce03945e3ca420a596f8b5ca8c542eb2047f5408e225ca2b0cff",
     "lessons/L-20261030T234150Z-no-root-is-not-no-local-plugin-build.md": "e2e6f84b8dbc485d7973148680daf2cc7772a872dcac6046ddb8361448c4595d",
     "lessons/L-20261030T234151Z-claim-detail-not-cross-checked-with-config.md": "c41b371edd1254acbc9225c0c285fdd985fced084f965c2ad3c8d88fb4884b90",
+    "lessons/L-20261031T105400Z-typed-verdict-counts.md": "41e64bae26d76a42c64e5239e0b62f24ac55d38ebaf6ab73810a0f90bf2cdd10",
     "notebooks/train_voice_colab.ipynb": "067aad576abf0623e9e96129558e26b80b87fbab6b78903955f0b9423e3f0f6a",
     "notebooks/train_voice_kaggle.ipynb": "058b08742fa439aa8f4bc91ceb01f2e190ae2a53fe360e2d97d1338a0969a438",
     "plan/AMENDMENT-01.md": "9bbf1d6062f30b19a08050ccd5c36eca3077902ae9a1281fa8af1ff50aa51d2a",
@@ -855,7 +856,8 @@
     "L-20261030T234148Z-rvc-has-two-noise-sources",
     "L-20261030T234149Z-implementer-host-differs-from-planning-sandbox",
     "L-20261030T234150Z-no-root-is-not-no-local-plugin-build",
-    "L-20261030T234151Z-claim-detail-not-cross-checked-with-config"
+    "L-20261030T234151Z-claim-detail-not-cross-checked-with-config",
+    "L-20261031T105400Z-typed-verdict-counts"
   ],
   "knowledge_added": [
     "K-20261010T110000Z-c-001-rvc",
@@ -952,7 +954,7 @@
     "HALTED at gate G-004 (GATE-G-004.md, RUN 1, Colab)",
     "Amendment 01 merged from the generation branch; AM-01..AM-10 follow"
   ],
-  "updated_at": "2026-10-31T10:53:41Z",
+  "updated_at": "2026-10-31T10:54:00Z",
   "active_step_id": "S-017",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -997,7 +999,7 @@
       "deps": "/home/claude/deps"
     }
   },
-  "sequence": 217,
+  "sequence": 218,
   "knowledge_loaded": [
     "K-20261004T102024Z-sandbox-working-directory-resets",
     "K-20261004T151500Z-juce-8-vs-9-vst3-breaking-change",
