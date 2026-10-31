@@ -1,9 +1,9 @@
 <!-- STATUS: READY -->
-**Status: READY** · profiles `software`, `computational` · claims 65 (corroborated 3, single-source 3, verified 59) · tests: C++ core 61, C++ plugin 6, Python 30 IDs, CI-only 1 (T-059) · steps 22 · gates 5 · risks 115 (Critical 15, High 29, Low 24, Medium 47) · pre-mortem rounds 6 · figures 0 (D-032)
+**Status: READY** · profiles `software`, `computational` · claims 65 (corroborated 3, single-source 3, verified 59) · tests: C++ core 61, C++ plugin 6, Python 30 IDs, CI-only 1 (T-059) · steps 25 · gates 5 · risks 121 (Critical 15, High 30, Low 27, Medium 49) · pre-mortem rounds 7 · figures 0 (D-032) · assumption audit confirmed 25, falsified 4, unverifiable 11 · reviews 0/3 done (S-REVIEW, S-ADVERSARIAL, S-MUTATE) · protocol v3.6 (D-041)
 
 # Execution plan — sing-vst
 
-Read `HANDOFF.md` first. Every step uses the template of protocol 3.1. Steps run **one at a time, in ID order** (they share
+Read `HANDOFF.md` first. Every step uses the template of protocol 3.1. Steps run **one at a time, in plan order** (the order of the headings below; D-042) (they share
 one branch, `.checkpoints/state.json`, `core/src/stubs.cpp` and `python/singvst_train/cli.py`); a later step may start only
 when every step in its `Depends on` has passed. "Full suite" means: `ctest` in the core and full build trees, plugin tests
 under `xvfb-run -a`, and `../venv-lock/bin/python -I -m pytest -q -m "not torch and not voice and not network"` with
@@ -464,6 +464,92 @@ Defaults for every step unless the step says otherwise:
 - Lessons applied: PK-43 (L-20261009T193613, L-20261004T102004); PK-44 (L-20261010T000113)
 - Exclusive resources: none
 
+### S-REVIEW Traditional code review
+- Tier: Opus
+- Profile: software
+- Depends on: S-016 (all code delivered; it does not depend on G-004, so it runs while halted there — D-042)
+- Inputs: `git diff origin/main...HEAD` (everything the implementation added: core/, cli/, plugin/, python/singvst_train/,
+  tools/, notebooks/, CMake, CI); plan/DECISIONS.md; tests/; reviews/RULE14_AUDIT.md; reviews/DEVIATION_AUDIT.md
+- Actions: a reviewer that authored none of the code (a fresh-context Opus subagent only when the owner has asked for one and the
+  environment offers it; otherwise the implementing agent, with the substitution recorded as HANDOFF §Tiers says) reviews the full diff for the four
+  areas of protocol 3.8.1: (1) bad code and anti-patterns (dead code, duplication, hidden mutation, unclear naming, unjustified
+  complexity, leaked abstractions); (2) untested code — line coverage from a `--coverage` build of the core (`../build-cov`,
+  GCC 13.3 `gcov`) under `ctest`, and from coverage.py 7.17.0 (in `python/requirements-mutate.txt`) under the local Python suite;
+  every new function and branch maps to a frozen test or is named as a gap; (3) security (injection, path traversal, unsafe file
+  and memory handling, secrets, unsafe deserialisation, unchecked input at boundaries); (4) dependencies: each pin of
+  plan/ENVIRONMENT.md compared with the release current on the review date and its deprecation notices, written with fixed
+  dates and versions. Findings are classified per Global Rule 4; every Critical/High finding is fixed before any later delivery
+  step (S-017 re-issues, S-018, S-019), with the full suite re-run (PK-51); a fix that needs a new or changed frozen test follows
+  D-042 (halt for a planning amendment). Every fix of the implementer's own mistake is a lesson (Rule 11). If a Critical/High fix
+  changes `notebooks/`, `python/`, `core/`, `cli/` or `eval/` while GATE-G-004.md is open without a response, archive it and
+  re-issue it pinned to the fixed head (S-017 action 3 naming; D-042), so the owner never runs a commit with a known Critical/High defect.
+- Outputs: reviews/CODE_REVIEW.md, ../build-cov (out of tree)
+- Evidence produced: none (report)
+- Done when: reviews/CODE_REVIEW.md exists and has the four area sections and a findings table whose every row has a severity,
+  a `file:line`, and a fix commit or `R-###`; the coverage figures in it come from the commands it quotes (PK-05); no
+  Critical/High finding is open; the full suite is green; `python3.12 tools/check_postconditions.py` (extended with this step's
+  artifact) exits 0.
+- Checkpoint: default
+- On failure: default
+- Gate: none
+- Relevant decisions/claims: D-042, Global Rules 4 and 14
+- Lessons applied: PK-05 (L-20261004T102009, L-20261014T195600, L-20261010T000110); PK-51 (L-20261004T150500, L-20261004T153000); PK-42 (L-20261009T123002, L-20261009T123001)
+- Exclusive resources: default
+
+### S-ADVERSARIAL Adversarial review
+- Tier: Opus
+- Profile: software
+- Depends on: S-REVIEW
+- Inputs: the implementation as of S-REVIEW's fixes; plan/ASSUMPTIONS.md; premortem/ASSUMPTION_AUDIT.md; ../build-asan
+- Actions: a reviewer in the adversarial stance of protocol 3.8.2 (fresh context as in S-REVIEW) tries to break the application at
+  every boundary and records each probe as a script under `research/spikes/adversarial/` with its output: lyric text
+  (`parseLyrics`), Standard MIDI Files (`importMidi`, beyond T-066's fuzz), voice packages (manifest, path traversal, symlinks,
+  oversized and truncated files, hash mismatch), ONNX models (external data, absurd shapes), the take cache files, plugin state
+  JSON, CLI arguments, the toolkit CLI and its file inputs, the notebook's `state.tar` restore (hostile members) and
+  `params.json`; resource exhaustion (5000 notes / 900 s, large models, cancel storms against `Renderer` and `TakeSlot` under
+  TSan); dependency failure (missing or wrong ONNX Runtime, missing `cmudict.dict`, unreadable checkpoints); and the `A-###`
+  assumptions the code embodies. C++ probes run against `../build-asan`, each under `timeout 600`. A confirmed break becomes a proposed frozen test (D-042)
+  or an accepted risk `R-###` with its Rule 4 severity; Critical/High breaks block S-019.
+- Outputs: reviews/ADVERSARIAL_REVIEW.md, research/spikes/adversarial/
+- Evidence produced: none (report and probe outputs)
+- Done when: reviews/ADVERSARIAL_REVIEW.md has one row per boundary listed above, each naming its probe script, the observed result
+  and a verdict; every probe output file exists and is non-empty; every confirmed break links to a proposed test or an `R-###`;
+  no Critical/High break is open; `python3.12 tools/check_postconditions.py` exits 0.
+- Checkpoint: default
+- On failure: default
+- Gate: none
+- Relevant decisions/claims: D-042, D-043, Global Rule 4
+- Lessons applied: PK-42 (L-20261009T123002, L-20261009T123001); PK-38 (L-20261009T161100)
+- Exclusive resources: default
+
+### S-MUTATE Mutation testing of the Python toolkit
+- Tier: Sonnet
+- Profile: software
+- Depends on: S-REVIEW
+- Inputs: D-044; research/spikes/mutmut (verified configuration); python/requirements-mutate.txt
+- Actions: write `tools/mutate.sh` from research/spikes/mutmut/run.sh: a venv `../venv-mutate` (`pip install --no-deps -r
+  python/requirements-lock.txt`, then `--no-deps -r python/requirements-mutate.txt`; `pip check` passes and pytest is 9.1.1), a
+  generated workspace `../mutate-work/` exactly as the spike builds it (`src/singvst_train` copied from `python/`; `tests/python`,
+  `tests/fixtures`, `eval/` and `pytest.ini` copied; a `python/` directory holding only the lock and a copy of `setup.cfg`; a `.pth`
+  file in the venv pointing at `mutants/src`; an empty git commit; the spike's `setup.cfg` with `source_paths` = the D-044 modules
+  and `pytest_add_cli_args_test_selection` = their test files), then `mutmut run` and `mutmut results --all true`; print the D-044
+  score per module, for the seven library modules together and for `cli.py`, with a command; classify every survivor and no-tests
+  mutant (test to add, or justification by class).
+- Outputs: tools/mutate.sh, reviews/MUTATION.md
+- Evidence produced: none (report)
+- Done when: reviews/MUTATION.md lists per module total, killed, timeout, survived, no tests and the score, all printed by
+  `tools/mutate.sh` (PK-05); the library modules ≥ 0.80 together and each ≥ 0.70, `cli.py` ≥ 0.50 (D-044, a budget that gates);
+  every survivor and no-tests mutant appears either in the "tests to add" table or with a written justification by class;
+  `python3.12 tools/check_postconditions.py` exits 0. The D-044 baseline (0.718 and 0.234) is below target, so the first run is
+  expected to end in the halt below; the step is done when a re-run after the test amendment meets the target.
+- Checkpoint: default
+- On failure: a score below target after justification → halt with reviews/MUTATION.md and its "tests to add" table for a
+  planning amendment (D-042; the implementer never lowers the target or writes frozen tests).
+- Gate: none
+- Relevant decisions/claims: D-044
+- Lessons applied: PK-05 (L-20261004T102009, L-20261014T195600, L-20261010T000110); PK-24 (L-20261009T160100, L-20261004T162211, L-20261015T180300)
+- Exclusive resources: default
+
 ### S-017 Owner's training run and evaluation
 - Tier: Sonnet
 - Profile: computational
@@ -502,7 +588,7 @@ Defaults for every step unless the step says otherwise:
      `metrics.judge(report, eval/thresholds.json)` recomputed locally equals `verdict.json` (for an invalid report:
      `verdict.json` = `{"all": false, "status": <the report's status>}`); the report provenance
      `params.voice_name` = `training.json` `voice_name` = `<VOICE>-run<RUN>`; every `budget.json` `sessions[].commit` is
-     on the impl branch; `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `t-p20.xml`
+     on the impl branch (and, after a D-042 review re-issue, the archived pin is handled by D-042's `pre-fix` rule, R-120); `train` appears in some session's `stages_run` (or `stopped_by_budget` is set); `t-p20.xml`
      exists and its outcome (pass, or a failure that D-035 §Evaluation outcome's junit rule classifies as a result) is
      recorded as a result for G-001, never re-run (R-071, R-084), while any other outcome is handled as `failed: 16`; on
      Kaggle, over the version lines of all of this voice's ledger records plus this response's (per-issue lists, D-035
@@ -536,8 +622,11 @@ Defaults for every step unless the step says otherwise:
      the unchanged `verdict.json` (the verdict against the defaults; R-037).
 - Outputs: results/<VOICE>/run<RUN>/ — the upload tar's members committed verbatim (report.json, report.json.provenance.json, verdict.json, spread.json, ceiling.json, t-p20.xml, budget.json, training.json, budget-voice.json, commits.json, env/), results/<VOICE>/run<RUN>/verdict.bound.json (after `proceed-with-thresholds`), results/<VOICE>/ledger.json, GATE-G-004.md, GATE-G-001.md (earlier issues as GATE-G-00<g>.run<RUN>.<k>.md)
 - Evidence produced: T-P20 (run by the owner); G-001 record
-- Done when: the G-001 response is recorded in `GATE-G-001.md` and, after `proceed-with-thresholds`, `verdict.bound.json`
-  is saved (action 5).
+- Done when: (Rule 14 post-conditions) `results/<VOICE>/run<RUN>/` holds every upload member; `report.json` has exactly
+  `evaluate.REPORT_KEYS`, `spread.json` the seven metrics with five values each, `t-p20.xml` parses, `results/<VOICE>/ledger.json`
+  parses and its totals equal the D-035 §Voice ledger formulas recomputed by a command; `GATE-G-001.md` has a non-empty `## Response`;
+  and the G-001 response is recorded in `GATE-G-001.md` and, after `proceed-with-thresholds`, `verdict.bound.json`
+  is saved (action 5); `python3.12 tools/check_postconditions.py` (extended with this step's artifacts) exits 0.
 - Checkpoint: default
 - On failure: result-pivot rules DR-10…DR-13 (record values, never tune the evaluation, halt at G-001).
 - Gate: G-004, then G-001
@@ -568,7 +657,9 @@ Defaults for every step unless the step says otherwise:
   record (PK-46).
 - Outputs: README.md, docs/PARAMETERS.md, THIRD_PARTY_NOTICES.md, tools/gen/parameters.py
 - Evidence produced: T-P23
-- Done when: T-P22, T-P23 pass; the full suite is green.
+- Done when: T-P22, T-P23 pass; the full suite is green; (Rule 14 post-conditions) README.md has a `## What it does` section whose
+  every bullet cites a test ID and a `## Limits and care` section; docs/PARAMETERS.md has exactly 5 table rows; the `^## ` count
+  of THIRD_PARTY_NOTICES.md equals its component count; `python3.12 tools/check_postconditions.py` (extended) exits 0.
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -579,9 +670,10 @@ Defaults for every step unless the step says otherwise:
 ### S-019 Final verification and pull request
 - Tier: Opus
 - Profile: software, computational
-- Depends on: S-018
+- Depends on: S-018, S-REVIEW, S-ADVERSARIAL, S-MUTATE
 - Inputs: everything above
-- Actions: run the full suite locally; rebuild `singvst-render` in `../build-gcc11` as S-010 does (R-103); read the final CI run
+- Actions: review every code commit after the S-REVIEW commit with the S-REVIEW checklist and append it to reviews/CODE_REVIEW.md
+  (`## Delta since S-REVIEW`; D-042); run the full suite locally; rebuild `singvst-render` in `../build-gcc11` as S-010 does (R-103); read the final CI run
   of all jobs through the API (D-036); check `git diff --stat
   <report git_commit>..HEAD -- core cli python/singvst_train eval`, the report being the highest `results/<VOICE>/run<RUN>/`
   (the run G-001 accepted): when it is not empty, list the
@@ -599,7 +691,11 @@ Defaults for every step unless the step says otherwise:
 - Outputs: plan/IMPLEMENTATION_MAP.md; pull request URL in EXECUTION_LOG.md
 - Evidence produced: all tests
 - Done when: every frozen test passes (T-P20: S-017's record shows a pass, or its failure is disclosed in README, the pull
-  request body and DEVIATIONS.md — R-084), CI green on both OSes, the pull request exists.
+  request body and DEVIATIONS.md — R-084), CI green on both OSes, the pull request exists; (Rule 14 post-conditions)
+  plan/IMPLEMENTATION_MAP.md has a row per plan step and per `Mitigation` cell of the risk register; reviews/CODE_REVIEW.md has a
+  `## Delta since S-REVIEW` section covering every commit after the S-REVIEW commit that touches core/, cli/, plugin/, python/,
+  tools/ or notebooks/ (same four areas), with no Critical/High finding open; reviews/ADVERSARIAL_REVIEW.md and reviews/MUTATION.md
+  have no open Critical/High item; `python3.12 tools/check_postconditions.py` exits 0; `git ls-remote` equals HEAD (Rule 6).
 - Checkpoint: default
 - On failure: default
 - Gate: none (merging is the owner's action, G-002)
@@ -610,15 +706,20 @@ Defaults for every step unless the step says otherwise:
 ### S-RETRO Retrospective
 - Tier: Opus
 - Profile: software, computational
-- Depends on: S-000…S-019
+- Depends on: S-000…S-019, S-REVIEW, S-ADVERSARIAL, S-MUTATE
 - Inputs: EXECUTION_LOG.md, commits, DEVIATIONS.md, BLOCKED.md and TEST_CHALLENGE.md (if present), GATE-*.md, CI history,
   research/PRIOR_KNOWLEDGE.md, lessons/, knowledge/
 - Actions: a Haiku agent collects the inputs into one digest; a fresh Opus agent answers the four questions of protocol
-  3.7.1 and writes `RETROSPECTIVE.md`, a lesson for each unrecorded correction or overlooked step, and a knowledge item for
+  3.7.1 (including 1a, deviation completeness: diff the impl branch's manifests, workflows, pins and added files against
+  plan/ENVIRONMENT.md and the steps' Outputs, as reviews/DEVIATION_AUDIT.md did; every unexplained difference is a missing row and a
+  `kind:process` lesson) and writes `RETROSPECTIVE.md`, a lesson for each unrecorded correction or overlooked step, and a knowledge item for
   each missing fact; run `python3.12 tools/check_schema.py`.
 - Outputs: RETROSPECTIVE.md, lessons/L-*.md, knowledge/K-*.md
 - Evidence produced: none
-- Done when: every finding links to an L- or K- file; `python3.12 tools/check_schema.py` prints "all entries valid".
+- Done when: every finding links to an L- or K- file; `python3.12 tools/check_schema.py` prints "all entries valid"; (Rule 14)
+  RETROSPECTIVE.md has a section per protocol 3.7.1 question including (1a), whose deviation-completeness table is produced by the
+  method of reviews/DEVIATION_AUDIT.md over the whole implementation diff; `python3.12 tools/check_postconditions.py` (extended with
+  RETROSPECTIVE.md) exits 0.
 - Checkpoint: default
 - On failure: default
 - Gate: none
@@ -645,7 +746,9 @@ Defaults for every step unless the step says otherwise:
   `git bundle create ../knowledge-<run_id>.bundle HEAD` (`<run_id>` = `run_id` in `.checkpoints/state.json`) (the bundle carries `lessons/` and `knowledge/`) and report its path.
 - Outputs: pushes to the stores, or the bundle path
 - Evidence produced: none
-- Done when: protocol 3.7.2 item 4.
+- Done when: protocol 3.7.2 item 4; each pushed store's `git ls-remote origin` equals its local HEAD (Rule 6), or the bundle file
+  exists and `git bundle verify` passes; `python3.12 tools/check_postconditions.py` (extended with the lessons and knowledge items
+  this step copies) exits 0.
 - Checkpoint: default
 - On failure: bundle fallback (3.7.2 item 3).
 - Gate: G-003

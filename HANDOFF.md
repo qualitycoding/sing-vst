@@ -62,6 +62,9 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | S-014 | RVC training files | T-P24 | none |
 | S-015 | Evaluation procedure | T-P26 | G-005 |
 | S-016 | Training notebooks | T-P16, T-P17; `tools/notebook_dryrun.py` output in EXECUTION_LOG.md | G-005 must be answered before this step starts. |
+| S-REVIEW | Traditional code review | none (report) | none |
+| S-ADVERSARIAL | Adversarial review | none (report and probe outputs) | none |
+| S-MUTATE | Mutation testing of the Python toolkit | none (report) | none |
 | S-017 | Owner's training run and evaluation | T-P20 (run by the owner); G-001 record | G-004, then G-001 |
 | S-018 | Documentation and notices | T-P23 | none |
 | S-019 | Final verification and pull request | all tests | none (merging is the owner's action, G-002) |
@@ -69,8 +72,9 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 | S-KNOW | Lessons and knowledge push | none | G-003 |
 
 The plan begins with **S-000** and ends with the closing steps **S-RETRO** and **S-KNOW**. A step may start as soon as every
-step in its `Depends on` has passed, and steps run one at a time in ID order (they share one branch and checkpoint). While
-halted at a gate, continue any later step that does not depend on that gate's outcome, in ID order — never an external or
+step in its `Depends on` has passed, and steps run one at a time in **plan order** — the order of the step headings in
+`plan/PLAN.md`, which is ID order for S-000…S-019 with S-REVIEW, S-ADVERSARIAL and S-MUTATE after S-016 (D-042) — (they share one branch and checkpoint). While
+halted at a gate, continue any later step that does not depend on that gate's outcome, in plan order — never an external or
 irreversible action.
 
 ## Human gates

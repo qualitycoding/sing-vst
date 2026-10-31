@@ -1,0 +1,58 @@
+
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: /tmp/tmp.0q92y1FtZe/v/bin/python3.12 -m pip install --upgrade pip
+No broken requirements found.
+pytest 9.1.1
+Name: mutmut
+Version: 3.8.1
+== setup.cfg
+[mutmut]
+source_paths=
+    src/singvst_train/pipeline.py
+    src/singvst_train/prepare.py
+    src/singvst_train/metrics.py
+    src/singvst_train/pack.py
+    src/singvst_train/rvc_files.py
+    src/singvst_train/security.py
+    src/singvst_train/provenance.py
+    src/singvst_train/cli.py
+pytest_add_cli_args_test_selection=
+    tests/python/test_pipeline.py
+    tests/python/test_prepare.py
+    tests/python/test_metrics.py
+    tests/python/test_pack.py
+    tests/python/test_rvc_files.py
+    tests/python/test_security.py
+    tests/python/test_provenance.py
+    tests/python/test_cli.py
+also_copy=
+    pytest.ini
+    tests/python
+    tests/fixtures
+    eval
+    python
+pytest_add_cli_args=
+    -m
+    not torch and not voice and not network and not binary
+    -p
+    no:cacheprovider
+== mutmut run exit 0; last line:
+8.69 mutations/second
+== results by status, all modules
+   1169 killed
+    435 no tests
+    673 survived
+     13 timeout
+== per module (score = (killed + timeout) / total; 'no tests' = mutated code no selected test reaches)
+module      total killed timeout survived no_tests  score
+cli           955    223       0      360      372  0.234
+metrics       333    254       0       79        0  0.763
+pack          227    172       2       53        0  0.767
+pipeline      121     81       2       38        0  0.686
+prepare       290    176       9       42       63  0.638
+provenance    143     86       0       57        0  0.601
+rvc_files     175    140       0       35        0  0.800
+security       46     37       0        9        0  0.804
+== D-044 gate scope: the seven library modules (cli.py is scored on its own)
+mutants 1335, killed+timeout 959, score 0.718
+exit=0
