@@ -4,7 +4,7 @@ Run 2026-10-31T10:53:28Z, retroactively, with S-000…S-016 done and the plan ha
 not author the plan but is not fresh context for the implementation; no subagent was used (recorded in DEVIATIONS.md). Stance:
 each item was assumed wrong and checked against evidence; facts established during implementation count as evidence and are cited.
 
-Verdicts: **confirmed** 24 · **falsified** 4 · **unverifiable** 13 (each mapped to a risk, gate or in-notebook check).
+Verdicts (counted from the tables below): **confirmed** 25 · **falsified** 4 · **unverifiable** 11 (each unverifiable item maps to a risk, gate or in-notebook check).
 
 ## Assumptions (plan/ASSUMPTIONS.md)
 | Item | Premise in one sentence | Falsifying evidence would be | Checked | Verdict | IDs |
