@@ -17,6 +17,8 @@
 | RVC assets | Hugging Face `lj1995/VoiceConversionWebUI`, revision `e6d0c1a17da07c33557852f9dfa2bd44cc75737d` (the CI hf-revision notice of run 40105798141; S-013) | | C-032 |
 | huggingface_hub (download venv only) | 2.2.0 (`hf download` flags checked 2026-10-15) | | C-032 |
 | GitHub Actions | checkout v7, setup-python v7, upload-artifact v7, download-artifact v8 | | C-045 |
+| Mutation testing (S-MUTATE) | mutmut 3.8.1 + closure in `python/requirements-mutate.txt` (11 pins, resolved against the toolkit lock; pytest stays 9.1.1); installed `--no-deps` on top of the lock | PyPI lookups 2026-10-31 (all exist) | D-044, research/spikes/mutmut |
+| Coverage (S-REVIEW) | GCC 13.3 `gcov` (with the compiler); coverage.py 7.17.0 (in `python/requirements-mutate.txt`) | | D-042 |
 
 `tools/bootstrap_test_env.sh` holds the JUCE and Catch2 commits above and the ONNX Runtime archive SHA-256, and exits 4 when
 a tag no longer resolves to its pinned commit (DR-02) and 3 when a clone sits elsewhere; it prints `ok JUCE @ 9.0.3 (be29c81…)`,
@@ -54,6 +56,9 @@ ran red (research/spikes/red-verification/output.txt); the clean venv reproduced
 (T-P21 passed live, same file).
 
 ## Hosts (PK-13; research/spikes/hosts, probed 2026-10-15)
+
+This table describes the **planning sandbox**. The implementer's rules follow its own S-000 probe (`../hosts-now.txt`); on the
+implementation host every row below was reachable (D-043, K-…-c-044-implementation-host-reachability).
 | Host | run.sh roles | From the cloud workspace | Alternative channel |
 |---|---|---|---|
 | pypi.org, GitHub (web, git, raw, releases, REST API) | pypi-index, pypi-files, github-web, github-git, github-releases-ort, github-releases-pluginval, github-raw, github-api | reachable | — |

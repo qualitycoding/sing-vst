@@ -15,11 +15,23 @@ gates = len(re.findall(r"^### G-\d{3}", (ROOT / "plan" / "GATES.md").read_text(e
 reg = (ROOT / "premortem" / "RISK_REGISTER.md").read_text(encoding="utf-8")
 sev = collections.Counter(r.split(" | ")[3] for r in reg.splitlines() if re.match(r"^\| R-\d{3} \|", r))
 rounds = len(list((ROOT / "premortem").glob("round-*.md")))
+audit = ROOT / "premortem" / "ASSUMPTION_AUDIT.md"          # Phase 4.7 (v3.4): counts generated from its tables
+verdicts = collections.Counter()
+if audit.exists():
+    for row in audit.read_text(encoding="utf-8").split("## Assumptions", 1)[-1].splitlines():
+        cells = [c.strip() for c in row.strip("|").split("|")] if row.startswith("| ") else []
+        if not cells or cells[0] in ("Item", "Claim", "Test") or set(row) <= set("|- "):
+            continue
+        joined = " ".join(cells).lower()
+        verdicts["falsified" if "**falsified" in joined else next((v for v in ("unverifiable", "confirmed") for c in cells if c.startswith(v)), "?")] += 1
+reviews = [n for n in ("CODE_REVIEW", "ADVERSARIAL_REVIEW", "MUTATION") if (ROOT / "reviews" / f"{n}.md").exists()]
 header = (f"<!-- STATUS: {status} -->\n**Status: {status}** · profiles `software`, `computational` · "
           f"claims {len(C)} ({', '.join(f'{k} {v}' for k, v in sorted(conf.items()))}) · tests: C++ core {cpp - plugin}, "
           f"C++ plugin {plugin}, Python {len(py)} IDs, CI-only {ci} (T-059) · steps {steps} · gates {gates} · risks "
           f"{sum(sev.values())} ({', '.join(f'{k} {v}' for k, v in sorted(sev.items()))}) · pre-mortem rounds {rounds} · "
-          "figures 0 (D-032)"
+          "figures 0 (D-032) · assumption audit "
+          + (", ".join(f"{k} {v}" for k, v in sorted(verdicts.items())) if verdicts else "not run")
+          + f" · reviews {len(reviews)}/3 done (S-REVIEW, S-ADVERSARIAL, S-MUTATE) · protocol v3.6 (D-041)"
           + (" · **decision needed: premortem/RESIDUAL.md — no step may start**" if status != "READY" else "") + "\n")
 lines = plan.split("\n", 1)
 assert lines[0].startswith("<!--"), "PLAN.md must start with the status comment line"

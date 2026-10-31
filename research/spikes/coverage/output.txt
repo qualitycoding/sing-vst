@@ -1,0 +1,40 @@
+== C++ core with --coverage
+100% tests passed, 0 tests failed out of 61
+core/src/align.cpp Lines executed:97.70% of 87
+core/src/converter_engine.cpp Lines executed:98.57% of 70
+core/src/ort_util.hpp Lines executed:66.67% of 6
+core/src/g2p.cpp Lines executed:98.61% of 72
+core/src/guide_engine.cpp Lines executed:91.39% of 209
+core/src/lyrics.cpp Lines executed:98.51% of 67
+core/src/midifile.cpp Lines executed:100.00% of 121
+core/src/ort_runtime.cpp Lines executed:85.29% of 34
+core/src/ort_util.cpp Lines executed:92.86% of 154
+core/src/ort_threads.hpp Lines executed:50.00% of 6
+core/src/playback.cpp Lines executed:100.00% of 128
+core/src/random.cpp Lines executed:95.00% of 20
+core/src/render.cpp Lines executed:99.09% of 110
+core/src/resample.cpp Lines executed:93.75% of 48
+core/src/sha256.cpp Lines executed:97.78% of 45
+core/src/synthesis.cpp Lines executed:98.31% of 118
+core/src/take_cache.cpp Lines executed:98.82% of 85
+core/src/voice.cpp Lines executed:99.17% of 121
+== Python toolkit with coverage.py
+coverage 7.17.0 pytest 9.1.1
+FAILED tests/python/test_repo.py::test_P22_every_cited_id_exists - AssertionE...
+FAILED tests/python/test_repo.py::test_P23_readme_states_behaviour_only_with_test_ids
+2 failed, 31 passed, 4 deselected in 4.74s
+python/singvst_train/__init__.py         1      0   100%
+python/singvst_train/__main__.py         2      2     0%
+python/singvst_train/cli.py            190     86    55%
+python/singvst_train/evaluate.py       176    151    14%
+python/singvst_train/export_rvc.py     153    142     7%
+python/singvst_train/metrics.py         79      5    94%
+python/singvst_train/pack.py            71      2    97%
+python/singvst_train/pipeline.py        73      9    88%
+python/singvst_train/prepare.py         96     14    85%
+python/singvst_train/provenance.py      45      7    84%
+python/singvst_train/rvc_files.py       43      0   100%
+python/singvst_train/security.py        26      2    92%
+--------------------------------------------------------
+TOTAL                                  955    420    56%
+exit: 0

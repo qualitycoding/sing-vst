@@ -31,16 +31,16 @@ Verdicts (counted from the tables below): **confirmed** 25 · **falsified** 4 ·
 |---|---|---|---|---|
 | D-008 | TIGER's files fill the four guide roles. | C-036 spike tiger-guide; pack stage run for real with stand-ins (S-016) | confirmed | — |
 | D-010 | JUCE's PositionInfo gives ppq/bpm/isPlaying each block. | T-055, T-057 | confirmed | — |
-| D-012 | The prior noise is RVC's only random draw, so `rnd` alone makes the converter deterministic (C-003). | ../rvc infer/module/models.py SineGen.forward calls torch.randn_like | **falsified** (handled in S-013; contract text corrected by D-043) | L-20261030T234148Z-rvc-has-two-noise-sources, K-20261024T151050Z-rvc-sinegen-noise, D-043 |
+| D-012 | The prior noise is RVC's only random draw, so `rnd` alone makes the converter deterministic (C-003). | ../rvc infer/module/models.py SineGen.forward calls torch.randn_like | **falsified** (handled in S-013; contract text corrected by D-043; residual sound risk R-118) | L-20261030T234148Z-rvc-has-two-noise-sources, K-20261024T151050Z-rvc-sinegen-noise, D-043 |
 | D-012 | 48k RVC synth hop is 480 from upsample rates 10,6,2,2,2 (C-048). | configs/v2/48k.json [12,10,2,2] | **falsified** in detail (product 480 holds) | L-20261030T234151Z-claim-detail-not-cross-checked-with-config, K-20261030T234152Z-c-048-rvc-48k-upsample-rates |
 | D-013 | Limits 5000 notes / 900 s before any engine runs. | T-069, T-070 | confirmed | — |
 | D-016 | Colab/Kaggle sessions last ≤ 12 h with unpublished limits (C-017, C-019). | C-017 corroborated; C-019 single-source | unverifiable (owner's platform) | R-002, R-008 |
 | D-017 | Resemblyzer/Whisper APIs as named; procedure computable. | S-015 dry run with stand-ins of the real names (C-058, C-059); real models only in the notebook | confirmed (API names); values → G-001 | T-P20 |
 | D-019 | RVC's cu128 file + toolkit resolve in one venv; torch pair from its own index. | AM-06 spike: cu128 torch resolves; RVC file (no torch lines) resolves 139 packages from PyPI | confirmed | C-070 |
 | D-019 | The lock is pip-audit clean. | S-000: setuptools 84.0.0 advisory → DR-07 (84.1.0) | confirmed after DR-07 (a dated fact, not an assumption error) | — |
-| D-025 | audio-separator must live in its own venv; stem `noreverb`. | C-066 (wheel); stem name from the model YAML at load time | confirmed (venv); stem name unverifiable | docs/UNVERIFIED.md |
+| D-025 | audio-separator must live in its own venv; stem `noreverb`. | C-066 (wheel); stem name from the model YAML at load time | confirmed (venv); stem name unverifiable | R-117 |
 | D-026 | TIGER is personal non-commercial; never redistributed. | C-037 licence texts; G-005 answered use-tiger | confirmed | — |
-| D-035 | nvidia-smi query fields name, driver_version, pid, used_memory exist. | NVIDIA docs defer field names to --help-query-* (C-068) | unverifiable → checked first in cell (4c) | C-068 |
+| D-035 | nvidia-smi query fields name, driver_version, pid, used_memory exist. | NVIDIA docs defer field names to --help-query-* (C-068) | unverifiable → checked first in cell (4c) | C-068, R-116 |
 | D-035 | Kaggle output holds ≤ 500 items (C-064); state.tar keeps it small. | single source | unverifiable | R-016, R-055 |
 | D-036 | No torch locally; plugin checks CI-only without root. | local torch (S-013) and user-space sysroot build + Xvfb + pluginval (S-011) | **falsified** (same root cause as A-016, plus the no-root premise) | L-20261030T234149Z-implementer-host-differs-from-planning-sandbox, L-20261030T234150Z-no-root-is-not-no-local-plugin-build, D-043 |
 
@@ -50,7 +50,7 @@ Verdicts (counted from the tables below): **confirmed** 25 · **falsified** 4 ·
 | C-010 (no OSI/CC-BY English DiffSinger voicebank found) | unverifiable (absence claim) | G-005 answered; D-026 licence handling |
 | C-019 (Kaggle session and quota facts) | unverifiable | R-008; Colab is the first platform |
 | C-064 (Kaggle 500-item output limit) | unverifiable | state.tar design (≤ 20 items asserted by pack_state) |
-| C-068 (nvidia-smi documentation) | unverifiable for field names | cell (4c) check, decision rule `failed: 4` |
+| C-068 (nvidia-smi documentation) | unverifiable for field names | R-116: cell (4c) check, decision rule `failed: 4` |
 
 ## Premises frozen tests rely on
 | Test | Premise | Verdict |

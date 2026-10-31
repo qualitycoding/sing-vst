@@ -1003,6 +1003,65 @@ G-001). Pre-decided miss rule for each: record the value with its environment; a
 decide (hosted CPUs are shared and slower, C-039 measured RTF 1.10 on 2 threads); a miss on (b) is a G-001 decision
 (`retrain` with fewer steps/depth or a smaller model, or `proceed-with-thresholds`) — the implementer never relaxes it (DR-08).
 
+### D-042 Amendment 02: the v3.6 phases added to the remaining plan (plan/AMENDMENT-02.md)
+The remaining steps gain what protocol v3.6 requires of a `software` plan and of every step (D-041): **`S-REVIEW`** (3.8.1, traditional
+code review of the whole implementation diff), **`S-ADVERSARIAL`** (3.8.2, attempts to break every boundary) and **`S-MUTATE`**
+(3.8.3, mutation testing of the Python toolkit, D-044). They come after S-016 in plan order and depend on S-016 only, so they run
+**while halted at G-004** (HANDOFF §Steps: a later step that does not depend on a gate's outcome continues); a code change made later
+(S-017 notebook fixes, S-018) is reviewed at S-019 as a delta against the S-REVIEW commit. Every remaining `Done when` names its
+artifacts' post-conditions (Rule 14) and `tools/check_postconditions.py` (AM-05) is extended by each step with its own artifacts;
+S-RETRO answers 3.7.1 (1a), deviation completeness, by the AM-07 method; S-KNOW verifies its store pushes with `git ls-remote`
+(Rule 6). Critical/High review findings block S-019. A finding whose fix needs a new or changed frozen test is a planning
+amendment: the implementer writes `TEST_CHALLENGE.md` (for a change) or the review report's "tests to add" table and halts (2E.4). A Critical/High fix that changes
+what the notebook checks out (`notebooks/`, `python/`, `core/`, `cli/`, `eval/`) while GATE-G-004.md is open and unanswered re-issues it
+pinned to the fixed head (archived as S-017 action 3 says; no re-issue limit is consumed because no response exists) — pre-mortem
+round 7, R-119. The owner may already be running the archived pin when the re-issue lands: a response whose
+`budget.json` sessions ran the archived `EXPECTED_COMMIT` is processed by S-017 as usual when the fix changed no file the notebook
+executes (`notebooks/`, `python/`, `eval/`); otherwise its files are committed under `results/<VOICE>/run<RUN>/` with an
+EXECUTION_LOG note `pre-fix`, G-001 is not issued from it, and G-004 is re-issued with the same `RUN`, the next `k`, the fixed
+head as `EXPECTED_COMMIT` and `RESUME` by the D-035 rule; no re-issue limit is consumed (the cause is the implementer's) — R-120.
+
+### D-043 Corrections from the assumption and premise audit (premortem/ASSUMPTION_AUDIT.md, AM-08)
+Four items were falsified; each was already corrected in the implementation, so this decision brings the plan text in line.
+(1) **D-012 converter contract**: RVC v2 draws random numbers in two places, the prior noise and the NSF source's `SineGen`
+(`torch.randn_like`, amplitude `sine_amp/3` on unvoiced frames; K-20261024T151050Z-rvc-sinegen-noise supersedes C-003's item).
+The exported synthesiser takes both from `rnd`: the prior noise as `rnd·0.66666`, and the source noise as `rnd` read frame-major,
+each value held for `hop / 192` = 2.5 samples at 48 kHz (python/singvst_train/export_rvc.py). One seed therefore fixes the whole
+converter output (T-P19). How fricatives sound with it is judged at G-001 (docs/UNVERIFIED.md).
+(2) **D-036 and S-000 action 3**: "no torch locally", "huggingface.co unreachable" and "plugin checks CI-only without root" are
+**conditions on the implementer's own S-000 probe**, not facts: when the probe shows the PyTorch index and Hugging Face reachable,
+the implementer may build `../venv-torch` from RVC's CPU requirement file exactly as the CI job does; without root it first tries
+the user-space sysroot (K-20261024T144526Z-juce-linux-build-without-root) before falling back to CI. CI stays the evidence of
+record for every CI-named test (D-036).
+(3) **C-048**: RVC 81eed5e's 48k config has `upsample_rates` [12,10,2,2] (product 480), not 10,6,2,2,2; nothing depended on the
+factors.
+(4) The no-root premise above also covers T-034's German locale: `localedef` into a user directory with `LOCPATH` set runs it
+locally (S-005).
+
+### D-044 Mutation testing scope and target (S-MUTATE; protocol 3.8.3)
+**In scope:** the toolkit modules whose behaviour the frozen Python suite decides: `pipeline.py`, `prepare.py`, `metrics.py`,
+`pack.py`, `rvc_files.py`, `security.py`, `provenance.py` and `cli.py`, each with its own test files. **Excluded:** `evaluate.py`
+and `export_rvc.py` (their paths run only with Resemblyzer/Whisper or torch, i.e. in T-P20 on the GPU and T-P19 in CI;
+mutants there would survive for lack of a runnable test, not for lack of a test). **Tool:** mutmut 3.8.1 with the closure in
+`python/requirements-mutate.txt` (installed `--no-deps` on top of the toolkit lock, so pytest stays 9.1.1), run in a generated
+workspace with the package under `src/` because mutmut 3 names mutants by module path and the frozen `conftest.py` adds
+`python/` to `sys.path` (spike research/spikes/mutmut: the workspace layout, a `.pth` file for the T-P25 child process, and a
+git commit for T-P08b). **Score:** (killed + timeout) / total per module; a mutant mutmut reports as "no tests" (mutated code no
+selected test reaches) counts as a gap, not as excluded. **Measured baseline** at impl f3ad77b (research/spikes/mutmut/output.txt,
+2290 mutants): the seven library modules together 1335 mutants, 959 killed or timed out, **0.718**; per module security 0.804,
+rvc_files 0.800, pack 0.767, metrics 0.763, pipeline 0.686, prepare 0.638 (63 no tests), provenance 0.601; `cli.py` 955 mutants,
+0.234 (372 no tests: the frozen tests call `cli.main` in-process only for `--help` and `split`; the other subcommands are thin
+wrappers over the library modules). **Target (budget that gates, Rule 14), fixed before S-MUTATE runs:** the seven library
+modules ≥ **0.80** together and each ≥ **0.70**; `cli.py` ≥ **0.50**. Justified-equivalent mutants leave the denominator only
+when each is listed with its class (equivalent mutant; message or log text only; defensive branch the frozen contract makes
+unreachable). Every other survivor or no-tests mutant gets a proposed test in `reviews/MUTATION.md`'s "tests to add" table. The
+baseline shows the target cannot be met without new tests, and frozen tests are planning-side (2E.4), so the expected outcome of
+S-MUTATE is a halt with that table for a planning amendment that adds the tests, after which S-MUTATE re-runs; a miss after that
+amendment halts again with the survivors named (R-121). The implementer never lowers the target or edits a test.
+**C++ opt-out:** the core and plugin are not mutation-tested. Mull, the maintained C++ mutation tool, needs a Clang/LLVM
+toolchain of its own version; the pinned toolchain is GCC 13.3 and MSVC, and the implementation host has no clang (checked
+2026-10-30) and no root. C++ correctness rests on the frozen C++ suite, ASan/UBSan/TSan, pluginval and S-ADVERSARIAL.
+
 ## Decision rules (if → then)
 
 **Engineering forks** `[software]`

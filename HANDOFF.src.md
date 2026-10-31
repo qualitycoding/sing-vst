@@ -48,8 +48,9 @@ proposed fix) and halt (2E.4, DR-04, PK-24). Never regenerate the manifest.
 {{STEPS}}
 
 The plan begins with **S-000** and ends with the closing steps **S-RETRO** and **S-KNOW**. A step may start as soon as every
-step in its `Depends on` has passed, and steps run one at a time in ID order (they share one branch and checkpoint). While
-halted at a gate, continue any later step that does not depend on that gate's outcome, in ID order — never an external or
+step in its `Depends on` has passed, and steps run one at a time in **plan order** — the order of the step headings in
+`plan/PLAN.md`, which is ID order for S-000…S-019 with S-REVIEW, S-ADVERSARIAL and S-MUTATE after S-016 (D-042) — (they share one branch and checkpoint). While
+halted at a gate, continue any later step that does not depend on that gate's outcome, in plan order — never an external or
 irreversible action.
 
 ## Human gates
