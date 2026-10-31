@@ -1,7 +1,7 @@
 ---
 id: K-20261014T143901Z-c-044-sandbox-environment
 statement: "From the planning sandbox (probed 2026-10-14): pypi.org (index and wheel downloads), GitHub web, git, raw, releases and the REST API for attached repositories are reachable; huggingface.co, download.pytorch.org, colab.research.google.com, kaggle.com and the Actions results host are not."
-status: current
+status: superseded
 supersedes: [K-20261010T110041Z-c-044-sandbox-environment]
 tags: [subject:sandbox-environment, tech:github, phase:research]
 applies_to_version: "sandbox 2026-10-14"
