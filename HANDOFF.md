@@ -1,5 +1,7 @@
 # HANDOFF — sing-vst implementation
 
+
+Reading order: `HANDOFF.md` → `ADDENDUM-PLAN-V3.9.md` → `plan/PLAN.md`. Later protocol amendments take precedence only where the gap ledger says so.
 ## Purpose
 Build **sing-vst**: a VST3/Standalone instrument (Windows x64, Linux x64) that sings typed or MIDI-imported lyrics on MIDI
 notes in a voice trained from the owner's recordings. A DiffSinger guide renders pitch + lyrics; an RVC v2 model trained on a

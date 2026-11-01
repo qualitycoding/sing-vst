@@ -13,3 +13,7 @@
 `research/NOVELTY.md`, `plan/OPERATIONS.md`, deployment tests and operational forks for running services, publication
 lenses of the pre-mortem. 2C (figures) applies to `computational` only through deliverable figures, and **this plan has
 none** (results are a JSON report and audio files at G-001), so `figures/SPEC.md` is not produced (decision D-032).
+
+## v3.9 addendum profile confirmation
+
+Active profiles unchanged; `software` active; `software.deploys` unchanged. Target protocol v3.9.
