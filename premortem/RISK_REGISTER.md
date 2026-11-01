@@ -127,3 +127,14 @@ from the pre-mortem rounds (premortem/round-N.md). Status: `open` (mitigation pl
 | R-119 | **A review fix lands after G-004 was issued, so the owner would run a commit with a known Critical/High defect** (round 7). | process failure | High | medium | S-REVIEW, S-ADVERSARIAL and S-MUTATE run while halted at G-004 (D-042). | D-042; PLAN S-REVIEW, S-017 action 3 | A Critical/High fix touching `notebooks/`, `python/`, `core/`, `cli/` or `eval/` archives GATE-G-004.md and re-issues it pinned to the fixed head while no response exists. | mitigated |
 | R-120 | **The owner's run started on the archived pin before the re-issue** (round 7). | process failure | Medium | low | Gate files are read once; a Colab or Kaggle run takes hours. | D-042; PLAN S-017 action 2a | A response whose sessions ran the archived commit is accepted only if the fix touched no file the notebook executes; otherwise it is kept as `pre-fix`, G-001 is not issued from it, and G-004 is re-issued with the same RUN at no cost to the re-issue limits. | mitigated |
 | R-121 | **S-MUTATE cannot meet D-044 without new frozen tests** (round 7, measured baseline 0.718 / 0.234). | process failure | Low | high | The frozen suite was written to the contract, not to kill mutants; frozen tests are planning-side (2E.4). | D-044; PLAN S-MUTATE | Expected and pre-decided: the first S-MUTATE run halts with a "tests to add" table for a planning amendment; it runs while halted at G-004, so it costs no owner wall-clock. | open |
+
+## v3.9 addendum risk round (2026-11-02)
+
+| Risk | Severity | Mitigation | Status |
+|---|---|---|---|
+| No independent fresh-context review (D-906) | High | Recorded substitution; independent review scheduled before product execution resumes | Open |
+| CI-dependent checks (mutation pricing/floor, matrix jobs) not locally executable (D-905) | Medium | CI is the authoritative venue; estimates labelled; post-conditions gate in CI | Open |
+| Lesson/knowledge store push pending G-003 sign-off | Low | Bundle fallback documented; does not block amendment completion | Open |
+
+Pre-mortem rounds repeated to zero Critical risks; High risk retained honestly
+with owner and mitigation.

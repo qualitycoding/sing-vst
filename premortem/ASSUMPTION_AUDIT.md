@@ -66,3 +66,11 @@ Verdicts (counted from the tables below): **confirmed** 25 · **falsified** 4 ·
 Every falsified item was already corrected in the implementation (S-011, S-013, S-000) and logged; what remained was the plan text.
 D-043 (Amendment 02, generation branch) records the corrected D-012 converter contract, the conditional D-036 / S-000 rules and C-048's
 values, and runs with Amendment 02's cold read and pre-mortem round. No frozen test changes; no re-freeze.
+
+## v3.9 addendum assumption audit (2026-11-02)
+
+| Assumption | Basis | Verdict |
+|---|---|---|
+| Audited baseline `v3.6` is accurate | Addendum gap audit at rollout | Accepted (verified by final consistency check) |
+| Source-tip drift is the rollout's own addendum commit | Commit message + parent chain | Confirmed (D-901) |
+| No local build/mutation execution available | Sandbox probe (git transport blocked; API-only writes) | Confirmed; CI substitution recorded (D-905) |

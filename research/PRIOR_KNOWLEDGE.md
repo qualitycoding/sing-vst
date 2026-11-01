@@ -346,3 +346,10 @@ Items from `qualitycoding/knowledge` whose tags match; each is used as one sourc
 - `K-20261009T234256Z-dash-lacks-pipestatus-and-time-keyword`: every script is bash with a shebang (PK-19).
 - `K-20261004T102024Z-sandbox-working-directory-resets`: push after every sub-phase (PK-01); observed again in this run on 2026-10-10.
 - `K-20261009T193501Z-sandbox-egress-policy`: re-probed in this run; result table in plan/ENVIRONMENT.md (PK-13).
+
+## R0 prior-knowledge load — v3.9 addendum (2026-11-02)
+
+Loaded from the knowledge store topics relevant to this amendment: planning
+protocol v3.9 change record, mutation-in-CI pricing practice, split
+lesson/knowledge store semantics, ephemeral-environment durable-mount
+discipline. No repository product knowledge is altered by this amendment.

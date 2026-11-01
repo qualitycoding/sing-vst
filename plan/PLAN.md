@@ -1,5 +1,7 @@
+# PLAN — protocol v3.9 (upgraded by ADDENDUM-PLAN-V3.9.md)
+
 <!-- STATUS: READY -->
-**Status: READY** · profiles `software`, `computational` · claims 65 (corroborated 3, single-source 3, verified 59) · tests: C++ core 61, C++ plugin 6, Python 30 IDs, CI-only 1 (T-059) · steps 25 · gates 5 · risks 121 (Critical 15, High 30, Low 27, Medium 49) · pre-mortem rounds 7 · figures 0 (D-032) · assumption audit confirmed 25, falsified 4, unverifiable 11 · reviews 0/3 done (S-REVIEW, S-ADVERSARIAL, S-MUTATE) · protocol v3.6 (D-041)
+**Status: READY** · profiles `software`, `computational` · claims 65 (corroborated 3, single-source 3, verified 59) · tests: C++ core 61, C++ plugin 6, Python 30 IDs, CI-only 1 (T-059) · steps 25 · gates 5 · risks 121 (Critical 15, High 30, Low 27, Medium 49) · pre-mortem rounds 7 · figures 0 (D-032) · assumption audit confirmed 25, falsified 4, unverifiable 11 · reviews 0/3 done (S-REVIEW, S-ADVERSARIAL, S-MUTATE) · protocol v3.9 (D-041)
 
 # Execution plan — sing-vst
 
@@ -755,3 +757,8 @@ Defaults for every step unless the step says otherwise:
 - Relevant decisions/claims: Rule 13, A-014
 - Lessons applied: PK-02 (L-20261010T000102, L-20261009T234124, L-20261009T232008); PK-12 (L-20261009T193602, L-20261010T000101, L-20261009T234112)
 - Exclusive resources: none
+
+
+## Normative closing order (v3.9 addendum)
+
+Closing steps execute in this order: **S-RETRO** (retrospective) precedes **S-KNOW** (lessons/knowledge; G-003 controls publication).

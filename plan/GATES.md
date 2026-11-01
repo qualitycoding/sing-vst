@@ -131,3 +131,11 @@ run the closing steps S-RETRO and S-KNOW (S-KNOW still asks G-003), then end.
 - **Evidence:** TIGER DiffSinger v102 facts (C-036), its licence (C-037: personal, non-commercial, no redistribution), the
   fact that it is never committed or bundled (D-026), and the alternative (any DiffSinger voicebank meeting D-012).
 - **Responses:** `use-tiger` · `use-voicebank: <URL, licence>` (planning amendment checks it against D-012) · `stop`.
+
+## G-003 — split learning stores (v3.9)
+
+Lessons and knowledge are pushed to **separate** stores: the `Lessons`
+repository and the `knowledge` repository. G-003 requests the destinations at
+plan close; **do-not-push** either store until human sign-off; the documented
+bundle fallback applies when sign-off is withheld. Store publication never holds
+up the repository amendment's completion record.
