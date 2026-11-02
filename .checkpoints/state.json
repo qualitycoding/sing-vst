@@ -6,7 +6,8 @@
     "computational"
   ],
   "mode_flags": {
-    "software.deploys": false
+    "software.deploys": false,
+    "audio": true
   },
   "phase": "impl",
   "subphase": "S-017",
@@ -585,7 +586,9 @@
       "used": "claude-sonnet-5-5"
     }
   ],
-  "open_items": [],
+  "open_items": [
+    "listening gate G-001: blocked — see listening/G-001/round-001/result.json"
+  ],
   "knowledge_store": {
     "location": "lessons: github.com/qualitycoding/Lessons (cloned as qualitycoding/lessons); knowledge: github.com/qualitycoding/knowledge",
     "commit_read": {
@@ -964,7 +967,7 @@
     "Amendment 01 merged from the generation branch; AM-01..AM-10 follow",
     "G-004 re-issued at 48342143e0177561286d656edb119254044b7d0a (AM-09); halted at G-004; S-REVIEW/S-ADVERSARIAL/S-MUTATE may run meanwhile"
   ],
-  "updated_at": "2026-10-31T17:02:08Z",
+  "updated_at": "2026-11-02T14:15:19Z",
   "active_step_id": "S-017",
   "execution_context": {
     "current_objective": "Plan READY (owner accepted residual risks, D-040). Implementation starts at S-000 per HANDOFF.md; the planner does not execute plan steps.",
@@ -1056,5 +1059,20 @@
     "spike": "research/spikes/env-class/output.txt",
     "probed": "2026-10-30T23:24:59Z",
     "evidence": "/tmp and ../ markers and a detached background process survived across tool calls; files from 2026-10-24 still present; host up since 2026-10-05 14:57:47"
+  },
+  "listening_gate": {
+    "gate_id": "G-001",
+    "test_type": "singer-similarity",
+    "round": 1,
+    "status": "blocked",
+    "seed": 20261102,
+    "result_path": "listening/G-001/round-001/result.json",
+    "blockers": [
+      "G-004 hosted-GPU training/evaluation renders are the active blocker.",
+      "Owner-approved private target-singer phrases and consent records are required.",
+      "Only non-sensitive result metadata may enter public commits."
+    ],
+    "next_step": "S-017 post-G-001 step",
+    "updated_at": "2026-11-02T14:15:19Z"
   }
 }

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "repository": "qualitycoding/sing-vst",
+  "branch": "impl-gen-20261004T095012Z-singing-voice-vst-pitch-lyrics",
+  "candidate_commit": "34b4c264a8a5d63e9a9e45eb14b58c741aa661b7",
+  "gate_id": "G-001",
+  "round": 1,
+  "test_type": "singer-similarity",
+  "status": "blocked",
+  "prerequisites": [
+    {
+      "id": "PR-001",
+      "status": "blocked",
+      "evidence": "G-004 hosted-GPU training/evaluation renders are the active blocker."
+    },
+    {
+      "id": "PR-002",
+      "status": "blocked",
+      "evidence": "Owner-approved private target-singer phrases and consent records are required."
+    },
+    {
+      "id": "PR-003",
+      "status": "blocked",
+      "evidence": "Only non-sensitive result metadata may enter public commits."
+    }
+  ],
+  "frozen_metrics": [],
+  "reference": {
+    "kind": "not-rendered",
+    "source_ids": [],
+    "licence_or_consent": "not-established",
+    "redistribution": "private-local-only",
+    "checksums": ""
+  },
+  "candidate_renders": {
+    "manifest": "",
+    "checksums": ""
+  },
+  "pair_builder": {
+    "script": "scripts/make_blind_pairs.py",
+    "commit": "",
+    "seed": 20261102,
+    "pairs": 12,
+    "window": "start",
+    "seconds": 1.0,
+    "rms_db": -23.0,
+    "fade_seconds": 0.01,
+    "sample_rate": 44100
+  },
+  "evidence": {
+    "mode": "private-local",
+    "branch": "",
+    "commit": "",
+    "bundle": "",
+    "sha256sums": "",
+    "private_location_id": "sing-vst-G-001-owner-local"
+  },
+  "answers": {
+    "ordered": "",
+    "submitted_at": "",
+    "same_side_count": 0
+  },
+  "score": {
+    "correct": 0,
+    "total": 12,
+    "one_sided_p": null,
+    "pass_condition": "correct <= 8 && no unresolved qualitative finding"
+  },
+  "qualitative_findings": [],
+  "iterations": [],
+  "response": {
+    "value": "blocked",
+    "recorded_at": "2026-11-02T14:15:19Z",
+    "file": "GATE-G-001.LISTENING.md"
+  },
+  "resume": {
+    "next_step": "S-017 post-G-001 step",
+    "checkpoint_file": ".checkpoints/state.json",
+    "checkpoint_commit": "",
+    "execution_log_commit": ""
+  }
+}
